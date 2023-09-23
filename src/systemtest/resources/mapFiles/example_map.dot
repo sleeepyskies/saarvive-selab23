@@ -1,0 +1,44 @@
+digraph Saarland {
+    1;
+    2;
+    3;
+    4;
+    5;
+    6;
+    7;
+    8;
+    9;
+    10;
+    11;
+    12;
+    13;
+    14;
+    15;
+    5 -> 6 [village=Saarland; name=Motorway; heightLimit=10; weight = 16; primaryType=countyRoad; secondaryType=none;];
+    10 -> 11 [village=Saarland; name=Countryroad; heightLimit=2; weight = 39; primaryType=countyRoad; secondaryType=tunnel;];
+    15 -> 1 [village=Saarland; name=Fastlane; heightLimit=10; weight = 29; primaryType=countyRoad; secondaryType=none;];
+
+    1 -> 2 [village=Saarbruecken; name=Alleestrasse; heightLimit=10; weight = 3; primaryType=sideStreet; secondaryType=none;];
+    1 -> 3 [village=Saarbruecken; name=Flughafenstrasse; heightLimit=2; weight = 1; primaryType=sideStreet; secondaryType=tunnel;];
+    2 -> 3 [village=Saarbruecken; name=Eisenbahnstrasse; heightLimit=8; weight = 6; primaryType=sideStreet; secondaryType=none;];
+    2 -> 4 [village=Saarbruecken; name=Bergstrasse; heightLimit=9; weight = 3; primaryType=mainStreet; secondaryType=none;];
+    1 -> 4 [village=Saarbruecken; name=GoldeneBremm; heightLimit=8; weight = 7; primaryType=sideStreet; secondaryType=oneWayStreet;];
+    4 -> 5 [village=Saarbruecken; name=Bahnhofstrasse; heightLimit=4; weight = 2; primaryType=mainStreet; secondaryType=oneWayStreet;];
+    3 -> 5 [village=Saarbruecken; name=Beethovenstrasse; heightLimit=12; weight = 9; primaryType=sideStreet; secondaryType=none;];
+
+    6 -> 7 [village=Homburg; name=Bergstrasse; heightLimit=10; weight = 3; primaryType=sideStreet; secondaryType=none;];
+    6 -> 8 [village=Homburg; name=Finkenweg; heightLimit=2; weight = 1; primaryType=sideStreet; secondaryType=tunnel;];
+    7 -> 8 [village=Homburg; name=Sonnenstrasse; heightLimit=8; weight = 6; primaryType=sideStreet; secondaryType=none;];
+    7 -> 9 [village=Homburg; name=Hauptstrasse; heightLimit=9; weight = 3; primaryType=mainStreet; secondaryType=none;];
+    6 -> 9 [village=Homburg; name=Jakobsstrasse; heightLimit=8; weight = 7; primaryType=sideStreet; secondaryType=oneWayStreet;];
+    9 -> 10 [village=Homburg; name=Kieselpfad; heightLimit=4; weight = 2; primaryType=mainStreet; secondaryType=oneWayStreet;];
+    8 -> 10 [village=Homburg; name=Grafstrasse; heightLimit=12; weight = 9; primaryType=sideStreet; secondaryType=none;];
+
+    11 -> 12 [village=Saarlouis; name=Lerchenweg; heightLimit=10; weight = 3; primaryType=sideStreet; secondaryType=none;];
+    11 -> 13 [village=Saarlouis; name=Marktweg; heightLimit=2; weight = 1; primaryType=sideStreet; secondaryType=tunnel;];
+    12 -> 13 [village=Saarlouis; name=Nelkenstrasse; heightLimit=8; weight = 6; primaryType=sideStreet; secondaryType=none;];
+    12 -> 14 [village=Saarlouis; name=Querstrasse; heightLimit=9; weight = 3; primaryType=mainStreet; secondaryType=none;];
+    11 -> 14 [village=Saarlouis; name=Bergstrasse; heightLimit=8; weight = 7; primaryType=sideStreet; secondaryType=oneWayStreet;];
+    14 -> 15 [village=Saarlouis; name=Hauptstrasse; heightLimit=4; weight = 2; primaryType=mainStreet; secondaryType=oneWayStreet;];
+    13 -> 15 [village=Saarlouis; name=Parkweg; heightLimit=12; weight = 9; primaryType=sideStreet; secondaryType=none;];
+}

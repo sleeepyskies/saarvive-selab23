@@ -1,0 +1,61 @@
+{
+  "events": [
+    {
+      "id": 0,
+      "type": "RUSH_HOUR",
+      "tick": 3,
+      "duration": 2,
+      "roadTypes": ["SIDE_STREET"],
+      "factor": 2
+    },
+    {
+      "id": 1,
+      "type": "TRAFFIC_JAM",
+      "tick": 6,
+      "duration": 1,
+      "source": 1,
+      "target": 3,
+      "factor": 3
+    },
+    {
+      "id": 2,
+      "type": "RUSH_HOUR",
+      "tick": 6,
+      "duration": 5,
+      "roadTypes": ["MAIN_STREET"],
+      "factor": 6
+    }
+  ],
+  "emergencyCalls": [
+    {
+      "id": 0,
+      "tick": 2,
+      "village": "Saarbruecken",
+      "roadName": "Eisenbahnstrasse",
+      "emergencyType": "FIRE",
+      "severity": 1,
+      "handleTime": 3,
+      "maxDuration": 13
+    },
+    {
+      "id": 1,
+      "tick": 2,
+      "village": "Homburg",
+      "roadName": "Kieselpfad",
+      "emergencyType": "ACCIDENT",
+      "severity": 2,
+      "handleTime": 7,
+      "maxDuration": 16
+    },
+    {
+      "id": 2,
+      "tick": 9,
+      "village": "Saarlouis",
+      "roadName": "Bergstrasse",
+      "emergencyType": "CRIME",
+      "severity": 3,
+      "handleTime": 21,
+      "maxDuration": 25
+    }
+  ]
+}
