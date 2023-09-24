@@ -1,6 +1,9 @@
 package de.unisaarland.cs.se.selab.dataClasses
-import de.unisaarland.cs.se.selab.graph.PrimaryType
 
-abstract class Event(open val eventID: Int, val duration: Int, val startTick: Int) {
+abstract class Event(
+    open val eventID: Int,
+    var duration: Int, // the property we will change and have condition on?
+    val startTick: Int
+) {
 }
 
