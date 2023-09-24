@@ -6,11 +6,6 @@ import de.unisaarland.cs.se.selab.emergencies.Emergency
 import de.unisaarland.cs.se.selab.events.Event
 
 
-enum class PrimaryType{
-    MAIN_STREET,
-    SIDE_STREET,
-    COUNTY_ROAD
-}
 class Graph (private val graph: List<Vertex>){
     // Method that calculates shortest path from start to destination for a vehicle, considering its height
     fun calculateShortestPath (start: Vertex, destination: Vertex, carHeight: Int):Int {
@@ -51,5 +46,3 @@ class Graph (private val graph: List<Vertex>){
     }
 
 }
-
-class Vertex
