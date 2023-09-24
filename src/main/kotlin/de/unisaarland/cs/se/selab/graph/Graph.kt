@@ -1,9 +1,9 @@
 package de.unisaarland.cs.se.selab.graph
 
-import de.unisaarland.cs.se.selab.basesAndAssets.Base
-import de.unisaarland.cs.se.selab.basesAndAssets.Vehicle
-import de.unisaarland.cs.se.selab.emergencies.Emergency
-import de.unisaarland.cs.se.selab.events.Event
+import de.unisaarland.cs.se.selab.dataClasses.Base
+import de.unisaarland.cs.se.selab.dataClasses.Vehicle
+import de.unisaarland.cs.se.selab.dataClasses.Emergency
+import de.unisaarland.cs.se.selab.dataClasses.Event
 
 
 class Graph (private val graph: List<Vertex>){

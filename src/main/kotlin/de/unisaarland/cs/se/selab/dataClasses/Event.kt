@@ -1,4 +1,4 @@
-package de.unisaarland.cs.se.selab.events
+package de.unisaarland.cs.se.selab.dataClasses
 import de.unisaarland.cs.se.selab.graph.PrimaryType
 
 abstract class Event(open val eventId: Int, val duration: Int, val tick: Int) {
