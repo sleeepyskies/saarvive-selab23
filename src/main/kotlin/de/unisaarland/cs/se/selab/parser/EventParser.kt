@@ -1,8 +1,6 @@
 package de.unisaarland.cs.se.selab.parser
 
-import de.unisaarland.cs.se.selab.dataClasses.events.Event
-import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
-import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
+import de.unisaarland.cs.se.selab.dataClasses.events.*
 import org.everit.json.schema.Schema
 import org.everit.json.schema.loader.SchemaLoader
 import org.json.*
@@ -13,7 +11,7 @@ import java.io.File
  * @param schemaFile the path to the JSON schema file
  * @param jsonFile the path to the JSON data file
  */
-class EventParser(private val schemaFile: String, private val jsonFile: String) {
+class EventParser<PrimaryType>(private val schemaFile: String, private val jsonFile: String) {
     private val schema: Schema
     private val json: JSONArray
 
@@ -37,10 +35,13 @@ class EventParser(private val schemaFile: String, private val jsonFile: String) 
             val event = when (eventType) {
                 "RUSH_HOUR" -> parseRushHour(jsonEvent)
                 "TRAFFIC_JAM" -> parseTrafficJam(jsonEvent)
+                "ROAD_CLOSURE" -> parseRoadClosure(jsonEvent)
+                "VEHICLE_UNAVAILABLE" -> vehicleUnavailable(jsonEvent)
                 else -> error("Unknown event type: $eventType")
                 }
             parsedEvents.add(event)
         }
+        return parsedEvents
     }
 
     private fun parseRushHour(jsonEvent: JSONObject): RushHour {
@@ -49,7 +50,7 @@ class EventParser(private val schemaFile: String, private val jsonFile: String) 
             factor = jsonEvent.getInt("factor"),
             duration = jsonEvent.getInt("duration"),
             tick = jsonEvent.getInt("tick"),
-            roadType = jsonEvent.get
+            roadType = PrimaryType.valueOf(jsonEvent.getString("roadType"))
         )
     }
 
@@ -60,8 +61,26 @@ class EventParser(private val schemaFile: String, private val jsonFile: String) 
             duration = jsonEvent.getInt("duration"),
             tick = jsonEvent.getInt("tick"),
             sourceID = jsonEvent.getString("source"),
-            targetID = jsonEvent.getString("target"),
-            roadType = jsonEvent.get
+            targetID = jsonEvent.getString("target")
+        )
+    }
+
+    private fun parseRoadClosure(jsonEvent: JSONObject): RoadClosure {
+        return RoadClosure(
+            eventID = jsonEvent.getInt("id"),
+            duration = jsonEvent.getInt("duration"),
+            tick = jsonEvent.getInt("tick"),
+            sourceID = jsonEvent.getString("source"),
+            targetID = jsonEvent.getString("target")
+        )
+    }
+
+    private fun vehicleUnavailable(jsonEvent: JSONObject): VehicleUnavailable {
+        return VehicleUnavailable(
+            eventID = jsonEvent.getInt("id"),
+            duration = jsonEvent.getInt("duration"),
+            tick = jsonEvent.getInt("tick"),
+            vehicleID = jsonEvent.getInt("vehicleID")
         )
     }
 
