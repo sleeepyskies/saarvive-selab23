@@ -1,9 +1,10 @@
 package de.unisaarland.cs.se.selab.graph
 
 import de.unisaarland.cs.se.selab.dataClasses.Base
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.events.Event
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
+import java.util.PriorityQueue
 
 /**
  * Holds the data for the simulation graph consisting of vertices and roads.
@@ -61,8 +62,33 @@ class Graph(private val graph: List<Vertex>) {
      * @param vehicle The vehicle to calculate the route for, contains location
      * @param destination The destination vertex to drive to
      */
-    fun calculateShortestRoute(vehicle: Vehicle, destination: Vertex): List<Vertex> {
-        TODO("Unimplemented method")
+    fun calculateShortestRoute(vehiclePosition: Vertex, destination: Vertex): List<Vertex> {
+
+        // maps how far all the vertices are from the current vertex
+        val distances = mutableMapOf<Vertex, Int>()
+        // allows a chain of previous vertices to be created that can be backtracked
+        val previousVertices = mutableMapOf<Vertex, Vertex?>()
+        /**
+         * end of the queue init is a lambda expression that specifies how to compare two vertices (v1 and v2)
+         * based on their distances from the start vertex (in distances)
+         * ensures that vertices with smaller distances are dequeued from the priority queue first
+         */
+        val unvisitedVertices = PriorityQueue<Vertex> { v1, v2 -> distances[v1]!! - distances[v2]!! }
+
+        // initializing distances and previous vertices for all vertices in the graph
+        for (node in graph) {
+            distances[node] = if (node == vehiclePosition) 0 else Int.MAX_VALUE
+            previousVertices[node] = null
+            unvisitedVertices.offer(node)
+        }
+
+        // dijkstra's algorithm using the above structure
+        while (unvisitedVertices.isNotEmpty()) {
+            /**
+             * .poll()
+             */
+            val currentVertex = unvisitedVertices.poll() ?: break
+        }
     }
 
     /**
