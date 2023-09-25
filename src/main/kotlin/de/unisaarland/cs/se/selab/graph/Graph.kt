@@ -130,6 +130,6 @@ class Graph(private val graph: List<Vertex>) {
      * @param event The event to revert the effect of
      */
     fun revertGraphEvent(event: Event) {
-        TODO("Unimplemented method")
+
     }
 }

@@ -1,0 +1,10 @@
+{
+  "id": 2,
+  "tick": 8,
+  "village": "SPONGEBOOOOOOB",
+  "roadName": "Street Street",
+  "emergencyType": "ACCIDENT",
+  "severity": 1,
+  "handleTime": 2,
+  "maxDuration": 5
+}
