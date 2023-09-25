@@ -1,7 +1,8 @@
 package de.unisaarland.cs.se.selab.parser
 
 import de.unisaarland.cs.se.selab.dataClasses.Base
-import de.unisaarland.cs.se.selab.dataClasses.Vehicle
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
+import org.json.JSONObject
 import java.io.File
 
 /**
@@ -17,6 +18,7 @@ class AssetParser {
      * @throws IllegalArgumentException if the asset configuration is invalid.
      */
     public fun parse(file: File): List<Base> {
+        var blueprint: Map<String, String> = mutableMapOf() // comment this out later
         val jsonAssetObject = JSONObject(file.readText())
         val assetBlueprint = createBlueprint(jsonAssetObject)
         require(validateBlueprint(assetBlueprint)) { "Blueprint is invalid" }

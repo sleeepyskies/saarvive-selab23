@@ -1,0 +1,23 @@
+[
+        {
+          "id": 1,
+          "tick": 1000,
+          "village": "Village",
+          "roadName": "Road",
+          "emergencyType": "MEDICAL",
+          "severity": 2,
+          "handleTime": 5,
+          "maxDuration": 10
+        },
+        {
+          "id": 2,
+          "tick": 2,
+          "village": "B",
+          "roadName": "BB",
+          "emergencyType": "ACCIDENT",
+          "severity": 3,
+          "handleTime": 4,
+          "maxDuration": 8
+        }
+      ]
+      
