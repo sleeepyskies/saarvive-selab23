@@ -1,0 +1,10 @@
+{
+  "id": 2,
+  "tick": 8,
+  "village": "VillageB",
+  "roadName": "Side Road",
+  "emergencyType": "ACCIDENT",
+  "severity": 1,
+  "handleTime": 2,
+  "maxDuration": 5
+}

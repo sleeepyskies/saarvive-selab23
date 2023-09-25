@@ -1,5 +1,7 @@
 ﻿package de.unisaarland.cs.se.selab.dataClasses
 
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
+
 abstract class Base
     (private val baseID: Int,
      private var staff: Int,

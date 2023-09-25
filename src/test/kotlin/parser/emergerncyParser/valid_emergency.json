@@ -1,0 +1,11 @@
+{
+        "id": 1,
+        "tick": 5,
+        "village": "Bobski",
+        "roadName": "Bobski Street",
+        "emergencyType": "FIRE",
+        "severity": 2,
+        "handleTime": 3,
+        "maxDuration": 10
+      }
+      
