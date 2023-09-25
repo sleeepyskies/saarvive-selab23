@@ -4,6 +4,9 @@ import de.unisaarland.cs.se.selab.dataClasses.VehicleType
 import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.Vertex
 
+/**
+ * a super class which defines vehicles
+ */
 open class Vehicle(
     private val vehicleType: VehicleType,
     private val id: Int,
