@@ -1,4 +1,4 @@
-package de.unisaarland.cs.se.selab.dataClasses
+package de.unisaarland.cs.se.selab.dataClasses.emergencies
 
 enum class EmergencyType {
     FIRE,

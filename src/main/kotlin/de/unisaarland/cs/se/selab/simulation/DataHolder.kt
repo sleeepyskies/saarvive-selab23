@@ -1,6 +1,8 @@
 package de.unisaarland.cs.se.selab.simulation
 
 import de.unisaarland.cs.se.selab.dataClasses.*
+import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
+import de.unisaarland.cs.se.selab.dataClasses.events.Event
 import de.unisaarland.cs.se.selab.graph.Graph
 import de.unisaarland.cs.se.selab.graph.Vertex
 

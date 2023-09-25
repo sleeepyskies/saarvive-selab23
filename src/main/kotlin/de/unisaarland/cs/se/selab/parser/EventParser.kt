@@ -1,6 +1,6 @@
 package de.unisaarland.cs.se.selab.parser
 
-import de.unisaarland.cs.se.selab.dataClasses.Event
+import de.unisaarland.cs.se.selab.dataClasses.events.Event
 
 class EventParser {
     public fun parseEvent() {

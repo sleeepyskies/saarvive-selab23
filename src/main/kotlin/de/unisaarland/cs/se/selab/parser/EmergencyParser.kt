@@ -1,6 +1,6 @@
 package de.unisaarland.cs.se.selab.parser
 
-import de.unisaarland.cs.se.selab.dataClasses.Emergency
+import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 
 class EmergencyParser {
     public fun parse(): Emergency? {
