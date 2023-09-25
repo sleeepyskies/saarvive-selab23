@@ -2,10 +2,9 @@ package de.unisaarland.cs.se.selab.dataClasses.emergencies
 
 import de.unisaarland.cs.se.selab.dataClasses.CapacityType
 import de.unisaarland.cs.se.selab.dataClasses.VehicleType
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.graph.Vertex
 
-class Emergency(
+data class Emergency(
     val id: Int,
     val emergencyType: EmergencyType,
     val severity: Int,
@@ -15,46 +14,64 @@ class Emergency(
     val villageName: String,
     val roadName: String
 ) {
-    private val location: Pair<Vertex, Vertex> = TODO()
+    private lateinit var location: Pair<Vertex, Vertex> // TODO (initialise in DATAHOLDER)
     private var emergencyStatus: EmergencyStatus = EmergencyStatus.UNASSIGNED
-    private val requiredVehicles: MutableMap<VehicleType, Int> =
-        this.calculateRequiredVehicles() // add and remove dynamically
-    private val requiredCapacity: MutableMap<CapacityType, Int> =
-        this.calculateRequiredCapacity() // add and remove dynamically
-    private fun calculateRequiredVehicles(): MutableMap<VehicleType, Int> {
-        return when (this.emergencyType) {
-            EmergencyType.FIRE -> getVehiclesForFire()
-            EmergencyType.CRIME -> getVehiclesForCrime()
-            EmergencyType.MEDICAL -> getVehiclesForMedical()
-            EmergencyType.ACCIDENT -> getVehiclesForAccident()
-        }
+    private lateinit var requiredVehicles: MutableMap<VehicleType, Int> // add and remove dynamically
+    private lateinit var requiredCapacity: MutableMap<CapacityType, Int> // add and remove dynamically
+
+    init {
+        calculateRequiredVehiclesAndCapacity()
     }
 
-    public fun getRequiredVehicles(): Map<VehicleType, Int>{
+    fun getRequiredVehicles(): Map<VehicleType, Int> {
         return requiredVehicles
     }
 
-    public fun getEmergencyStatus(): EmergencyStatus{
+    fun getEmergencyStatus(): EmergencyStatus {
         return emergencyStatus
     }
 
-    private fun getVehiclesForAccident(): MutableMap<VehicleType, Int> {
-        return when (this.severity) {
-            1 -> mutableMapOf(VehicleType.FIRE_TRUCK_TECHNICAL to 1)
-            2 -> mutableMapOf(
-                VehicleType.FIRE_TRUCK_TECHNICAL to 2,
-                VehicleType.POLICE_MOTORCYCLE to 1,
-                VehicleType.POLICE_CAR to 1,
-                VehicleType.AMBULANCE to 1
-            )
+    private fun calculateRequiredVehiclesAndCapacity() {
+        when (this.emergencyType) {
+            EmergencyType.FIRE -> getVehiclesAndCapacityForFire()
+            EmergencyType.CRIME -> getVehiclesAndCapacityForCrime()
+            EmergencyType.MEDICAL -> setVehiclesAndCapacityForMedical()
+            EmergencyType.ACCIDENT -> setVehiclesAndCapacityForAccident()
+        }
+    }
 
-            3 -> mutableMapOf(
-                VehicleType.FIRE_TRUCK_TECHNICAL to 4,
-                VehicleType.POLICE_MOTORCYCLE to 2,
-                VehicleType.POLICE_CAR to 4,
-                VehicleType.AMBULANCE to 3,
-                VehicleType.EMERGENCY_DOCTOR_CAR to 1
-            )
+
+    private fun setVehiclesAndCapacityForAccident() {
+        when (this.severity) {
+            1 -> {
+                this.requiredVehicles.putAll(mutableMapOf(VehicleType.FIRE_TRUCK_TECHNICAL to 1))
+                this.requiredCapacity.putAll(mutableMapOf())
+            }
+
+            2 -> {
+                this.requiredVehicles.putAll(
+                    mutableMapOf(
+                        VehicleType.FIRE_TRUCK_TECHNICAL to 2,
+                        VehicleType.POLICE_MOTORCYCLE to 1,
+                        VehicleType.POLICE_CAR to 1,
+                        VehicleType.AMBULANCE to 1
+                    )
+                )
+                this.requiredCapacity.putAll(mutableMapOf(CapacityType.PATIENT to 1))
+            }
+
+            3 -> {
+                this.requiredVehicles.putAll(
+                    mutableMapOf(
+                        VehicleType.FIRE_TRUCK_TECHNICAL to 4,
+                        VehicleType.POLICE_MOTORCYCLE to 2,
+                        VehicleType.POLICE_CAR to 4,
+                        VehicleType.AMBULANCE to 3,
+                        VehicleType.EMERGENCY_DOCTOR_CAR to 1
+                    )
+                )
+                this.requiredCapacity.putAll(mutableMapOf(CapacityType.PATIENT to 2))
+            }
 
             else -> {
                 error("Severity for ACCIDENT is not correct. EmergencyID: ${this.id} ")
@@ -62,20 +79,33 @@ class Emergency(
         }
     }
 
-    private fun getVehiclesForMedical(): MutableMap<VehicleType, Int> {
-        return when (this.severity) {
-            1 -> mutableMapOf(VehicleType.AMBULANCE to 1)
+    private fun setVehiclesAndCapacityForMedical() {
+        when (this.severity) {
+            1 -> {
+                this.requiredVehicles.putAll(mutableMapOf(VehicleType.AMBULANCE to 1))
+                this.requiredCapacity.putAll(mutableMapOf())
+            }
 
-            2 -> mutableMapOf(
-                VehicleType.AMBULANCE to 2,
-                VehicleType.EMERGENCY_DOCTOR_CAR to 1
-            )
+            2 -> {
+                this.requiredVehicles.putAll(
+                    mutableMapOf(
+                        VehicleType.AMBULANCE to 2,
+                        VehicleType.EMERGENCY_DOCTOR_CAR to 1
+                    )
+                )
+                this.requiredCapacity.putAll(mutableMapOf(CapacityType.PATIENT to 2))
+            }
 
-            3 -> mutableMapOf(
-                VehicleType.AMBULANCE to 5,
-                VehicleType.EMERGENCY_DOCTOR_CAR to 2,
-                VehicleType.FIRE_TRUCK_TECHNICAL to 2
-            )
+            3 -> {
+                this.requiredVehicles.putAll(
+                    mutableMapOf(
+                        VehicleType.AMBULANCE to 5,
+                        VehicleType.EMERGENCY_DOCTOR_CAR to 2,
+                        VehicleType.FIRE_TRUCK_TECHNICAL to 2
+                    )
+                )
+                this.requiredCapacity.putAll(mutableMapOf(CapacityType.PATIENT to 5))
+            }
 
             else -> {
                 error("Severity for MEDICAL is not correct. EmergencyID: ${this.id} ")
@@ -83,50 +113,86 @@ class Emergency(
         }
     }
 
-    private fun getVehiclesForCrime(): MutableMap<VehicleType, Int> {
-        return when (this.severity) {
-            1 -> mutableMapOf(VehicleType.POLICE_CAR to 1)
-            2 -> mutableMapOf(
-                VehicleType.POLICE_CAR to 4,
-                VehicleType.K9_POLICE_CAR to 1,
-                VehicleType.AMBULANCE to 1
-            )
+    private fun getVehiclesAndCapacityForCrime() {
+        when (this.severity) {
+            1 -> {
+                this.requiredVehicles.putAll(mutableMapOf(VehicleType.POLICE_CAR to 1))
+                this.requiredCapacity.putAll(mutableMapOf(CapacityType.CRIMINAL to 1))
+            }
 
-            3 -> mutableMapOf(
-                VehicleType.POLICE_CAR to 6,
-                VehicleType.POLICE_MOTORCYCLE to 2,
-                VehicleType.K9_POLICE_CAR to 2,
-                VehicleType.AMBULANCE to 2,
-                VehicleType.FIREFIGHTER_TRANSPORTER to 1
-            )
+            2 -> {
+                this.requiredVehicles.putAll(
+                    mutableMapOf(
+                        VehicleType.POLICE_CAR to 4,
+                        VehicleType.K9_POLICE_CAR to 1,
+                        VehicleType.AMBULANCE to 1
+                    )
+                )
+                this.requiredCapacity.putAll(mutableMapOf(CapacityType.CRIMINAL to 4))
+            }
+
+            3 -> {
+                this.requiredVehicles.putAll(
+                    mutableMapOf(
+                        VehicleType.POLICE_CAR to 6,
+                        VehicleType.POLICE_MOTORCYCLE to 2,
+                        VehicleType.K9_POLICE_CAR to 2,
+                        VehicleType.AMBULANCE to 2,
+                        VehicleType.FIREFIGHTER_TRANSPORTER to 1
+                    )
+                )
+                this.requiredCapacity.putAll(mutableMapOf(CapacityType.CRIMINAL to 8, CapacityType.PATIENT to 1))
+            }
 
             else -> error("Severity for CRIME is not correct. EmergencyID: ${this.id} ")
         }
     }
 
-    private fun getVehiclesForFire(): MutableMap<VehicleType, Int> {
-        return when (this.severity) {
-            1 -> mutableMapOf(VehicleType.FIRE_TRUCK_WATER to 2)
-            2 -> mutableMapOf(
-                VehicleType.FIRE_TRUCK_WATER to 4,
-                VehicleType.FIRE_TRUCK_LADDER to 1,
-                VehicleType.FIREFIGHTER_TRANSPORTER to 1,
-                VehicleType.AMBULANCE to 1
-            )
+    private fun getVehiclesAndCapacityForFire() {
+        when (this.severity) {
+            1 -> {
+                this.requiredVehicles.putAll(mutableMapOf(VehicleType.FIRE_TRUCK_WATER to 2))
+                this.requiredCapacity.putAll(mutableMapOf(CapacityType.WATER to 1200))
+            }
 
-            3 -> mutableMapOf(
-                VehicleType.FIRE_TRUCK_WATER to 6,
-                VehicleType.FIRE_TRUCK_LADDER to 2,
-                VehicleType.FIREFIGHTER_TRANSPORTER to 2,
-                VehicleType.AMBULANCE to 2,
-                VehicleType.EMERGENCY_DOCTOR_CAR to 1
-            )
+            2 -> {
+                this.requiredVehicles.putAll(
+                    mutableMapOf(
+                        VehicleType.FIRE_TRUCK_WATER to 4,
+                        VehicleType.FIRE_TRUCK_LADDER to 1,
+                        VehicleType.FIREFIGHTER_TRANSPORTER to 1,
+                        VehicleType.AMBULANCE to 1
+                    )
+                )
+                this.requiredCapacity.putAll(
+                    mutableMapOf(
+                        CapacityType.WATER to 3000,
+                        CapacityType.LADDER_LENGTH to 30,
+                        CapacityType.PATIENT to 1
+                    )
+                )
+            }
+
+            3 -> {
+                this.requiredVehicles.putAll(
+                    mutableMapOf(
+                        VehicleType.FIRE_TRUCK_WATER to 6,
+                        VehicleType.FIRE_TRUCK_LADDER to 2,
+                        VehicleType.FIREFIGHTER_TRANSPORTER to 2,
+                        VehicleType.AMBULANCE to 2,
+                        VehicleType.EMERGENCY_DOCTOR_CAR to 1
+                    )
+                )
+                this.requiredCapacity.putAll(
+                    mutableMapOf(
+                        CapacityType.WATER to 6000,
+                        CapacityType.LADDER_LENGTH to 40,
+                        CapacityType.PATIENT to 2
+                    )
+                )
+            }
 
             else -> error("Severity for FIRE is not correct. EmergencyID: ${this.id} ")
         }
-    }
-
-    private fun calculateRequiredCapacity(): MutableMap<CapacityType, Int> {
-        return TODO("Provide the return value")
     }
 }
