@@ -1,7 +1,7 @@
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 
-data class FireStation(
+data class FireStation( // a
     private val baseID: Int,
     private var staff: Int,
     private val vertexID: String,
