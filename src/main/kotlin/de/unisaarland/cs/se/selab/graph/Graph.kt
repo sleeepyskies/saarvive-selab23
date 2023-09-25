@@ -1,6 +1,6 @@
 package de.unisaarland.cs.se.selab.graph
 
-import de.unisaarland.cs.se.selab.dataClasses.Base
+import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.events.Event
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
@@ -89,6 +89,7 @@ class Graph(private val graph: List<Vertex>) {
              */
             val currentVertex = unvisitedVertices.poll() ?: break
         }
+        return TODO("Provide the return value")
     }
 
     /**

@@ -2,6 +2,7 @@ package de.unisaarland.cs.se.selab.dataClasses.emergencies
 
 import de.unisaarland.cs.se.selab.dataClasses.CapacityType
 import de.unisaarland.cs.se.selab.dataClasses.VehicleType
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.graph.Vertex
 
 class Emergency(
@@ -27,6 +28,14 @@ class Emergency(
             EmergencyType.MEDICAL -> getVehiclesForMedical()
             EmergencyType.ACCIDENT -> getVehiclesForAccident()
         }
+    }
+
+    public fun getRequiredVehicles(): Map<VehicleType, Int>{
+        return requiredVehicles
+    }
+
+    public fun getEmergencyStatus(): EmergencyStatus{
+        return emergencyStatus
     }
 
     private fun getVehiclesForAccident(): MutableMap<VehicleType, Int> {

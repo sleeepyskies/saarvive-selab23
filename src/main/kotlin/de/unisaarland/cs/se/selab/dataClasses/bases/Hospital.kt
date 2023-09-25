@@ -1,4 +1,4 @@
-import de.unisaarland.cs.se.selab.dataClasses.Base
+import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 
 data class Hospital(
