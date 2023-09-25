@@ -1,7 +1,8 @@
 package de.unisaarland.cs.se.selab.parser
 
-import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
 import de.unisaarland.cs.se.selab.dataClasses.events.Event
+import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
+import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import org.everit.json.schema.Schema
 import org.everit.json.schema.loader.SchemaLoader
 import org.json.*
@@ -32,10 +33,40 @@ class EventParser(private val schemaFile: String, private val jsonFile: String) 
             val jsonEvent = json.getJSONObject(i)
             schema.validate(jsonEvent)
 
-            val eventType = jsonEvent.getEnum(
-
+            val eventType = jsonEvent.getString("type")
+            val event = when (eventType) {
+                "RUSH_HOUR" -> parseRushHour(jsonEvent)
+                "TRAFFIC_JAM" -> parseTrafficJam(jsonEvent)
+                else -> error("Unknown event type: $eventType")
+                }
+            parsedEvents.add(event)
         }
     }
+
+    private fun parseRushHour(jsonEvent: JSONObject): RushHour {
+        return RushHour(
+            eventID = jsonEvent.getInt("id"),
+            factor = jsonEvent.getInt("factor"),
+            duration = jsonEvent.getInt("duration"),
+            tick = jsonEvent.getInt("tick"),
+            roadType = jsonEvent.get
+        )
+    }
+
+    private fun parseTrafficJam(jsonEvent: JSONObject): TrafficJam {
+        return TrafficJam(
+            eventID = jsonEvent.getInt("id"),
+            factor = jsonEvent.getInt("factor"),
+            duration = jsonEvent.getInt("duration"),
+            tick = jsonEvent.getInt("tick"),
+            sourceID = jsonEvent.getString("source"),
+            targetID = jsonEvent.getString("target"),
+            roadType = jsonEvent.get
+        )
+    }
+
+
+
 
 
 }
