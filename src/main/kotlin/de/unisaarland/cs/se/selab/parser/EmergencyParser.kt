@@ -1,15 +1,16 @@
 package de.unisaarland.cs.se.selab.parser
-import org.json.*
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
 import org.everit.json.schema.Schema
 import org.everit.json.schema.loader.SchemaLoader
+import org.json.*
 import java.io.File
 
 /**
  * Exception thrown when the configuration file is invalid.
  */
 class ValidationException(message: String) : Exception(message)
+
 /**
  * Parses the emergency configuration file.
  * @param schemaFile the path to the JSON schema file
@@ -35,7 +36,7 @@ class EmergencyParser(private val schemaFile: String, private val jsonFile: Stri
      */
     fun parse(): List<Emergency> {
         val parsedEmergencies = mutableListOf<Emergency>()
-        try{
+        try {
             for (i in 0 until json.length()) {
                 val jsonEmergency = json.getJSONObject(i)
                 schema.validate(jsonEmergency)
