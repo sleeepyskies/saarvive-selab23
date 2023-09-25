@@ -42,7 +42,7 @@ class EmergencyParser(private val schemaFile: String, private val jsonFile: Stri
 
                 val emergency = Emergency(
                     id = jsonEmergency.getInt("id"),
-                    EmergencyType.valueOf(jsonEmergency.getString("emergencyType")),
+                    emergencyType = EmergencyType.valueOf(jsonEmergency.getString("emergencyType")),
                     severity = jsonEmergency.getInt("severity"),
                     startTick = jsonEmergency.getInt("startTick"),
                     handleTime = jsonEmergency.getInt("handleTime"),
