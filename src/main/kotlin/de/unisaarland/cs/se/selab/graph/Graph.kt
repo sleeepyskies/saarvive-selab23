@@ -1,13 +1,13 @@
 package de.unisaarland.cs.se.selab.graph
 
 import de.unisaarland.cs.se.selab.dataClasses.Base
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.events.Event
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 
 /**
- * Holds the data for the simulation map as vertices and roads.
- * @param graph The list of vertices containing connecting roads
+ * Holds the data for the simulation graph consisting of vertices and roads.
+ * @param graph A list of vertices containing connecting roads
  */
 class Graph(private val graph: List<Vertex>) {
     /**
@@ -18,25 +18,40 @@ class Graph(private val graph: List<Vertex>) {
      * @param carHeight the car's height, set to 0 when ignoring height restrictions
      */
     fun calculateShortestPath(start: Vertex, destination: Vertex, carHeight: Int): Int {
-        // creates a new mapping of all vertices from graph to MAX_VALUE, the start vertex is set to 0
-        val unvisitedVertices: MutableMap<Vertex, Pair<Int, Vertex?>> = mutableMapOf()
+        // create a structure to store for each vertex it's shortest distance from start and previous vertex
+        val visitedVertices: MutableMap<Vertex, Pair<Int, Vertex?>> = mutableMapOf()
         for (vertex in graph) {
-            if (vertex == start) {
-                unvisitedVertices[vertex] = Pair(0, start)
-            } else {
-                unvisitedVertices[vertex] = Pair(Int.MAX_VALUE, null)
+            visitedVertices[vertex] = if (vertex == start) Pair(0, null) else Pair(Int.MAX_VALUE, null)
+        }
+
+        // Algorithm
+        var currentVertex = start
+        var nextVertex: Vertex? = null // determines the next vertex to use based on road weight
+        val unvisitedVertices: MutableList<Vertex> = graph.toMutableList()
+
+        // repeat algorithm until each vertex has been visited
+        while (unvisitedVertices.isNotEmpty()) {
+            var minWeight = Int.MAX_VALUE // used for setting nextVertex
+
+            val connectionsMap = currentVertex.connectingRoads // gets the connectingRoads Map from vertex
+            for ((vertices, roads) in connectionsMap) {
+                if (carHeight <= roads.heightLimit) {
+                    val distance = (visitedVertices[currentVertex]?.first ?: 0) + roads.weight
+                    if (distance < (visitedVertices[vertices]?.first ?: 0)) {
+                        visitedVertices[vertices] = Pair(distance, currentVertex)
+                    }
+                    if (distance < minWeight) {
+                        nextVertex = vertices
+                        minWeight = distance
+                    }
+                }
+            }
+            unvisitedVertices.remove(currentVertex)
+            if (nextVertex != null) {
+                currentVertex = nextVertex
             }
         }
-
-        // algorithm
-        var currentVertex = start
-        var visitedVertices: MutableList<Vertex> = mutableListOf()
-
-        // repeat algorithm until destination vertex has been reached
-        while (currentVertex != destination) {
-        }
-        // once destination vertex has been reached, return its value with safe call :)
-        return unvisitedVertices[destination]?.first ?: -1
+        return visitedVertices[destination]?.first ?: -1
     }
 
     /**
@@ -51,9 +66,9 @@ class Graph(private val graph: List<Vertex>) {
     }
 
     /**
-     * Caclulates the best route from a vehicle's location to an emergency vertex.
+     * Calculates the best route from a vehicle's location to an emergency vertex.
      * @param vehicle The vehicle to calculate the route for, contains location
-     * @param destination The emergency to use as a destination. Has a pair of vertices as location
+     * @param emergency The emergency to use as a destination. Has a pair of vertices as location
      */
     fun calculateBestRoute(vehicle: Vehicle, emergency: Emergency) {
         TODO("Unimplemented method")

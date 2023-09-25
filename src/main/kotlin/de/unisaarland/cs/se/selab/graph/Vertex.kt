@@ -1,11 +1,12 @@
 package de.unisaarland.cs.se.selab.graph
 
 /**
- * each vertex object is a node in the graph
- * @param connectingRoads is a mapping of other vertexes connected to this vertex
- * and the roads they're connected by
+ * Represents a vertex in the simulation, contains
+ * all connecting vertices via their respective roads
+ * @param id The id of the vertex
+ * @param connectingRoads The connected vertices and roads
  */
 data class Vertex(
-    private val id: Int,
-    private val connectingRoads: Map<Vertex, Road>
+    internal val id: Int,
+    internal val connectingRoads: MutableMap<Vertex, Road>
 )
