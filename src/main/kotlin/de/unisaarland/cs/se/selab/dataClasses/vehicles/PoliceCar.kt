@@ -13,7 +13,7 @@ class PoliceCar(
     private val id: Int,
     private val staffCapacity: Int,
     private val height: Int,
-    private val assignedBaseID: Int
+    private val assignedBaseID: Int,
     private val maxCriminalCapacity: Int
 ) : Vehicle(
     vehicleType,
