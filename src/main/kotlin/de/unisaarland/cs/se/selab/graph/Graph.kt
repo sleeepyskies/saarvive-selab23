@@ -6,8 +6,8 @@ import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.events.Event
 
 /**
- * Holds the data for the simulation map as vertices and roads.
- * @param graph The list of vertices containing connecting roads
+ * Holds the data for the simulation graph consisting of vertices and roads.
+ * @param graph A list of vertices containing connecting roads
  */
 class Graph(private val graph: List<Vertex>) {
     /**
@@ -18,26 +18,42 @@ class Graph(private val graph: List<Vertex>) {
      * @param carHeight the car's height, set to 0 when ignoring height restrictions
      */
     fun calculateShortestPath(start: Vertex, destination: Vertex, carHeight: Int): Int {
-        // creates a new mapping of all vertices from graph to MAX_VALUE, the start vertex is set to 0
-        val unvisitedVertices: MutableMap<Vertex, Pair<Int, Vertex?>> = mutableMapOf()
+        // create a structure to store for each vertex it's shortest distance from start and previous vertex
+        val visitedVertices: MutableMap<Vertex, Pair<Int, Vertex?>> = mutableMapOf()
         for (vertex in graph) {
-            if (vertex == start) {
-                unvisitedVertices[vertex] = Pair(0, start)
-            } else {
-                unvisitedVertices[vertex] = Pair(Int.MAX_VALUE, null)
+            visitedVertices[vertex] = if (vertex == start) Pair(0, null) else Pair(Int.MAX_VALUE, null)
+        }
+
+        // Algorithm
+        var currentVertex = start
+        var nextVertex: Vertex? = null
+        val unvisitedVertices: MutableList<Vertex> = graph.toMutableList()
+
+        // repeat algorithm until each vertex has been visited
+        while (unvisitedVertices.isNotEmpty()) {
+            var nextVertex: Vertex? = null
+            var minWeight = Int.MAX_VALUE
+
+            var connectionsMap = currentVertex.connectingRoads
+            for ((vertices, roads) in connectionsMap) {
+                if (carHeight <= roads.heightLimit) {
+                    val distance = (visitedVertices[currentVertex]?.first ?: 0) + roads.weight
+                    if (distance < (visitedVertices[vertices]?.first ?: 0)) {
+                        visitedVertices[vertices] = Pair(distance, currentVertex)
+                    }
+                    if (distance < minWeight) {
+                        nextVertex = vertices
+                        minWeight = distance
+                    }
+                }
+            }
+            unvisitedVertices.remove(currentVertex)
+            if (nextVertex != null) {
+                currentVertex = nextVertex
             }
         }
 
-        // algorithm
-        var currentVertex = start
-        var visitedVertices: MutableList<Vertex> = mutableListOf()
-
-        // repeat algorithm until destination vertex has been reached
-        while(currentVertex != destination){
-
-        }
-        // once destination vertex has been reached, return its value with safe call :)
-        return unvisitedVertices[destination]?.first ?: -1
+        return visitedVertices[destination]?.first ?: -1
     }
 
     /**
@@ -48,17 +64,16 @@ class Graph(private val graph: List<Vertex>) {
      * @param destination The destination vertex to drive to
      */
     fun calculateShortestRoute(vehicle: Vehicle, destination: Vertex): List<Vertex> {
-        TODO ("Unimplemented method")
+        TODO("Unimplemented method")
     }
 
     /**
-     * Caclulates the best route from a vehicle's location to an emergency vertex.
+     * Calculates the best route from a vehicle's location to an emergency vertex.
      * @param vehicle The vehicle to calculate the route for, contains location
      * @param destination The emergency to use as a destination. Has a pair of vertices as location
      */
-    fun calculateBestRoute(vehicle: Vehicle, emergency: Emergency) : Unit {
-        TODO ("Unimplemented method")
-
+    fun calculateBestRoute(vehicle: Vehicle, emergency: Emergency) {
+        TODO("Unimplemented method")
     }
 
     /**
@@ -66,7 +81,7 @@ class Graph(private val graph: List<Vertex>) {
      * @param emergency The emergency to find a base for
      */
     fun findClosestBase(emergency: Emergency): Base {
-        TODO ("Unimplemented method")
+        TODO("Unimplemented method")
     }
 
     /**
@@ -75,7 +90,7 @@ class Graph(private val graph: List<Vertex>) {
      * @param base The base to create the list for
      */
     fun findClosestBasesByProximity(emergency: Emergency, base: Base): List<Base> {
-        TODO ("Unimplemented method")
+        TODO("Unimplemented method")
     }
 
     /**
@@ -83,7 +98,7 @@ class Graph(private val graph: List<Vertex>) {
      * @param event The event to apply the effects of
      */
     fun applyGraphEvent(event: Event) {
-        TODO ("Unimplemented method")
+        TODO("Unimplemented method")
     }
 
     /**
@@ -91,7 +106,6 @@ class Graph(private val graph: List<Vertex>) {
      * @param event The event to revert the effect of
      */
     fun revertGraphEvent(event: Event) {
-        TODO ("Unimplemented method")
+        TODO("Unimplemented method")
     }
-
 }
