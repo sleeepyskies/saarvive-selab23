@@ -17,12 +17,12 @@ class AssetParser {
         return true
     }
 
-    private fun createVehicle (blueprint: Map<String, String>): Vehicle {
-        return TODO("Provide the return value")
+    private fun createVehicle (blueprint: Map<String, String>): Vehicle? {
+        return null
     }
 
-    private fun createBase (blueprint: Map<String, String>, vehicles: List<Vehicle>): Base {
-        return TODO("Provide the return value")
+    private fun createBase (blueprint: Map<String, String>, vehicles: List<Vehicle>): Base? {
+        return null
     }
 
     private fun createBaseList (bases: List<Base>): List<Base> {
