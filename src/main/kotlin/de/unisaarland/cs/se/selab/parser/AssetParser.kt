@@ -4,7 +4,18 @@ import de.unisaarland.cs.se.selab.dataClasses.Base
 import de.unisaarland.cs.se.selab.dataClasses.Vehicle
 import java.io.File
 
+/**
+ * AssetParser is responsible for parsing and validating asset config files,
+ * and also to create bases and vehicles.
+ */
 class AssetParser {
+    /**
+     * parse method parses an asset file to create a list of bases.
+     *
+     * @param file The asset configuration file.
+     * @return A list of bases created from the asset configuration file.
+     * @throws IllegalArgumentException if the asset configuration is invalid.
+     */
     public fun parse(file: File): List<Base> {
         val jsonAssetObject = JSONObject(file.readText())
         val assetBlueprint = createBlueprint(jsonAssetObject)
