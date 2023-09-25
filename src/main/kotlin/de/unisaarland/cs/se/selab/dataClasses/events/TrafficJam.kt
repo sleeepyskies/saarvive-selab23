@@ -1,6 +1,6 @@
-package de.unisaarland.cs.se.selab.dataClasses
+package de.unisaarland.cs.se.selab.dataClasses.events
 
-import de.unisaarland.cs.se.selab.dataClasses.Event
+import de.unisaarland.cs.se.selab.dataClasses.events.Event
 
 // Subclass for Traffic Jam event
 class TrafficJam(

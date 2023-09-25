@@ -1,6 +1,4 @@
-package de.unisaarland.cs.se.selab.dataClasses
-
-import de.unisaarland.cs.se.selab.dataClasses.Event
+package de.unisaarland.cs.se.selab.dataClasses.events
 
 // Subclass for Construction event
 class Construction(
