@@ -1,7 +1,7 @@
 package de.unisaarland.cs.se.selab.dataClasses.vehicles
 
 import de.unisaarland.cs.se.selab.dataClasses.Vehicle
-import de.unisaarland.cs.se.selab.dataClasses.VehicleStatus
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleStatus
 import de.unisaarland.cs.se.selab.dataClasses.VehicleType
 import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.Vertex

@@ -1,12 +1,14 @@
 package de.unisaarland.cs.se.selab.dataClasses.vehicles
 
 import de.unisaarland.cs.se.selab.dataClasses.Vehicle
-import de.unisaarland.cs.se.selab.dataClasses.VehicleStatus
 import de.unisaarland.cs.se.selab.dataClasses.VehicleType
 import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.Vertex
 
-class PoliceCar (
+/**
+ * an inheritance of the abstract class 'vehicle'
+ */
+class PoliceCar(
     private val vehicleType: VehicleType,
     private val id: Int,
     private val staffCapacity: Int,
@@ -23,7 +25,8 @@ class PoliceCar (
     private val assignedBaseID: Int,
     private val maxCriminalCapacity: Int,
     private var currentCriminalCapcity: Int
-): Vehicle(
+) : Vehicle(
     vehicleType, id, staffCapacity, height, isAvailable, vehicleStatus,
     assignedEmergencyID, currentRoad, lastVisitedVertex, ticksTillDestination,
-    roadProgress, currentRoute, ticksStillUnavailable, assignedBaseID)
+    roadProgress, currentRoute, ticksStillUnavailable, assignedBaseID
+)
