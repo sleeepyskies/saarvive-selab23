@@ -18,11 +18,11 @@ class AssetParser {
     }
 
     private fun createVehicle (blueprint: Map<String, String>): Vehicle {
-        return Vehicle()
+        return TODO("Provide the return value")
     }
 
     private fun createBase (blueprint: Map<String, String>, vehicles: List<Vehicle>): Base {
-        return Base()
+        return TODO("Provide the return value")
     }
 
     private fun createBaseList (bases: List<Base>): List<Base> {
