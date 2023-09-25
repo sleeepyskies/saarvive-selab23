@@ -6,13 +6,10 @@ import java.io.File
 
 class AssetParser {
     public fun parse(file: File): List<Base> {
-        val jsonObject = JSONObject(file.readText())
-        val blueprint = createBlueprint(jsonObject)
-        if (validateBlueprint(blueprint)) {
-            return createBaseList(blueprint)
-        } else {
-            throw IllegalArgumentException("blueprint is invalid")
-        }
+        val jsonAssetObject = JSONObject(file.readText())
+        val assetBlueprint = createBlueprint(jsonAssetObject)
+        require(validateBlueprint(assetBlueprint)) { "Blueprint is invalid" }
+        return createBaseList(blueprint)
     }
 
     private fun createBlueprint(jsonObject: JSONObject): Map<String, String> {
