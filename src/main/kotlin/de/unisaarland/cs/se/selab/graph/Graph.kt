@@ -26,15 +26,14 @@ class Graph(private val graph: List<Vertex>) {
 
         // Algorithm
         var currentVertex = start
-        var nextVertex: Vertex? = null
+        var nextVertex: Vertex? = null // determines the next vertex to use based on road weight
         val unvisitedVertices: MutableList<Vertex> = graph.toMutableList()
 
         // repeat algorithm until each vertex has been visited
         while (unvisitedVertices.isNotEmpty()) {
-            var nextVertex: Vertex? = null
-            var minWeight = Int.MAX_VALUE
+            var minWeight = Int.MAX_VALUE // used for setting nextVertex
 
-            var connectionsMap = currentVertex.connectingRoads
+            val connectionsMap = currentVertex.connectingRoads // gets the connectingRoads Map from vertex
             for ((vertices, roads) in connectionsMap) {
                 if (carHeight <= roads.heightLimit) {
                     val distance = (visitedVertices[currentVertex]?.first ?: 0) + roads.weight
@@ -52,7 +51,6 @@ class Graph(private val graph: List<Vertex>) {
                 currentVertex = nextVertex
             }
         }
-
         return visitedVertices[destination]?.first ?: -1
     }
 
@@ -70,7 +68,7 @@ class Graph(private val graph: List<Vertex>) {
     /**
      * Calculates the best route from a vehicle's location to an emergency vertex.
      * @param vehicle The vehicle to calculate the route for, contains location
-     * @param destination The emergency to use as a destination. Has a pair of vertices as location
+     * @param emergency The emergency to use as a destination. Has a pair of vertices as location
      */
     fun calculateBestRoute(vehicle: Vehicle, emergency: Emergency) {
         TODO("Unimplemented method")
