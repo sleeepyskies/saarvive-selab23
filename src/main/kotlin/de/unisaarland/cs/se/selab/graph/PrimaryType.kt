@@ -1,4 +1,4 @@
-package kotlin.de.unisaarland.cs.se.selab.graph
+package de.unisaarland.cs.se.selab.graph
 
 enum class PrimaryType {
     MAIN_STREET,

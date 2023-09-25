@@ -1,7 +1,7 @@
 package de.unisaarland.cs.se.selab.graph
 
-import kotlin.de.unisaarland.cs.se.selab.graph.PrimaryType
-import kotlin.de.unisaarland.cs.se.selab.graph.SecondaryType
+import de.unisaarland.cs.se.selab.graph.PrimaryType
+import de.unisaarland.cs.se.selab.graph.SecondaryType
 
 
 class Road(

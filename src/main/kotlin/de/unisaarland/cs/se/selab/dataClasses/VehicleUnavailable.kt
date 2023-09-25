@@ -1,4 +1,4 @@
-package kotlin.de.unisaarland.cs.se.selab.dataClasses
+package de.unisaarland.cs.se.selab.dataClasses
 
 import de.unisaarland.cs.se.selab.dataClasses.Event
 

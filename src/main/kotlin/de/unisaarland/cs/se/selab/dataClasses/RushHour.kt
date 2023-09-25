@@ -1,7 +1,7 @@
-package kotlin.de.unisaarland.cs.se.selab.dataClasses
+package de.unisaarland.cs.se.selab.dataClasses
 
 import de.unisaarland.cs.se.selab.dataClasses.Event
-import kotlin.de.unisaarland.cs.se.selab.graph.PrimaryType
+import de.unisaarland.cs.se.selab.graph.PrimaryType
 
 // Subclass for Rush Hour event
 class RushHour(

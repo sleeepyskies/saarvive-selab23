@@ -1,11 +1,9 @@
 package de.unisaarland.cs.se.selab.dataClasses
 
 import de.unisaarland.cs.se.selab.graph.Vertex
-import jdk.internal.net.http.common.Pair
-import kotlin.de.unisaarland.cs.se.selab.dataClasses.CapacityType
-import kotlin.de.unisaarland.cs.se.selab.dataClasses.EmergencyStatus
-import kotlin.de.unisaarland.cs.se.selab.dataClasses.EmergencyType
-import kotlin.de.unisaarland.cs.se.selab.dataClasses.VehicleType
+import de.unisaarland.cs.se.selab.dataClasses.EmergencyStatus
+import de.unisaarland.cs.se.selab.dataClasses.EmergencyType
+import de.unisaarland.cs.se.selab.dataClasses.VehicleType
 
 
 class Emergency(
@@ -23,11 +21,11 @@ class Emergency(
     private lateinit var requiredVehicles: Map<VehicleType, Int> // here following what we need?
     private lateinit var requiredCapacity: Map<CapacityType, Int>// here following what we need?
 
-    private fun calculateRequiredVehicles(): Map<VehicleType, Int>{
+    private fun calculateRequiredVehicles(): Map<VehicleType, Int> {
         return TODO("Provide the return value")
     }
 
-    private fun calculateRequiredCapacity(): Map<CapacityType, Int>{
+    private fun calculateRequiredCapacity(): Map<CapacityType, Int> {
         return TODO("Provide the return value")
     }
 }
