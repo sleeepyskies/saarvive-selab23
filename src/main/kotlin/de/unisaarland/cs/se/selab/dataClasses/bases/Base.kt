@@ -1,7 +1,7 @@
 ﻿package de.unisaarland.cs.se.selab.dataClasses.bases
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 
-abstract class Base( // a
+abstract class Base( // b
     private val baseID: Int,
     private var staff: Int,
     private val vertexID: String,
