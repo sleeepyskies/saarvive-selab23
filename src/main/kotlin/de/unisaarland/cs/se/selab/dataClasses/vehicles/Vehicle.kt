@@ -2,16 +2,8 @@ package de.unisaarland.cs.se.selab.dataClasses
 
 import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.Vertex
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleStatus
 
-enum class VehicleStatus {
-    RECHARGING,
-    IN_BASE,
-    HANDLING,
-    MOVING_TO_EMERGENCY,
-    MOVING_TO_BASE,
-    ARRIVED,
-    WAITING_AT_EMERGENCY
-}
 open class Vehicle (
     private val vehicleType: VehicleType,
     private val id: Int,
