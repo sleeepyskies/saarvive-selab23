@@ -1,9 +1,9 @@
 package de.unisaarland.cs.se.selab.graph
 
 import de.unisaarland.cs.se.selab.dataClasses.Base
-import de.unisaarland.cs.se.selab.dataClasses.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.events.Event
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 
 /**
  * Holds the data for the simulation map as vertices and roads.
@@ -33,8 +33,7 @@ class Graph(private val graph: List<Vertex>) {
         var visitedVertices: MutableList<Vertex> = mutableListOf()
 
         // repeat algorithm until destination vertex has been reached
-        while(currentVertex != destination){
-
+        while (currentVertex != destination) {
         }
         // once destination vertex has been reached, return its value with safe call :)
         return unvisitedVertices[destination]?.first ?: -1
@@ -48,7 +47,7 @@ class Graph(private val graph: List<Vertex>) {
      * @param destination The destination vertex to drive to
      */
     fun calculateShortestRoute(vehicle: Vehicle, destination: Vertex): List<Vertex> {
-        TODO ("Unimplemented method")
+        TODO("Unimplemented method")
     }
 
     /**
@@ -56,9 +55,8 @@ class Graph(private val graph: List<Vertex>) {
      * @param vehicle The vehicle to calculate the route for, contains location
      * @param destination The emergency to use as a destination. Has a pair of vertices as location
      */
-    fun calculateBestRoute(vehicle: Vehicle, emergency: Emergency) : Unit {
-        TODO ("Unimplemented method")
-
+    fun calculateBestRoute(vehicle: Vehicle, emergency: Emergency) {
+        TODO("Unimplemented method")
     }
 
     /**
@@ -66,7 +64,7 @@ class Graph(private val graph: List<Vertex>) {
      * @param emergency The emergency to find a base for
      */
     fun findClosestBase(emergency: Emergency): Base {
-        TODO ("Unimplemented method")
+        TODO("Unimplemented method")
     }
 
     /**
@@ -75,7 +73,7 @@ class Graph(private val graph: List<Vertex>) {
      * @param base The base to create the list for
      */
     fun findClosestBasesByProximity(emergency: Emergency, base: Base): List<Base> {
-        TODO ("Unimplemented method")
+        TODO("Unimplemented method")
     }
 
     /**
@@ -83,7 +81,7 @@ class Graph(private val graph: List<Vertex>) {
      * @param event The event to apply the effects of
      */
     fun applyGraphEvent(event: Event) {
-        TODO ("Unimplemented method")
+        TODO("Unimplemented method")
     }
 
     /**
@@ -91,7 +89,6 @@ class Graph(private val graph: List<Vertex>) {
      * @param event The event to revert the effect of
      */
     fun revertGraphEvent(event: Event) {
-        TODO ("Unimplemented method")
+        TODO("Unimplemented method")
     }
-
 }
