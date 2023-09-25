@@ -2,12 +2,15 @@ package de.unisaarland.cs.se.selab.dataClasses.events
 
 import de.unisaarland.cs.se.selab.graph.PrimaryType
 
-// Subclass for Rush Hour event
+/**
+ * Creates an object of the RushHour Event, inherits from Event abstract class.
+ * Takes the [roadType] - the types of roads that are affected by the current event;
+ * [factor] by which the length of a road is changed during the event
+ */
 class RushHour(
-    val roadType: PrimaryType,
-    override val eventID: Int,
-    val factor: Int,
+    eventID: Int,
     duration: Int,
-    tick: Int,
-) :
-    Event(eventID, duration, tick)
+    startTick: Int,
+    private val roadType: PrimaryType,
+    private val factor: Int,
+) : Event(eventID, duration, startTick)

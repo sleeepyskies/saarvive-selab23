@@ -1,12 +1,11 @@
 package de.unisaarland.cs.se.selab.dataClasses.events
 
-import de.unisaarland.cs.se.selab.dataClasses.events.Event
-
-// Subclass for Vehicle Unavailable event
-class VehicleUnavailable(
-    val vehicleID: Int,
-    override val eventID: Int,
-    duration: Int,
-    tick: Int
-) :
-    Event(eventID, duration, tick)
+/**
+ * Creates an object of the TrafficJam Event, inherits from Event abstract class.
+ * Takes the [vehicleID] that becomes unavailable
+ */
+class VehicleUnavailable(eventID: Int, duration: Int, startTick: Int, private val vehicleID: Int) : Event(
+    eventID,
+    duration,
+    startTick
+)

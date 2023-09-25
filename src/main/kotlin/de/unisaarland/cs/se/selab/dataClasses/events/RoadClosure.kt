@@ -1,13 +1,14 @@
 package de.unisaarland.cs.se.selab.dataClasses.events
 
-import de.unisaarland.cs.se.selab.dataClasses.events.Event
-
-// Subclass for Road Closure event
+/**
+ * Creates an object of RoadClosure Event, inherits from Event abstract class.
+ * Takes the [sourceID] - the source vertex of a road the event influences
+ * [targetID] - the target vertex of a road the event influences
+ */
 class RoadClosure(
-    val sourceID: String,
-    val targetID: String,
-    override val eventID: Int,
+    eventID: Int,
     duration: Int,
-    tick: Int
-) :
-    Event(eventID, duration, tick)
+    startTick: Int,
+    private val sourceID: Int,
+    private val targetID: Int
+) : Event(eventID, duration, startTick)
