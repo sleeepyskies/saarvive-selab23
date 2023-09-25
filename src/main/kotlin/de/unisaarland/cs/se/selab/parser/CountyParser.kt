@@ -9,16 +9,16 @@ class CountyParser {
 //        return Graph()
 //    }
 
-    protected fun createBlueprint(): Map<String, String>{
+    private fun createBlueprint(): Map<String, String>{
         val blueprint = mutableMapOf<String, String>()
         return blueprint
     }
 
-    protected fun validateBlueprint(blueprint: Map<String, String>):Boolean{
+    private fun validateBlueprint(blueprint: Map<String, String>):Boolean{
         return true
     }
 
-    protected fun createGraph(vertices: List<Vertex>):Graph{
+    private fun createGraph(vertices: List<Vertex>):Graph{
         return Graph(vertices)
     }
 
@@ -26,12 +26,12 @@ class CountyParser {
 //        return Road()
 //    }
 
-    protected fun createRoadList(blueprint: Map<String, String>): List<Road> {
+    private fun createRoadList(blueprint: Map<String, String>): List<Road> {
         val roads = mutableListOf<Road>()
         return roads
     }
 
-    protected fun createVertexList(blueprint: Map<String, String>): List<Vertex> {
+    private fun createVertexList(blueprint: Map<String, String>): List<Vertex> {
         val vertices = mutableListOf<Vertex>()
         return vertices
     }
@@ -40,7 +40,7 @@ class CountyParser {
 //        return Vertex()
 //    }
 
-    protected fun connectVertices(vertices: List<Vertex>, roads: List<Road>, blueprint: Map<String, String>): Unit {
+    private fun connectVertices(vertices: List<Vertex>, roads: List<Road>, blueprint: Map<String, String>): Unit {
         return Unit
     }
 }
