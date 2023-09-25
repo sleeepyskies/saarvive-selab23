@@ -7,10 +7,38 @@ import de.unisaarland.cs.se.selab.dataClasses.Event
 
 
 class Graph (private val graph: List<Vertex>){
-    // Method that calculates shortest path from start to destination for a vehicle, considering its height
-    fun calculateShortestPath (start: Vertex, destination: Vertex, carHeight: Int):Int {
-        // Dijkstra algorithm goes here
-        return 0
+
+    /**
+     * Returns the shortest time in ticks needed to travel from start the vertex
+     * to the destination vertex
+     * @param start the start-point of the algorithm
+     * @param destination the end-point of the algorithm
+     * @param carHeight the car's height, set to 0 when ignoring height restrictions
+     */
+    fun calculateShortestPath (start: Vertex, destination: Vertex, carHeight: Int): Int {
+
+        // creates a new mapping of all vertices from graph to MAX_VALUE, the start vertex is set to 0
+        val unvisitedVertices : MutableMap<Vertex, Pair<Int, Vertex?>> = mutableMapOf()
+        for (vertex in graph) {
+            if (vertex == start) {
+                unvisitedVertices[vertex] = Pair(0, start)
+            } else {
+                unvisitedVertices[vertex] = Pair(Int.MAX_VALUE, null)
+            }
+        }
+
+        // algorithm
+        var currentVertex = start
+        var visitedVertices : MutableList<Vertex> = mutableListOf()
+
+        // repeat algorithm until destination vertex has been reached
+        while (currentVertex != destination) {
+
+        }
+
+        // once destination vertex has been reached, return its value
+        return unvisitedVertices[destination]?.first ?: -1
+
     }
 
     // Method to calculate the shortest route for a vehicle to a destination, returns a list of Vertices
