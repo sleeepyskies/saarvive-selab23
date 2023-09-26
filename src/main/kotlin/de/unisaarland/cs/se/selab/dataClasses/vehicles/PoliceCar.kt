@@ -9,12 +9,11 @@ import de.unisaarland.cs.se.selab.graph.Vertex
  * has an additional attribute - criminal capacity
  */
 class PoliceCar(
-    private val vehicleType: VehicleType,
-    private val id: Int,
-    private val staffCapacity: Int,
-    private val height: Int,
-    private val assignedBaseID: Int,
-    private val maxCriminalCapacity: Int
+    override val vehicleType: VehicleType,
+    override val id: Int,
+    override val staffCapacity: Int,
+    override val height: Int,
+    override val assignedBaseID: Int
 ) : Vehicle(
     vehicleType,
     id,
@@ -22,14 +21,14 @@ class PoliceCar(
     height,
     assignedBaseID
 ) {
-    private var isAvailable: Boolean = true
-    private lateinit var vehicleStatus: VehicleStatus
-    private var assignedEmergencyID: Int? = null
-    private lateinit var currentRoad: Road
-    private lateinit var lastVisitedVertex: String
-    private var ticksTillDestination: Int = 0
-    private var roadProgress: Int = 0
-    private lateinit var currentRoute: List<Vertex>
-    private var ticksStillUnavailable: Int = 0
-    private var currentCriminalCapcity: Int = 0
+    var isAvailable: Boolean = true
+    lateinit var vehicleStatus: VehicleStatus
+    var assignedEmergencyID: Int? = null
+    lateinit var currentRoad: Road
+    lateinit var lastVisitedVertex: String
+    var ticksTillDestination: Int = 0
+    var roadProgress: Int = 0
+    lateinit var currentRoute: List<Vertex>
+    var ticksStillUnavailable: Int = 0
+    var currentCriminalCapcity: Int = 0
 }
