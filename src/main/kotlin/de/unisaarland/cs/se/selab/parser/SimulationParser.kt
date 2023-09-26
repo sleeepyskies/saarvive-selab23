@@ -48,6 +48,10 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
                 val severity = validateSeverity(jsonEmergency.getInt("severity"))
                 val startTick = validateEmergencyTick(jsonEmergency.getInt("startTick"))
                 val handleTime = validateHandleTime(jsonEmergency.getInt("handleTime"))
+                val maxDuration = validateMaxDuration(jsonEmergency.getInt("maxDuration"), handleTime)
+                val villageName = validateVillageName(jsonEmergency.getString("villageName")) // will be changed after Ira is done with parsing
+                val roadName = jsonEmergency.getString("roadName") // will be changed after Ira is done with parsing
+
                 // create a single emergency
                 val emergency = Emergency(
                     id = id,
@@ -55,9 +59,9 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
                     severity = severity,
                     startTick = startTick,
                     handleTime = handleTime,
-                    maxDuration = jsonEmergency.getInt("maxDuration"),
-                    villageName = jsonEmergency.getString("villageName"),
-                    roadName = jsonEmergency.getString("roadName")
+                    maxDuration = maxDuration,
+                    villageName = villageName,
+                    roadName = roadName
                 )
                 parsedEmergencies.add(emergency)
             }
@@ -183,6 +187,25 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
             error("Minimum handle time is 1")
         }
         return handleTime
+    }
+
+    /** Validates the maximum duration of emergencies, checks whether the specified maximum duration
+     * is greater than the handle time.
+     */
+    private fun validateMaxDuration(maxDuration: Int, handleTime: Int): Int {
+        if (maxDuration <= handleTime) {
+            error("Maximum duration must be greater than handle time")
+        }
+        return maxDuration
+    }
+
+    /** Validates the village name of emergencies --> will be changes after Ira is done with Parsing
+     */
+    private fun validateVillageName(villageName: String): String {
+        if (villageName.isBlank()) {
+            error("Village name must not be blank")
+        }
+        return villageName
     }
 
 
