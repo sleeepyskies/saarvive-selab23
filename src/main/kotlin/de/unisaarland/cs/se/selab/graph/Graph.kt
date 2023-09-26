@@ -6,16 +6,17 @@ import PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
-import de.unisaarland.cs.se.selab.dataClasses.events.Event
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
+import de.unisaarland.cs.se.selab.dataClasses.events.*
+import de.unisaarland.cs.se.selab.global.StringLiterals
 import java.lang.Integer.min
 import java.util.PriorityQueue
 
 /**
  * Holds the data for the simulation graph consisting of vertices and roads.
  * @param graph A list of vertices containing connecting roads
+ * @param roads A list of all the roads in the graph
  */
-class Graph(private val graph: List<Vertex>) {
+class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
     /**
      * Returns the shortest time in ticks needed to travel from start the vertex
      * to the destination vertex
@@ -112,7 +113,7 @@ class Graph(private val graph: List<Vertex>) {
      * Calculates the exact route a vehicle should take from it' current location to the destination.
      * Returns a list of vertices.
      * In case there are multiple shortest routes, the route with lower road ID's is chosen
-     * @param vehicle The vehicle to calculate the route for, contains location
+     * @param vehiclePosition The last visited vertex of the vehicle
      * @param destination The destination vertex to drive to
      * @param vehicleHeight The height of the vehicle driving
      */
@@ -206,10 +207,10 @@ class Graph(private val graph: List<Vertex>) {
 
     /**
      * Calculates the best route from a vehicle's location to an emergency vertex.
-     * @param vehicle The vehicle to calculate the route for, contains location
+     * @param vehiclePosition The position of the vehicle to calculate the route for
      * @param emergency The emergency to use as a destination. Has a pair of vertices as location
      */
-    public fun calculateBestRoute(vehicle: Vehicle, emergency: Emergency) {
+    public fun calculateBestRoute(vehiclePosition: Vertex, emergency: Emergency) {
         TODO("Unimplemented method")
     }
 
@@ -251,10 +252,10 @@ class Graph(private val graph: List<Vertex>) {
     private fun filterByEmergencyType(bases: MutableList<Base>, emergency: Emergency): MutableList<Base> {
         for (base in bases) {
             when (Pair(emergency.emergencyType, getStringType(base))) {
-                Pair(EmergencyType.FIRE, "FireStation") -> Unit
-                Pair(EmergencyType.CRIME, "PoliceStation") -> Unit
-                Pair(EmergencyType.MEDICAL, "Hospital") -> Unit
-                Pair(EmergencyType.ACCIDENT, "FireStation") -> Unit
+                Pair(EmergencyType.FIRE, StringLiterals.FIRESTATION) -> Unit
+                Pair(EmergencyType.CRIME, StringLiterals.POLICESTATION) -> Unit
+                Pair(EmergencyType.MEDICAL, StringLiterals.HOSPITAL) -> Unit
+                Pair(EmergencyType.ACCIDENT, StringLiterals.FIRESTATION) -> Unit
                 else -> bases.remove(base)
             }
         }
@@ -262,13 +263,13 @@ class Graph(private val graph: List<Vertex>) {
     }
 
     /**
-     * Returns the type of a base as a string
+     * Returns the type of base as a string
      */
     private fun getStringType(base: Base): String {
         when (base) {
-            is FireStation -> return "FireStation"
-            is Hospital -> return "FireStation"
-            is PoliceStation -> return "PoliceStation"
+            is FireStation -> return StringLiterals.FIRESTATION
+            is Hospital -> return StringLiterals.HOSPITAL
+            is PoliceStation -> return StringLiterals.POLICESTATION
         }
         return ""
     }
@@ -278,8 +279,45 @@ class Graph(private val graph: List<Vertex>) {
      * @param emergency The type of base to return
      * @param base The base to create the list for
      */
-    public fun findClosestBasesByProximity(emergency: Emergency, base: Base): List<Base> {
-        TODO("Unimplemented method")
+    public fun findClosestBasesByProximity(
+        emergency: Emergency,
+        startBase: Base,
+        bases: List<Base>,
+        baseToVertex: MutableMap<Int, Vertex>
+    ): List<Base> {
+        val relevantBases = filterByEmergencyType(bases.toMutableList(), emergency)
+        // stores the distance of each base from the start base
+        val distanceMapping = mutableMapOf<Base, Int>()
+        val startBaseVertex = baseToVertex[startBase.baseID]
+
+        for (nextBase in relevantBases) {
+            // ignore the start base
+            if (nextBase == startBase) continue
+            val nextBaseVertex = baseToVertex[nextBase.baseID]
+            // get the shortest distance from the start base
+            distanceMapping[nextBase] = calculateShortestPath(startBaseVertex!!, nextBaseVertex!!, 0)
+        }
+
+        /**
+         * sort the bases by closest distance to the start bases
+         * converts the map into a list
+         */
+        val sortedBases = distanceMapping.entries.sortedBy { it.value }.map { it.key }
+
+        return sortedBases
+    }
+
+    /**
+     * returns the type of event as a string
+     */
+    private fun getStringType(event: Event): String {
+        when (event) {
+            is Construction -> return "Construction"
+            is RoadClosure -> return "RoadClosure"
+            is RushHour -> return "RushHour"
+            is TrafficJam -> return "TrafficJam"
+        }
+        return "VehicleUnavailable"
     }
 
     /**
@@ -287,14 +325,88 @@ class Graph(private val graph: List<Vertex>) {
      * @param event The event to apply the effects of
      */
     public fun applyGraphEvent(event: Event) {
+        //applyEvent(event)
+        when (event) {
+            is RushHour -> applyRushHour(event)
+            is TrafficJam -> applyTrafficJam(event)
+        }
+    }
+    private fun applyRushHour(event: RushHour) {
+        for (road in roads) {
+            if (road.pType in event.roadType) road.weight *= event.factor
+        }
+    }
+
+    private fun applyConstruction(event: Construction) {
+
+    }
+    private fun applyTrafficJam(event: TrafficJam) {
+        for (road in roads) {
+            if (road.roadName == event.affectedRoad) road.weight *= event.factor
+        }
+    }
+
+    private fun applyRoadClosure(event: RoadClosure) {
+        for (road in roads) {
+            //if (road.roadName)
+        }
+
+    }
+    private fun applyEvent(event: VehicleUnavailable) {
+
+    }
+
+
+    public fun revertGraphEvent(event: Event) {
+        when (event) {
+            is Construction -> revertGraphEvent(event)
+            is RoadClosure -> revertGraphEvent(event)
+            is RushHour -> revertGraphEvent(event)
+            is TrafficJam -> revertGraphEvent(event)
+            is VehicleUnavailable -> revertGraphEvent(event)
+        }
+    }
+
+    /**
+     * Reverts the effect of a construction event on the map
+     */
+    public fun revertGraphEvent(event: Construction) {
         TODO("Unimplemented method")
     }
 
     /**
-     * Reverts the effect of a given graph event on the graph
-     * @param event The event to revert the effect of
+     * Reverts the effect of a road closure event on the map
      */
-    public fun revertGraphEvent(event: Event) {
+    public fun revertGraphEvent(event: RoadClosure) {
+        TODO("Unimplemented method")
+    }
+
+    /**
+     * Reverts the effect of a rush hour event on the map
+     */
+    public fun revertGraphEvent(event: RushHour) {
+        // get all affected road types
+        val roadTypes = event.roadType
+        // iterate over roads
+        for (road in roads) {
+            if (roadTypes.contains(road.pType)) {
+                road.weight /= if (road.activeEvents[0] == event) event.factor else 1
+                road.activeEvents.remove(event)
+            }
+        }
+    }
+
+    /**
+     * Reverts the effect of a traffic jam event on the map
+     */
+    public fun revertGraphEvent(event: TrafficJam) {
+        TODO("Unimplemented method")
+    }
+
+    /**
+     * Reverts the effect of a vehicle unavailable event on the map
+     */
+    public fun revertGraphEvent(event: VehicleUnavailable) {
         TODO("Unimplemented method")
     }
 }

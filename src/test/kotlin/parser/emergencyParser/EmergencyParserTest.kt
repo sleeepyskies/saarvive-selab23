@@ -3,9 +3,7 @@ package parser.emergencyParser
 import de.unisaarland.cs.se.selab.dataClasses.VehicleType
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
-import de.unisaarland.cs.se.selab.parser.EmergencyParser
 import de.unisaarland.cs.se.selab.parser.SimulationParser
-import de.unisaarland.cs.se.selab.parser.ValidationException
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 

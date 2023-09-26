@@ -10,10 +10,10 @@ class Construction(
     eventID: Int,
     duration: Int,
     startTick: Int,
-    private val factor: Int,
-    private val sourceID: Int, // id of the vertex
-    private val targetID: Int
+    public val factor: Int,
+    public val sourceID: Int, // id of the vertex
+    public val targetID: Int
 ) : Event(eventID, duration, startTick) {
-    private val streetClosed: Boolean = false
+    public val streetClosed: Boolean = false
     // oneWayStreet
 }

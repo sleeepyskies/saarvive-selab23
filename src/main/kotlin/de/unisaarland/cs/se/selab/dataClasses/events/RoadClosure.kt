@@ -9,6 +9,5 @@ class RoadClosure(
     eventID: Int,
     duration: Int,
     startTick: Int,
-    private val sourceID: Int,
-    private val targetID: Int
+    public val affectedRoad: String
 ) : Event(eventID, duration, startTick)

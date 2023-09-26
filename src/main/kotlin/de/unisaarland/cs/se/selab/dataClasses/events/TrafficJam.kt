@@ -10,7 +10,6 @@ class TrafficJam(
     eventID: Int,
     duration: Int,
     startTick: Int,
-    private val factor: Int,
-    private val sourceID: Int,
-    private val targetID: Int
+    public val factor: Int,
+    public val affectedRoad: String
 ) : Event(eventID, duration, startTick)

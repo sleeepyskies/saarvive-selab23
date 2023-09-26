@@ -6,8 +6,8 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
  * abstract class that defines a base
  */
 abstract class Base(
-    internal val baseID: Int,
+    public open val baseID: Int,
     private var staff: Int,
-    private val vertexID: String,
+    private val vertexID: Int,
     private val vehicles: List<Vehicle>
 )
