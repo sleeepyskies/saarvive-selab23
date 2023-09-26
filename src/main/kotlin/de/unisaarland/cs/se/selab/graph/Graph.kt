@@ -6,11 +6,7 @@ import PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
-import de.unisaarland.cs.se.selab.dataClasses.events.Construction
-import de.unisaarland.cs.se.selab.dataClasses.events.Event
-import de.unisaarland.cs.se.selab.dataClasses.events.RoadClosure
-import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
-import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
+import de.unisaarland.cs.se.selab.dataClasses.events.*
 import de.unisaarland.cs.se.selab.global.StringLiterals
 import java.lang.Integer.min
 import java.util.PriorityQueue
