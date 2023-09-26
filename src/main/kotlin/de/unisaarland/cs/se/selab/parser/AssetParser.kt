@@ -63,12 +63,30 @@ class AssetParser(private val schemaFile: String, private val jsonFile: String) 
             val vehicle: Vehicle = when (vehicleType) {
                 "AMBULANCE" -> Ambulance(id, baseID, staffCapacity, vehicleHeight)
                 "EMERGENCY_DOCTOR_CAR" -> EmergencyDoctorCar(id, baseID, staffCapacity, vehicleHeight)
-                "POLICE_CAR" -> PoliceCar(id, baseID, staffCapacity, vehicleHeight, jsonVehicle.getInt("criminalCapacity"))
+                "POLICE_CAR" -> PoliceCar(
+                    id,
+                    baseID,
+                    staffCapacity,
+                    vehicleHeight,
+                    jsonVehicle.getInt("criminalCapacity")
+                )
                 "K9_POLICE_CAR" -> K9PoliceCar(id, baseID, staffCapacity, vehicleHeight)
                 "POLICE_MOTORCYCLE" -> PoliceMotorcycle(id, baseID, staffCapacity, vehicleHeight)
-                "FIRE_TRUCK_WATER" -> FireTruckWater(id, baseID, staffCapacity, vehicleHeight, jsonVehicle.getInt("waterCapacity"))
+                "FIRE_TRUCK_WATER" -> FireTruckWater(
+                    id,
+                    baseID,
+                    staffCapacity,
+                    vehicleHeight,
+                    jsonVehicle.getInt("waterCapacity")
+                )
                 "FIRE_TRUCK_TECHNICAL" -> FireTruckTechnical(id, baseID, staffCapacity, vehicleHeight)
-                "FIRE_TRUCK_LADDER" -> FireTruckLadder(id, baseID, staffCapacity, vehicleHeight, jsonVehicle.getInt("ladderLength"))
+                "FIRE_TRUCK_LADDER" -> FireTruckLadder(
+                    id,
+                    baseID,
+                    staffCapacity,
+                    vehicleHeight,
+                    jsonVehicle.getInt("ladderLength")
+                )
                 "FIREFIGHTER_TRANSPORTER" -> FirefighterTransporter(id, baseID, staffCapacity, vehicleHeight)
                 else -> throw ValidationException("Invalid vehicleType: $vehicleType")
             }
