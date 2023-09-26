@@ -7,6 +7,8 @@ import org.everit.json.schema.loader.SchemaLoader
 import org.json.*
 import java.io.File
 import java.util.*
+import javax.print.attribute.standard.Severity
+
 
 /**
  * Parses the emergency configuration file.
@@ -52,9 +54,9 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     private fun parseEmergency(jsonEmergency: JSONObject): Emergency{
         val emergency = Emergency(
-            id = jsonEmergency.getInt("id"),
+            id = validateId(jsonEmergency.getInt("id")),
             emergencyType = EmergencyType.valueOf(jsonEmergency.getString("emergencyType")),
-            severity = jsonEmergency.getInt("severity"),
+            severity = validateSeverity(jsonEmergency.getInt("severity")),
             startTick = jsonEmergency.getInt("startTick"),
             handleTime = jsonEmergency.getInt("handleTime"),
             maxDuration = jsonEmergency.getInt("maxDuration"),
@@ -133,5 +135,24 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
             startTick = jsonEvent.getInt(startTick),
             vehicleID = jsonEvent.getInt("vehicleID")
         )
+    }
+
+    /** Validates the ID of emergencies and events.
+     */
+    private fun validateId(id: Int): Int {
+        if (id < 0) {
+            error("ID must be positive")
+        }
+        return id
+    }
+
+    /** Validates the severity of emergencies
+     * Checks whether the specified severity value belongs to the range of valid values.
+     */
+    private fun validateSeverity(severity: Int): Int {
+        if (severity !in 1..3) {
+            error("Severity must be positive")
+        }
+        return severity
     }
 }
