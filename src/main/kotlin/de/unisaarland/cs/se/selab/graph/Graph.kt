@@ -33,18 +33,17 @@ class Graph(private val graph: List<Vertex>) {
         // repeat algorithm until each vertex has been visited
         while (unvisitedVertices.isNotEmpty()) {
             var minWeight = Int.MAX_VALUE // used for setting nextVertex
-
-            val connectionsMap = currentVertex.connectingRoads // gets the connectingRoads Map from vertex
-            for ((vertices, roads) in connectionsMap) {
-                if (carHeight <= roads.heightLimit) {
-                    val distance = (visitedVertices[currentVertex]?.first ?: 0) + roads.weight
-                    if (distance < (visitedVertices[vertices]?.first ?: 0)) {
-                        visitedVertices[vertices] = Pair(distance, currentVertex)
-                    }
-                    if (distance < minWeight) {
-                        nextVertex = vertices
-                        minWeight = distance
-                    }
+            val neighbors = currentVertex.connectingRoads.filter { (_, road) ->
+                carHeight <= road.heightLimit
+            }
+            for ((vertices, roads) in neighbors) {
+                val distance = (visitedVertices[currentVertex]?.first ?: 0) + roads.weight
+                if (distance < (visitedVertices[vertices]?.first ?: 0)) {
+                    visitedVertices[vertices] = Pair(distance, currentVertex)
+                }
+                if (distance < minWeight) {
+                    nextVertex = vertices
+                    minWeight = distance
                 }
             }
             unvisitedVertices.remove(currentVertex)
@@ -63,11 +62,11 @@ class Graph(private val graph: List<Vertex>) {
      * @param destination The destination vertex to drive to
      */
     fun calculateShortestRoute(vehiclePosition: Vertex, destination: Vertex): List<Vertex> {
-
         // maps how far all the vertices are from the current vertex
         val distances = mutableMapOf<Vertex, Int>()
         // allows a chain of previous vertices to be created that can be backtracked
         val previousVertices = mutableMapOf<Vertex, Vertex?>()
+
         /**
          * end of the queue init is a lambda expression that specifies how to compare two vertices (v1 and v2)
          * based on their distances from the start vertex (in distances)
@@ -131,6 +130,5 @@ class Graph(private val graph: List<Vertex>) {
      * @param event The event to revert the effect of
      */
     fun revertGraphEvent(event: Event) {
-
     }
 }

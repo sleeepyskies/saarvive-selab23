@@ -1,8 +1,10 @@
 package de.unisaarland.cs.se.selab.simulation
 
-import de.unisaarland.cs.se.selab.dataClasses.*
+import de.unisaarland.cs.se.selab.dataClasses.Request
+import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.events.Event
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.graph.Graph
 import de.unisaarland.cs.se.selab.graph.Vertex
 
@@ -23,7 +25,7 @@ class DataHolder(
     private val vehicleToEmergency: Map<Int, Emergency>,
     private val vehiclesToBase: Map<Int, Base>,
     private val baseToVertex: Map<Int, Vertex>
-    ) {
+) {
 
     private fun createMapping() {
         // TODO: Implement method that constructs mappings
@@ -32,5 +34,4 @@ class DataHolder(
     public fun updateScheduledEmergencies(emergencies: List<Emergency>) {
         // TODO: Implement method to update emergency lists
     }
-
 }
