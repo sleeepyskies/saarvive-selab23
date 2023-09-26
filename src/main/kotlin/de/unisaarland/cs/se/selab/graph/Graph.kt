@@ -7,7 +7,6 @@ import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
 import de.unisaarland.cs.se.selab.dataClasses.events.Event
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import java.lang.Integer.min
 import java.util.PriorityQueue
 
@@ -17,6 +16,9 @@ import java.util.PriorityQueue
  * @param roads A list of all the roads in the graph
  */
 class Graph(private val graph: List<Vertex>, private val roads: List<Road>) {
+    private val HOSPITAL = "Hospital"
+    private val FIRESTATION = "FireStation"
+    private val POLICESTATION = "PoliceStation"
     /**
      * Returns the shortest time in ticks needed to travel from start the vertex
      * to the destination vertex
@@ -211,7 +213,7 @@ class Graph(private val graph: List<Vertex>, private val roads: List<Road>) {
      * @param emergency The emergency to use as a destination. Has a pair of vertices as location
      */
     public fun calculateBestRoute(vehiclePosition: Vertex, emergency: Emergency) {
-        TODO("Unimplemented method")
+        val vertices: Pair<Vertex, Vertex> = emergency.location
     }
 
     /**
@@ -252,10 +254,10 @@ class Graph(private val graph: List<Vertex>, private val roads: List<Road>) {
     private fun filterByEmergencyType(bases: MutableList<Base>, emergency: Emergency): MutableList<Base> {
         for (base in bases) {
             when (Pair(emergency.emergencyType, getStringType(base))) {
-                Pair(EmergencyType.FIRE, "FireStation") -> Unit
-                Pair(EmergencyType.CRIME, "PoliceStation") -> Unit
-                Pair(EmergencyType.MEDICAL, "Hospital") -> Unit
-                Pair(EmergencyType.ACCIDENT, "FireStation") -> Unit
+                Pair(EmergencyType.FIRE, FIRESTATION) -> Unit
+                Pair(EmergencyType.CRIME, POLICESTATION) -> Unit
+                Pair(EmergencyType.MEDICAL, HOSPITAL) -> Unit
+                Pair(EmergencyType.ACCIDENT, FIRESTATION) -> Unit
                 else -> bases.remove(base)
             }
         }
@@ -267,9 +269,9 @@ class Graph(private val graph: List<Vertex>, private val roads: List<Road>) {
      */
     private fun getStringType(base: Base): String {
         when (base) {
-            is FireStation -> return "FireStation"
-            is Hospital -> return "FireStation"
-            is PoliceStation -> return "PoliceStation"
+            is FireStation -> return FIRESTATION
+            is Hospital -> return HOSPITAL
+            is PoliceStation -> return POLICESTATION
         }
         return ""
     }
