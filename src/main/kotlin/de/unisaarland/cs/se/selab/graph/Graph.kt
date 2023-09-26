@@ -258,7 +258,7 @@ class Graph(private val graph: List<Vertex>, private val roads: List<Road>) {
             when (Pair(emergency.emergencyType, getStringType(base))) {
                 Pair(EmergencyType.FIRE, StringLiterals.FIRESTATION) -> Unit
                 Pair(EmergencyType.CRIME, StringLiterals.POLICESTATION) -> Unit
-                Pair(EmergencyType.MEDICAL, StringLiterals.Hospital) -> Unit
+                Pair(EmergencyType.MEDICAL, StringLiterals.HOSPITAL) -> Unit
                 Pair(EmergencyType.ACCIDENT, StringLiterals.FIRESTATION) -> Unit
                 else -> bases.remove(base)
             }
@@ -272,7 +272,7 @@ class Graph(private val graph: List<Vertex>, private val roads: List<Road>) {
     private fun getStringType(base: Base): String {
         when (base) {
             is FireStation -> return StringLiterals.FIRESTATION
-            is Hospital -> return StringLiterals.Hospital
+            is Hospital -> return StringLiterals.HOSPITAL
             is PoliceStation -> return StringLiterals.POLICESTATION
         }
         return ""
