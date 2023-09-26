@@ -325,16 +325,32 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
      * @param event The event to apply the effects of
      */
     public fun applyGraphEvent(event: Event) {
-
-
-        TODO("Unimplemented method")
+        //applyEvent(event)
+        when (event) {
+            is RushHour -> applyRushHour(event)
+        }
     }
-    private fun applyEvent(event: RushHour) {
+    private fun applyRushHour(event: RushHour) {
         for (road in roads) {
-            road.weight *= event.
+            if (road.pType in event.roadType) road.weight *= event.factor
         }
     }
 
+    private fun applyConstruction(event: Construction) {
+
+    }
+    private fun applyEvent(event: TrafficJam) {
+        for (road in roads) {
+            if (road.roadName == event.
+        }
+    }
+
+    private fun applyEvent(event: RoadClosure) {
+
+    }
+    private fun applyEvent(event: VehicleUnavailable) {
+
+    }
     /**
      * Reverts the effect of a construction event on the map
      */
