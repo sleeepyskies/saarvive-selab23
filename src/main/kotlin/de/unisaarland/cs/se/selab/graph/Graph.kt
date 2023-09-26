@@ -8,6 +8,7 @@ import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
 import de.unisaarland.cs.se.selab.dataClasses.events.*
 import de.unisaarland.cs.se.selab.global.StringLiterals
+import java.lang.Integer.formatUnsignedInt
 import java.lang.Integer.min
 import java.util.PriorityQueue
 
@@ -328,6 +329,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
         //applyEvent(event)
         when (event) {
             is RushHour -> applyRushHour(event)
+            is TrafficJam -> applyTrafficJam(event)
         }
     }
     private fun applyRushHour(event: RushHour) {
@@ -339,18 +341,23 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
     private fun applyConstruction(event: Construction) {
 
     }
-    private fun applyEvent(event: TrafficJam) {
+    private fun applyTrafficJam(event: TrafficJam) {
         for (road in roads) {
-            if (road.roadName == event.
+            if (road.roadName == event.affectedRoad) road.weight *= event.factor
         }
     }
 
-    private fun applyEvent(event: RoadClosure) {
+    private fun applyRoadClosure(event: RoadClosure) {
+        for (road in roads) {
+            if (road.roadName == event.)
+        }
 
     }
     private fun applyEvent(event: VehicleUnavailable) {
 
     }
+
+
     /**
      * Reverts the effect of a construction event on the map
      */
