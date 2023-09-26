@@ -1,10 +1,24 @@
 {
-  "id": 2,
-  "tick": 8,
-  "village": "SPONGEBOOOOOOB",
-  "roadName": "Street Street",
-  "emergencyType": "ACCIDENT",
-  "severity": 1,
-  "handleTime": 2,
-  "maxDuration": 5
+  "events": [
+    {
+      "id": 1,
+      "type": "RUSH_HOUR",
+      "tick": 5,
+      "duration": 3,
+      "roadTypes": ["MAIN_STREET", "SIDE_STREET"],
+      "factor": 2
+    }
+  ],
+  "emergencyCalls": [
+    {
+      "id": 2,
+      "tick": 8,
+      "village": "SPONGEBOOOOOOB",
+      "roadName": "Street Street",
+      "emergencyType": "ACCIDENT",
+      "severity": 1,
+      "handleTime": 2,
+      "maxDuration": 5
+    }
+  ]
 }
