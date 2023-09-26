@@ -3,9 +3,13 @@ package de.unisaarland.cs.se.selab.parser
 import FireStation
 import Hospital
 import PoliceStation
-import de.unisaarland.cs.se.selab.dataClasses.*
+import de.unisaarland.cs.se.selab.dataClasses.VehicleType
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.*
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWithLadder
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import org.everit.json.schema.Schema
 import org.everit.json.schema.loader.SchemaLoader
 import org.json.JSONObject
@@ -18,6 +22,7 @@ class AssetParser(private val baseFile: String, private val vehicleFile: String,
     private val baseSchema: Schema
     private val vehicleSchema: Schema
     private val json: JSONObject
+    private lateinit var allVehicles: List<Vehicle> // declare allVehicles as an member variable
 
     init {
         val baseSchemaJson = JSONObject(File(baseFile).readText())
@@ -34,7 +39,9 @@ class AssetParser(private val baseFile: String, private val vehicleFile: String,
      * parse method returns a pair of list of bases and list of vehicles
      */
     fun parse(): Pair<List<Base>, List<Vehicle>> {
-        return Pair(parseBases(), parseVehicles())
+        allVehicles = parseVehicles()
+        val allBases = parseBases()
+        return Pair(allBases, allVehicles)
     }
 
     private fun parseBases(): List<Base> {
@@ -48,29 +55,12 @@ class AssetParser(private val baseFile: String, private val vehicleFile: String,
             val baseType = jsonBase.getString("baseType")
             val location = jsonBase.getInt("location")
             val staff = jsonBase.getInt("staff")
-            val vehicles = listOf<Vehicle>() // replace with actual logic to populate vehicles
+            val vehicles = parseVehicles().filter { it.assignedBaseID == id }
 
             val base: Base = when (baseType) {
-                "FIRE_STATION" -> FireStation(
-                    id,
-                    staff,
-                    location,
-                    vehicles
-                )
-                "HOSPITAL" -> Hospital(
-                    id,
-                    staff,
-                    location,
-                    jsonBase.getInt("doctors"),
-                    vehicles
-                )
-                "POLICE_STATION" -> PoliceStation(
-                    id,
-                    staff,
-                    location,
-                    jsonBase.getInt("dogs"),
-                    vehicles
-                )
+                "FIRE_STATION" -> FireStation(id, staff, location, vehicles)
+                "HOSPITAL" -> Hospital(id, staff, location, jsonBase.getInt("doctors"), vehicles)
+                "POLICE_STATION" -> PoliceStation(id, staff, location, jsonBase.getInt("dogs"), vehicles)
                 else -> throw IllegalArgumentException("Invalid baseType: $baseType")
             }
 

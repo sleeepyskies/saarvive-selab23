@@ -12,7 +12,7 @@ open class Vehicle(
     private val id: Int,
     private val staffCapacity: Int,
     private val height: Int,
-    private val assignedBaseID: Int
+    val assignedBaseID: Int
 ) {
     private var criminalCapacity: Int? = null
     private var waterCapacity: Int? = null
