@@ -7,10 +7,10 @@ import java.util.Queue
  * Represents an edge in the graph. Also contains all active requests currently effecting the edge.
  */
 class Road(
-    private val pType: PrimaryType,
-    private val sType: SecondaryType,
-    private val villageName: String,
-    private val roadName: String,
+    internal val pType: PrimaryType,
+    internal val sType: SecondaryType,
+    internal val villageName: String,
+    internal val roadName: String,
     internal var weight: Int,
     internal val heightLimit: Int,
     public val activeRequests: Queue<Request>
