@@ -11,6 +11,9 @@ import org.everit.json.schema.loader.SchemaLoader
 import org.json.JSONObject
 import java.io.File
 
+/**
+* asset parser parses assets
+*/
 class AssetParser(private val baseFile: String, private val vehicleFile: String, private val jsonFile: String) {
     private val baseSchema: Schema
     private val vehicleSchema: Schema
@@ -27,6 +30,9 @@ class AssetParser(private val baseFile: String, private val vehicleFile: String,
         json = JSONObject(assetJsonData)
     }
 
+    /**
+     * parse method returns a pair of list of bases and list of vehicles
+     */
     fun parse(): Pair<List<Base>, List<Vehicle>> {
         return Pair(parseBases(), parseVehicles())
     }
@@ -42,11 +48,29 @@ class AssetParser(private val baseFile: String, private val vehicleFile: String,
             val baseType = jsonBase.getString("baseType")
             val location = jsonBase.getInt("location")
             val staff = jsonBase.getInt("staff")
+            val vehicles = listOf<Vehicle>() // replace with actual logic to populate vehicles
 
             val base: Base = when (baseType) {
-                "FIRE_STATION" -> FireStation(id, staff, location)
-                "HOSPITAL" -> Hospital(id, staff, location, jsonBase.optInt("doctors", 0))
-                "POLICE_STATION" -> PoliceStation(id, staff, location, jsonBase.optInt("dogs", 0))
+                "FIRE_STATION" -> FireStation(
+                    id,
+                    staff,
+                    location,
+                    vehicles
+                )
+                "HOSPITAL" -> Hospital(
+                    id,
+                    staff,
+                    location,
+                    jsonBase.getInt("doctors"),
+                    vehicles
+                )
+                "POLICE_STATION" -> PoliceStation(
+                    id,
+                    staff,
+                    location,
+                    jsonBase.getInt("dogs"),
+                    vehicles
+                )
                 else -> throw IllegalArgumentException("Invalid baseType: $baseType")
             }
 
@@ -77,20 +101,8 @@ class AssetParser(private val baseFile: String, private val vehicleFile: String,
                     baseID,
                     jsonVehicle.getInt("criminalCapacity")
                 )
-                VehicleType.K9_POLICE_CAR -> K9PoliceCar(
-                    vehicleType,
-                    id,
-                    staffCapacity,
-                    vehicleHeight,
-                    baseID
-                )
-                VehicleType.POLICE_MOTORCYCLE -> PoliceMotorcycle(
-                    vehicleType,
-                    id,
-                    staffCapacity,
-                    vehicleHeight,
-                    baseID
-                )
+                VehicleType.K9_POLICE_CAR -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
+                VehicleType.POLICE_MOTORCYCLE -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
                 VehicleType.FIRE_TRUCK_WATER -> FireTruckWater(
                     vehicleType,
                     id,
@@ -99,14 +111,8 @@ class AssetParser(private val baseFile: String, private val vehicleFile: String,
                     baseID,
                     jsonVehicle.getInt("waterCapacity")
                 )
-                VehicleType.FIRE_TRUCK_TECHNICAL -> FireTruckTechnical(
-                    vehicleType,
-                    id,
-                    staffCapacity,
-                    vehicleHeight,
-                    baseID
-                )
-                VehicleType.FIRE_TRUCK_LADDER -> FireTruckLadder(
+                VehicleType.FIRE_TRUCK_TECHNICAL -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
+                VehicleType.FIRE_TRUCK_LADDER -> FireTruckWithLadder(
                     vehicleType,
                     id,
                     staffCapacity,
@@ -114,27 +120,9 @@ class AssetParser(private val baseFile: String, private val vehicleFile: String,
                     baseID,
                     jsonVehicle.getInt("ladderLength")
                 )
-                VehicleType.FIREFIGHTER_TRANSPORTER -> FirefighterTransporter(
-                    vehicleType,
-                    id,
-                    staffCapacity,
-                    vehicleHeight,
-                    baseID
-                )
-                VehicleType.AMBULANCE -> Ambulance(
-                    vehicleType,
-                    id,
-                    staffCapacity,
-                    vehicleHeight,
-                    baseID
-                )
-                VehicleType.EMERGENCY_DOCTOR_CAR -> EmergencyDoctorCar(
-                    vehicleType,
-                    id,
-                    staffCapacity,
-                    vehicleHeight,
-                    baseID
-                )
+                VehicleType.FIREFIGHTER_TRANSPORTER -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
+                VehicleType.AMBULANCE -> Ambulance(vehicleType, id, staffCapacity, vehicleHeight, baseID)
+                VehicleType.EMERGENCY_DOCTOR_CAR -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
                 else -> throw IllegalArgumentException("Invalid vehicleType: $vehicleType")
             }
 
