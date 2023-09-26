@@ -1,5 +1,7 @@
 package de.unisaarland.cs.se.selab.dataClasses.events
 
+import de.unisaarland.cs.se.selab.graph.Vertex
+
 /**
  * Creates an object of the TrafficJam Event, inherits from Event abstract class.
  * Takes the [factor] by which the length of a road is changed during the event;
@@ -11,5 +13,8 @@ class TrafficJam(
     duration: Int,
     startTick: Int,
     public val factor: Int,
-    public val affectedRoad: String
-) : Event(eventID, duration, startTick)
+    public val startVertex: Int,
+    public val endVertex: Int
+) : Event(eventID, duration, startTick) {
+    public lateinit var affectedRoad: String
+}
