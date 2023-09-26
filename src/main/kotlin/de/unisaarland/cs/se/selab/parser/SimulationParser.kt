@@ -7,6 +7,7 @@ import org.everit.json.schema.loader.SchemaLoader
 import org.json.*
 import java.io.File
 import java.util.*
+import kotlin.system.exitProcess
 
 /**
  * Parses the emergency configuration file.
@@ -49,7 +50,8 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
                 val startTick = validateEmergencyTick(jsonEmergency.getInt("startTick"))
                 val handleTime = validateHandleTime(jsonEmergency.getInt("handleTime"))
                 val maxDuration = validateMaxDuration(jsonEmergency.getInt("maxDuration"), handleTime)
-                val villageName = validateVillageName(jsonEmergency.getString("villageName")) // will be changed after Ira is done with parsing
+                val villageName = validateVillageName(jsonEmergency.getString("villageName"))
+                // will be changed after Ira is done with parsing
                 val roadName = jsonEmergency.getString("roadName") // will be changed after Ira is done with parsing
 
                 // create a single emergency
@@ -143,10 +145,12 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     private fun validateId(id: Int): Int {
         if (id < 0) {
-            error("ID must be positive")
+            System.err.println("ID must be positive")
+            exitProcess(1)
         }
         else if (emergencyIDSet.contains(id)) {
-            error("ID must be unique")
+            System.err.println("ID must be unique")
+            exitProcess(1)
         }
         return id
     }
@@ -156,7 +160,8 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     private fun validateSeverity(severity: Int): Int {
         if (severity !in 1..3) {
-            error("Severity must be positive")
+            System.err.println("Severity must be positive")
+            exitProcess(1)
         }
         return severity
     }
@@ -165,7 +170,8 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     private fun validateEmergencyTick(tick: Int): Int {
         if (tick < 1) {
-            error("Tick must be greater than 1")
+            System.err.println("Tick must be greater than 1")
+            exitProcess(1)
         }
         return tick
     }
@@ -175,7 +181,8 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     private fun validateEmergencyType(emergencyType: String): EmergencyType{
         if (emergencyType != EmergencyType.valueOf(emergencyType).toString()) {
-            error("EmergencyType must be one of the following: ${EmergencyType.values()}")
+            System.err.println("EmergencyType must be one of the following: ${EmergencyType.values()}")
+            exitProcess(1)
         }
         return EmergencyType.valueOf(emergencyType)
     }
@@ -184,7 +191,8 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     private fun validateHandleTime(handleTime: Int): Int {
         if (handleTime < 1) {
-            error("Minimum handle time is 1")
+            System.err.println("Minimum handle time is 1")
+            exitProcess(1)
         }
         return handleTime
     }
@@ -194,7 +202,8 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     private fun validateMaxDuration(maxDuration: Int, handleTime: Int): Int {
         if (maxDuration <= handleTime) {
-            error("Maximum duration must be greater than handle time")
+            System.err.println("Maximum duration must be greater than handle time")
+            exitProcess(1)
         }
         return maxDuration
     }
@@ -203,7 +212,8 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     private fun validateVillageName(villageName: String): String {
         if (villageName.isBlank()) {
-            error("Village name must not be blank")
+            System.err.println("Village name must not be blank")
+            exitProcess(1)
         }
         return villageName
     }
