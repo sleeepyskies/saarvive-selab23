@@ -63,8 +63,10 @@ class Graph(private val graph: List<Vertex>) {
      * In case there are multiple shortest routes, the route with lower road ID's is chosen
      * @param vehicle The vehicle to calculate the route for, contains location
      * @param destination The destination vertex to drive to
+     * @param vehicleHeight The height of the vehicle driving
      */
-    public fun calculateShortestRoute(vehiclePosition: Vertex, destination: Vertex): List<Vertex> {
+    public fun calculateShortestRoute(vehiclePosition: Vertex, destination: Vertex, vehicleHeight: Int): List<Vertex> {
+        var route = listOf<Vertex>()
         // maps how far all the vertices are from the current vertex
         val distances = mutableMapOf<Vertex, Int>()
         // allows a chain of previous vertices to be created that can be backtracked
@@ -74,24 +76,68 @@ class Graph(private val graph: List<Vertex>) {
          * end of the queue init is a lambda expression that specifies how to compare two vertices (v1 and v2)
          * based on their distances from the start vertex (in distances)
          * ensures that vertices with smaller distances are dequeued from the priority queue first
+         * !! double bang operator
+         * used when certain that the object won't be null and want to access it without null safety checks
          */
         val unvisitedVertices = PriorityQueue<Vertex> { v1, v2 -> distances[v1]!! - distances[v2]!! }
 
         // initializing distances and previous vertices for all vertices in the graph
-        for (node in graph) {
-            distances[node] = if (node == vehiclePosition) 0 else Int.MAX_VALUE
-            previousVertices[node] = null
-            unvisitedVertices.offer(node)
+        for (vertex in graph) {
+            distances[vertex] = if (vertex == vehiclePosition) 0 else Int.MAX_VALUE
+            previousVertices[vertex] = null
+            unvisitedVertices.offer(vertex)
         }
 
         // dijkstra's algorithm using the above structure
         while (unvisitedVertices.isNotEmpty()) {
             /**
-             * .poll()
+             * .poll() finds the next vertex in the queue in the order of the lamda expression
+             * if all the vertexes are explored it returns null and the loop breaks
+             * otherwise it assigns this vertex as the current one
              */
             val currentVertex = unvisitedVertices.poll() ?: break
+
+            if (currentVertex == destination) {
+                // found the shortest path to the end vertex
+                route = buildRoute(destination, previousVertices)
+            }
+            for ((neighborVertex, connectingRoad) in currentVertex.connectingRoads) {
+                // check if the cars height allows it to drive on the road
+                if (vehicleHeight > connectingRoad.heightLimit) {
+                    continue
+                }
+                // calculate the weight of the route up till the neighbouring vertex
+                val tentativeDistance = distances[currentVertex]!! + connectingRoad.weight
+                // check if the route through this neighbour is shorter than the previous found route
+                if (tentativeDistance < distances[neighborVertex]!!) {
+                    distances[neighborVertex] = tentativeDistance
+                    // update for backtracking
+                    previousVertices[neighborVertex] = currentVertex
+                }
+            }
         }
-        return TODO("Provide the return value")
+        return route
+    }
+
+    /**
+     * used within the calculateShortestRoute method to create the route
+     * @param previousVertices contains backtracking of each vertex to its previous one in the optimal route
+     * the functions parses through the backtracking
+     */
+    private fun buildRoute(endVertex: Vertex, previousVertices: Map<Vertex, Vertex?>): List<Vertex> {
+        val route = mutableListOf<Vertex>()
+        var currentVertex = endVertex
+        var previousVertex = previousVertices[endVertex]
+        // check if the start vertex is reached
+        while (previousVertex != null) {
+            route.add(currentVertex)
+            currentVertex = previousVertex
+            previousVertex = previousVertices[currentVertex]
+        }
+        // add the starting vertex to the list (not sure if it should be included)
+        route.add(currentVertex)
+        // the list of vertices starts with the first vertex in the route
+        return route.reversed()
     }
 
     /**
