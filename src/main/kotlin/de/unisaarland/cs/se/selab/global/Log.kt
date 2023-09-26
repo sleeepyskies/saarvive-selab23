@@ -1,4 +1,4 @@
-package de.unisaarland.cs.se.selab
+package de.unisaarland.cs.se.selab.global
 
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 
