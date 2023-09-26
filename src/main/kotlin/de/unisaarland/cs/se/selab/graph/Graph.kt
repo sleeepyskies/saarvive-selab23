@@ -14,8 +14,9 @@ import java.util.PriorityQueue
 /**
  * Holds the data for the simulation graph consisting of vertices and roads.
  * @param graph A list of vertices containing connecting roads
+ * @param roads A list of all the roads in the graph
  */
-class Graph(private val graph: List<Vertex>) {
+class Graph(private val graph: List<Vertex>, private val roads: List<Road>) {
     /**
      * Returns the shortest time in ticks needed to travel from start the vertex
      * to the destination vertex
