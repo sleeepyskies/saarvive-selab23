@@ -22,10 +22,6 @@ import java.util.PriorityQueue
  * @param roads A list of all the roads in the graph
  */
 class Graph(private val graph: List<Vertex>, private val roads: List<Road>) {
-    private val _HOSPITAL = "Hospital"
-    private val _FIRESTATION = "FireStation"
-    private val _POLICESTATION = "PoliceStation"
-
     /**
      * Returns the shortest time in ticks needed to travel from start the vertex
      * to the destination vertex
@@ -272,7 +268,7 @@ class Graph(private val graph: List<Vertex>, private val roads: List<Road>) {
     }
 
     /**
-     * Returns the type of a base as a string
+     * Returns the type of base as a string
      */
     private fun getStringType(base: Base): String {
         when (base) {
