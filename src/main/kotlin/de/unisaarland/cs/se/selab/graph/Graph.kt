@@ -6,7 +6,10 @@ import PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
-import de.unisaarland.cs.se.selab.dataClasses.events.Event
+import de.unisaarland.cs.se.selab.dataClasses.events.Construction
+import de.unisaarland.cs.se.selab.dataClasses.events.RoadClosure
+import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
+import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import java.lang.Integer.min
 import java.util.PriorityQueue
 
@@ -214,7 +217,7 @@ class Graph(private val graph: List<Vertex>, private val roads: List<Road>) {
      * @param emergency The emergency to use as a destination. Has a pair of vertices as location
      */
     public fun calculateBestRoute(vehiclePosition: Vertex, emergency: Emergency) {
-        val vertices: Pair<Vertex, Vertex> = emergency.location
+        TODO("Unimplemented method")
     }
 
     /**
@@ -255,10 +258,10 @@ class Graph(private val graph: List<Vertex>, private val roads: List<Road>) {
     private fun filterByEmergencyType(bases: MutableList<Base>, emergency: Emergency): MutableList<Base> {
         for (base in bases) {
             when (Pair(emergency.emergencyType, getStringType(base))) {
-                Pair(EmergencyType.FIRE, _FIRESTATION) -> Unit
-                Pair(EmergencyType.CRIME, _POLICESTATION) -> Unit
-                Pair(EmergencyType.MEDICAL, _HOSPITAL) -> Unit
-                Pair(EmergencyType.ACCIDENT, _FIRESTATION) -> Unit
+                Pair(EmergencyType.FIRE, "FireStation") -> Unit
+                Pair(EmergencyType.CRIME, "PoliceStation") -> Unit
+                Pair(EmergencyType.MEDICAL, "Hospital") -> Unit
+                Pair(EmergencyType.ACCIDENT, "FireStation") -> Unit
                 else -> bases.remove(base)
             }
         }
@@ -270,9 +273,9 @@ class Graph(private val graph: List<Vertex>, private val roads: List<Road>) {
      */
     private fun getStringType(base: Base): String {
         when (base) {
-            is FireStation -> return _FIRESTATION
-            is Hospital -> return _HOSPITAL
-            is PoliceStation -> return _POLICESTATION
+            is FireStation -> return "FireStation"
+            is Hospital -> return "FireStation"
+            is PoliceStation -> return "PoliceStation"
         }
         return ""
     }
@@ -311,10 +314,24 @@ class Graph(private val graph: List<Vertex>, private val roads: List<Road>) {
     }
 
     /**
+     * returns the type of event as a string
+     */
+    private fun getStringType(event: Event): String {
+        when (event) {
+            is Construction -> return "Construction"
+            is RoadClosure -> return "RoadClosure"
+            is RushHour -> return "RushHour"
+            is TrafficJam -> return "TrafficJam"
+        }
+        return "VehicleUnavailable"
+    }
+
+    /**
      * Applies the effect of the given graph event to the graph
      * @param event The event to apply the effects of
      */
     public fun applyGraphEvent(event: Event) {
+        val eventType = getStringType(event)
         TODO("Unimplemented method")
     }
 
