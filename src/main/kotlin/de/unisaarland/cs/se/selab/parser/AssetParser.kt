@@ -1,55 +1,71 @@
 package de.unisaarland.cs.se.selab.parser
 
+import FireStation
+import Hospital
+import de.unisaarland.cs.se.selab.dataClasses.PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
+import org.everit.json.schema.Schema
+import org.everit.json.schema.loader.SchemaLoader
 import org.json.JSONObject
 import java.io.File
 
-/**
- * AssetParser is responsible for parsing and validating asset config files,
- * and also to create bases and vehicles.
- */
-class AssetParser {
-    /**
-     * parse method parses an asset file to create a list of bases.
-     *
-     * @param file The asset configuration file.
-     * @return A list of bases created from the asset configuration file.
-     * @throws IllegalArgumentException if the asset configuration is invalid.
-     */
-    public fun parse(file: File): List<Base> {
-        var blueprint: Map<String, String> = mutableMapOf() // comment this out later
-        val jsonAssetObject = JSONObject(file.readText())
-        val assetBlueprint = createBlueprint(jsonAssetObject)
-        require(validateBlueprint(assetBlueprint)) { "Blueprint is invalid" }
-        return createBaseList(blueprint)
+class AssetParser(private val schemaFile: String, private val jsonFile: String) {
+    private val schema: Schema
+    private val json: JSONObject
+
+    init {
+        val schemaJson = JSONObject(File(schemaFile).readText())
+        schema = SchemaLoader.load(schemaJson)
+
+        val jsonData = File(jsonFile).readText()
+        json = JSONObject(jsonData)
     }
 
-    private fun createBlueprint(jsonObject: JSONObject): Map<String, String> {
-        val blueprint = mutableMapOf<String, String>()
-        return blueprint
+    fun parseBases(): List<Base> {
+        val parsedBases = mutableListOf<Base>()
+        val basesArray = json.getJSONArray("bases")
+        for (i in 0 until basesArray.length()) {
+            val jsonBase = basesArray.getJSONObject(i)
+            schema.validate(jsonBase)
+
+            val id = jsonBase.getInt("id")
+            val baseType = jsonBase.getString("baseType")
+            val staff = jsonBase.getInt("staff")
+            val location = jsonBase.getInt("location")
+            val vehicles = listOf<Vehicle>() // Replace with actual logic to populate vehicles
+
+            val base: Base = when (baseType) {
+                "FIRE_STATION" -> FireStation(id, staff, location, vehicles)
+                "HOSPITAL" -> Hospital(id, staff, location, vehicles, jsonBase.optInt("doctors", 0))
+                "POLICE_STATION" -> PoliceStation(id, staff, location, vehicles, jsonBase.optInt("dogs", 0))
+                else -> throw ValidationException("Invalid baseType: $baseType")
+            }
+
+            parsedBases.add(base)
+        }
+        return parsedBases
     }
 
-    private fun validateBlueprint(blueprint: Map<String, String>): Boolean {
-        return true
-    }
+    fun parseVehicles(): List<Vehicle> {
+        val parsedVehicles = mutableListOf<Vehicle>()
+        val vehiclesArray = json.getJSONArray("vehicles")
+        for (i in 0 until vehiclesArray.length()) {
+            val jsonVehicle = vehiclesArray.getJSONObject(i)
+            schema.validate(jsonVehicle)
 
-    private fun createVehicle(blueprint: Map<String, String>): Vehicle? {
-        return null
-    }
-
-    private fun createBase(blueprint: Map<String, String>, vehicles: List<Vehicle>): Base? {
-        return null
-    }
-
-    private fun createBaseList(blueprint: Map<String, String>): List<Base> {
-        val bases = mutableListOf<Base>()
-        return bases
-    }
-
-    // here it should take a blueprint as an argument, but it doesn't make sense
-    private fun createVehicleList(vehicles: List<Vehicle>): List<Vehicle> {
-        val vehicles = mutableListOf<Vehicle>()
-        return vehicles
+            val vehicle = Vehicle(
+                id = jsonVehicle.getInt("id"),
+                baseID = jsonVehicle.getInt("baseID"),
+                vehicleType = jsonVehicle.getString("vehicleType"),
+                staffCapacity = jsonVehicle.getInt("staffCapacity"),
+                criminalCapacity = jsonVehicle.optInt("criminalCapacity", 0),
+                waterCapacity = jsonVehicle.optInt("waterCapacity", 0),
+                ladderLength = jsonVehicle.optInt("ladderLength", 0),
+                vehicleHeight = jsonVehicle.getInt("vehicleHeight")
+            )
+            parsedVehicles.add(vehicle)
+        }
+        return parsedVehicles
     }
 }
