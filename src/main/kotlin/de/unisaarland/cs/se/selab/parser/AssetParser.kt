@@ -14,6 +14,7 @@ import org.everit.json.schema.Schema
 import org.everit.json.schema.loader.SchemaLoader
 import org.json.JSONObject
 import java.io.File
+import kotlin.system.exitProcess
 
 /**
 * asset parser parses assets
@@ -55,7 +56,7 @@ class AssetParser(private val baseFile: String, private val vehicleFile: String,
             val baseType = jsonBase.getString("baseType")
             val location = jsonBase.getInt("location")
             val staff = jsonBase.getInt("staff")
-            val vehicles = parseVehicles().filter { it.assignedBaseID == id }
+            val vehicles = parseVehicles().filter { it.assignedBaseID == id } // might be inefficient code
 
             val base: Base = when (baseType) {
                 "FIRE_STATION" -> FireStation(id, staff, location, vehicles)
@@ -119,5 +120,62 @@ class AssetParser(private val baseFile: String, private val vehicleFile: String,
             parsedVehicles.add(vehicle)
         }
         return parsedVehicles
+    }
+
+    private fun validateBaseId(id: Int): Int {
+        if (id <= 0) {
+            System.err.println("Base ID must be positive")
+            exitProcess(1)
+        }
+        return id
+    }
+
+    private fun validateBaseType(baseType: String): String {
+        val validBaseTypes = listOf("FIRE_STATION", "HOSPITAL", "POLICE_STATION")
+        if (baseType !in validBaseTypes) {
+            System.err.println("Invalid base type")
+            exitProcess(1)
+        }
+        return baseType
+    }
+
+    private fun validateLocation(location: Int): Int {
+        if (location < 0) {
+            System.err.println("Location must be non-negative")
+            exitProcess(1)
+        }
+        return location
+    }
+
+    private fun validateStaff(staff: Int): Int {
+        if (staff < 0) {
+            System.err.println("Staff must be non-negative")
+            exitProcess(1)
+        }
+        return staff
+    }
+
+    private fun validateVehicleId(id: Int): Int {
+        if (id <= 0) {
+            System.err.println("Vehicle ID must be positive")
+            exitProcess(1)
+        }
+        return id
+    }
+
+    private fun validateVehicleHeight(height: Int): Int {
+        if (height <= 0) {
+            System.err.println("Vehicle height must be positive")
+            exitProcess(1)
+        }
+        return height
+    }
+
+    private fun validateStaffCapacity(capacity: Int): Int {
+        if (capacity <= 0) {
+            System.err.println("Staff capacity must be positive")
+            exitProcess(1)
+        }
+        return capacity
     }
 }
