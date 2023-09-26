@@ -278,8 +278,32 @@ class Graph(private val graph: List<Vertex>) {
      * @param emergency The type of base to return
      * @param base The base to create the list for
      */
-    public fun findClosestBasesByProximity(emergency: Emergency, base: Base): List<Base> {
-        TODO("Unimplemented method")
+    public fun findClosestBasesByProximity(
+        emergency: Emergency,
+        startBase: Base,
+        bases: List<Base>,
+        baseToVertex: MutableMap<Int, Vertex>
+    ): List<Base> {
+        val relevantBases = filterByEmergencyType(bases.toMutableList(), emergency)
+        // stores the distance of each base from the start base
+        val distanceMapping = mutableMapOf<Base, Int>()
+        val startBaseVertex = baseToVertex[startBase.baseID]
+
+        for (nextBase in relevantBases) {
+            // ignore the start base
+            if (nextBase == startBase) continue
+            val nextBaseVertex = baseToVertex[nextBase.baseID]
+            // get the shortest distance from the start base
+            distanceMapping[nextBase] = calculateShortestPath(startBaseVertex!!, nextBaseVertex!!, 0)
+        }
+
+        /**
+         * sort the bases by closest distance to the start bases
+         * converts the map into a list
+         */
+        val sortedBases = distanceMapping.entries.sortedBy { it.value }.map { it.key }
+
+        return sortedBases
     }
 
     /**
