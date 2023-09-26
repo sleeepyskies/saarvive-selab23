@@ -18,43 +18,89 @@ class Graph(private val graph: List<Vertex>) {
      * @param destination the end-point of the algorithm
      * @param carHeight the car's height, set to 0 when ignoring height restrictions
      */
-    public fun calculateShortestPath(start: Vertex, destination: Vertex, carHeight: Int): Int {
-        // create a structure to store for each vertex it's shortest distance from start and previous vertex
-        val visitedVertices: MutableMap<Vertex, Pair<Int, Vertex?>> = mutableMapOf()
-        for (vertex in graph) {
-            visitedVertices[vertex] = if (vertex == start) Pair(0, null) else Pair(Int.MAX_VALUE, null)
-        }
+    fun calculateShortestPath(start: Vertex, destination: Vertex, carHeight: Int): Int {
+        val visitedVertices: MutableMap<Vertex, Pair<Int, Vertex?>> = initVisitedVertices(start)
+        val unvisitedVertices: MutableList<Vertex> = graph.toMutableList()
+        var currentVertex = start
 
         // Algorithm
-        var currentVertex = start
-        var nextVertex: Vertex? = null // determines the next vertex to use based on road weight
-        val unvisitedVertices: MutableList<Vertex> = graph.toMutableList()
-
-        // repeat algorithm until each vertex has been visited
         while (unvisitedVertices.isNotEmpty()) {
-            var minWeight = Int.MAX_VALUE // used for setting nextVertex
-            val neighbors = currentVertex.connectingRoads.filter { (_, road) ->
-                carHeight <= road.heightLimit
-            }
-            for ((neighbor, road) in neighbors) {
-                // currentRouteWeight + roadWeight
-                val distance = (visitedVertices[currentVertex]?.first ?: 0) + road.weight
-                // if newWeight < oldWeight
-                if (distance < (visitedVertices[neighbor]?.first ?: 0)) {
-                    visitedVertices[neighbor] = Pair(distance, currentVertex)
-                }
-                // visitedVertices[neighbor] = if (distance < (visitedVertices[neighbor]?.first ?: 0)) Pair(distance, currentVertex)
-                if (distance < minWeight) {
-                    nextVertex = neighbor
-                    minWeight = distance
-                }
-            }
+            // gets all relevant neighbors based on height restrictions
+            val neighbors = findValidNeighbors(currentVertex, carHeight)
+            // updates neighbor distances
+            updateNeighbors(neighbors, visitedVertices, currentVertex)
+
             unvisitedVertices.remove(currentVertex)
+            // update nextVertex
+            val nextVertex = findNextVertex(neighbors, visitedVertices)
             if (nextVertex != null) {
                 currentVertex = nextVertex
             }
         }
         return visitedVertices[destination]?.first ?: -1
+    }
+
+    /**
+     * Creates a mapping of each vertex in the graph to it's distance to the start vertex
+     * and the previous vertex on the path. Distance initialised to Int.MAX_VALUE, previous vertex
+     * initialised to null.
+     */
+    private fun initVisitedVertices(start: Vertex): MutableMap<Vertex, Pair<Int, Vertex?>> {
+        val visitedVertices: MutableMap<Vertex, Pair<Int, Vertex?>> = mutableMapOf()
+        for (vertex in graph) {
+            visitedVertices[vertex] = if (vertex == start) Pair(0, null) else Pair(Int.MAX_VALUE, null)
+        }
+        return visitedVertices
+    }
+
+    /**
+     * Finds all vertices a vehicle can travel to based on the road's height restriction
+     */
+    private fun findValidNeighbors(vertex: Vertex, carHeight: Int): Map<Vertex, Road> {
+        return vertex.connectingRoads.filter { (_, road) -> carHeight <= road.heightLimit }
+    }
+
+    /**
+     * Updates the distance for each neighbor and adds currentVertex as the previous vertex for each neighbor.
+     */
+    private fun updateNeighbors(
+        neighbors: Map<Vertex, Road>,
+        visitedVertices: MutableMap<
+            Vertex,
+            Pair<Int, Vertex?>
+            >,
+        currentVertex: Vertex
+    ) {
+        for ((neighbor, road) in neighbors) {
+            // currentRouteWeight + roadWeight
+            val distance = (visitedVertices[currentVertex]?.first ?: 0) + road.weight
+            // if newWeight < oldWeight
+            if (distance < (visitedVertices[neighbor]?.first ?: 0)) {
+                visitedVertices[neighbor] = Pair(distance, currentVertex)
+            }
+        }
+    }
+
+    /**
+     * Finds the next vertex to be used in Dijkstra's algorithm. Chooses the vertex connected
+     * to the road with the smallest weight.
+     */
+    private fun findNextVertex(
+        neighbors: Map<Vertex, Road>,
+        visitedVertices: Map<Vertex, Pair<Int, Vertex?>>
+    ): Vertex? {
+        var nextVertex: Vertex? = null
+        var minWeight = Int.MAX_VALUE
+
+        for ((neighbor, road) in neighbors) {
+            val distance = visitedVertices[neighbor]?.first ?: 0
+            if (distance < minWeight) {
+                minWeight = distance
+                nextVertex = neighbor
+            }
+        }
+
+        return nextVertex
     }
 
     /**
