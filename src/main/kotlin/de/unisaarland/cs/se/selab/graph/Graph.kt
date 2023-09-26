@@ -112,7 +112,7 @@ class Graph(private val graph: List<Vertex>) {
      * Calculates the exact route a vehicle should take from it' current location to the destination.
      * Returns a list of vertices.
      * In case there are multiple shortest routes, the route with lower road ID's is chosen
-     * @param vehicle The vehicle to calculate the route for, contains location
+     * @param vehiclePosition The last visited vertex of the vehicle
      * @param destination The destination vertex to drive to
      * @param vehicleHeight The height of the vehicle driving
      */
@@ -206,10 +206,10 @@ class Graph(private val graph: List<Vertex>) {
 
     /**
      * Calculates the best route from a vehicle's location to an emergency vertex.
-     * @param vehicle The vehicle to calculate the route for, contains location
+     * @param vehiclePosition The position of the vehicle to calculate the route for
      * @param emergency The emergency to use as a destination. Has a pair of vertices as location
      */
-    public fun calculateBestRoute(vehicle: Vehicle, emergency: Emergency) {
+    public fun calculateBestRoute(vehiclePosition: Vertex, emergency: Emergency) {
         TODO("Unimplemented method")
     }
 
