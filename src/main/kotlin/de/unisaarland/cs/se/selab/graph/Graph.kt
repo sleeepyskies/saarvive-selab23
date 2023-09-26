@@ -6,11 +6,7 @@ import PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
-import de.unisaarland.cs.se.selab.dataClasses.events.Construction
-import de.unisaarland.cs.se.selab.dataClasses.events.Event
-import de.unisaarland.cs.se.selab.dataClasses.events.RoadClosure
-import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
-import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
+import de.unisaarland.cs.se.selab.dataClasses.events.*
 import de.unisaarland.cs.se.selab.global.StringLiterals
 import java.lang.Integer.min
 import java.util.PriorityQueue
@@ -210,15 +206,6 @@ class Graph(private val graph: List<Vertex>, private val roads: List<Road>) {
     }
 
     /**
-     * Calculates the best route from a vehicle's location to an emergency vertex.
-     * @param vehiclePosition The position of the vehicle to calculate the route for
-     * @param emergency The emergency to use as a destination. Has a pair of vertices as location
-     */
-    public fun calculateBestRoute(vehiclePosition: Vertex, emergency: Emergency) {
-        TODO("Unimplemented method")
-    }
-
-    /**
      * Finds and returns the closest relevant base for an emergency
      * @param emergency The emergency to find a base for
      * @param bases List of all bases of the correct base type
@@ -334,10 +321,37 @@ class Graph(private val graph: List<Vertex>, private val roads: List<Road>) {
     }
 
     /**
-     * Reverts the effect of a given graph event on the graph
-     * @param event The event to revert the effect of
+     * Reverts the effect of a construction event on the map
      */
-    public fun revertGraphEvent(event: Event) {
+    public fun revertGraphEvent(event: Construction) {
+        TODO("Unimplemented method")
+    }
+
+    /**
+     * Reverts the effect of a road closure event on the map
+     */
+    public fun revertGraphEvent(event: RoadClosure) {
+        TODO("Unimplemented method")
+    }
+
+    /**
+     * Reverts the effect of a rush hour event on the map
+     */
+    public fun revertGraphEvent(event: RushHour) {
+        TODO("Unimplemented method")
+    }
+
+    /**
+     * Reverts the effect of a traffic jam event on the map
+     */
+    public fun revertGraphEvent(event: TrafficJam) {
+        TODO("Unimplemented method")
+    }
+
+    /**
+     * Reverts the effect of a vehicle unavailable event on the map
+     */
+    public fun revertGraphEvent(event: VehicleUnavailable) {
         TODO("Unimplemented method")
     }
 }
