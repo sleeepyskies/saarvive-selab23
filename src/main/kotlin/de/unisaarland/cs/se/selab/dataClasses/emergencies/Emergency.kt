@@ -16,7 +16,7 @@ data class Emergency(
     val roadName: String
 ) {
     internal lateinit var location: Pair<Vertex, Vertex> // TODO (initialise in DATAHOLDER)
-    private val emergencyStatus: EmergencyStatus = EmergencyStatus.UNASSIGNED
+    internal var emergencyStatus: EmergencyStatus = EmergencyStatus.UNASSIGNED
     private val requiredVehicles: MutableMap<VehicleType, Int> =
         setRequiredVehicles() // add and remove dynamically
     private val requiredCapacity: MutableMap<CapacityType, Int> = setRequiredCapacity() // add and remove dynamically
