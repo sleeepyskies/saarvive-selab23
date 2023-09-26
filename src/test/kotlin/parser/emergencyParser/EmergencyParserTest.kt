@@ -36,6 +36,7 @@ class EmergencyParserTest {
                 VehicleType.AMBULANCE to 1
             )
         )
+        TODO("Add requiredCapacity check to all tests")
     }
 
     @Test

@@ -18,7 +18,7 @@ class Graph(private val graph: List<Vertex>) {
      * @param destination the end-point of the algorithm
      * @param carHeight the car's height, set to 0 when ignoring height restrictions
      */
-    fun calculateShortestPath(start: Vertex, destination: Vertex, carHeight: Int): Int {
+    public fun calculateShortestPath(start: Vertex, destination: Vertex, carHeight: Int): Int {
         // create a structure to store for each vertex it's shortest distance from start and previous vertex
         val visitedVertices: MutableMap<Vertex, Pair<Int, Vertex?>> = mutableMapOf()
         for (vertex in graph) {
@@ -36,13 +36,16 @@ class Graph(private val graph: List<Vertex>) {
             val neighbors = currentVertex.connectingRoads.filter { (_, road) ->
                 carHeight <= road.heightLimit
             }
-            for ((vertices, roads) in neighbors) {
-                val distance = (visitedVertices[currentVertex]?.first ?: 0) + roads.weight
-                if (distance < (visitedVertices[vertices]?.first ?: 0)) {
-                    visitedVertices[vertices] = Pair(distance, currentVertex)
+            for ((neighbor, road) in neighbors) {
+                // currentRouteWeight + roadWeight
+                val distance = (visitedVertices[currentVertex]?.first ?: 0) + road.weight
+                // if newWeight < oldWeight
+                if (distance < (visitedVertices[neighbor]?.first ?: 0)) {
+                    visitedVertices[neighbor] = Pair(distance, currentVertex)
                 }
+                // visitedVertices[neighbor] = if (distance < (visitedVertices[neighbor]?.first ?: 0)) Pair(distance, currentVertex)
                 if (distance < minWeight) {
-                    nextVertex = vertices
+                    nextVertex = neighbor
                     minWeight = distance
                 }
             }
@@ -61,7 +64,7 @@ class Graph(private val graph: List<Vertex>) {
      * @param vehicle The vehicle to calculate the route for, contains location
      * @param destination The destination vertex to drive to
      */
-    fun calculateShortestRoute(vehiclePosition: Vertex, destination: Vertex): List<Vertex> {
+    public fun calculateShortestRoute(vehiclePosition: Vertex, destination: Vertex): List<Vertex> {
         // maps how far all the vertices are from the current vertex
         val distances = mutableMapOf<Vertex, Int>()
         // allows a chain of previous vertices to be created that can be backtracked
@@ -96,16 +99,25 @@ class Graph(private val graph: List<Vertex>) {
      * @param vehicle The vehicle to calculate the route for, contains location
      * @param emergency The emergency to use as a destination. Has a pair of vertices as location
      */
-    fun calculateBestRoute(vehicle: Vehicle, emergency: Emergency) {
+    public fun calculateBestRoute(vehicle: Vehicle, emergency: Emergency) {
         TODO("Unimplemented method")
     }
 
     /**
      * Finds and returns the closest relevant base for an emergency
      * @param emergency The emergency to find a base for
+     * @param bases List of all bases of the correct base type
      */
-    fun findClosestBase(emergency: Emergency): Base {
-        TODO("Unimplemented method")
+    public fun findClosestBase(emergency: Emergency, bases: List<Base>): Base {
+        // Create mapping of base to it's distance to the emergency
+        val distanceToEmergency: MutableMap<Base, Int> = mutableMapOf()
+        for (base in bases) {
+            // Should this method take all bases or only bases of certain type?
+            /* val firstDistance = calculateShortestPath(baseToVertex[base.baseID], emergency.location.first)
+            val secondDistance = calculateShortestPath(baseToVertex[base.baseID], emergency.location.second)
+            distanceToEmergency[base] = min(firstDistance, secondDistance) */
+        }
+        TODO("Return the base with the shortest distance in the mapping")
     }
 
     /**
@@ -113,7 +125,7 @@ class Graph(private val graph: List<Vertex>) {
      * @param emergency The type of base to return
      * @param base The base to create the list for
      */
-    fun findClosestBasesByProximity(emergency: Emergency, base: Base): List<Base> {
+    public fun findClosestBasesByProximity(emergency: Emergency, base: Base): List<Base> {
         TODO("Unimplemented method")
     }
 
@@ -121,7 +133,7 @@ class Graph(private val graph: List<Vertex>) {
      * Applies the effect of the given graph event to the graph
      * @param event The event to apply the effects of
      */
-    fun applyGraphEvent(event: Event) {
+    public fun applyGraphEvent(event: Event) {
         TODO("Unimplemented method")
     }
 
@@ -129,6 +141,7 @@ class Graph(private val graph: List<Vertex>) {
      * Reverts the effect of a given graph event on the graph
      * @param event The event to revert the effect of
      */
-    fun revertGraphEvent(event: Event) {
+    public fun revertGraphEvent(event: Event) {
+        TODO("Unimplemented method")
     }
 }
