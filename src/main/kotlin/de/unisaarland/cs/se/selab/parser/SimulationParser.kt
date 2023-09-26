@@ -65,6 +65,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
                     villageName = villageName,
                     roadName = roadName
                 )
+                // add emergency to list of emergencies
                 parsedEmergencies.add(emergency)
             }
         return parsedEmergencies
@@ -79,25 +80,17 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         for (i in 0 until json.length()) {
             val jsonEvent = eventsArray.getJSONObject(i)
             // parse single event
-            val event = parseEvent(jsonEvent)
+            val event = when (val eventType = jsonEvent.getString("type")) {
+                "RUSH_HOUR" -> parseRushHour(jsonEvent)
+                "TRAFFIC_JAM" -> parseTrafficJam(jsonEvent)
+                "ROAD_CLOSURE" -> parseRoadClosure(jsonEvent)
+                "VEHICLE_UNAVAILABLE" -> vehicleUnavailable(jsonEvent)
+                else -> error("Unknown event type: $eventType")
+            }
             // add event to list of events
             parsedEvents.add(event)
         }
         return parsedEvents
-    }
-
-    /** Parses the JSON data and returns an event, that is added to the list of events.
-     * Uses private methods to parse single events according to their type.
-     */
-    private fun parseEvent(jsonEvent: JSONObject): Event{
-        val event = when (val eventType = jsonEvent.getString("type")) {
-            "RUSH_HOUR" -> parseRushHour(jsonEvent)
-            "TRAFFIC_JAM" -> parseTrafficJam(jsonEvent)
-            "ROAD_CLOSURE" -> parseRoadClosure(jsonEvent)
-            "VEHICLE_UNAVAILABLE" -> vehicleUnavailable(jsonEvent)
-            else -> error("Unknown event type: $eventType")
-        }
-        return event
     }
 
     private fun parseRushHour(jsonEvent: JSONObject): RushHour {
