@@ -7,7 +7,6 @@ import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
 import de.unisaarland.cs.se.selab.dataClasses.events.Event
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import java.lang.Integer.min
 import java.util.PriorityQueue
@@ -220,9 +219,10 @@ class Graph(private val graph: List<Vertex>) {
      * @param bases List of all bases of the correct base type
      * @param baseToVertex A mapping of each base to it's vertex
      */
-    public fun findClosestBase(emergency: Emergency, bases: List<Base>, baseToVertex: MutableMap<Int, Vertex>): Base {
+    public fun findClosestBase(emergency: Emergency, bases: List<Base>, baseToVertex: MutableMap<Int, Vertex>): Base? {
         // Filter bases by emergency type
-        val relevantBases = filterByEmergencyType(bases, emergency)
+        val relevantBases = filterByEmergencyType(bases.toMutableList(), emergency)
+        assert(relevantBases.isNotEmpty())
         // Create mapping of base to it's distance to the emergency
         val distanceToEmergency: MutableMap<Base, Int> = mutableMapOf()
         for (base in relevantBases) {
@@ -232,7 +232,7 @@ class Graph(private val graph: List<Vertex>) {
         }
 
         var minDistance = Int.MAX_VALUE
-        var closestBase : Base? = null
+        var closestBase: Base? = null
         for ((base, distance) in distanceToEmergency) {
             if (distance < minDistance) {
                 minDistance = distance
@@ -242,31 +242,35 @@ class Graph(private val graph: List<Vertex>) {
                 closestBase = if (base.baseID < (closestBase?.baseID ?: Int.MAX_VALUE)) base else closestBase
             }
         }
-        if (closestBase != null) {
-            return closestBase
-        }
+        return closestBase
     }
 
     /**
      * Filters the given list of bases based on the emergency.
      */
-    private fun filterByEmergencyType(bases: List<Base>, emergency: Emergency): List<Base> {
+    private fun filterByEmergencyType(bases: MutableList<Base>, emergency: Emergency): MutableList<Base> {
         for (base in bases) {
             when (Pair(emergency.emergencyType, getStringType(base))) {
-                EmergencyType.FIRE ->
+                Pair(EmergencyType.FIRE, "FireStation") -> Unit
+                Pair(EmergencyType.CRIME, "PoliceStation") -> Unit
+                Pair(EmergencyType.MEDICAL, "Hospital") -> Unit
+                Pair(EmergencyType.ACCIDENT, "FireStation") -> Unit
+                else -> bases.remove(base)
             }
         }
+        return bases
     }
 
     /**
      * Returns the type of a base as a string
      */
-    private fun getStringType(base: Base) : String {
+    private fun getStringType(base: Base): String {
         when (base) {
             is FireStation -> return "FireStation"
             is Hospital -> return "FireStation"
             is PoliceStation -> return "PoliceStation"
         }
+        return ""
     }
 
     /**
