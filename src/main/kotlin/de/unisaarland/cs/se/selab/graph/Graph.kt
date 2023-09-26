@@ -6,7 +6,11 @@ import PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
-import de.unisaarland.cs.se.selab.dataClasses.events.*
+import de.unisaarland.cs.se.selab.dataClasses.events.Construction
+import de.unisaarland.cs.se.selab.dataClasses.events.Event
+import de.unisaarland.cs.se.selab.dataClasses.events.RoadClosure
+import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
+import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import de.unisaarland.cs.se.selab.global.StringLiterals
 import java.lang.Integer.min
 import java.util.PriorityQueue
@@ -143,7 +147,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
         // dijkstra's algorithm using the above structure
         while (unvisitedVertices.isNotEmpty()) {
             /**
-             * .poll() finds the next vertex in the queue in the order of the lamda expression
+             * .poll() finds the next vertex in the queue in the order of the lambda expression
              */
             val currentVertex = unvisitedVertices.poll()
 
@@ -325,7 +329,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
      * @param event The event to apply the effects of
      */
     public fun applyGraphEvent(event: Event) {
-        //applyEvent(event)
+        // applyEvent(event)
         when (event) {
             is RushHour -> applyRushHour(event)
             is TrafficJam -> applyTrafficJam(event)
@@ -338,7 +342,6 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
     }
 
     private fun applyConstruction(event: Construction) {
-
     }
     private fun applyTrafficJam(event: TrafficJam) {
         for (road in roads) {
@@ -348,48 +351,77 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
 
     private fun applyRoadClosure(event: RoadClosure) {
         for (road in roads) {
-            //if (road.roadName)
+            // if (road.roadName)
         }
-
     }
     private fun applyEvent(event: VehicleUnavailable) {
-
     }
 
-
-    public fun revertGraphEvent(event: Event) {
+    /**
+     *
+     */
+    fun revertGraphEvent(event: Event) {
         when (event) {
-            is Construction -> revertGraphEvent(event)
-            is RoadClosure -> revertGraphEvent(event)
-            is RushHour -> revertGraphEvent(event)
-            is TrafficJam -> revertGraphEvent(event)
-            is VehicleUnavailable -> revertGraphEvent(event)
+            is Construction -> revertConstruction(event)
+            is RoadClosure -> revertRoadClosure(event)
+            is RushHour -> revertRushHour(event)
+            is TrafficJam -> revertTrafficJam(event)
         }
     }
 
     /**
      * Reverts the effect of a construction event on the map
      */
-    public fun revertGraphEvent(event: Construction) {
-        TODO("Unimplemented method")
+    private fun revertConstruction(event: Construction) {
+        for (road in roads) {
+            // TODO does not account for village name
+            if (road == event.affectedRoad) {
+                road.weight /= if (road.activeEvents[0] == event) event.factor else 1
+                if (road.sType != SecondaryType.ONE_WAY_STREET && event.streetClosed) {
+                    addRoadToMap(event)
+                    break
+                }
+            }
+        }
+    }
+
+    /**
+     * Adds a road back to the map after a construction event has ended.
+     */
+    private fun addRoadToMap(event: Construction) {
+        // find source vertex
+        val sourceVertex = graph.find { vertex: Vertex -> vertex.id == event.sourceID }!!
+        // find target vertex
+        val targetVertex = graph.find { vertex: Vertex -> vertex.id == event.targetID }!!
+
+        // add road back to the map
+        sourceVertex.connectingRoads[targetVertex] = event.affectedRoad
     }
 
     /**
      * Reverts the effect of a road closure event on the map
      */
-    public fun revertGraphEvent(event: RoadClosure) {
-        TODO("Unimplemented method")
+    private fun revertRoadClosure(event: RoadClosure) {
+        // find source vertex
+        val sourceVertex = graph.find { vertex: Vertex -> vertex.id == event.sourceID }!!
+        // find target vertex
+        val targetVertex = graph.find { vertex: Vertex -> vertex.id == event.targetID }!!
+
+        // add road back to the map
+        targetVertex.connectingRoads[sourceVertex] = event.affectedRoad
+        sourceVertex.connectingRoads[targetVertex] = event.affectedRoad
     }
 
     /**
      * Reverts the effect of a rush hour event on the map
      */
-    public fun revertGraphEvent(event: RushHour) {
+    private fun revertRushHour(event: RushHour) {
         // get all affected road types
         val roadTypes = event.roadType
         // iterate over roads
         for (road in roads) {
             if (roadTypes.contains(road.pType)) {
+                // only revert effect if event is front of list
                 road.weight /= if (road.activeEvents[0] == event) event.factor else 1
                 road.activeEvents.remove(event)
             }
@@ -399,14 +431,15 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
     /**
      * Reverts the effect of a traffic jam event on the map
      */
-    public fun revertGraphEvent(event: TrafficJam) {
-        TODO("Unimplemented method")
-    }
-
-    /**
-     * Reverts the effect of a vehicle unavailable event on the map
-     */
-    public fun revertGraphEvent(event: VehicleUnavailable) {
-        TODO("Unimplemented method")
+    private fun revertTrafficJam(event: TrafficJam) {
+        for (road in roads) {
+            // TODO does not account for village name since two roads may have same name
+            // find affected road
+            if (road.roadName == event.affectedRoad) {
+                road.weight /= if (road.activeEvents[0] == event) event.factor else 1
+                road.activeEvents.remove(event)
+                return
+            }
+        }
     }
 }
