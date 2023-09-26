@@ -1,75 +1,145 @@
 package de.unisaarland.cs.se.selab.global
-
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
+import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 
-class Log (private val logFilePath: String?) {
+/**
+ * Log class handles logging for the simulation.
+ */
+class Log {
 
-    public fun displayInitializationInfoValid(fileName: String): Unit {
-        TODO()
+    /**
+     * helper function for logging messages.
+     */
+    private fun logIt(message: String) {
+        println(message)
     }
 
-    public fun displayInitializationInfoInvalid(fileName: String): Unit {
-        TODO()
+    /**
+     * log successful initialization.
+     */
+    fun displayInitializationInfoValid(fileName: String) {
+        logIt("Initialization Info: $fileName successfully parsed and validated")
     }
 
-    public fun displaySimulationStart(): Unit {
-        TODO()
+    /**
+     * log unsuccessful initialization.
+     */
+    fun displayInitializationInfoInvalid(fileName: String) {
+        logIt("Initialization Info: $fileName invalid")
     }
 
-    public fun displaySimulationTick(tickNumber: Int): Unit {
-        TODO()
+    /**
+     * log start of simulation.
+     */
+    fun displaySimulationStart() {
+        logIt("Simulation started")
     }
 
-    public fun displayEmergencyAssignment(emergencyId: Int, baseId: Int): Unit {
-        TODO()
+    /**
+     * log current simulation tick.
+     */
+    fun displaySimulationTick(tickNumber: Int) {
+        logIt("Simulation tick: $tickNumber")
     }
 
-    public fun displayAssetAllocation(assetId: Int, emergencyId: Int, ticksToArrive : Int) : Unit {
-        TODO()
+    /**
+     * log emergency id assignment to a specific base.
+     */
+    fun displayEmergencyAssignment(emergencyId: Int, baseId: Int) {
+        logIt("Emergency Assignment: $emergencyId assigned to $baseId")
     }
 
-    public fun displayAssetRequest(emergencyId: Int, baseId: Int, requestId: Int) : Unit {
-        TODO()
+    /**
+     * log asset id allocation to an emergency id along with ticks with arrive.
+     */
+    fun displayAssetAllocation(assetId: Int, emergencyId: Int, ticksToArrive: Int) {
+        logIt("Asset Allocation: $assetId allocated to $emergencyId; $ticksToArrive ticks to arrive.")
     }
 
-    public fun displayAssetArrival(emergencyId: Int, assetId: Int, vertexId: Int) : Unit {
-        TODO()
+    /**
+     * log asset request for an emergency.
+     */
+    fun displayAssetRequest(emergencyId: Int, baseId: Int, requestId: Int) {
+        logIt("Asset Request: $requestId sent to $baseId for $emergencyId.")
     }
 
-    public fun displayAssetReallocation(emergencyId: Int, assetId: Int) : Unit {
-        TODO()
+    /**
+     * log asset arrival at a vertex id.
+     */
+    fun displayAssetArrival(assetId: Int, vertexId: Int) {
+        logIt("Asset Arrival: $assetId arrived at $vertexId.")
     }
 
-    public fun displayRequestFailed(emergencyId: Int): Unit {
-        TODO()
+    /**
+     * log asset reallocation to a different emergency id.
+     */
+    fun displayAssetReallocation(emergencyId: Int, assetId: Int) {
+        logIt("Asset Reallocation: $assetId reallocated to $emergencyId.")
     }
 
-    public fun displayEmergencyHandlingStart(emergencyId: Int): Unit {
-        TODO()
+    /**
+     * log a failed request for an emergency.
+     */
+    fun displayRequestFailed(emergencyId: Int) {
+        logIt("Request Failed: $emergencyId failed.")
     }
 
-    public fun displayEmergencyResolved(emergencyId: Int): Unit {
-        TODO()
+    /**
+     * log start of emergency handling.
+     */
+    fun displayEmergencyHandlingStart(emergencyId: Int) {
+        logIt("Emergency Handling Start: $emergencyId handling started.")
     }
 
-    public fun displayEmergencyFailed(emergencyId: Int): Unit {
-        TODO()
+    /**
+     * log a resolved emergency.
+     */
+    fun displayEmergencyResolved(emergencyId: Int) {
+        logIt("Emergency Resolved: $emergencyId resolved.")
     }
 
-    public fun displayEventStarted(eventId: Int): Unit {
-        TODO()
+    /**
+     * log a failed emergency.
+     */
+    fun displayEmergencyFailed(emergencyId: Int) {
+        logIt("Emergency Failed: $emergencyId failed.")
     }
 
-    public fun displayEventEnded(eventId: Int): Unit {
-        TODO()
+    /**
+     * log start of an event.
+     */
+    fun displayEventStarted(eventId: Int) {
+        logIt("Event Triggered: $eventId triggered.")
     }
 
-    fun displayStatistics(emergencies: List<Emergency>, assetsRerouted: Int): Unit {
-        TODO()
+    /**
+     * log end of an event.
+     */
+    fun displayEventEnded(eventId: Int) {
+        logIt("Event Ended: $eventId ended.")
     }
 
-    fun displayAssetsRerouted (vehicleID: Int, emergencyID: Int): Unit {
-        TODO()
+    /**
+     * log final statistics at the end of simulation.
+     */
+    fun displayStatistics(emergencies: List<Emergency>, assetsRerouted: Int) {
+        val numberReceivedEmergencies = emergencies.size
+        val numberOngoingEmergencies = emergencies.count { it.emergencyStatus == EmergencyStatus.ONGOING }
+        val numberFailedEmergencies = emergencies.count { it.emergencyStatus == EmergencyStatus.FAILED }
+        val numberResolvedEmergencies = emergencies.count { it.emergencyStatus == EmergencyStatus.RESOLVED }
+
+        logIt("Simulation End")
+        logIt("Simulation Statistics: $assetsRerouted assets rerouted.")
+        logIt("Simulation Statistics: $numberReceivedEmergencies received emergencies.")
+        logIt("Simulation Statistics: $numberOngoingEmergencies ongoing emergencies.")
+        logIt("Simulation Statistics: $numberFailedEmergencies failed emergencies.")
+        logIt("Simulation Statistics: $numberResolvedEmergencies resolved emergencies.")
     }
 
+    /**
+     * log the number of rerouted assets.
+     */
+    fun displayAssetsRerouted(assetsRerouted: Int) {
+        logIt("Assets Rerouted: $assetsRerouted")
+    }
 }
