@@ -5,7 +5,7 @@ import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 /**
  * Log class handles logging for the simulation.
  */
-class Log {
+object Log {
 
     /**
      * helper function for logging messages.
