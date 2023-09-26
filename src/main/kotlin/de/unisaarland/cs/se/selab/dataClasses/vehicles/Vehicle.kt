@@ -14,6 +14,9 @@ open class Vehicle(
     private val height: Int,
     private val assignedBaseID: Int
 ) {
+    private var criminalCapacity: Int? = null
+    private var waterCapacity: Int? = null
+    private var ladderLength: Int? = null
     private var isAvailable: Boolean = true
     private lateinit var vehicleStatus: VehicleStatus
     private var assignedEmergencyID: Int? = null
