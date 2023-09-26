@@ -7,8 +7,6 @@ import org.everit.json.schema.loader.SchemaLoader
 import org.json.*
 import java.io.File
 import java.util.*
-import javax.print.attribute.standard.Severity
-
 
 /**
  * Parses the emergency configuration file.
@@ -21,6 +19,8 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     private val id = "id"
     private val duration = "duration"
     private val startTick = "startTick"
+    // a set of all emergency IDs to make sure they are unique
+    private val emergencyIDSet = mutableSetOf<Int>()
 
     init {
         // Load and validate the JSON schema
@@ -42,28 +42,26 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         val parsedEmergencies = mutableListOf<Emergency>()
             for (i in 0 until json.length()) {
                 val jsonEmergency = emergencyCallsArray.getJSONObject(i)
-                // parse single emergency
-                val emergency = parseEmergency(jsonEmergency)
-                // add emergency to list of emergencies
+                // Validation of fields
+                val id = validateId(jsonEmergency.getInt("id"))
+                val emergencyType = validateEmergencyType(jsonEmergency.getString("emergencyType"))
+                val severity = validateSeverity(jsonEmergency.getInt("severity"))
+                val startTick = validateEmergencyTick(jsonEmergency.getInt("startTick"))
+                val handleTime = validateHandleTime(jsonEmergency.getInt("handleTime"))
+                // create a single emergency
+                val emergency = Emergency(
+                    id = id,
+                    emergencyType = emergencyType,
+                    severity = severity,
+                    startTick = startTick,
+                    handleTime = handleTime,
+                    maxDuration = jsonEmergency.getInt("maxDuration"),
+                    villageName = jsonEmergency.getString("villageName"),
+                    roadName = jsonEmergency.getString("roadName")
+                )
                 parsedEmergencies.add(emergency)
             }
         return parsedEmergencies
-    }
-
-    /** Parses the JSON data and returns an emergency, that is added to the list of emergencies.
-     */
-    private fun parseEmergency(jsonEmergency: JSONObject): Emergency{
-        val emergency = Emergency(
-            id = validateId(jsonEmergency.getInt("id")),
-            emergencyType = EmergencyType.valueOf(jsonEmergency.getString("emergencyType")),
-            severity = validateSeverity(jsonEmergency.getInt("severity")),
-            startTick = jsonEmergency.getInt("startTick"),
-            handleTime = jsonEmergency.getInt("handleTime"),
-            maxDuration = jsonEmergency.getInt("maxDuration"),
-            villageName = jsonEmergency.getString("villageName"),
-            roadName = jsonEmergency.getString("roadName")
-        )
-        return emergency
     }
 
     /** Parses the JSON data and returns a list of events, uses private method
@@ -143,6 +141,9 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         if (id < 0) {
             error("ID must be positive")
         }
+        else if (emergencyIDSet.contains(id)) {
+            error("ID must be unique")
+        }
         return id
     }
 
@@ -155,4 +156,35 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         }
         return severity
     }
+
+    /** Validates the tick of emergencies
+     */
+    private fun validateEmergencyTick(tick: Int): Int {
+        if (tick < 1) {
+            error("Tick must be greater than 1")
+        }
+        return tick
+    }
+
+    /** Validates the emergency type of emergencies
+     * Checks whether the specified emergency type belongs to EmergencyType.
+     */
+    private fun validateEmergencyType(emergencyType: String): EmergencyType{
+        if (emergencyType != EmergencyType.valueOf(emergencyType).toString()) {
+            error("EmergencyType must be one of the following: ${EmergencyType.values()}")
+        }
+        return EmergencyType.valueOf(emergencyType)
+    }
+
+    /** Validates the handle time of emergencies
+     */
+    private fun validateHandleTime(handleTime: Int): Int {
+        if (handleTime < 1) {
+            error("Minimum handle time is 1")
+        }
+        return handleTime
+    }
+
+
+
 }
