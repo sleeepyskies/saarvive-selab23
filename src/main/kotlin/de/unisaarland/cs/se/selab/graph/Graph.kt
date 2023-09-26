@@ -357,6 +357,16 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
     }
 
 
+    public fun revertGraphEvent(event: Event) {
+        when (event) {
+            is Construction -> revertGraphEvent(event)
+            is RoadClosure -> revertGraphEvent(event)
+            is RushHour -> revertGraphEvent(event)
+            is TrafficJam -> revertGraphEvent(event)
+            is VehicleUnavailable -> revertGraphEvent(event)
+        }
+    }
+
     /**
      * Reverts the effect of a construction event on the map
      */
@@ -375,7 +385,15 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
      * Reverts the effect of a rush hour event on the map
      */
     public fun revertGraphEvent(event: RushHour) {
-        TODO("Unimplemented method")
+        // get all affected road types
+        val roadTypes = event.roadType
+        // iterate over roads
+        for (road in roads) {
+            if (roadTypes.contains(road.pType)) {
+                road.weight /= if (road.activeEvents[0] == event) event.factor else 1
+                road.activeEvents.remove(event)
+            }
+        }
     }
 
     /**
