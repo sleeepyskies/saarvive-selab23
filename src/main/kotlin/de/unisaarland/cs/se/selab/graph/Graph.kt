@@ -1,9 +1,15 @@
 package de.unisaarland.cs.se.selab.graph
 
+import FireStation
+import Hospital
+import de.unisaarland.cs.se.selab.dataClasses.PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
+import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
 import de.unisaarland.cs.se.selab.dataClasses.events.Event
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
+import java.lang.Integer.min
 import java.util.PriorityQueue
 
 /**
@@ -212,17 +218,55 @@ class Graph(private val graph: List<Vertex>) {
      * Finds and returns the closest relevant base for an emergency
      * @param emergency The emergency to find a base for
      * @param bases List of all bases of the correct base type
+     * @param baseToVertex A mapping of each base to it's vertex
      */
-    public fun findClosestBase(emergency: Emergency, bases: List<Base>): Base {
+    public fun findClosestBase(emergency: Emergency, bases: List<Base>, baseToVertex: MutableMap<Int, Vertex>): Base {
+        // Filter bases by emergency type
+        val relevantBases = filterByEmergencyType(bases, emergency)
         // Create mapping of base to it's distance to the emergency
         val distanceToEmergency: MutableMap<Base, Int> = mutableMapOf()
-        for (base in bases) {
-            // Should this method take all bases or only bases of certain type?
-            /* val firstDistance = calculateShortestPath(baseToVertex[base.baseID], emergency.location.first)
-            val secondDistance = calculateShortestPath(baseToVertex[base.baseID], emergency.location.second)
-            distanceToEmergency[base] = min(firstDistance, secondDistance) */
+        for (base in relevantBases) {
+            val firstDistance = calculateShortestPath(baseToVertex[base.baseID]!!, emergency.location.first, 0)
+            val secondDistance = calculateShortestPath(baseToVertex[base.baseID]!!, emergency.location.second, 0)
+            distanceToEmergency[base] = min(firstDistance, secondDistance)
         }
-        TODO("Return the base with the shortest distance in the mapping")
+
+        var minDistance = Int.MAX_VALUE
+        var closestBase : Base? = null
+        for ((base, distance) in distanceToEmergency) {
+            if (distance < minDistance) {
+                minDistance = distance
+                closestBase = base
+            }
+            if (distance == minDistance) {
+                closestBase = if (base.baseID < (closestBase?.baseID ?: Int.MAX_VALUE)) base else closestBase
+            }
+        }
+        if (closestBase != null) {
+            return closestBase
+        }
+    }
+
+    /**
+     * Filters the given list of bases based on the emergency.
+     */
+    private fun filterByEmergencyType(bases: List<Base>, emergency: Emergency): List<Base> {
+        for (base in bases) {
+            when (Pair(emergency.emergencyType, getStringType(base))) {
+                EmergencyType.FIRE ->
+            }
+        }
+    }
+
+    /**
+     * Returns the type of a base as a string
+     */
+    private fun getStringType(base: Base) : String {
+        when (base) {
+            is FireStation -> return "FireStation"
+            is Hospital -> return "FireStation"
+            is PoliceStation -> return "PoliceStation"
+        }
     }
 
     /**
