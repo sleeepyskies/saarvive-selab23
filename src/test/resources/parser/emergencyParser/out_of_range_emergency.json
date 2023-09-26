@@ -12,13 +12,13 @@
   "emergencyCalls": [
     {
       "id": -69,
-      "tick": -100,
+      "tick": 10,
       "village": "Village A",
       "roadName": "Road 1",
       "emergencyType": "MEDICAL",
-      "severity": "broski",
+      "severity": 2,
       "handleTime": 5,
-      "maxDuration": "shrek"
+      "maxDuration": 14
     }
   ]
 }

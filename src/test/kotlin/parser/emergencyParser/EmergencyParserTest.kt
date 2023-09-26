@@ -4,6 +4,7 @@ import de.unisaarland.cs.se.selab.dataClasses.VehicleType
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
 import de.unisaarland.cs.se.selab.parser.EmergencyParser
+import de.unisaarland.cs.se.selab.parser.SimulationParser
 import de.unisaarland.cs.se.selab.parser.ValidationException
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -12,12 +13,12 @@ class EmergencyParserTest {
 
     @Test
     fun testValid1() {
-        val parser = EmergencyParser(
+        val parser = SimulationParser(
             schemaFile = "src/main/resources/schema/emergency.schema",
             jsonFile = "src/test/resources/parser/emergencyParser/valid_emergency.json"
         )
 
-        val emergencies = parser.parse()
+        val emergencies = parser.parseEmergencyCalls()
         val emergency = emergencies[0]
         assert(emergency.id == 1)
         assert(emergency.startTick == 5)
@@ -41,12 +42,12 @@ class EmergencyParserTest {
 
     @Test
     fun testValid2() {
-        val parser = EmergencyParser(
+        val parser = SimulationParser(
             schemaFile = "src/main/resources/schema/emergency.schema",
             jsonFile = "src/test/resources/parser/emergencyParser/valid_aswell_emergency.json"
         )
 
-        val emergencies = parser.parse()
+        val emergencies = parser.parseEmergencyCalls()
         val emergency = emergencies[0]
         assert(emergency.id == 2)
         assert(emergency.startTick == 8)
@@ -62,12 +63,12 @@ class EmergencyParserTest {
 
     @Test
     fun testValid3() {
-        val parser = EmergencyParser(
+        val parser = SimulationParser(
             schemaFile = "src/main/resources/schema/emergency.schema",
             jsonFile = "src/test/resources/parser/emergencyParser/multiple_valid.json"
         )
 
-        val emergencies = parser.parse()
+        val emergencies = parser.parseEmergencyCalls()
         val emergency1 = emergencies[0]
         val emergency2 = emergencies[1]
 
@@ -109,61 +110,61 @@ class EmergencyParserTest {
 
     @Test
     fun testInvalid1() {
-        val parser = EmergencyParser(
+        val parser = SimulationParser(
             schemaFile = "src/main/resources/schema/emergency.schema",
             jsonFile = "src/test/resources/parser/emergencyParser/out_of_range_emergency.json"
         )
 
-        assertThrows<ValidationException> {
-            parser.parse()
+        assertThrows<IllegalStateException>{
+            parser.parseEmergencyCalls()
         }
     }
 
     @Test
     fun testInvalid2() {
-        val parser = EmergencyParser(
+        val parser = SimulationParser(
             schemaFile = "src/main/resources/schema/emergency.schema",
             jsonFile = "src/test/resources/parser/emergencyParser/missing_attributes_emergency.json"
         )
 
-        assertThrows<ValidationException> {
-            parser.parse()
+        assertThrows<IllegalStateException>{
+            parser.parseEmergencyCalls()
         }
     }
 
     @Test
     fun testInvalid3() {
-        val parser = EmergencyParser(
+        val parser = SimulationParser(
             schemaFile = "what",
             jsonFile = "wha?t"
         )
 
-        assertThrows<ValidationException> {
-            parser.parse()
+        assertThrows<IllegalStateException>{
+            parser.parseEmergencyCalls()
         }
     }
 
     @Test
     fun testInvalid4() {
-        val parser = EmergencyParser(
+        val parser = SimulationParser(
             schemaFile = "src/main/resources/schema/emergency.schema",
             jsonFile = "wha?t"
         )
 
-        assertThrows<ValidationException> {
-            parser.parse()
+        assertThrows<IllegalStateException>{
+            parser.parseEmergencyCalls()
         }
     }
 
     @Test
     fun testInvalid5() {
-        val parser = EmergencyParser(
+        val parser = SimulationParser(
             schemaFile = "EXCUSE ME?",
             jsonFile = "src/test/resources/parser/emergencyParser/missing_attributes_emergency.json"
         )
 
-        assertThrows<ValidationException> {
-            parser.parse()
+        assertThrows<IllegalStateException>{
+            parser.parseEmergencyCalls()
         }
     }
 }
