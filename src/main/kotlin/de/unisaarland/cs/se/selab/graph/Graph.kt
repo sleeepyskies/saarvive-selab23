@@ -2,7 +2,7 @@ package de.unisaarland.cs.se.selab.graph
 
 import FireStation
 import Hospital
-import de.unisaarland.cs.se.selab.dataClasses.PoliceStation
+import PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
