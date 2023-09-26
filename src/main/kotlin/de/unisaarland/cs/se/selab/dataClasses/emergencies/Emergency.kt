@@ -2,6 +2,7 @@ package de.unisaarland.cs.se.selab.dataClasses.emergencies
 
 import de.unisaarland.cs.se.selab.dataClasses.CapacityType
 import de.unisaarland.cs.se.selab.dataClasses.VehicleType
+import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.graph.Vertex
 
 data class Emergency(
@@ -49,7 +50,7 @@ data class Emergency(
 
             2 -> mutableMapOf(CapacityType.PATIENT to 2)
 
-            3 -> mutableMapOf(CapacityType.PATIENT to 5)
+            3 -> mutableMapOf(CapacityType.PATIENT to Number.FIVE)
 
             else -> {
                 error("Severity for MEDICAL is not correct. EmergencyID: ${this.id} ")
@@ -61,9 +62,9 @@ data class Emergency(
         return when (this.severity) {
             1 -> mutableMapOf(CapacityType.CRIMINAL to 1)
 
-            2 -> mutableMapOf(CapacityType.CRIMINAL to 4)
+            2 -> mutableMapOf(CapacityType.CRIMINAL to Number.FOUR)
 
-            3 -> mutableMapOf(CapacityType.CRIMINAL to 8, CapacityType.PATIENT to 1)
+            3 -> mutableMapOf(CapacityType.CRIMINAL to Number.EIGHT, CapacityType.PATIENT to 1)
 
             else -> error("Severity for CRIME is not correct. EmergencyID: ${this.id} ")
         }
@@ -71,17 +72,17 @@ data class Emergency(
 
     private fun setCapacityForFire(): MutableMap<CapacityType, Int> {
         return when (this.severity) {
-            1 -> mutableMapOf(CapacityType.WATER to 1200)
+            1 -> mutableMapOf(CapacityType.WATER to Number.ONE_THOUSAND_TWO_HUNDRED)
             2 -> mutableMapOf(
-                CapacityType.WATER to 3000,
-                CapacityType.LADDER_LENGTH to 30,
+                CapacityType.WATER to Number.THREE_THOUSAND,
+                CapacityType.LADDER_LENGTH to Number.THIRTY,
                 CapacityType.PATIENT to 1
             )
 
             3 ->
                 mutableMapOf(
-                    CapacityType.WATER to 6000,
-                    CapacityType.LADDER_LENGTH to 40,
+                    CapacityType.WATER to Number.SIX_THOUSAND,
+                    CapacityType.LADDER_LENGTH to Number.FORTY,
                     CapacityType.PATIENT to 2
                 )
 
@@ -110,9 +111,9 @@ data class Emergency(
             )
 
             3 -> mutableMapOf(
-                VehicleType.FIRE_TRUCK_TECHNICAL to 4,
+                VehicleType.FIRE_TRUCK_TECHNICAL to Number.FOUR,
                 VehicleType.POLICE_MOTORCYCLE to 2,
-                VehicleType.POLICE_CAR to 4,
+                VehicleType.POLICE_CAR to Number.FOUR,
                 VehicleType.AMBULANCE to 3,
                 VehicleType.EMERGENCY_DOCTOR_CAR to 1
             )
@@ -133,7 +134,7 @@ data class Emergency(
             )
 
             3 -> mutableMapOf(
-                VehicleType.AMBULANCE to 5,
+                VehicleType.AMBULANCE to Number.FIVE,
                 VehicleType.EMERGENCY_DOCTOR_CAR to 2,
                 VehicleType.FIRE_TRUCK_TECHNICAL to 2
             )
@@ -149,13 +150,13 @@ data class Emergency(
             1 -> mutableMapOf(VehicleType.POLICE_CAR to 1)
 
             2 -> mutableMapOf(
-                VehicleType.POLICE_CAR to 4,
+                VehicleType.POLICE_CAR to Number.FOUR,
                 VehicleType.K9_POLICE_CAR to 1,
                 VehicleType.AMBULANCE to 1
             )
 
             3 -> mutableMapOf(
-                VehicleType.POLICE_CAR to 6,
+                VehicleType.POLICE_CAR to Number.SIX,
                 VehicleType.POLICE_MOTORCYCLE to 2,
                 VehicleType.K9_POLICE_CAR to 2,
                 VehicleType.AMBULANCE to 2,
@@ -171,14 +172,14 @@ data class Emergency(
             1 -> mutableMapOf(VehicleType.FIRE_TRUCK_WATER to 2)
 
             2 -> mutableMapOf(
-                VehicleType.FIRE_TRUCK_WATER to 4,
+                VehicleType.FIRE_TRUCK_WATER to Number.FOUR,
                 VehicleType.FIRE_TRUCK_LADDER to 1,
                 VehicleType.FIREFIGHTER_TRANSPORTER to 1,
                 VehicleType.AMBULANCE to 1
             )
 
             3 -> mutableMapOf(
-                VehicleType.FIRE_TRUCK_WATER to 6,
+                VehicleType.FIRE_TRUCK_WATER to Number.SIX,
                 VehicleType.FIRE_TRUCK_LADDER to 2,
                 VehicleType.FIREFIGHTER_TRANSPORTER to 2,
                 VehicleType.AMBULANCE to 2,
