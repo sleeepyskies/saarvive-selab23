@@ -3,7 +3,7 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 
 data class PoliceStation( // b
     private var dogs: Int,
-    private val baseID: Int,
+    override val baseID: Int,
     private var staff: Int,
     private val vertexID: Int,
     private val vehicles: List<Vehicle>

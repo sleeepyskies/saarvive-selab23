@@ -2,7 +2,7 @@ import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 
 data class FireStation( // b
-    private val baseID: Int,
+    override val baseID: Int,
     private var staff: Int,
     private val vertexID: Int,
     private val vehicles: List<Vehicle>
