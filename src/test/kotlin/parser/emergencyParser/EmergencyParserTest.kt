@@ -113,7 +113,7 @@ class EmergencyParserTest {
             jsonFile = "src/test/resources/parser/emergencyParser/out_of_range_emergency.json"
         )
 
-        assertThrows<IllegalStateException>{
+        assertThrows<IllegalStateException> {
             parser.parseEmergencyCalls()
         }
     }
@@ -125,7 +125,7 @@ class EmergencyParserTest {
             jsonFile = "src/test/resources/parser/emergencyParser/missing_attributes_emergency.json"
         )
 
-        assertThrows<IllegalStateException>{
+        assertThrows<IllegalStateException> {
             parser.parseEmergencyCalls()
         }
     }
@@ -137,7 +137,7 @@ class EmergencyParserTest {
             jsonFile = "wha?t"
         )
 
-        assertThrows<IllegalStateException>{
+        assertThrows<IllegalStateException> {
             parser.parseEmergencyCalls()
         }
     }
@@ -149,7 +149,7 @@ class EmergencyParserTest {
             jsonFile = "wha?t"
         )
 
-        assertThrows<IllegalStateException>{
+        assertThrows<IllegalStateException> {
             parser.parseEmergencyCalls()
         }
     }
@@ -161,7 +161,7 @@ class EmergencyParserTest {
             jsonFile = "src/test/resources/parser/emergencyParser/missing_attributes_emergency.json"
         )
 
-        assertThrows<IllegalStateException>{
+        assertThrows<IllegalStateException> {
             parser.parseEmergencyCalls()
         }
     }

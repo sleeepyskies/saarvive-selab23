@@ -1,5 +1,6 @@
 package de.unisaarland.cs.se.selab.dataClasses.events
 
+import de.unisaarland.cs.se.selab.graph.Road
 
 /**
  * Creates an object of RoadClosure Event, inherits from Event abstract class.
@@ -10,8 +11,7 @@ class RoadClosure(
     eventID: Int,
     duration: Int,
     startTick: Int,
-    public val startVertex: Int,
-    public val endVertex: Int
-) : Event(eventID, duration, startTick) {
-    public lateinit var affectedRoad: String
-}
+    public val affectedRoad: Road,
+    public val sourceID: Int,
+    public val targetID: Int
+) : Event(eventID, duration, startTick)
