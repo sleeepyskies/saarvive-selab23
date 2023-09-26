@@ -15,7 +15,7 @@ class GraphTest {
 
         val empty = mutableListOf<Event>()
         val roadAB = Road(PrimaryType.MAIN_STREET, SecondaryType.NONE, "VillageA", "RoadAB", 5, 2, empty)
-        val roadBC = Road(PrimaryType.SIDE_STREET, SecondaryType.TUNNEL, "VillageB", "RoadBC", 3, 3,empty)
+        val roadBC = Road(PrimaryType.SIDE_STREET, SecondaryType.TUNNEL, "VillageB", "RoadBC", 3, 1,empty)
         val roadCD = Road(PrimaryType.SIDE_STREET, SecondaryType.ONE_WAY_STREET, "VillageC", "RoadCD", 2, 1,empty)
         val roadAE = Road(PrimaryType.SIDE_STREET, SecondaryType.NONE, "VillageD", "RoadDE", 1, 1,empty)
         val roadDE = Road(PrimaryType.SIDE_STREET, SecondaryType.NONE, "VillageD", "RoadDE", 4, 1,empty)
@@ -91,6 +91,45 @@ class GraphTest {
 
         // Expect that the shortest path is 1 since it's the only path
         assertEquals(1, shortestPath)
+    }
+
+    @Test
+    fun testCalculateShortestPath_heightLimit(){
+        val mockGraph = createMockGraph()
+        val vertexA = mockGraph.graph[0] // Get the first vertex
+        val vertexC = mockGraph.graph[2] // Get the third vertex
+
+        // Calculate the shortest path from vertex A to vertex E
+        val shortestPath = mockGraph.calculateShortestPath(vertexA, vertexC, 5)
+
+        // Expect that the shortest path is 1 since there's a tunnel road
+        assertEquals(0, shortestPath)
+    }
+
+    @Test
+    fun testCalculateShortestRoute_SimpleRoute() {
+        val mockGraph = createMockGraph()
+        val vertexA = mockGraph.graph[0] // Get the first vertex
+        val vertexC = mockGraph.graph[2] // Get the third vertex
+
+        // Calculate shortest route from vertex A to vertex C without height restrictions
+        val shortestRoute = mockGraph.calculateShortestRoute(vertexA, vertexC, 0)
+
+        // Check that the shortest route is as expected
+        assertEquals(listOf(vertexA, mockGraph.graph[1], vertexC), shortestRoute)
+    }
+
+    @Test
+    fun testCalculateShortestRoute_HeightRestrictions() {
+        val mockGraph = createMockGraph()
+        val vertexA = mockGraph.graph[0] // Get the first vertex
+        val vertexC = mockGraph.graph[2] // Get the third vertex
+
+        // Calculate shortest route from vertex A to vertex C with a height limit that should restrict one road
+        val shortestRoute = mockGraph.calculateShortestRoute(vertexA, vertexC, 2)
+
+        // Check that the shortest route avoids the road with a height limit of 3
+        assertEquals(listOf(vertexA, mockGraph.graph[0], mockGraph.graph[1], vertexC), shortestRoute)
     }
 
 
