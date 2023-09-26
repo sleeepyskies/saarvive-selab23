@@ -72,7 +72,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
 
     /** Parses the JSON data and returns a list of events
      */
-    fun parseEvents():List<Event> {
+    fun  parseEvents():List<Event> {
         val eventsArray = json.getJSONArray("events")
         val parsedEvents = mutableListOf<Event>()
         for (i in 0 until eventsArray.length()) {
