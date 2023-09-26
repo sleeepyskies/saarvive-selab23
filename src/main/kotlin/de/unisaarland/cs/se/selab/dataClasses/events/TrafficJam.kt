@@ -11,6 +11,5 @@ class TrafficJam(
     duration: Int,
     startTick: Int,
     public val factor: Int,
-    public val sourceID: Int,
-    public val targetID: Int
+    public val affectedRoad: String
 ) : Event(eventID, duration, startTick)
