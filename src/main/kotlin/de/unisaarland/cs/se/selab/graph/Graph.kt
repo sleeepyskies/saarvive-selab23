@@ -16,9 +16,10 @@ import java.util.PriorityQueue
  * @param roads A list of all the roads in the graph
  */
 class Graph(private val graph: List<Vertex>, private val roads: List<Road>) {
-    private val HOSPITAL = "Hospital"
-    private val FIRESTATION = "FireStation"
-    private val POLICESTATION = "PoliceStation"
+    private val _HOSPITAL = "Hospital"
+    private val _FIRESTATION = "FireStation"
+    private val _POLICESTATION = "PoliceStation"
+
     /**
      * Returns the shortest time in ticks needed to travel from start the vertex
      * to the destination vertex
@@ -254,10 +255,10 @@ class Graph(private val graph: List<Vertex>, private val roads: List<Road>) {
     private fun filterByEmergencyType(bases: MutableList<Base>, emergency: Emergency): MutableList<Base> {
         for (base in bases) {
             when (Pair(emergency.emergencyType, getStringType(base))) {
-                Pair(EmergencyType.FIRE, FIRESTATION) -> Unit
-                Pair(EmergencyType.CRIME, POLICESTATION) -> Unit
-                Pair(EmergencyType.MEDICAL, HOSPITAL) -> Unit
-                Pair(EmergencyType.ACCIDENT, FIRESTATION) -> Unit
+                Pair(EmergencyType.FIRE, _FIRESTATION) -> Unit
+                Pair(EmergencyType.CRIME, _POLICESTATION) -> Unit
+                Pair(EmergencyType.MEDICAL, _HOSPITAL) -> Unit
+                Pair(EmergencyType.ACCIDENT, _FIRESTATION) -> Unit
                 else -> bases.remove(base)
             }
         }
@@ -269,9 +270,9 @@ class Graph(private val graph: List<Vertex>, private val roads: List<Road>) {
      */
     private fun getStringType(base: Base): String {
         when (base) {
-            is FireStation -> return FIRESTATION
-            is Hospital -> return HOSPITAL
-            is PoliceStation -> return POLICESTATION
+            is FireStation -> return _FIRESTATION
+            is Hospital -> return _HOSPITAL
+            is PoliceStation -> return _POLICESTATION
         }
         return ""
     }
