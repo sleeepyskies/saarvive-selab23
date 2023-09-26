@@ -92,10 +92,8 @@ class Graph(private val graph: List<Vertex>) {
         while (unvisitedVertices.isNotEmpty()) {
             /**
              * .poll() finds the next vertex in the queue in the order of the lamda expression
-             * if all the vertexes are explored it returns null and the loop breaks
-             * otherwise it assigns this vertex as the current one
              */
-            val currentVertex = unvisitedVertices.poll() ?: break
+            val currentVertex = unvisitedVertices.poll()
 
             if (currentVertex == destination) {
                 // found the shortest path to the end vertex
