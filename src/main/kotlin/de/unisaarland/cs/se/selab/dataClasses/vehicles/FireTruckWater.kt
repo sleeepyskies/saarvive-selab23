@@ -5,12 +5,12 @@ import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.Vertex
 
 class FireTruckWater(
-    private val vehicleType: VehicleType,
-    private val id: Int,
-    private val staffCapacity: Int,
-    private val height: Int,
-    private val assignedBaseID: Int,
-    private val maxWaterCapacity: Int
+    override val vehicleType: VehicleType,
+    override val id: Int,
+    override val staffCapacity: Int,
+    override val height: Int,
+    override val assignedBaseID: Int,
+    val maxWaterCapacity: Int
 ) : Vehicle(
     vehicleType,
     id,

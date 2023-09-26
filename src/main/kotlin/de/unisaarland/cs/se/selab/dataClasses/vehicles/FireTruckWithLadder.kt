@@ -8,12 +8,12 @@ import de.unisaarland.cs.se.selab.graph.Vertex
  * an inheritance of vehicle that has an additonal attribute ladder length
  */
 class FireTruckWithLadder(
-    private val vehicleType: VehicleType,
-    private val id: Int,
-    private val staffCapacity: Int,
-    private val height: Int,
-    private val assignedBaseID: Int,
-    private val ladderLength: Int
+    override val vehicleType: VehicleType,
+    override val id: Int,
+    override val staffCapacity: Int,
+    override val height: Int,
+    override val assignedBaseID: Int,
+    val ladderLength: Int
 ) : Vehicle(
     vehicleType,
     id,
