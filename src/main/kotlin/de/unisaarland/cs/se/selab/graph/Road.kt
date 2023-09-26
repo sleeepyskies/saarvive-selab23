@@ -8,8 +8,8 @@ import de.unisaarland.cs.se.selab.dataClasses.events.Event
 class Road(
     public val pType: PrimaryType,
     public val sType: SecondaryType,
-    private val villageName: String,
-    private val roadName: String,
+    internal val villageName: String,
+    internal val roadName: String,
     internal var weight: Int,
     internal val heightLimit: Int,
     public val activeEvents: MutableList<Event>
