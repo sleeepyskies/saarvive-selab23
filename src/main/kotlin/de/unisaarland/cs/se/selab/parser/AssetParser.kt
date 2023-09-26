@@ -52,10 +52,10 @@ class AssetParser(private val baseFile: String, private val vehicleFile: String,
             val jsonBase = basesArray.getJSONObject(i)
             baseSchema.validate(jsonBase)
 
-            val id = jsonBase.getInt("id")
-            val baseType = jsonBase.getString("baseType")
-            val location = jsonBase.getInt("location")
-            val staff = jsonBase.getInt("staff")
+            val id = validateBaseId(jsonBase.getInt("id"))
+            val baseType = validateBaseType(jsonBase.getString("baseType"))
+            val location = validateLocation(jsonBase.getInt("location"))
+            val staff = validateStaff(jsonBase.getInt("staff"))
             val vehicles = parseVehicles().filter { it.assignedBaseID == id } // might be inefficient code
 
             val base: Base = when (baseType) {
@@ -77,11 +77,11 @@ class AssetParser(private val baseFile: String, private val vehicleFile: String,
             val jsonVehicle = vehiclesArray.getJSONObject(i)
             vehicleSchema.validate(jsonVehicle)
 
-            val id = jsonVehicle.getInt("id")
-            val baseID = jsonVehicle.getInt("baseID")
+            val id = validateVehicleId(jsonVehicle.getInt("id"))
+            val baseID = validateBaseId(jsonVehicle.getInt("baseID"))
             val vehicleType = VehicleType.valueOf(jsonVehicle.getString("vehicleType"))
-            val vehicleHeight = jsonVehicle.getInt("vehicleHeight")
-            val staffCapacity = jsonVehicle.getInt("staffCapacity")
+            val vehicleHeight = validateVehicleHeight(jsonVehicle.getInt("vehicleHeight"))
+            val staffCapacity = validateStaffCapacity(jsonVehicle.getInt("staffCapacity"))
 
             val vehicle: Vehicle = when (vehicleType) {
                 VehicleType.POLICE_CAR -> PoliceCar(
@@ -114,7 +114,6 @@ class AssetParser(private val baseFile: String, private val vehicleFile: String,
                 VehicleType.FIREFIGHTER_TRANSPORTER -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
                 VehicleType.AMBULANCE -> Ambulance(vehicleType, id, staffCapacity, vehicleHeight, baseID)
                 VehicleType.EMERGENCY_DOCTOR_CAR -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
-                else -> throw IllegalArgumentException("Invalid vehicleType: $vehicleType")
             }
 
             parsedVehicles.add(vehicle)
