@@ -33,7 +33,7 @@ class AssetParser(private val schemaFile: String, private val jsonFile: String) 
             val baseType = jsonBase.getString("baseType")
             val staff = jsonBase.getInt("staff")
             val location = jsonBase.getInt("location")
-            val vehicles = listOf<Vehicle>() // Replace with actual logic to populate vehicles
+            val vehicles = listOf<Vehicle>() // to be added later
 
             val base: Base = when (baseType) {
                 "FIRE_STATION" -> FireStation(id, staff, location, vehicles)
@@ -54,16 +54,25 @@ class AssetParser(private val schemaFile: String, private val jsonFile: String) 
             val jsonVehicle = vehiclesArray.getJSONObject(i)
             schema.validate(jsonVehicle)
 
-            val vehicle = Vehicle(
-                id = jsonVehicle.getInt("id"),
-                baseID = jsonVehicle.getInt("baseID"),
-                vehicleType = jsonVehicle.getString("vehicleType"),
-                staffCapacity = jsonVehicle.getInt("staffCapacity"),
-                criminalCapacity = jsonVehicle.optInt("criminalCapacity", 0),
-                waterCapacity = jsonVehicle.optInt("waterCapacity", 0),
-                ladderLength = jsonVehicle.optInt("ladderLength", 0),
-                vehicleHeight = jsonVehicle.getInt("vehicleHeight")
-            )
+            val id = jsonVehicle.getInt("id")
+            val baseID = jsonVehicle.getInt("baseID")
+            val vehicleType = jsonVehicle.getString("vehicleType")
+            val staffCapacity = jsonVehicle.getInt("staffCapacity")
+            val vehicleHeight = jsonVehicle.getInt("vehicleHeight")
+
+            val vehicle: Vehicle = when (vehicleType) {
+                "AMBULANCE" -> Ambulance(id, baseID, staffCapacity, vehicleHeight)
+                "EMERGENCY_DOCTOR_CAR" -> EmergencyDoctorCar(id, baseID, staffCapacity, vehicleHeight)
+                "POLICE_CAR" -> PoliceCar(id, baseID, staffCapacity, vehicleHeight, jsonVehicle.getInt("criminalCapacity"))
+                "K9_POLICE_CAR" -> K9PoliceCar(id, baseID, staffCapacity, vehicleHeight)
+                "POLICE_MOTORCYCLE" -> PoliceMotorcycle(id, baseID, staffCapacity, vehicleHeight)
+                "FIRE_TRUCK_WATER" -> FireTruckWater(id, baseID, staffCapacity, vehicleHeight, jsonVehicle.getInt("waterCapacity"))
+                "FIRE_TRUCK_TECHNICAL" -> FireTruckTechnical(id, baseID, staffCapacity, vehicleHeight)
+                "FIRE_TRUCK_LADDER" -> FireTruckLadder(id, baseID, staffCapacity, vehicleHeight, jsonVehicle.getInt("ladderLength"))
+                "FIREFIGHTER_TRANSPORTER" -> FirefighterTransporter(id, baseID, staffCapacity, vehicleHeight)
+                else -> throw ValidationException("Invalid vehicleType: $vehicleType")
+            }
+
             parsedVehicles.add(vehicle)
         }
         return parsedVehicles
