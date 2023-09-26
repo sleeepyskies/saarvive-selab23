@@ -11,6 +11,6 @@ class RushHour(
     eventID: Int,
     duration: Int,
     startTick: Int,
-    private val roadType: List<PrimaryType>,
-    private val factor: Int,
+    public val roadType: List<PrimaryType>,
+    public val factor: Int,
 ) : Event(eventID, duration, startTick)

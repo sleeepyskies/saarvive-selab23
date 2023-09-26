@@ -6,7 +6,11 @@ import PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
-import de.unisaarland.cs.se.selab.dataClasses.events.*
+import de.unisaarland.cs.se.selab.dataClasses.events.Construction
+import de.unisaarland.cs.se.selab.dataClasses.events.Event
+import de.unisaarland.cs.se.selab.dataClasses.events.RoadClosure
+import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
+import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import de.unisaarland.cs.se.selab.global.StringLiterals
 import java.lang.Integer.min
 import java.util.PriorityQueue
@@ -206,6 +210,15 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
     }
 
     /**
+     * Calculates the best route from a vehicle's location to an emergency vertex.
+     * @param vehiclePosition The position of the vehicle to calculate the route for
+     * @param emergency The emergency to use as a destination. Has a pair of vertices as location
+     */
+    public fun calculateBestRoute(vehiclePosition: Vertex, emergency: Emergency) {
+        TODO("Unimplemented method")
+    }
+
+    /**
      * Finds and returns the closest relevant base for an emergency
      * @param emergency The emergency to find a base for
      * @param bases List of all bases of the correct base type
@@ -245,7 +258,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
             when (Pair(emergency.emergencyType, getStringType(base))) {
                 Pair(EmergencyType.FIRE, StringLiterals.FIRESTATION) -> Unit
                 Pair(EmergencyType.CRIME, StringLiterals.POLICESTATION) -> Unit
-                Pair(EmergencyType.MEDICAL, StringLiterals.HOSPITAL) -> Unit
+                Pair(EmergencyType.MEDICAL, StringLiterals.Hospital) -> Unit
                 Pair(EmergencyType.ACCIDENT, StringLiterals.FIRESTATION) -> Unit
                 else -> bases.remove(base)
             }
@@ -259,7 +272,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
     private fun getStringType(base: Base): String {
         when (base) {
             is FireStation -> return StringLiterals.FIRESTATION
-            is Hospital -> return StringLiterals.HOSPITAL
+            is Hospital -> return StringLiterals.Hospital
             is PoliceStation -> return StringLiterals.POLICESTATION
         }
         return ""
@@ -316,8 +329,14 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
      * @param event The event to apply the effects of
      */
     public fun applyGraphEvent(event: Event) {
-        val eventType = getStringType(event)
+
+
         TODO("Unimplemented method")
+    }
+    private fun applyEvent(event: RushHour) {
+        for (road in roads) {
+            road.weight *= event.
+        }
     }
 
     /**
