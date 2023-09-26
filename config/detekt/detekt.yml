@@ -845,7 +845,7 @@ formatting:
     autoCorrect: true
   NoWildcardImports:
     active: true
-    packagesToUseImportOnDemandProperty: 'java.util.*,kotlinx.android.synthetic.**,de.unisaarland.cs.se.selab.systemtest**'
+    packagesToUseImportOnDemandProperty: 'java.util.*,kotlinx.android.synthetic.**,de.unisaarland.cs.se.selab.systemtest.**'
   NullableTypeSpacing:
     active: false
     autoCorrect: true
