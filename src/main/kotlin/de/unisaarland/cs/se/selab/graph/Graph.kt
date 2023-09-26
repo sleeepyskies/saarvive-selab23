@@ -145,22 +145,37 @@ class Graph(private val graph: List<Vertex>) {
                 // found the shortest path to the end vertex
                 route = buildRoute(destination, previousVertices)
             }
-            for ((neighborVertex, connectingRoad) in currentVertex.connectingRoads) {
-                // check if the cars height allows it to drive on the road
-                if (vehicleHeight > connectingRoad.heightLimit) {
-                    continue
-                }
-                // calculate the weight of the route up till the neighbouring vertex
-                val tentativeDistance = distances[currentVertex]!! + connectingRoad.weight
-                // check if the route through this neighbour is shorter than the previous found route
-                if (tentativeDistance < distances[neighborVertex]!!) {
-                    distances[neighborVertex] = tentativeDistance
-                    // update for backtracking
-                    previousVertices[neighborVertex] = currentVertex
-                }
-            }
+
+            // traverse connected vertices
+            exploreNeighbours(currentVertex, distances, previousVertices, vehicleHeight)
         }
         return route
+    }
+
+    /**
+     * used within the calculateShortestRoute method to explore all the connected vertices
+     * and update the mappings when shortest vertex is found
+     */
+    private fun exploreNeighbours(
+        currentVertex: Vertex,
+        distances: MutableMap<Vertex, Int>,
+        previousVertices: MutableMap<Vertex, Vertex?>,
+        vehicleHeight: Int
+    ) {
+        for ((neighborVertex, connectingRoad) in currentVertex.connectingRoads) {
+            // check if the cars height allows it to drive on the road
+            if (vehicleHeight > connectingRoad.heightLimit) {
+                continue
+            }
+            // calculate the weight of the route up till the neighbouring vertex
+            val tentativeDistance = distances[currentVertex]!! + connectingRoad.weight
+            // check if the route through this neighbour is shorter than the previous found route
+            if (tentativeDistance < distances[neighborVertex]!!) {
+                distances[neighborVertex] = tentativeDistance
+                // update for backtracking
+                previousVertices[neighborVertex] = currentVertex
+            }
+        }
     }
 
     /**
