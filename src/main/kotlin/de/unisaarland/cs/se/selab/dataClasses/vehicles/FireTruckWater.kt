@@ -26,5 +26,5 @@ class FireTruckWater(
     override var roadProgress: Int = 0
     override lateinit var currentRoute: MutableList<Vertex>
     override var ticksStillUnavailable: Int = 0
-    private var currentWaterCapacity: Int = 0
+    var currentWaterCapacity: Int = 0
 }
