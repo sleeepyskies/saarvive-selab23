@@ -314,19 +314,6 @@ class Graph(public val graph: List<Vertex>, private val roads: List<Road>) {
     }
 
     /**
-     * returns the type of event as a string
-     */
-    private fun getStringType(event: Event): String {
-        when (event) {
-            is Construction -> return "Construction"
-            is RoadClosure -> return "RoadClosure"
-            is RushHour -> return "RushHour"
-            is TrafficJam -> return "TrafficJam"
-        }
-        return "VehicleUnavailable"
-    }
-
-    /**
      * Applies the effect of the given graph event to the graph
      * @param event The event to apply the effects of
      */
@@ -335,35 +322,51 @@ class Graph(public val graph: List<Vertex>, private val roads: List<Road>) {
         when (event) {
             is RushHour -> applyRushHour(event)
             is TrafficJam -> applyTrafficJam(event)
+            is RoadClosure -> applyRoadClosure(event)
         }
     }
     private fun applyRushHour(event: RushHour) {
         for (road in roads) {
             if (road.pType in event.roadType) road.weight *= event.factor
+            road.activeEvents.add(event)
         }
     }
 
     private fun applyConstruction(event: Construction) {
-
+        val startVertex = graph.find { it.id == event.sourceID }
+        val targetVertex = graph.find { it.id == event.targetID }
+        // puts the required into the event
+        event.affectedRoad = startVertex!!.connectingRoads[targetVertex]!!
+        // the factor is applied on the affected road
+        event.affectedRoad.weight *= event.factor
+        // check and change the road into a one way
+        if (event.streetClosed) startVertex.connectingRoads.remove(targetVertex)
     }
     private fun applyTrafficJam(event: TrafficJam) {
-        for (road in roads) {
-            if (road.roadName == event.affectedRoad) road.weight *= event.factor
-        }
+        val startVertex = graph.find { it.id == event.startVertex }
+        val targetVertex = graph.find { it.id == event.endVertex }
+
+        val requiredRoad = startVertex!!.connectingRoads[targetVertex]!!
+        requiredRoad.weight *= event.factor
+        requiredRoad.activeEvents.add(event)
+
+        event.affectedRoad = requiredRoad
     }
 
     private fun applyRoadClosure(event: RoadClosure) {
-        for (road in roads) {
-            if (road.roadName == event.affectedRoad) {
-                for (vertex in graph){
-                    vertex.connectingRoads.entries.find { it.value.roadName == road.roadName }?.key
-                }
-            }
-        }
-
-    }
-    private fun applyVehicleUnavailable(event: VehicleUnavailable) {
-
+        // find source vertex
+        val sourceVertex = graph.find { vertex: Vertex -> vertex.id == event.sourceID }!!
+        // find target vertex
+        val targetVertex = graph.find { vertex: Vertex -> vertex.id == event.targetID }!!
+        // find required road
+        val requiredRoad = targetVertex.connectingRoads[sourceVertex]
+        // puts the road into the event
+        event.affectedRoad = requiredRoad!!
+        // remove the road from the graph
+        targetVertex.connectingRoads.remove(sourceVertex)
+        sourceVertex.connectingRoads.remove(targetVertex)
+        // add this event to the list of event
+        requiredRoad.activeEvents.add(event)
     }
 
     /**
