@@ -1,24 +1,25 @@
 package de.unisaarland.cs.se.selab.phases
 
+import de.unisaarland.cs.se.selab.dataClasses.Request
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
-import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.*
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 
 /** Represents the allocation phase of the simulation
  *
  */
-class AllocationPhase(val dataHolder: DataHolder) : Phase {
+class AllocationPhase (private val dataHolder: DataHolder){
     val currentTick = 0
-    val nextRequestId = 0
+    private val nextRequestId = 0
 
     /** Executes the allocation phase
      */
-    public override fun execute() {
+    fun execute() {
         val assignableAssets =
-            getAssignableAssets(dataHolder.bases[0], dataHolder.emergencies[0]) // need to change accordingly
-        assignBasedOnCapacity(assignableAssets, dataHolder.emergencies[0]) // need to change accordingly
+            getAssignableAssets(dataHolder.bases[0], dataHolder.emergencies[0]) //need to change accordingly
+        assignBasedOnCapacity(assignableAssets, dataHolder.emergencies[0]) //need to change accordingly
+
     }
 
     private fun getAssignableAssets(base: Base, emergency: Emergency): List<Vehicle> {
@@ -30,7 +31,7 @@ class AllocationPhase(val dataHolder: DataHolder) : Phase {
             .filter { it.vehicleType in requiredVehicles }
     }
 
-    private fun getVehicleCapacity(vehicle: Vehicle): Pair<CapacityType, Int> {
+    private fun getVehicleCapacity(vehicle: Vehicle): Pair <CapacityType,Int> {
         return when (vehicle) {
             is PoliceCar -> Pair(CapacityType.CRIMINAL, vehicle.maxCriminalCapacity)
             is FireTruckWater -> Pair(CapacityType.WATER, vehicle.maxWaterCapacity)
@@ -39,7 +40,6 @@ class AllocationPhase(val dataHolder: DataHolder) : Phase {
             else -> Pair(CapacityType.NONE, 0)
         }
     }
-
     /** Assigns vehicles to an emergency based on their capacity
      *
      * @param assets The list of vehicles that can be assigned to the emergency from the assigned base
@@ -52,28 +52,28 @@ class AllocationPhase(val dataHolder: DataHolder) : Phase {
             val vehicleCapacity = getVehicleCapacity(asset)
             if (vehicleCapacity.first in requiredCapacity) {
                 if (vehicleCapacity.second >= requiredCapacity[vehicleCapacity.first]!! &&
-                    assignIfCanArriveOnTime(asset, emergency)
-                ) {
+                    assignIfCanArriveOnTime(asset, emergency)){
                     // assign vehicle to emergency, update vehicle status
                     asset.assignedEmergencyID = emergency.id
                     asset.vehicleStatus = VehicleStatus.ASSIGNED_TO_EMERGENCY
-                    emergency.requiredCapacity[vehicleCapacity.first] = -vehicleCapacity.second
+                    emergency.requiredCapacity[vehicleCapacity.first] =- vehicleCapacity.second
                     // add information about assigned vehicle to dataHolder
                     dataHolder.vehicleToEmergency[asset.id] = emergency
                 } else {
                     // reroute vehicle -> need to implement
                     rerouteVehicle(
                         getReallocatableVehicles(dataHolder.emergencyToBase[emergency.id]!!, emergency),
-                        emergency
-                    )
+                        emergency)
                     emergency.requiredCapacity[vehicleCapacity.first] =
                         emergency.requiredCapacity[vehicleCapacity.first]!! - vehicleCapacity.second
                     asset.assignedEmergencyID = emergency.id
                     asset.vehicleStatus = VehicleStatus.ASSIGNED_TO_EMERGENCY
                     dataHolder.vehicleToEmergency[asset.id] = emergency
+
                 }
             }
         }
+
     }
 
     private fun assignIfCanArriveOnTime(vehicle: Vehicle, emergency: Emergency): Boolean {
@@ -94,16 +94,12 @@ class AllocationPhase(val dataHolder: DataHolder) : Phase {
         val neededTypes = emergency.requiredVehicles.keys
         // get all vehicles that are assigned to the emergency or are moving to the emergency
         val activeVehicles =
-            base.vehicles.filter {
-                it.getVehicleStatus() == VehicleStatus.ASSIGNED_TO_EMERGENCY ||
-                        it.getVehicleStatus() == VehicleStatus.MOVING_TO_BASE ||
-                        it.getVehicleStatus() == VehicleStatus.MOVING_TO_BASE
-            }
-        return activeVehicles.filter {
-            it.vehicleType in neededTypes &&
-                    it.assignedEmergencyID != emergency.id &&
-                    dataHolder.vehicleToEmergency[it.id]!!.severity < emergency.severity
-        }
+            base.vehicles.filter { it.getVehicleStatus() == VehicleStatus.ASSIGNED_TO_EMERGENCY ||
+                it.getVehicleStatus() == VehicleStatus.MOVING_TO_BASE ||
+                it.getVehicleStatus() == VehicleStatus.MOVING_TO_BASE  }
+        return activeVehicles.filter { it.vehicleType in neededTypes &&
+                it.assignedEmergencyID != emergency.id &&
+                dataHolder.vehicleToEmergency[it.id]!!.severity < emergency.severity }
     }
 
     private fun rerouteVehicle(vehicles: List<Vehicle>, emergency: Emergency) {
@@ -122,17 +118,15 @@ class AllocationPhase(val dataHolder: DataHolder) : Phase {
                     dataHolder.graph.calculateShortestRoute(vehiclePosition, emergencyPosition.first, vehicle.height)
                         .toMutableList()
                 dataHolder.assetsRerouted++
-                val emergency = dataHolder.vehicleToEmergency[vehicle.id]!!
-                updateEmergencyAfterReroute(emergency, vehicle)
+                updateEmergencyAfterReroute(dataHolder.vehicleToEmergency[vehicle.id]!!, vehicle)
             } else if (timeToArrive2 <= emergency.maxDuration - emergency.handleTime) {
                 vehicle.currentRoute =
                     dataHolder.graph.calculateShortestRoute(vehiclePosition, emergencyPosition.second, vehicle.height)
                         .toMutableList()
                 dataHolder.assetsRerouted++
-                val emergency = dataHolder.vehicleToEmergency[vehicle.id]!!
-                updateEmergencyAfterReroute(emergency, vehicle)
+                updateEmergencyAfterReroute(dataHolder.vehicleToEmergency[vehicle.id]!!, vehicle)
             } else {
-                // vehicle cannot arrive on time
+                createRequest(emergency, dataHolder.emergencyToBase[emergency.id]!!, emergency.requiredVehicles)
             }
         }
     }
@@ -143,14 +137,18 @@ class AllocationPhase(val dataHolder: DataHolder) : Phase {
             emergency.requiredCapacity[getVehicleCapacity(vehicle).first]!! + getVehicleCapacity(vehicle).second
     }
 
-    private fun getBasesByProximity(base: Base): List<Base> {
-        return listOf<Base>()
+    private fun getBasesByProximity(emergency: Emergency,base: Base): List<Base> {
+        val baseVertex = dataHolder.baseToVertex
+        val allBases = dataHolder.bases
+
+        return dataHolder.graph.findClosestBasesByProximity(emergency,base,allBases,baseVertex)
     }
 
     private fun createRequest(emergency: Emergency, base: Base, requiredVehicles: MutableMap<VehicleType, Int>) {
-        return Unit
+        val basesToVisit = getBasesByProximity(emergency,base)
+        val baseIds = basesToVisit.map { it.baseID }
+        val request = Request(baseIds,emergency.id,nextRequestId,requiredVehicles, emergency.requiredCapacity)
+        dataHolder.requests.add(request)
     }
 
-    private fun updateEmergencyStatus(emergency: Emergency, status: EmergencyStatus) {
-    }
 }
