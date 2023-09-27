@@ -80,8 +80,8 @@ class AssetParser(private val baseFile: String, private val vehicleFile: String,
 
             val id = validateVehicleId(jsonVehicle.getInt("id"))
             val baseID = validateBaseId(jsonVehicle.getInt("baseID"))
-            val vehicleTypeString = jsonVehicle.getString("vehicleType")
-            val validatedVehicleType = validateVehicleType(vehicleTypeString)
+            val vehicleTypeString = jsonVehicle.getString("vehicleType") // just for validation
+            val validatedVehicleType = validateVehicleType(vehicleTypeString) // just for validation
             val vehicleType = VehicleType.valueOf(validatedVehicleType)
             val vehicleHeight = validateVehicleHeight(jsonVehicle.getInt("vehicleHeight"))
             val staffCapacity = validateStaffCapacity(jsonVehicle.getInt("staffCapacity"))
