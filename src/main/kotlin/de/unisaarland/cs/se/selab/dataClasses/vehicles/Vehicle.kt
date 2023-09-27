@@ -17,7 +17,7 @@ open class Vehicle(
     open var assignedEmergencyID: Int? = null
     open lateinit var lastVisitedVertex: Vertex
     open var roadProgress: Int = 0
-    open var currentRoute: MutableList<Vertex> = mutableListOf<Vertex>()
+    open var currentRoute: MutableList<Vertex> = mutableListOf()
     open var ticksStillUnavailable: Int = 0
 
     /**

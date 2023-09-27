@@ -12,7 +12,7 @@ class PoliceCar(
     override val staffCapacity: Int,
     override val height: Int,
     override val assignedBaseID: Int,
-    public val maxCriminalCapacity: Int
+    val maxCriminalCapacity: Int
 ) : Vehicle(
     vehicleType,
     id,
