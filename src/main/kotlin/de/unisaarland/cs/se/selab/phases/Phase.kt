@@ -5,7 +5,7 @@ package de.unisaarland.cs.se.selab.phases
  */
 interface Phase {
     /**
-     * Executes task assocoated with the phase
+     * Executes task associated with the phase
      */
     fun execute()
 }
