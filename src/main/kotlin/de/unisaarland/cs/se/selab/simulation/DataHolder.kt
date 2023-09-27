@@ -43,9 +43,10 @@ class DataHolder(
      * Updates DataHolder's lists of emergencies. Removes provided emergencies from
      * 'emergencies' and appends to 'ongoingEmergencies'
      */
-    public fun updateScheduledEmergencies(emergencies: List<Emergency>) {
+    public fun updateScheduledEmergencies(emergencies: MutableList<Emergency>) {
         for (emergency in emergencies){
             if (emergency.getEmergencyStatus() == EmergencyStatus.ONGOING) {
+                emergencies.remove(emergency)
                 ongoingEmergencies.add(emergency)
             }
         }
