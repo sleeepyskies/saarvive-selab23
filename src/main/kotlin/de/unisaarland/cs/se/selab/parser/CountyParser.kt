@@ -42,7 +42,6 @@ class CountyParser(private val dotFilePath: String) {
         return str.count { it == char }
     }
 
-
     /**
      * Checks if the [kind] and [token] of expected token are the same as current token in [tokenizer]
      */
@@ -56,7 +55,6 @@ class CountyParser(private val dotFilePath: String) {
     private fun expected(tokenizer: StringTokenizer, kind: TokenKind = TokenKind.SYMBOL): Boolean {
         return kind == tokenizer.peekKind()
     }
-
 
     /**
      * Checking the syntax inside the braces, data provided in [str]
@@ -73,8 +71,11 @@ class CountyParser(private val dotFilePath: String) {
                 if (expected("->", tokens) || expected(";", tokens)) {
                     when {
                         tokens.peek(";") -> {
-                            if (!keyExists(blueprint, currentStr)) (
-                                    blueprint.put(currentStr, "Vertex")) else {
+                            if (!keyExists(blueprint, currentStr)) {
+                                (
+                                    blueprint.put(currentStr, "Vertex")
+                                    )
+                            } else {
                                 throw IllegalArgumentException()
                             }
                         }
@@ -91,7 +92,6 @@ class CountyParser(private val dotFilePath: String) {
                                     } else {
                                         throw IllegalArgumentException()
                                     }
-
                                 } else {
                                     throw IllegalArgumentException()
                                 }
@@ -122,111 +122,165 @@ class CountyParser(private val dotFilePath: String) {
         if (expected("[", tokens)) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
-        if (expected("village", tokens, TokenKind.KEYWORD)){
+        } else {
+            throw IllegalArgumentException()
+        }
+        if (expected("village", tokens, TokenKind.KEYWORD)) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
-        if (expected("=", tokens)){
+        } else {
+            throw IllegalArgumentException()
+        }
+        if (expected("=", tokens)) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
-        if (expected(tokens, TokenKind.IDENTIFIER)){
+        } else {
+            throw IllegalArgumentException()
+        }
+        if (expected(tokens, TokenKind.IDENTIFIER)) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
-        if (expected(";", tokens)){
+        } else {
+            throw IllegalArgumentException()
+        }
+        if (expected(";", tokens)) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
-        if (expected("name", tokens, TokenKind.KEYWORD)){
+        } else {
+            throw IllegalArgumentException()
+        }
+        if (expected("name", tokens, TokenKind.KEYWORD)) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
-        if (expected("=", tokens)){
+        } else {
+            throw IllegalArgumentException()
+        }
+        if (expected("=", tokens)) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
-        if (expected(tokens, TokenKind.IDENTIFIER)){
+        } else {
+            throw IllegalArgumentException()
+        }
+        if (expected(tokens, TokenKind.IDENTIFIER)) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
-        if (expected(";", tokens)){
+        } else {
+            throw IllegalArgumentException()
+        }
+        if (expected(";", tokens)) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
-        if (expected("heightLimit", tokens, TokenKind.KEYWORD)){
+        } else {
+            throw IllegalArgumentException()
+        }
+        if (expected("heightLimit", tokens, TokenKind.KEYWORD)) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
-        if (expected("=", tokens)){
+        } else {
+            throw IllegalArgumentException()
+        }
+        if (expected("=", tokens)) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
-        if (expected(tokens, TokenKind.IDENTIFIER)){
+        } else {
+            throw IllegalArgumentException()
+        }
+        if (expected(tokens, TokenKind.IDENTIFIER)) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
-        if (expected(";", tokens)){
+        } else {
+            throw IllegalArgumentException()
+        }
+        if (expected(";", tokens)) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
-        if (expected("weight", tokens, TokenKind.KEYWORD)){
+        } else {
+            throw IllegalArgumentException()
+        }
+        if (expected("weight", tokens, TokenKind.KEYWORD)) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
-        if (expected("=", tokens)){
+        } else {
+            throw IllegalArgumentException()
+        }
+        if (expected("=", tokens)) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
-        if (expected(tokens, TokenKind.IDENTIFIER)){
+        } else {
+            throw IllegalArgumentException()
+        }
+        if (expected(tokens, TokenKind.IDENTIFIER)) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
-        if (expected(";", tokens)){
+        } else {
+            throw IllegalArgumentException()
+        }
+        if (expected(";", tokens)) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
-        if (expected("primaryType", tokens, TokenKind.KEYWORD)){
+        } else {
+            throw IllegalArgumentException()
+        }
+        if (expected("primaryType", tokens, TokenKind.KEYWORD)) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
-        if (expected("=", tokens)){
+        } else {
+            throw IllegalArgumentException()
+        }
+        if (expected("=", tokens)) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
-        if ((tokens.popCurrent() == "countryRoad")||(tokens.popCurrent() == "sideStreet")||(tokens.popCurrent() == "mainStreet")){
+        } else {
+            throw IllegalArgumentException()
+        }
+        if ((tokens.popCurrent() == "countryRoad") || (tokens.popCurrent() == "sideStreet") || (tokens.popCurrent() == "mainStreet")) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
-        if (expected(";", tokens)){
+        } else {
+            throw IllegalArgumentException()
+        }
+        if (expected(";", tokens)) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
-        if (expected("secondaryType", tokens, TokenKind.KEYWORD)){
+        } else {
+            throw IllegalArgumentException()
+        }
+        if (expected("secondaryType", tokens, TokenKind.KEYWORD)) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
-        if (expected("=", tokens)){
+        } else {
+            throw IllegalArgumentException()
+        }
+        if (expected("=", tokens)) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
-        if ((tokens.popCurrent() == "oneWayStreet")||(tokens.popCurrent() == "tunnel")||(tokens.popCurrent() == "none")){
+        } else {
+            throw IllegalArgumentException()
+        }
+        if ((tokens.popCurrent() == "oneWayStreet") || (tokens.popCurrent() == "tunnel") || (tokens.popCurrent() == "none")) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
-        if (expected(";", tokens)){
+        } else {
+            throw IllegalArgumentException()
+        }
+        if (expected(";", tokens)) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
+        } else {
+            throw IllegalArgumentException()
+        }
         if (expected("]", tokens)) {
             currentStr += tokens.popCurrent()
             tokens.next()
-        } else throw IllegalArgumentException()
+        } else {
+            throw IllegalArgumentException()
+        }
         if (expected(";", tokens)) {
             currentStr += tokens.popCurrent()
-        } else throw IllegalArgumentException()
-        return  currentStr
+        } else {
+            throw IllegalArgumentException()
+        }
+        return currentStr
     }
 
     /**

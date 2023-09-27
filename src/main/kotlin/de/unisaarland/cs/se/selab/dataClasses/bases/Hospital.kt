@@ -1,8 +1,9 @@
-import de.unisaarland.cs.se.selab.dataClasses.bases.Base
+package de.unisaarland.cs.se.selab.dataClasses.bases
+
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 
 /**
- * represents a fire station base
+ * represents a hospital base
  */
 data class Hospital(
     private var doctors: Int,

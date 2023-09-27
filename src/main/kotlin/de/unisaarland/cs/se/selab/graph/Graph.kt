@@ -1,9 +1,9 @@
 package de.unisaarland.cs.se.selab.graph
 
-import FireStation
-import Hospital
-import PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
+import de.unisaarland.cs.se.selab.dataClasses.bases.FireStation
+import de.unisaarland.cs.se.selab.dataClasses.bases.Hospital
+import de.unisaarland.cs.se.selab.dataClasses.bases.PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
 import de.unisaarland.cs.se.selab.dataClasses.events.Construction
@@ -76,11 +76,23 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
     ) {
         for ((neighbor, road) in neighbors) {
             // currentRouteWeight + roadWeight
-            val distance = (visitedVertices[currentVertex]?.first ?: 0) + road.weight
+            val distance = (visitedVertices[currentVertex]?.first ?: 0) + weightToTicks(road.weight)
             // if newWeight < oldWeight
             if (distance < (visitedVertices[neighbor]?.first ?: 0)) {
                 visitedVertices[neighbor] = Pair(distance, currentVertex)
             }
+        }
+    }
+
+    /**
+     * Returns the weight as ticks need to travel
+     */
+    private fun weightToTicks (weight: Int): Int {
+        if (weight < 10) return 1
+        return if (weight % 10 == 0) {
+            weight // number is already a multiple of ten
+        } else {
+            weight + (10 - weight % 10) // round up
         }
     }
 
