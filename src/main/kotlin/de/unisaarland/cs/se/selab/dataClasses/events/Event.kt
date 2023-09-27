@@ -6,7 +6,7 @@ package de.unisaarland.cs.se.selab.dataClasses.events
  * [startTick] - the tick the event is planned for
  */
 abstract class Event(
-    private val eventID: Int,
-    private var duration: Int, // the property will be changed and have condition on
-    private val startTick: Int
+    open val eventID: Int,
+    open var duration: Int, // the property will be changed and have condition on
+    open val startTick: Int
 )

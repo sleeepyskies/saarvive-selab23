@@ -16,7 +16,7 @@ import de.unisaarland.cs.se.selab.graph.Vertex
 class DataHolder(
     val graph: Graph,
     val bases: List<Base>,
-    val events: Event,
+    val events: MutableList<Event>,
     val emergencies: List<Emergency>,
 
 ) {

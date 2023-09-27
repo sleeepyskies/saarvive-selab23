@@ -8,9 +8,9 @@ import de.unisaarland.cs.se.selab.graph.PrimaryType
  * [factor] by which the length of a road is changed during the event
  */
 class RushHour(
-    public val eventID: Int,
-    public val duration: Int,
-    public val startTick: Int,
-    public val roadType: List<PrimaryType>,
-    public val factor: Int,
+    eventID: Int,
+    duration: Int,
+    startTick: Int,
+    val roadType: List<PrimaryType>,
+    val factor: Int,
 ) : Event(eventID, duration, startTick)
