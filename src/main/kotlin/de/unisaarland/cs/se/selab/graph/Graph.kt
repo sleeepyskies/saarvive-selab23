@@ -121,7 +121,7 @@ class Graph(public val graph: List<Vertex>, private val roads: List<Road>) {
      * @param destination The destination vertex to drive to
      * @param vehicleHeight The height of the vehicle driving
      */
-    public fun calculateShortestRoute(vehiclePosition: Vertex, destination: Vertex, vehicleHeight: Int): List<Vertex> {
+    fun calculateShortestRoute(vehiclePosition: Vertex, destination: Vertex, vehicleHeight: Int): List<Vertex> {
         var route = listOf<Vertex>()
         // maps how far all the vertices are from the current vertex
         val distances = mutableMapOf<Vertex, Int>()
@@ -210,13 +210,6 @@ class Graph(public val graph: List<Vertex>, private val roads: List<Road>) {
     }
 
     /**
-     * Calculates the best route from a vehicle's location to an emergency vertex.
-     * @param vehiclePosition The position of the vehicle to calculate the route for
-     * @param emergency The emergency to use as a destination. Has a pair of vertices as location
-     */
-
-
-    /**
      * Finds and returns the closest relevant base for an emergency
      * @param emergency The emergency to find a base for
      * @param bases List of all bases of the correct base type
@@ -283,7 +276,7 @@ class Graph(public val graph: List<Vertex>, private val roads: List<Road>) {
      * @param bases A list of all bases in the simulation
      * @param baseToVertex A mapping of each base to it's vertex
      */
-     fun findClosestBasesByProximity(
+    fun findClosestBasesByProximity(
         emergency: Emergency,
         startBase: Base,
         bases: List<Base>,
