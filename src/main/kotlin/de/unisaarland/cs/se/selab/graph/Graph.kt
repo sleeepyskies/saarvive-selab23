@@ -214,9 +214,7 @@ class Graph(public val graph: List<Vertex>, private val roads: List<Road>) {
      * @param vehiclePosition The position of the vehicle to calculate the route for
      * @param emergency The emergency to use as a destination. Has a pair of vertices as location
      */
-    public fun calculateBestRoute(vehiclePosition: Vertex, emergency: Emergency) {
-        TODO("Unimplemented method")
-    }
+
 
     /**
      * Finds and returns the closest relevant base for an emergency
@@ -224,7 +222,7 @@ class Graph(public val graph: List<Vertex>, private val roads: List<Road>) {
      * @param bases List of all bases of the correct base type
      * @param baseToVertex A mapping of each base to it's vertex
      */
-    public fun findClosestBase(emergency: Emergency, bases: List<Base>, baseToVertex: MutableMap<Int, Vertex>): Base? {
+    fun findClosestBase(emergency: Emergency, bases: List<Base>, baseToVertex: MutableMap<Int, Vertex>): Base? {
         // Filter bases by emergency type
         val relevantBases = filterByEmergencyType(bases.toMutableList(), emergency)
         assert(relevantBases.isNotEmpty())
@@ -285,7 +283,7 @@ class Graph(public val graph: List<Vertex>, private val roads: List<Road>) {
      * @param bases A list of all bases in the simulation
      * @param baseToVertex A mapping of each base to it's vertex
      */
-    public fun findClosestBasesByProximity(
+     fun findClosestBasesByProximity(
         emergency: Emergency,
         startBase: Base,
         bases: List<Base>,
@@ -323,6 +321,7 @@ class Graph(public val graph: List<Vertex>, private val roads: List<Road>) {
             is RushHour -> applyRushHour(event)
             is TrafficJam -> applyTrafficJam(event)
             is RoadClosure -> applyRoadClosure(event)
+            is Construction -> applyConstruction(event)
         }
     }
     private fun applyRushHour(event: RushHour) {
