@@ -35,7 +35,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
         val visitedVertices: MutableMap<Vertex, Pair<Int, Vertex?>> = initVisitedVertices(start)
         val unvisitedVertices: MutableList<Vertex> = graph.toMutableList()
         var currentVertex = start
-        var neighbors: Map<Vertex, Road> = findValidNeighbors(currentVertex, carHeight)
+        var neighbors: Map<Vertex, Road>
 
         // Algorithm
         while (unvisitedVertices.isNotEmpty()) {
@@ -47,9 +47,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
             unvisitedVertices.remove(currentVertex)
             // update nextVertex
             val nextVertex = findNextVertex(neighbors, visitedVertices, currentVertex)
-            if (nextVertex != null) {
-                currentVertex = nextVertex
-            }
+            currentVertex = nextVertex
         }
         return visitedVertices[destination]?.first ?: -1
     }
@@ -103,7 +101,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
         neighbors: Map<Vertex, Road>,
         visitedVertices: Map<Vertex, Pair<Int, Vertex?>>,
         startVertex: Vertex
-    ): Vertex? {
+    ): Vertex {
         var nextVertex: Vertex = startVertex
         var minWeight = Int.MAX_VALUE
 
@@ -129,7 +127,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
      * @param destination The destination vertex to drive to
      * @param vehicleHeight The height of the vehicle driving
      */
-    public fun calculateShortestRoute(vehiclePosition: Vertex, destination: Vertex, vehicleHeight: Int): List<Vertex> {
+    fun calculateShortestRoute(vehiclePosition: Vertex, destination: Vertex, vehicleHeight: Int): List<Vertex> {
         var route = listOf<Vertex>()
         // maps how far all the vertices are from the current vertex
         val distances = mutableMapOf<Vertex, Int>()
@@ -222,7 +220,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
      * @param vehiclePosition The position of the vehicle to calculate the route for
      * @param emergency The emergency to use as a destination. Has a pair of vertices as location
      */
-    public fun calculateBestRoute(vehiclePosition: Vertex, emergency: Emergency) {
+    fun calculateBestRoute(vehiclePosition: Vertex, emergency: Emergency) {
         TODO("Unimplemented method")
     }
 
@@ -232,7 +230,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
      * @param bases List of all bases of the correct base type
      * @param baseToVertex A mapping of each base to it's vertex
      */
-    public fun findClosestBase(emergency: Emergency, bases: List<Base>, baseToVertex: MutableMap<Int, Vertex>): Base? {
+    fun findClosestBase(emergency: Emergency, bases: List<Base>, baseToVertex: MutableMap<Int, Vertex>): Base? {
         // Filter bases by emergency type
         val relevantBases = filterByEmergencyType(bases.toMutableList(), emergency)
         assert(relevantBases.isNotEmpty())
@@ -289,9 +287,11 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
     /**
      * Returns a list of bases responsible for a certain emergency type sorted by proximity to the provided base
      * @param emergency The type of base to return
-     * @param base The base to create the list for
+     * @param startBase The base to create the list for
+     * @param bases A list of all bases in the simulation
+     * @param baseToVertex A mapping of each base to it's vertex
      */
-    public fun findClosestBasesByProximity(
+    fun findClosestBasesByProximity(
         emergency: Emergency,
         startBase: Base,
         bases: List<Base>,
@@ -310,13 +310,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
             distanceMapping[nextBase] = calculateShortestPath(startBaseVertex!!, nextBaseVertex!!, 0)
         }
 
-        /**
-         * sort the bases by closest distance to the start bases
-         * converts the map into a list
-         */
-        val sortedBases = distanceMapping.entries.sortedBy { it.value }.map { it.key }
-
-        return sortedBases
+        return distanceMapping.entries.sortedBy { it.value }.map { it.key }
     }
 
     /**
@@ -336,7 +330,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
      * Applies the effect of the given graph event to the graph
      * @param event The event to apply the effects of
      */
-    public fun applyGraphEvent(event: Event) {
+    fun applyGraphEvent(event: Event) {
         // applyEvent(event)
         when (event) {
             is RushHour -> applyRushHour(event)
