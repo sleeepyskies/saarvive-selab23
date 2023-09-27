@@ -1,5 +1,8 @@
-package de.unisaarland.cs.se.selab.dataClasses
+package de.unisaarland.cs.se.selab.dataClasses.vehicles
 
+/**
+ * used to represent different types of vehicles
+ */
 enum class VehicleType {
     POLICE_CAR,
     POLICE_MOTORCYCLE,
