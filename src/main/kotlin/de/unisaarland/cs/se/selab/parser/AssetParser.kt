@@ -10,6 +10,7 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWithLadder
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
+import de.unisaarland.cs.se.selab.global.Number
 import org.everit.json.schema.Schema
 import org.everit.json.schema.loader.SchemaLoader
 import org.json.JSONObject
@@ -79,10 +80,11 @@ class AssetParser(private val baseFile: String, private val vehicleFile: String,
 
             val id = validateVehicleId(jsonVehicle.getInt("id"))
             val baseID = validateBaseId(jsonVehicle.getInt("baseID"))
-            val vehicleType = VehicleType.valueOf(jsonVehicle.getString("vehicleType"))
+            val vehicleTypeString = jsonVehicle.getString("vehicleType")
+            val validatedVehicleType = validateVehicleType(vehicleTypeString)
+            val vehicleType = VehicleType.valueOf(validatedVehicleType)
             val vehicleHeight = validateVehicleHeight(jsonVehicle.getInt("vehicleHeight"))
             val staffCapacity = validateStaffCapacity(jsonVehicle.getInt("staffCapacity"))
-            val maxCriminalCapacity = jsonVehicle.getInt("maxCriminalCapacity")
 
             val vehicle: Vehicle = when (vehicleType) {
                 VehicleType.POLICE_CAR -> PoliceCar(
@@ -91,7 +93,7 @@ class AssetParser(private val baseFile: String, private val vehicleFile: String,
                     staffCapacity,
                     vehicleHeight,
                     baseID,
-                    maxCriminalCapacity // need to be chanhed
+                    maxCriminalCapacity = validateCriminalCapacity(jsonVehicle.getInt("maxCriminalCapacity"))
                 )
                 VehicleType.K9_POLICE_CAR -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
                 VehicleType.POLICE_MOTORCYCLE -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
@@ -101,7 +103,7 @@ class AssetParser(private val baseFile: String, private val vehicleFile: String,
                     staffCapacity,
                     vehicleHeight,
                     baseID,
-                    jsonVehicle.getInt("waterCapacity")
+                    maxWaterCapacity = validateWaterCapacity(jsonVehicle.getInt("maxWaterCapacity"))
                 )
                 VehicleType.FIRE_TRUCK_TECHNICAL -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
                 VehicleType.FIRE_TRUCK_LADDER -> FireTruckWithLadder(
@@ -110,7 +112,7 @@ class AssetParser(private val baseFile: String, private val vehicleFile: String,
                     staffCapacity,
                     vehicleHeight,
                     baseID,
-                    jsonVehicle.getInt("ladderLength")
+                    ladderLength = validateLadderLength(jsonVehicle.getInt("ladderLength"))
                 )
                 VehicleType.FIREFIGHTER_TRANSPORTER -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
                 VehicleType.AMBULANCE -> Ambulance(vehicleType, id, staffCapacity, vehicleHeight, baseID)
@@ -123,7 +125,7 @@ class AssetParser(private val baseFile: String, private val vehicleFile: String,
     }
 
     private fun validateBaseId(id: Int): Int {
-        if (id <= 0) {
+        if (id < 0) {
             System.err.println("Base ID must be positive")
             exitProcess(1)
         }
@@ -148,34 +150,74 @@ class AssetParser(private val baseFile: String, private val vehicleFile: String,
     }
 
     private fun validateStaff(staff: Int): Int {
-        if (staff < 0) {
-            System.err.println("Staff must be non-negative")
+        if (staff <= 0) {
+            System.err.println("Staff must be non-negative and non-zero")
             exitProcess(1)
         }
         return staff
     }
 
     private fun validateVehicleId(id: Int): Int {
-        if (id <= 0) {
+        if (id < 0) {
             System.err.println("Vehicle ID must be positive")
             exitProcess(1)
         }
         return id
     }
 
+    private fun validateVehicleType(vehicleType: String): String {
+        val validVehicleTypes = listOf(
+            "POLICE_CAR", "K9_POLICE_CAR", "POLICE_MOTORCYCLE",
+            "FIRE_TRUCK_WATER", "FIRE_TRUCK_TECHNICAL", "FIRE_TRUCK_LADDER", "FIREFIGHTER_TRANSPORTER",
+            "AMBULANCE", "EMERGENCY_DOCTOR_CAR"
+        )
+        if (vehicleType !in validVehicleTypes) {
+            System.err.println("Invalid vehicle type")
+            exitProcess(1)
+        }
+        return vehicleType
+    }
     private fun validateVehicleHeight(height: Int): Int {
-        if (height <= 0) {
-            System.err.println("Vehicle height must be positive")
+        if (height < 1 || height > Number.FIVE) {
+            System.err.println("Vehicle height must be in btw 1 and 5")
             exitProcess(1)
         }
         return height
     }
 
     private fun validateStaffCapacity(capacity: Int): Int {
-        if (capacity <= 0) {
+        if (capacity <= 0 || capacity > Number.TWELVE) {
             System.err.println("Staff capacity must be positive")
             exitProcess(1)
         }
         return capacity
+    }
+
+    private fun validateCriminalCapacity(capacity: Int): Int {
+        if (capacity <= 0 || capacity > Number.FOUR) {
+            System.err.println("Criminal capacity must be between 1 and 4")
+            exitProcess(1)
+        }
+        return capacity
+    }
+
+    private fun validateWaterCapacity(capacity: Int): Int {
+        if (capacity !in listOf(
+                Number.SIX_HUNDRED, Number.ONE_THOUSAND_TWO_HUNDRED,
+                Number.TWO_THOUSAND_FOUR_HUNDRED
+            )
+        ) {
+            System.err.println("Water capacity must be one of 600, 1200, 2400")
+            exitProcess(1)
+        }
+        return capacity
+    }
+
+    private fun validateLadderLength(length: Int): Int {
+        if (length < Number.THIRTY || length > Number.SEVENTY) {
+            System.err.println("Ladder length must be between 30 and 70")
+            exitProcess(1)
+        }
+        return length
     }
 }
