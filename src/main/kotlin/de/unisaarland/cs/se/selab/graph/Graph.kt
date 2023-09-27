@@ -20,7 +20,7 @@ import java.util.PriorityQueue
  * @param graph A list of vertices containing connecting roads
  * @param roads A list of all the roads in the graph
  */
-class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
+class Graph(public val graph: List<Vertex>, private val roads: List<Road>) {
     /**
      * Returns the shortest time in ticks needed to travel from start the vertex
      * to the destination vertex
@@ -442,9 +442,8 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
      */
     private fun revertTrafficJam(event: TrafficJam) {
         for (road in roads) {
-            // TODO does not account for village name since two roads may have same name
             // find affected road
-            if (road.roadName == event.affectedRoad) {
+            if (road == event.affectedRoad) {
                 road.weight /= if (road.activeEvents[0] == event) event.factor else 1
                 road.activeEvents.remove(event)
                 return

@@ -15,7 +15,7 @@ import de.unisaarland.cs.se.selab.graph.Vertex
  */
 class DataHolder(
     val graph: Graph,
-    val bases: Base,
+    val bases: List<Base>,
     val events: Event,
     val emergencies: List<Emergency>,
 
@@ -34,9 +34,24 @@ class DataHolder(
     val baseToVertex: MutableMap<Int, Vertex> = mutableMapOf() // should this be in map?
 
     /**
-     * Initialises the DataHolder's mappings. Called by the DataHolder constructor.
+     * Initialises the vehiclesToBase and baseToVertex mappings in DataHolder
      */
     private fun createMapping() {
+        // vehicleToBase
+        for (base in this.bases) {
+            // get the vehicles in the base
+            val vehicles = base.vehicles
+            // add vehicleID and base to mapping
+            for (vehicle in vehicles) {
+                vehiclesToBase[vehicle.id] = base
+            }
+        }
+        // baseToVertex
+        for (base in bases) {
+            val baseVertex = graph.graph.find { vertex: Vertex -> vertex.id == base.vertexID } !!
+            this.baseToVertex[base.baseID] = baseVertex
+        }
+
     }
 
     /**
