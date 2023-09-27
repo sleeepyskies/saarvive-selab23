@@ -10,7 +10,7 @@ open class Vehicle(
     open val height: Int,
     open val assignedBaseID: Int
 ) {
-    val status: VehicleStatus = VehicleStatus.IN_BASE
+    var status: VehicleStatus = VehicleStatus.IN_BASE
 
     /* Returns the status of the vehicle
      */

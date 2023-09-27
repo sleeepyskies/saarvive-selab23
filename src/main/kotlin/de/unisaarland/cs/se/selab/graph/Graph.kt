@@ -36,7 +36,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
         // Algorithm
         while (unvisitedVertices.isNotEmpty()) {
             // gets all relevant neighbors based on height restrictions
-            val neighbors = findValidNeighbors(currentVertex, carHeight)
+            val neighbors = currentVertex.connectingRoads.filter { (_, road) -> carHeight <= road.heightLimit }
             // updates neighbor distances
             updateNeighbors(neighbors, visitedVertices, currentVertex)
 
@@ -61,13 +61,6 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
             visitedVertices[vertex] = if (vertex == start) Pair(0, null) else Pair(Int.MAX_VALUE, null)
         }
         return visitedVertices
-    }
-
-    /**
-     * Finds all vertices a vehicle can travel to based on the road's height restriction
-     */
-    private fun findValidNeighbors(vertex: Vertex, carHeight: Int): Map<Vertex, Road> {
-        return vertex.connectingRoads.filter { (_, road) -> carHeight <= road.heightLimit }
     }
 
     /**
