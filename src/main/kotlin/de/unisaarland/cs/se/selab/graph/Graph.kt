@@ -29,20 +29,24 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
      * @param carHeight the car's height, set to 0 when ignoring height restrictions
      */
     fun calculateShortestPath(start: Vertex, destination: Vertex, carHeight: Int): Int {
+        if (start == destination) {
+            return 0
+        }
         val visitedVertices: MutableMap<Vertex, Pair<Int, Vertex?>> = initVisitedVertices(start)
         val unvisitedVertices: MutableList<Vertex> = graph.toMutableList()
         var currentVertex = start
+        var neighbors: Map<Vertex, Road> = findValidNeighbors(currentVertex, carHeight)
 
         // Algorithm
-        while (unvisitedVertices.isNotEmpty()) {
+        while (unvisitedVertices.isNotEmpty() && neighbors.isNotEmpty()) {
             // gets all relevant neighbors based on height restrictions
-            val neighbors = findValidNeighbors(currentVertex, carHeight)
+            neighbors = findValidNeighbors(currentVertex, carHeight)
             // updates neighbor distances
             updateNeighbors(neighbors, visitedVertices, currentVertex)
 
             unvisitedVertices.remove(currentVertex)
             // update nextVertex
-            val nextVertex = findNextVertex(neighbors, visitedVertices)
+            val nextVertex = findNextVertex(neighbors, visitedVertices, currentVertex)
             if (nextVertex != null) {
                 currentVertex = nextVertex
             }
@@ -97,13 +101,17 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
      */
     private fun findNextVertex(
         neighbors: Map<Vertex, Road>,
-        visitedVertices: Map<Vertex, Pair<Int, Vertex?>>
+        visitedVertices: Map<Vertex, Pair<Int, Vertex?>>,
+        startVertex: Vertex
     ): Vertex? {
-        var nextVertex: Vertex? = null
+        var nextVertex: Vertex = startVertex
         var minWeight = Int.MAX_VALUE
 
         for ((neighbor, road) in neighbors) {
             val distance = visitedVertices[neighbor]?.first ?: 0
+            if (distance == minWeight) {
+                nextVertex = if (neighbor.id < nextVertex.id) neighbor else nextVertex
+            }
             if (distance < minWeight) {
                 minWeight = distance
                 nextVertex = neighbor
