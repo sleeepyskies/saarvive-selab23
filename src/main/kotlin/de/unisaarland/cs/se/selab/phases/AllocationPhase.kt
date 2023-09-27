@@ -117,18 +117,26 @@ class AllocationPhase (val dataHolder: DataHolder){
                 vehicle.currentRoute =
                     dataHolder.graph.calculateShortestRoute(vehiclePosition, emergencyPosition.first, vehicle.height)
                         .toMutableList()
+                dataHolder.assetsRerouted++
+                val emergency = dataHolder.vehicleToEmergency[vehicle.id]!!
+                updateEmergencyAfterReroute(emergency, vehicle)
             } else if (timeToArrive2 <= emergency.maxDuration - emergency.handleTime) {
                 vehicle.currentRoute =
                     dataHolder.graph.calculateShortestRoute(vehiclePosition, emergencyPosition.second, vehicle.height)
                         .toMutableList()
+                dataHolder.assetsRerouted++
+                val emergency = dataHolder.vehicleToEmergency[vehicle.id]!!
+                updateEmergencyAfterReroute(emergency, vehicle)
             } else {
                 // vehicle cannot arrive on time
             }
         }
     }
 
-    private fun updateEmergencyAfterReroute(emergency: Emergency, vehicles: List<Vehicle>): Unit {
-        return Unit
+    private fun updateEmergencyAfterReroute(emergency: Emergency, vehicle: Vehicle): Unit {
+        emergency.requiredVehicles[vehicle.vehicleType] = emergency.requiredVehicles[vehicle.vehicleType]!! + 1
+        emergency.requiredCapacity[getVehicleCapacity(vehicle).first] =
+            emergency.requiredCapacity[getVehicleCapacity(vehicle).first]!! + getVehicleCapacity(vehicle).second
     }
 
     private fun getBasesByProximity(base: Base): List<Base> {
