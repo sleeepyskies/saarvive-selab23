@@ -3,6 +3,7 @@ package de.unisaarland.cs.se.selab.simulation
 import de.unisaarland.cs.se.selab.dataClasses.Request
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
+import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 import de.unisaarland.cs.se.selab.dataClasses.events.Event
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.graph.Graph
@@ -19,7 +20,7 @@ class DataHolder(
     val emergencies: List<Emergency>,
 
 ) {
-    val ongoingEmergencies: List<Emergency> = mutableListOf<Emergency>()
+    val ongoingEmergencies = mutableListOf<Emergency>()
     val resolvedEmergencies: List<Emergency> = mutableListOf<Emergency>()
     val activeVehicles: List<Vehicle> = mutableListOf<Vehicle>()
     val unavailableVehicles: List<Vehicle> = mutableListOf<Vehicle>()
@@ -36,7 +37,6 @@ class DataHolder(
      * Initialises the DataHolder's mappings. Called by the DataHolder constructor.
      */
     private fun createMapping() {
-        TODO("Implement method that constructs mappings")
     }
 
     /**
@@ -44,6 +44,10 @@ class DataHolder(
      * 'emergencies' and appends to 'ongoingEmergencies'
      */
     public fun updateScheduledEmergencies(emergencies: List<Emergency>) {
-        TODO("Implement method to update emergency lists")
+        for (emergency in emergencies){
+            if (emergency.getEmergencyStatus() == EmergencyStatus.ONGOING) {
+                ongoingEmergencies.add(emergency)
+            }
+        }
     }
 }
