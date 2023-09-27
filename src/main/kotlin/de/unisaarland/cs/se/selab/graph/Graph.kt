@@ -127,8 +127,8 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
      * @param destination The destination vertex to drive to
      * @param vehicleHeight The height of the vehicle driving
      */
-    fun calculateShortestRoute(vehiclePosition: Vertex, destination: Vertex, vehicleHeight: Int): List<Vertex> {
-        var route = listOf<Vertex>()
+    fun calculateShortestRoute(vehiclePosition: Vertex, destination: Vertex, vehicleHeight: Int): MutableList<Vertex> {
+        var route = mutableListOf<Vertex>()
         // maps how far all the vertices are from the current vertex
         val distances = mutableMapOf<Vertex, Int>()
         // allows a chain of previous vertices to be created that can be backtracked
@@ -199,7 +199,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
      * @param previousVertices contains backtracking of each vertex to its previous one in the optimal route
      * the functions parses through the backtracking
      */
-    private fun buildRoute(endVertex: Vertex, previousVertices: Map<Vertex, Vertex?>): List<Vertex> {
+    private fun buildRoute(endVertex: Vertex, previousVertices: Map<Vertex, Vertex?>): MutableList<Vertex> {
         val route = mutableListOf<Vertex>()
         var currentVertex = endVertex
         var previousVertex = previousVertices[endVertex]
@@ -212,7 +212,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
         // add the starting vertex to the list (not sure if it should be included)
         route.add(currentVertex)
         // the list of vertices starts with the first vertex in the route
-        return route.reversed()
+        return route.reversed().toMutableList()
     }
 
     /**
