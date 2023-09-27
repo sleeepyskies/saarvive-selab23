@@ -12,7 +12,8 @@ open class Vehicle(
 ) {
     var status: VehicleStatus = VehicleStatus.IN_BASE
 
-    /* Returns the status of the vehicle
+    /**
+     * Returns the status of the vehicle
      */
     fun getVehicleStatus(): VehicleStatus {
         return status
