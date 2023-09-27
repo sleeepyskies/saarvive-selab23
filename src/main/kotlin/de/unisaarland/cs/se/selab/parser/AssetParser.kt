@@ -3,13 +3,13 @@ package de.unisaarland.cs.se.selab.parser
 import FireStation
 import Hospital
 import PoliceStation
-import de.unisaarland.cs.se.selab.dataClasses.VehicleType
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWithLadder
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
 import de.unisaarland.cs.se.selab.global.Number
 import org.everit.json.schema.Schema
 import org.everit.json.schema.loader.SchemaLoader
@@ -20,18 +20,14 @@ import kotlin.system.exitProcess
 /**
 * asset parser parses assets
 */
-class AssetParser(private val baseFile: String, private val vehicleFile: String, private val jsonFile: String) {
-    private val baseSchema: Schema
-    private val vehicleSchema: Schema
+class AssetParser(private val assetSchemaFile: String, private val jsonFile: String) {
+    private val assetSchema: Schema
     private val json: JSONObject
-    private lateinit var allVehicles: List<Vehicle> // declare allVehicles as an member variable
+    private lateinit var allVehicles: List<Vehicle> // declare allVehicles as a member variable
 
     init {
-        val baseSchemaJson = JSONObject(File(baseFile).readText())
-        baseSchema = SchemaLoader.load(baseSchemaJson)
-
-        val vehicleSchemaJson = JSONObject(File(vehicleFile).readText())
-        vehicleSchema = SchemaLoader.load(vehicleSchemaJson)
+        val assetSchemaJson = JSONObject(File(assetSchemaFile).readText())
+        assetSchema = SchemaLoader.load(assetSchemaJson)
 
         val assetJsonData = File(jsonFile).readText()
         json = JSONObject(assetJsonData)
@@ -51,7 +47,7 @@ class AssetParser(private val baseFile: String, private val vehicleFile: String,
         val basesArray = json.getJSONArray("bases")
         for (i in 0 until basesArray.length()) {
             val jsonBase = basesArray.getJSONObject(i)
-            baseSchema.validate(jsonBase)
+            assetSchema.validate(jsonBase)
 
             val id = validateBaseId(jsonBase.getInt("id"))
             val baseType = validateBaseType(jsonBase.getString("baseType"))
@@ -76,7 +72,7 @@ class AssetParser(private val baseFile: String, private val vehicleFile: String,
         val vehiclesArray = json.getJSONArray("vehicles")
         for (i in 0 until vehiclesArray.length()) {
             val jsonVehicle = vehiclesArray.getJSONObject(i)
-            vehicleSchema.validate(jsonVehicle)
+            assetSchema.validate(jsonVehicle)
 
             val id = validateVehicleId(jsonVehicle.getInt("id"))
             val baseID = validateBaseId(jsonVehicle.getInt("baseID"))
