@@ -1,5 +1,7 @@
 package de.unisaarland.cs.se.selab.dataClasses.vehicles
 
+import de.unisaarland.cs.se.selab.graph.Vertex
+
 /**
  * a super class which defines vehicles
  */
@@ -10,15 +12,18 @@ open class Vehicle(
     open val height: Int,
     open val assignedBaseID: Int
 ) {
-    var status: VehicleStatus = VehicleStatus.IN_BASE
+    open var vehicleStatus: VehicleStatus = VehicleStatus.IN_BASE
+    open var isAvailable = true
+    open var assignedEmergencyID: Int? = null
+    open lateinit var lastVisitedVertex: Vertex
+    open var roadProgress: Int = 0
+    open var currentRoute: MutableList<Vertex> = mutableListOf<Vertex>()
+    open var ticksStillUnavailable: Int = 0
 
     /**
      * Returns the status of the vehicle
      */
     fun getVehicleStatus(): VehicleStatus {
-        return status
+        return vehicleStatus
     }
 }
-
-
-

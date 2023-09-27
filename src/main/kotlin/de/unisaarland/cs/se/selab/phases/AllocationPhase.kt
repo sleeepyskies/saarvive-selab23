@@ -3,23 +3,22 @@ package de.unisaarland.cs.se.selab.phases
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.CapacityType
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleStatus
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.*
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 
 /** Represents the allocation phase of the simulation
  *
  */
-class AllocationPhase (dataHolder: DataHolder){
+class AllocationPhase (val dataHolder: DataHolder){
     val currentTick = 0
     val nextRequestId = 0
 
     /** Executes the allocation phase
      */
     public fun execute() {
-        //code
+        var assignableAssets = getAssignableAssets(dataHolder.bases[0], dataHolder.emergencies[0]) //need to change accor dingly
+        assignBasedOnCapacity(assignableAssets,)
+
     }
 
     private fun getAssignableAssets(base: Base, emergency: Emergency): List<Vehicle> {
@@ -31,12 +30,17 @@ class AllocationPhase (dataHolder: DataHolder){
             .filter { it.vehicleType in requiredVehicles }
     }
 
-    private fun assignBasedOnCapacity(assets: List<Vehicle>, emergency: Emergency):Unit {
-        //code
-    }
-
     private fun getVehicleCapacity(vehicle: Vehicle): Pair <CapacityType,Int> {
-        return Pair(CapacityType.PATIENT, 0)
+        return when (vehicle) {
+            is PoliceCar -> Pair(CapacityType.CRIMINAL, vehicle.maxCriminalCapacity)
+            is FireTruckWater -> Pair(CapacityType.WATER, vehicle.maxWaterCapacity)
+            is Ambulance -> Pair(CapacityType.PATIENT, vehicle.maxPatientCapacity)
+            is FireTruckWithLadder -> Pair(CapacityType.LADDER_LENGTH, vehicle.ladderLength)
+            else -> Pair(CapacityType.NONE, 0)
+        }
+    }
+    private fun assignBasedOnCapacity(assets: List<Vehicle>, emergency: Emergency):Unit {
+
     }
 
     private fun assignIfCanArriveOnTime(vehicle: Vehicle, emergency: Emergency): Unit {

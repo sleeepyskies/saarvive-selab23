@@ -1,6 +1,5 @@
 package de.unisaarland.cs.se.selab.dataClasses.vehicles
 
-import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.Vertex
 
 /**
@@ -20,13 +19,11 @@ class FireTruckWithLadder(
     height,
     assignedBaseID
 ) {
-    private var isAvailable: Boolean = true
-    private lateinit var vehicleStatus: VehicleStatus
-    private var assignedEmergencyID: Int? = null
-    private lateinit var currentRoad: Road
-    private lateinit var lastVisitedVertex: String
-    private var ticksTillDestination: Int = 0
-    private var roadProgress: Int = 0
-    private lateinit var currentRoute: List<Vertex>
-    private var ticksStillUnavailable: Int = 0
+    override var isAvailable: Boolean = true
+    override lateinit var vehicleStatus: VehicleStatus
+    override var assignedEmergencyID: Int? = null
+    override lateinit var lastVisitedVertex: Vertex
+    override var roadProgress: Int = 0
+    override lateinit var currentRoute: MutableList<Vertex>
+    override var ticksStillUnavailable: Int = 0
 }

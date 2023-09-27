@@ -1,6 +1,5 @@
 package de.unisaarland.cs.se.selab.dataClasses.vehicles
 
-import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.Vertex
 
 /**
@@ -12,7 +11,8 @@ class Ambulance(
     override val id: Int,
     override val staffCapacity: Int,
     override val height: Int,
-    override val assignedBaseID: Int
+    override val assignedBaseID: Int,
+    val maxPatientCapacity: Int
 ) : Vehicle(
     vehicleType,
     id,
@@ -20,14 +20,12 @@ class Ambulance(
     height,
     assignedBaseID
 ) {
-    var isAvailable: Boolean = true
-    lateinit var vehicleStatus: VehicleStatus
-    var assignedEmergencyID: Int? = null
-    lateinit var currentRoad: Road
-    lateinit var lastVisitedVertex: String
-    var ticksTillDestination: Int = 0
-    var roadProgress: Int = 0
-    lateinit var currentRoute: List<Vertex>
-    var ticksStillUnavailable: Int = 0
-    val hasPassenger: Boolean = false
+    override var isAvailable: Boolean = true
+    override lateinit var vehicleStatus: VehicleStatus
+    override var assignedEmergencyID: Int? = null
+    override lateinit var lastVisitedVertex: Vertex
+    override var roadProgress: Int = 0
+    override lateinit var currentRoute: MutableList<Vertex>
+    override var ticksStillUnavailable: Int = 0
+    val hasPatient: Boolean = false
 }
