@@ -38,7 +38,7 @@ class Simulation(private val dataHolder: DataHolder, private val maxTicks: Int?)
         } while (shouldContinue())
         val combinedList =
             this.dataHolder.emergencies + this.dataHolder.ongoingEmergencies +
-                    this.dataHolder.resolvedEmergencies
+                this.dataHolder.resolvedEmergencies
         Log.displayStatistics(combinedList, this.dataHolder.assetsRerouted)
     }
 
@@ -62,7 +62,7 @@ class Simulation(private val dataHolder: DataHolder, private val maxTicks: Int?)
      */
     private fun emergenciesHandled(): Boolean {
         val listOfAllEmergencies = this.dataHolder.emergencies + this.dataHolder.ongoingEmergencies +
-                this.dataHolder.resolvedEmergencies
+            this.dataHolder.resolvedEmergencies
 
         listOfAllEmergencies.forEach { emergency: Emergency ->
             if (emergency.emergencyStatus != EmergencyStatus.FAILED ||
