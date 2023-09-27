@@ -354,8 +354,6 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
             // if (road.roadName)
         }
     }
-    private fun applyEvent(event: VehicleUnavailable) {
-    }
 
     /**
      *
