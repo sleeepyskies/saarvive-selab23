@@ -19,7 +19,7 @@ data class Emergency(
     internal var emergencyStatus: EmergencyStatus = EmergencyStatus.UNASSIGNED
     val requiredVehicles: MutableMap<VehicleType, Int> =
         setRequiredVehicles() // add and remove dynamically
-    private val requiredCapacity: MutableMap<CapacityType, Int> = setRequiredCapacity() // add and remove dynamically
+    val requiredCapacity: MutableMap<CapacityType, Int> = setRequiredCapacity() // add and remove dynamically
 
     private fun setRequiredCapacity(): MutableMap<CapacityType, Int> {
         return when (this.emergencyType) {

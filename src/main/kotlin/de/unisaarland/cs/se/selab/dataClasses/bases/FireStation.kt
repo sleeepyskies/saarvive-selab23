@@ -1,10 +1,11 @@
-import de.unisaarland.cs.se.selab.dataClasses.bases.Base
+package de.unisaarland.cs.se.selab.dataClasses.bases
+
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 
 /**
  * represents a fire station base
  */
-data class FireStation( // b
+data class FireStation(
     override val baseID: Int,
     override var staff: Int,
     override val vertexID: Int,

@@ -22,13 +22,13 @@ class DataHolder(
 ) {
     val ongoingEmergencies = mutableListOf<Emergency>()
     val resolvedEmergencies: List<Emergency> = mutableListOf<Emergency>()
-    val activeVehicles: List<Vehicle> = mutableListOf<Vehicle>()
+    val activeVehicles: MutableList<Vehicle> = mutableListOf<Vehicle>()
     val unavailableVehicles: List<Vehicle> = mutableListOf<Vehicle>()
     val requests: List<Request> = mutableListOf<Request>()
     var assetsRerouted: Int = 0
 
     val emergencyToBase: MutableMap<Int, Base> = mutableMapOf()
-    val emergencyToVehicles: MutableMap<Int, List<Vehicle>> = mutableMapOf()
+    val emergencyToVehicles: MutableMap<Int, MutableList<Vehicle>> = mutableMapOf()
     val vehicleToEmergency: MutableMap<Int, Emergency> = mutableMapOf()
     val vehiclesToBase: MutableMap<Int, Base> = initVehiclesToBase()
     val baseToVertex: MutableMap<Int, Vertex> = initBaseToVertex() // should this be in map?

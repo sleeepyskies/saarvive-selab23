@@ -2,10 +2,7 @@ package de.unisaarland.cs.se.selab.phases
 
 import de.unisaarland.cs.se.selab.dataClasses.Request
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.CapacityType
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleStatus
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.*
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 
 /**
@@ -28,8 +25,10 @@ class RequestPhase(val dataHolder: DataHolder) {
     /**
      * find all the vehicles that are in the base
      */
-    private fun getAssignableAssets(base: Base, request: Request): List<Vehicle> {
-        val requiredVehicle = base.vehicles.filter { it.status == VehicleStatus.IN_BASE }
+    private fun getAssignableAssets(base: Base, requestedVehicles: Map<VehicleType, Int>): List<Vehicle> {
+        val requiredVehicle = base.vehicles.filter {
+            it.vehicleStatus == VehicleStatus.IN_BASE && it.vehicleType in requestedVehicles
+        }
         return requiredVehicle
     }
 
@@ -41,7 +40,38 @@ class RequestPhase(val dataHolder: DataHolder) {
         return request.requiredCapacity
     }
 
-    private fun assignBasedOnCapacity(vehicles: List<Vehicle>) {
-        //for (vehicle in Vehicle)
+    private fun getNormalVehicles(vehicles: List<Vehicle>): List<Vehicle> {
+        val requiredVehicle = vehicles.filter { vehicle ->
+            vehicle.vehicleType in setOf(
+                VehicleType.POLICE_MOTORCYCLE,
+                VehicleType.FIREFIGHTER_TRANSPORTER,
+                VehicleType.FIRE_TRUCK_TECHNICAL
+            )
+        }
+        return requiredVehicle
+    }
+
+    private fun getSpecialVehicles(vehicles: List<Vehicle>): List<Vehicle> {
+        val requiredVehicle = vehicles.filter { vehicle ->
+            vehicle.vehicleType !in setOf(
+                VehicleType.POLICE_MOTORCYCLE,
+                VehicleType.FIREFIGHTER_TRANSPORTER,
+                VehicleType.FIRE_TRUCK_TECHNICAL
+            )
+        }
+        return requiredVehicle
+    }
+
+    private fun assignWithoutCapacity(vehicles: List<Vehicle>, request: Request){
+        for (vehicle in vehicles) {
+            request.requiredVehicles[] = request.requiredVehicles[vehicle.vehicleType]!! - 1
+        }
+    }
+    private fun assignBasedOnCapacity(vehicles: List<Vehicle>, capacity: Map<CapacityType, Int>, request: Request) {
+        for (vehicle in vehicles) {
+            when (vehicle) {
+                is FireTruckWater ->
+            }
+        }
     }
 }

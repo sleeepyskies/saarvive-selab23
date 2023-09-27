@@ -1,7 +1,11 @@
-import de.unisaarland.cs.se.selab.dataClasses.bases.Base
+package de.unisaarland.cs.se.selab.dataClasses.bases
+
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 
-data class PoliceStation( // b
+/**
+ * represents a police station base
+ */
+data class PoliceStation(
     private var dogs: Int,
     override val baseID: Int,
     override var staff: Int,

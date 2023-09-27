@@ -1,9 +1,9 @@
 package de.unisaarland.cs.se.selab.parser
 
-import FireStation
-import Hospital
-import PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
+import de.unisaarland.cs.se.selab.dataClasses.bases.FireStation
+import de.unisaarland.cs.se.selab.dataClasses.bases.Hospital
+import de.unisaarland.cs.se.selab.dataClasses.bases.PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWithLadder
@@ -69,7 +69,7 @@ class AssetParser(private val assetSchemaFile: String, private val jsonFile: Str
 
     private fun parseVehicles(): List<Vehicle> {
         val parsedVehicles = mutableListOf<Vehicle>()
-        val vehiclesArray = json.getJSONArray("vehicles")
+        val vehiclesArray = json.getJSONArray("vehicle")
         for (i in 0 until vehiclesArray.length()) {
             val jsonVehicle = vehiclesArray.getJSONObject(i)
             assetSchema.validate(jsonVehicle)
@@ -89,7 +89,7 @@ class AssetParser(private val assetSchemaFile: String, private val jsonFile: Str
                     staffCapacity,
                     vehicleHeight,
                     baseID,
-                    maxCriminalCapacity = validateCriminalCapacity(jsonVehicle.getInt("maxCriminalCapacity"))
+                    maxCriminalCapacity = validateCriminalCapacity(jsonVehicle.getInt("criminalCapacity"))
                 )
                 VehicleType.K9_POLICE_CAR -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
                 VehicleType.POLICE_MOTORCYCLE -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
@@ -99,7 +99,7 @@ class AssetParser(private val assetSchemaFile: String, private val jsonFile: Str
                     staffCapacity,
                     vehicleHeight,
                     baseID,
-                    maxWaterCapacity = validateWaterCapacity(jsonVehicle.getInt("maxWaterCapacity"))
+                    maxWaterCapacity = validateWaterCapacity(jsonVehicle.getInt("waterCapacity"))
                 )
                 VehicleType.FIRE_TRUCK_TECHNICAL -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
                 VehicleType.FIRE_TRUCK_LADDER -> FireTruckWithLadder(
