@@ -1,8 +1,14 @@
 package de.unisaarland.cs.se.selab.phases
 
+import FireStation
+import Hospital
+import PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
+import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
+import de.unisaarland.cs.se.selab.graph.Vertex
 import de.unisaarland.cs.se.selab.simulation.DataHolder
+import kotlin.reflect.typeOf
 
 /**
  * Class for selecting emergencies for the current tick, adding them to list of active ones,
@@ -37,35 +43,68 @@ class EmergencyPhase(private val dataHolder: DataHolder) {
      * Assigns Bases for each [emergencies]
      */
     private fun assignBasesToEmergencies(emergencies: List<Emergency>) {
-
+        emergencies.forEach { Emergency ->
+            assignBaseToEmergency(Emergency, findClosestBase(Emergency))
+        }
     }
 
     /**
      * Returns the closest responsible Base for the [emergency]
      */
     private fun findClosestBase(emergency: Emergency): Base {
+        val listOfResponsibleBases = mutableListOf<Base>()
+        when (emergency.emergencyType) {
+            EmergencyType.FIRE, EmergencyType.ACCIDENT -> listOfResponsibleBases.addAll(dataHolder.bases.filterIsInstance<FireStation>())
+            EmergencyType.CRIME -> listOfResponsibleBases.addAll(dataHolder.bases.filterIsInstance<PoliceStation>())
+            EmergencyType.MEDICAL -> listOfResponsibleBases.addAll(dataHolder.bases.filterIsInstance<Hospital>())
+        }
+
+        val listOfEmergencyVertices = mutableListOf(emergency.location.first, emergency.location.second)
+        var distance: Int = Int.MAX_VALUE
+        var base: Base
+        listOfResponsibleBases.forEach { responsibleBase ->
+            run {
+                val baseId = responsibleBase.baseID
+                val baseVertex = dataHolder.baseToVertex[baseId]!!
+                listOfEmergencyVertices.forEach { vertex ->
+                    val shortestPath = dataHolder.graph.calculateShortestPath(
+                        baseVertex,
+                        vertex,
+                        0
+                    )
+                    when {
+                        shortestPath == distance -> //check the baseID
+                            shortestPath < distance
+                        -> {
+
+                        }
+                    }
+                }
+            }
+        }
 
     }
+}
 
-    /**
-     * Assigns [base] to the [emergency]
-     */
-    private fun assignBaseToEmergency(emergency: Emergency, base: Base) {
+/**
+ * Assigns [base] to the [emergency]
+ */
+private fun assignBaseToEmergency(emergency: Emergency, base: Base) {
 
-    }
+}
 
-    /**
-     * Create log for each ASSIGNED [emergencies] by ID
-     */
-    private fun logEmergenciesByID(emergencies: List<Emergency>) {
+/**
+ * Create log for each ASSIGNED [emergencies] by ID
+ */
+private fun logEmergenciesByID(emergencies: List<Emergency>) {
 
-    }
+}
 
-    /**
-     * Sort ongoing list by severity
-     */
-    private fun sortBySeverity() {
+/**
+ * Sort ongoing list by severity
+ */
+private fun sortBySeverity() {
 
-    }
+}
 
 }
