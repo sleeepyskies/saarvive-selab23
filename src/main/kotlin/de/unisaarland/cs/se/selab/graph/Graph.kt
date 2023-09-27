@@ -29,24 +29,20 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
      * @param carHeight the car's height, set to 0 when ignoring height restrictions
      */
     fun calculateShortestPath(start: Vertex, destination: Vertex, carHeight: Int): Int {
-        if (start == destination) {
-            return 0
-        }
         val visitedVertices: MutableMap<Vertex, Pair<Int, Vertex?>> = initVisitedVertices(start)
         val unvisitedVertices: MutableList<Vertex> = graph.toMutableList()
         var currentVertex = start
-        var neighbors: Map<Vertex, Road> = findValidNeighbors(currentVertex, carHeight)
 
         // Algorithm
-        while (unvisitedVertices.isNotEmpty() && neighbors.isNotEmpty()) {
+        while (unvisitedVertices.isNotEmpty()) {
             // gets all relevant neighbors based on height restrictions
-            neighbors = findValidNeighbors(currentVertex, carHeight)
+            val neighbors = findValidNeighbors(currentVertex, carHeight)
             // updates neighbor distances
             updateNeighbors(neighbors, visitedVertices, currentVertex)
 
             unvisitedVertices.remove(currentVertex)
             // update nextVertex
-            val nextVertex = findNextVertex(neighbors, visitedVertices, currentVertex)
+            val nextVertex = findNextVertex(neighbors, visitedVertices)
             if (nextVertex != null) {
                 currentVertex = nextVertex
             }
@@ -101,17 +97,13 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
      */
     private fun findNextVertex(
         neighbors: Map<Vertex, Road>,
-        visitedVertices: Map<Vertex, Pair<Int, Vertex?>>,
-        startVertex: Vertex
+        visitedVertices: Map<Vertex, Pair<Int, Vertex?>>
     ): Vertex? {
-        var nextVertex: Vertex = startVertex
+        var nextVertex: Vertex? = null
         var minWeight = Int.MAX_VALUE
 
         for ((neighbor, road) in neighbors) {
             val distance = visitedVertices[neighbor]?.first ?: 0
-            if (distance == minWeight) {
-                nextVertex = if (neighbor.id < nextVertex.id) neighbor else nextVertex
-            }
             if (distance < minWeight) {
                 minWeight = distance
                 nextVertex = neighbor
@@ -155,7 +147,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
         // dijkstra's algorithm using the above structure
         while (unvisitedVertices.isNotEmpty()) {
             /**
-             * .poll() finds the next vertex in the queue in the order of the lambda expression
+             * .poll() finds the next vertex in the queue in the order of the lamda expression
              */
             val currentVertex = unvisitedVertices.poll()
 
@@ -289,7 +281,9 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
     /**
      * Returns a list of bases responsible for a certain emergency type sorted by proximity to the provided base
      * @param emergency The type of base to return
-     * @param base The base to create the list for
+     * @param startBase The base to create the list for
+     * @param bases A list of all bases in the simulation
+     * @param baseToVertex A mapping of each base to it's vertex
      */
     public fun findClosestBasesByProximity(
         emergency: Emergency,
@@ -336,7 +330,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
      * Applies the effect of the given graph event to the graph
      * @param event The event to apply the effects of
      */
-    public fun applyGraphEvent(event: Event) {
+    fun applyGraphEvent(event: Event) {
         // applyEvent(event)
         when (event) {
             is RushHour -> applyRushHour(event)
@@ -350,6 +344,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
     }
 
     private fun applyConstruction(event: Construction) {
+
     }
     private fun applyTrafficJam(event: TrafficJam) {
         for (road in roads) {
@@ -359,8 +354,16 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
 
     private fun applyRoadClosure(event: RoadClosure) {
         for (road in roads) {
-            // if (road.roadName)
+            if (road.roadName == event.affectedRoad) {
+                for (vertex in graph){
+                    vertex.connectingRoads.entries.find { it.value.roadName == road.roadName }?.key
+                }
+            }
         }
+
+    }
+    private fun applyVehicleUnavailable(event: VehicleUnavailable) {
+
     }
 
     /**

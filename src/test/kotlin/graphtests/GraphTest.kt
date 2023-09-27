@@ -1,7 +1,10 @@
 package graphtests
 
-import de.unisaarland.cs.se.selab.dataClasses.events.Event
-import de.unisaarland.cs.se.selab.graph.*
+import de.unisaarland.cs.se.selab.graph.Graph
+import de.unisaarland.cs.se.selab.graph.PrimaryType
+import de.unisaarland.cs.se.selab.graph.Road
+import de.unisaarland.cs.se.selab.graph.SecondaryType
+import de.unisaarland.cs.se.selab.graph.Vertex
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -13,15 +16,26 @@ class GraphTest {
         val vertexD = Vertex(3, mutableMapOf())
         val vertexE = Vertex(4, mutableMapOf())
 
-        val empty = mutableListOf<Event>()
-        val roadAB = Road(PrimaryType.MAIN_STREET, SecondaryType.NONE, "VillageA", "RoadAB", 5, 2, empty)
-        val roadBC = Road(PrimaryType.SIDE_STREET, SecondaryType.TUNNEL, "VillageB", "RoadBC", 3, 1,empty)
-        val roadCD = Road(PrimaryType.SIDE_STREET, SecondaryType.ONE_WAY_STREET, "VillageC", "RoadCD", 2, 1,empty)
-        val roadAE = Road(PrimaryType.SIDE_STREET, SecondaryType.NONE, "VillageD", "RoadDE", 1, 1,empty)
-        val roadDE = Road(PrimaryType.SIDE_STREET, SecondaryType.NONE, "VillageD", "RoadDE", 4, 1,empty)
+        val roadAB = Road(PrimaryType.MAIN_STREET, SecondaryType.NONE, "VillageA", "RoadAB", 5, 2)
+        val roadBC = Road(PrimaryType.SIDE_STREET, SecondaryType.TUNNEL, "VillageB", "RoadBC", 3, 1)
+        val roadCD = Road(PrimaryType.SIDE_STREET, SecondaryType.ONE_WAY_STREET, "VillageC", "RoadCD", 2, 1)
+        val roadAE = Road(PrimaryType.SIDE_STREET, SecondaryType.NONE, "VillageD", "RoadDE", 1, 1)
+        val roadDE = Road(PrimaryType.SIDE_STREET, SecondaryType.NONE, "VillageD", "RoadDE", 4, 1)
         // Connect vertices with roads
         vertexA.connectingRoads[vertexB] = roadAB
+        vertexB.connectingRoads[vertexA] = roadAB
+
         vertexB.connectingRoads[vertexC] = roadBC
+        vertexC.connectingRoads[vertexB] = roadBC
+
+        vertexC.connectingRoads[vertexD] = roadCD
+
+        vertexA.connectingRoads[vertexE] = roadAE
+        vertexE.connectingRoads[vertexA] = roadAE
+
+        vertexD.connectingRoads[vertexE] = roadDE
+        vertexE.connectingRoads[vertexD] = roadDE
+
 
         // Create a list of vertices and roads for the Graph class
         val vertices = listOf(vertexA, vertexB, vertexC, vertexD, vertexE)
@@ -34,7 +48,7 @@ class GraphTest {
         val mockGraph = createMockGraph()
         val vertexA = mockGraph.graph[0] // Get the first vertex
 
-        // Calculate theshortest path from a vertex to itself
+        // Calculate the shortest path from a vertex to itself
         val shortestPath = mockGraph.calculateShortestPath(vertexA, vertexA, 0)
 
         // Expect that the shortest path is 0 since it's the same vertex
@@ -81,7 +95,7 @@ class GraphTest {
     }
 
     @Test
-    fun testCalculateShortestPath_AE(){
+    fun testCalculateShortestPath_AE() {
         val mockGraph = createMockGraph()
         val vertexA = mockGraph.graph[0] // Get the first vertex
         val vertexE = mockGraph.graph[4] // Get the fifth vertex
@@ -94,7 +108,7 @@ class GraphTest {
     }
 
     @Test
-    fun testCalculateShortestPath_heightLimit(){
+    fun testCalculateShortestPath_heightLimit() {
         val mockGraph = createMockGraph()
         val vertexA = mockGraph.graph[0] // Get the first vertex
         val vertexC = mockGraph.graph[2] // Get the third vertex
@@ -112,7 +126,7 @@ class GraphTest {
         val vertexA = mockGraph.graph[0] // Get the first vertex
         val vertexC = mockGraph.graph[2] // Get the third vertex
 
-        // Calculate shortest route from vertex A to vertex C without height restrictions
+        // Calculate the shortest route from vertex A to vertex C without height restrictions
         val shortestRoute = mockGraph.calculateShortestRoute(vertexA, vertexC, 0)
 
         // Check that the shortest route is as expected
@@ -125,12 +139,10 @@ class GraphTest {
         val vertexA = mockGraph.graph[0] // Get the first vertex
         val vertexC = mockGraph.graph[2] // Get the third vertex
 
-        // Calculate shortest route from vertex A to vertex C with a height limit that should restrict one road
+        // Calculate the shortest route from vertex A to vertex C with a height limit that should restrict one road
         val shortestRoute = mockGraph.calculateShortestRoute(vertexA, vertexC, 2)
 
         // Check that the shortest route avoids the road with a height limit of 3
         assertEquals(listOf(vertexA, mockGraph.graph[0], mockGraph.graph[1], vertexC), shortestRoute)
     }
-
-
 }

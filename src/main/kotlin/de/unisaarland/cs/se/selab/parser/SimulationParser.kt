@@ -1,11 +1,16 @@
 package de.unisaarland.cs.se.selab.parser
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
-import de.unisaarland.cs.se.selab.dataClasses.events.*
+import de.unisaarland.cs.se.selab.dataClasses.events.Event
+import de.unisaarland.cs.se.selab.dataClasses.events.RoadClosure
+import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
+import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
+import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
 import de.unisaarland.cs.se.selab.graph.PrimaryType
 import org.everit.json.schema.Schema
 import org.everit.json.schema.loader.SchemaLoader
-import org.json.*
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -17,6 +22,7 @@ import kotlin.system.exitProcess
 class SimulationParser(private val schemaFile: String, private val jsonFile: String) {
     private val schema: Schema
     private val json: JSONObject
+
     // a set of all emergency IDs to make sure they are unique
     private val emergencyIDSet = mutableSetOf<Int>()
     private val eventIDSet = mutableSetOf<Int>()
@@ -39,46 +45,46 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     fun parseEmergencyCalls(): List<Emergency> {
         val emergencyCallsArray = json.getJSONArray("emergencyCalls")
         val parsedEmergencies = mutableListOf<Emergency>()
-            for (i in 0 until emergencyCallsArray.length()) {
-                val jsonEmergency = emergencyCallsArray.getJSONObject(i)
-                schema.validate(jsonEmergency)
-                // Validation of fields
-                val id = validateEmergencyId(jsonEmergency.getInt("id"))
-                val emergencyType = validateEmergencyType(jsonEmergency.getString("emergencyType"))
-                val severity = validateSeverity(jsonEmergency.getInt("severity"))
-                val startTick = validateEmergencyTick(jsonEmergency.getInt("tick"))
-                val handleTime = validateHandleTime(jsonEmergency.getInt("handleTime"))
-                val maxDuration = validateMaxDuration(jsonEmergency.getInt("maxDuration"), handleTime)
-                val villageName = validateVillageName(jsonEmergency.getString("village"))
-                // will be changed after Ira is done with parsing
-                val roadName = jsonEmergency.getString("roadName") // will be changed after Ira is done with parsing
+        for (i in 0 until emergencyCallsArray.length()) {
+            val jsonEmergency = emergencyCallsArray.getJSONObject(i)
+            schema.validate(jsonEmergency)
+            // Validation of fields
+            val id = validateEmergencyId(jsonEmergency.getInt("id"))
+            val emergencyType = validateEmergencyType(jsonEmergency.getString("emergencyType"))
+            val severity = validateSeverity(jsonEmergency.getInt("severity"))
+            val startTick = validateEmergencyTick(jsonEmergency.getInt("tick"))
+            val handleTime = validateHandleTime(jsonEmergency.getInt("handleTime"))
+            val maxDuration = validateMaxDuration(jsonEmergency.getInt("maxDuration"), handleTime)
+            val villageName = validateVillageName(jsonEmergency.getString("village"))
+            // will be changed after Ira is done with parsing
+            val roadName = jsonEmergency.getString("roadName") // will be changed after Ira is done with parsing
 
-                // create a single emergency
-                val emergency = Emergency(
-                    id = id,
-                    emergencyType = emergencyType,
-                    severity = severity,
-                    startTick = startTick,
-                    handleTime = handleTime,
-                    maxDuration = maxDuration,
-                    villageName = villageName,
-                    roadName = roadName
-                )
-                // add emergency to list of emergencies
-                parsedEmergencies.add(emergency)
-            }
+            // create a single emergency
+            val emergency = Emergency(
+                id = id,
+                emergencyType = emergencyType,
+                severity = severity,
+                startTick = startTick,
+                handleTime = handleTime,
+                maxDuration = maxDuration,
+                villageName = villageName,
+                roadName = roadName
+            )
+            // add emergency to list of emergencies
+            parsedEmergencies.add(emergency)
+        }
         return parsedEmergencies
     }
 
     /** Parses the JSON data and returns a list of events
      */
-    fun  parseEvents():List<Event> {
+    fun parseEvents(): List<Event> {
         val eventsArray = json.getJSONArray("events")
         val parsedEvents = mutableListOf<Event>()
         for (i in 0 until eventsArray.length()) {
             val jsonEvent = eventsArray.getJSONObject(i)
             schema.validate(jsonEvent)
-            //validation of single fields
+            // validation of single fields
             val id = validateEventId(jsonEvent.getInt("id"))
             val duration = validateDuration(jsonEvent.getInt("duration"))
             val startTick = validateEventTick(jsonEvent.getInt("tick"))
@@ -125,15 +131,13 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         return parsedEvents
     }
 
-
     /** Validates the ID of emergencies, check if it is unique.
      */
     private fun validateEmergencyId(id: Int): Int {
         if (id <= 0) {
             System.err.println("ID must be positive")
             exitProcess(1)
-        }
-        else if (emergencyIDSet.contains(id)) {
+        } else if (emergencyIDSet.contains(id)) {
             System.err.println("ID must be unique")
             exitProcess(1)
         }
@@ -144,8 +148,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         if (id < 0) {
             System.err.println("ID must be positive")
             exitProcess(1)
-        }
-        else if (eventIDSet.contains(id)) {
+        } else if (eventIDSet.contains(id)) {
             System.err.println("ID must be unique")
             exitProcess(1)
         }
@@ -187,7 +190,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     /** Validates the emergency type of emergencies
      * Checks whether the specified emergency type belongs to EmergencyType.
      */
-    private fun validateEmergencyType(emergencyType: String): EmergencyType{
+    private fun validateEmergencyType(emergencyType: String): EmergencyType {
         if (emergencyType != EmergencyType.valueOf(emergencyType).toString()) {
             System.err.println("EmergencyType must be one of the following: ${EmergencyType.values()}")
             exitProcess(1)
@@ -257,7 +260,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
                 exitProcess(1)
             }
         }
-        return roadType.map { enumValueOf(it.toString())}
+        return roadType.map { enumValueOf(it.toString()) }
     }
 
     /** Validates the source ID of events
@@ -292,7 +295,4 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         }
         return vehicleId
     }
-
-
-
 }
