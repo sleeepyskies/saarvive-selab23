@@ -6,6 +6,7 @@ package de.unisaarland.cs.se.selab.dataClasses.vehicles
 enum class VehicleStatus {
     RECHARGING,
     IN_BASE,
+    ASSIGNED_TO_EMERGENCY,
     HANDLING,
     MOVING_TO_EMERGENCY,
     MOVING_TO_BASE,
