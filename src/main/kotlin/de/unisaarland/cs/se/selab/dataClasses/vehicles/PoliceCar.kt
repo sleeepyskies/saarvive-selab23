@@ -1,6 +1,5 @@
 package de.unisaarland.cs.se.selab.dataClasses.vehicles
 
-import de.unisaarland.cs.se.selab.dataClasses.VehicleType
 import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.Vertex
 
