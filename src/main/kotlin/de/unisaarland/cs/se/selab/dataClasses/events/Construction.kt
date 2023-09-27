@@ -12,11 +12,11 @@ class Construction(
     eventID: Int,
     duration: Int,
     startTick: Int,
-    public val factor: Int,
-    public val sourceID: Int, // id of the vertex
-    public val targetID: Int,
-    public val streetClosed: Boolean
+    val factor: Int,
+    val sourceID: Int, // id of the vertex
+    val targetID: Int,
+    val streetClosed: Boolean
 ) : Event(eventID, duration, startTick) {
-    public lateinit var affectedRoad: Road
+    lateinit var affectedRoad: Road
     // oneWayStreet
 }
