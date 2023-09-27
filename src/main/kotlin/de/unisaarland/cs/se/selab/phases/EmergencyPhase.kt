@@ -139,5 +139,6 @@ class EmergencyPhase(private val dataHolder: DataHolder) {
      * Sort ongoing list by severity
      */
     private fun sortBySeverity() {
+        this.dataHolder.ongoingEmergencies.sortedWith(compareBy<Emergency> { it.severity }.thenBy { it.id })
     }
 }
