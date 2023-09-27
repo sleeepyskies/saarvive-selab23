@@ -1,11 +1,11 @@
 package de.unisaarland.cs.se.selab.phases
 
-import de.unisaarland.cs.se.selab.dataClasses.CapacityType
-import de.unisaarland.cs.se.selab.dataClasses.VehicleType
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.CapacityType
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleStatus
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 
 /** Represents the allocation phase of the simulation
@@ -22,7 +22,14 @@ class AllocationPhase (dataHolder: DataHolder){
     }
 
     private fun getAssignableAssets(base: Base, emergency: Emergency): List<Vehicle> {
-        return listOf<Vehicle>()
+        val vehicles = base.vehicles
+        val assignableVehicles = mutableListOf<Vehicle>()
+        for (vehicle in vehicles) {
+            if (vehicle.getVehicleStatus() == VehicleStatus.IN_BASE) {
+                assignableVehicles.add(vehicle)
+            }
+        }
+        return assignableVehicles
     }
 
     private fun assignBasedOnCapacity(assets: List<Vehicle>, emergency: Emergency):Unit {
