@@ -11,7 +11,9 @@ class RoadClosure(
     eventID: Int,
     duration: Int,
     startTick: Int,
-    public val affectedRoad: Road,
     public val sourceID: Int,
     public val targetID: Int
-) : Event(eventID, duration, startTick)
+) : Event(eventID, duration, startTick) {
+    public lateinit var affectedRoad: Road
+
+}
