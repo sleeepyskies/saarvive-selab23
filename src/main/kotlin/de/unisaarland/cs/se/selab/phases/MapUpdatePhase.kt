@@ -10,7 +10,7 @@ import de.unisaarland.cs.se.selab.simulation.DataHolder
 class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
     private var currentTick = 0
     override fun execute() {
-        fun reduceEventDuration(): Unit {
+        fun reduceEventDuration() {
             for (event in dataHolder.events) {
                 if (event.duration > 0) {
                     event.duration -= 1
