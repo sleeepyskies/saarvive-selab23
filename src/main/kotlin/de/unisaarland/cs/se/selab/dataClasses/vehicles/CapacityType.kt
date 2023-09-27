@@ -7,5 +7,6 @@ enum class CapacityType {
     WATER,
     CRIMINAL,
     PATIENT,
-    LADDER_LENGTH
+    LADDER_LENGTH,
+    NONE
 }

@@ -12,7 +12,8 @@ class Ambulance(
     override val id: Int,
     override val staffCapacity: Int,
     override val height: Int,
-    override val assignedBaseID: Int
+    override val assignedBaseID: Int,
+    val maxPatientCapacity: Int
 ) : Vehicle(
     vehicleType,
     id,
