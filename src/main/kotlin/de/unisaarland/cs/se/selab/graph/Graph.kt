@@ -20,7 +20,7 @@ import java.util.PriorityQueue
  * @param graph A list of vertices containing connecting roads
  * @param roads A list of all the roads in the graph
  */
-class Graph(public val graph: List<Vertex>, private val roads: List<Road>) {
+class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
     /**
      * Returns the shortest time in ticks needed to travel from start the vertex
      * to the destination vertex
@@ -36,7 +36,7 @@ class Graph(public val graph: List<Vertex>, private val roads: List<Road>) {
         // Algorithm
         while (unvisitedVertices.isNotEmpty()) {
             // gets all relevant neighbors based on height restrictions
-            val neighbors = findValidNeighbors(currentVertex, carHeight)
+            val neighbors = currentVertex.connectingRoads.filter { (_, road) -> carHeight <= road.heightLimit }
             // updates neighbor distances
             updateNeighbors(neighbors, visitedVertices, currentVertex)
 
@@ -61,13 +61,6 @@ class Graph(public val graph: List<Vertex>, private val roads: List<Road>) {
             visitedVertices[vertex] = if (vertex == start) Pair(0, null) else Pair(Int.MAX_VALUE, null)
         }
         return visitedVertices
-    }
-
-    /**
-     * Finds all vertices a vehicle can travel to based on the road's height restriction
-     */
-    private fun findValidNeighbors(vertex: Vertex, carHeight: Int): Map<Vertex, Road> {
-        return vertex.connectingRoads.filter { (_, road) -> carHeight <= road.heightLimit }
     }
 
     /**
@@ -121,7 +114,7 @@ class Graph(public val graph: List<Vertex>, private val roads: List<Road>) {
      * @param destination The destination vertex to drive to
      * @param vehicleHeight The height of the vehicle driving
      */
-    public fun calculateShortestRoute(vehiclePosition: Vertex, destination: Vertex, vehicleHeight: Int): List<Vertex> {
+    fun calculateShortestRoute(vehiclePosition: Vertex, destination: Vertex, vehicleHeight: Int): List<Vertex> {
         var route = listOf<Vertex>()
         // maps how far all the vertices are from the current vertex
         val distances = mutableMapOf<Vertex, Int>()
@@ -210,21 +203,12 @@ class Graph(public val graph: List<Vertex>, private val roads: List<Road>) {
     }
 
     /**
-     * Calculates the best route from a vehicle's location to an emergency vertex.
-     * @param vehiclePosition The position of the vehicle to calculate the route for
-     * @param emergency The emergency to use as a destination. Has a pair of vertices as location
-     */
-    public fun calculateBestRoute(vehiclePosition: Vertex, emergency: Emergency) {
-        TODO("Unimplemented method")
-    }
-
-    /**
      * Finds and returns the closest relevant base for an emergency
      * @param emergency The emergency to find a base for
      * @param bases List of all bases of the correct base type
      * @param baseToVertex A mapping of each base to it's vertex
      */
-    public fun findClosestBase(emergency: Emergency, bases: List<Base>, baseToVertex: MutableMap<Int, Vertex>): Base? {
+    fun findClosestBase(emergency: Emergency, bases: List<Base>, baseToVertex: MutableMap<Int, Vertex>): Base? {
         // Filter bases by emergency type
         val relevantBases = filterByEmergencyType(bases.toMutableList(), emergency)
         assert(relevantBases.isNotEmpty())
@@ -285,7 +269,7 @@ class Graph(public val graph: List<Vertex>, private val roads: List<Road>) {
      * @param bases A list of all bases in the simulation
      * @param baseToVertex A mapping of each base to it's vertex
      */
-    public fun findClosestBasesByProximity(
+    fun findClosestBasesByProximity(
         emergency: Emergency,
         startBase: Base,
         bases: List<Base>,
@@ -314,19 +298,6 @@ class Graph(public val graph: List<Vertex>, private val roads: List<Road>) {
     }
 
     /**
-     * returns the type of event as a string
-     */
-    private fun getStringType(event: Event): String {
-        when (event) {
-            is Construction -> return "Construction"
-            is RoadClosure -> return "RoadClosure"
-            is RushHour -> return "RushHour"
-            is TrafficJam -> return "TrafficJam"
-        }
-        return "VehicleUnavailable"
-    }
-
-    /**
      * Applies the effect of the given graph event to the graph
      * @param event The event to apply the effects of
      */
@@ -335,35 +306,52 @@ class Graph(public val graph: List<Vertex>, private val roads: List<Road>) {
         when (event) {
             is RushHour -> applyRushHour(event)
             is TrafficJam -> applyTrafficJam(event)
+            is RoadClosure -> applyRoadClosure(event)
+            is Construction -> applyConstruction(event)
         }
     }
     private fun applyRushHour(event: RushHour) {
         for (road in roads) {
             if (road.pType in event.roadType) road.weight *= event.factor
+            road.activeEvents.add(event)
         }
     }
 
     private fun applyConstruction(event: Construction) {
-
+        val startVertex = graph.find { it.id == event.sourceID }
+        val targetVertex = graph.find { it.id == event.targetID }
+        // puts the required into the event
+        event.affectedRoad = startVertex!!.connectingRoads[targetVertex]!!
+        // the factor is applied on the affected road
+        event.affectedRoad.weight *= event.factor
+        // check and change the road into a one way
+        if (event.streetClosed) startVertex.connectingRoads.remove(targetVertex)
     }
     private fun applyTrafficJam(event: TrafficJam) {
-        for (road in roads) {
-            if (road.roadName == event.affectedRoad) road.weight *= event.factor
-        }
+        val startVertex = graph.find { it.id == event.startVertex }
+        val targetVertex = graph.find { it.id == event.endVertex }
+
+        val requiredRoad = startVertex!!.connectingRoads[targetVertex]!!
+        requiredRoad.weight *= event.factor
+        requiredRoad.activeEvents.add(event)
+
+        event.affectedRoad = requiredRoad
     }
 
     private fun applyRoadClosure(event: RoadClosure) {
-        for (road in roads) {
-            if (road.roadName == event.affectedRoad) {
-                for (vertex in graph){
-                    vertex.connectingRoads.entries.find { it.value.roadName == road.roadName }?.key
-                }
-            }
-        }
-
-    }
-    private fun applyVehicleUnavailable(event: VehicleUnavailable) {
-
+        // find source vertex
+        val sourceVertex = graph.find { vertex: Vertex -> vertex.id == event.sourceID }!!
+        // find target vertex
+        val targetVertex = graph.find { vertex: Vertex -> vertex.id == event.targetID }!!
+        // find required road
+        val requiredRoad = targetVertex.connectingRoads[sourceVertex]
+        // puts the road into the event
+        event.affectedRoad = requiredRoad!!
+        // remove the road from the graph
+        targetVertex.connectingRoads.remove(sourceVertex)
+        sourceVertex.connectingRoads.remove(targetVertex)
+        // add this event to the list of event
+        requiredRoad.activeEvents.add(event)
     }
 
     /**

@@ -1,7 +1,7 @@
 package de.unisaarland.cs.se.selab.dataClasses.emergencies
 
-import de.unisaarland.cs.se.selab.dataClasses.CapacityType
-import de.unisaarland.cs.se.selab.dataClasses.VehicleType
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.CapacityType
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
 import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.graph.Vertex
 
@@ -17,7 +17,7 @@ data class Emergency(
 ) {
     internal lateinit var location: Pair<Vertex, Vertex> // TODO (initialise in DATAHOLDER)
     internal var emergencyStatus: EmergencyStatus = EmergencyStatus.UNASSIGNED
-    private val requiredVehicles: MutableMap<VehicleType, Int> =
+    val requiredVehicles: MutableMap<VehicleType, Int> =
         setRequiredVehicles() // add and remove dynamically
     private val requiredCapacity: MutableMap<CapacityType, Int> = setRequiredCapacity() // add and remove dynamically
 
