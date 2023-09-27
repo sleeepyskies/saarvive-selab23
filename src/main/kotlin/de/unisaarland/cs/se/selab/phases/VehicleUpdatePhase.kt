@@ -30,6 +30,16 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
             updateRouteEndReached(vehicle)
         }
     }
+    /**
+     * Updates a recharging vehicle
+     */
+    private fun updateRecharging(vehicle: Vehicle) {
+        vehicle.ticksStillUnavailable -= 1
+        if (vehicle.ticksStillUnavailable == 0) {
+            dataHolder.rechargingVehicles.remove(vehicle)
+            vehicle.vehicleStatus = VehicleStatus.IN_BASE
+        }
+    }
 
     /**
      * Moves a vehicle along its current route, and checks whether the vehicle
@@ -87,7 +97,6 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
 
         // update the emergencies required capacity
 
-
         // check if all vehicles have reached emergency, if so change status to HANDLING
         if (dataHolder.vehicleToEmergency[vehicle.id]!!.requiredCapacity == mutableMapOf<CapacityType, Int>()) {
             dataHolder.vehicleToEmergency[vehicle.id]!!.emergencyStatus = EmergencyStatus.HANDLING
@@ -111,15 +120,18 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
         dataHolder.activeVehicles.remove(vehicle)
         // check if vehicle needs to recharge
         if (vehicle is PoliceCar && vehicle.currentCriminalCapcity > 0) {
+            dataHolder.rechargingVehicles.add(vehicle)
             vehicle.vehicleStatus = VehicleStatus.RECHARGING
             vehicle.currentCriminalCapcity = 0
             vehicle.ticksStillUnavailable = 2
         } else if (vehicle is FireTruckWater && vehicle.currentWaterCapacity < vehicle.maxWaterCapacity) {
+            dataHolder.rechargingVehicles.add(vehicle)
             vehicle.vehicleStatus = VehicleStatus.RECHARGING
             vehicle.currentWaterCapacity = vehicle.maxWaterCapacity
             vehicle.ticksStillUnavailable =
                 ceil((vehicle.maxWaterCapacity - vehicle.currentWaterCapacity) / Number.THREE_HUNDRED_FLOAT).toInt()
         } else if (vehicle is Ambulance && vehicle.hasPatient) {
+            dataHolder.rechargingVehicles.add(vehicle)
             vehicle.hasPatient = false
             vehicle.vehicleStatus = VehicleStatus.RECHARGING
             vehicle.ticksStillUnavailable = 1
