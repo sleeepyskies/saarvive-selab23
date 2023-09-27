@@ -4,12 +4,8 @@ import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.graph.Graph
 import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.Vertex
-import java.io.BufferedReader
 import java.io.File
 import java.lang.IllegalArgumentException
-import java.util.IllegalFormatException
-import java.util.InvalidPropertiesFormatException
-import java.util.regex.Pattern
 import kotlin.system.exitProcess
 
 /**
@@ -46,10 +42,203 @@ class CountyParser(private val dotFilePath: String) {
         return str.count { it == char }
     }
 
-    private fun parseVerticesAndEdges(str: String): Map<String, String> {
 
+    /**
+     * Checks if the [kind] and [token] of expected token are the same as current token in [tokenizer]
+     */
+    private fun expected(token: String, tokenizer: StringTokenizer, kind: TokenKind = TokenKind.SYMBOL): Boolean {
+        return kind == tokenizer.peekKind() && token == tokenizer.popCurrent()
     }
 
+    /**
+     * Checks if the [kind] of expected token are the same as current token in [tokenizer]
+     */
+    private fun expected(tokenizer: StringTokenizer, kind: TokenKind = TokenKind.SYMBOL): Boolean {
+        return kind == tokenizer.peekKind()
+    }
+
+
+    /**
+     * Checking the syntax inside the braces, data provided in [str]
+     */
+    private fun parseVerticesAndEdges(str: String): Map<String, String> {
+        val blueprint = mutableMapOf<String, String>()
+        val tokens = StringTokenizer(str)
+        while (tokens.hasNext()) {
+            var currentStr = ""
+
+            if (tokens.peek(TokenKind.IDENTIFIER)) {
+                currentStr += tokens.popCurrent()
+                tokens.next()
+                if (expected("->", tokens) || expected(";", tokens)) {
+                    when {
+                        tokens.peek(";") -> {
+                            if (!keyExists(blueprint, currentStr)) (
+                                    blueprint.put(currentStr, "Vertex")) else {
+                                throw IllegalArgumentException()
+                            }
+                        }
+
+                        tokens.peek("->")
+                        -> {
+                            currentStr += tokens.popCurrent()
+                            if (tokens.hasNext()) {
+                                tokens.next()
+                                if (tokens.peek(TokenKind.IDENTIFIER)) {
+                                    currentStr += tokens.popCurrent()
+                                    if (!keyExists(blueprint, currentStr)) {
+                                        blueprint.put(currentStr, parseAttributes(tokens))
+                                    } else {
+                                        throw IllegalArgumentException()
+                                    }
+
+                                } else {
+                                    throw IllegalArgumentException()
+                                }
+                            } else {
+                                throw IllegalArgumentException()
+                            }
+                        }
+                    }
+                    if (tokens.hasNext()) {
+                        tokens.next()
+                    }
+                } else {
+                    throw IllegalArgumentException()
+                }
+            } else {
+                throw IllegalArgumentException()
+            }
+        }
+        return blueprint
+    }
+
+    /**
+     * Parses attributes for road
+     */
+    private fun parseAttributes(tokens: StringTokenizer): String {
+        var currentStr = ""
+        tokens.next()
+        if (expected("[", tokens)) {
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if (expected("village", tokens, TokenKind.KEYWORD)){
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if (expected("=", tokens)){
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if (expected(tokens, TokenKind.IDENTIFIER)){
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if (expected(";", tokens)){
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if (expected("name", tokens, TokenKind.KEYWORD)){
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if (expected("=", tokens)){
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if (expected(tokens, TokenKind.IDENTIFIER)){
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if (expected(";", tokens)){
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if (expected("heightLimit", tokens, TokenKind.KEYWORD)){
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if (expected("=", tokens)){
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if (expected(tokens, TokenKind.IDENTIFIER)){
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if (expected(";", tokens)){
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if (expected("weight", tokens, TokenKind.KEYWORD)){
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if (expected("=", tokens)){
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if (expected(tokens, TokenKind.IDENTIFIER)){
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if (expected(";", tokens)){
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if (expected("primaryType", tokens, TokenKind.KEYWORD)){
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if (expected("=", tokens)){
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if ((tokens.popCurrent() == "countryRoad")||(tokens.popCurrent() == "sideStreet")||(tokens.popCurrent() == "mainStreet")){
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if (expected(";", tokens)){
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if (expected("secondaryType", tokens, TokenKind.KEYWORD)){
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if (expected("=", tokens)){
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if ((tokens.popCurrent() == "oneWayStreet")||(tokens.popCurrent() == "tunnel")||(tokens.popCurrent() == "none")){
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if (expected(";", tokens)){
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if (expected("]", tokens)) {
+            currentStr += tokens.popCurrent()
+            tokens.next()
+        } else throw IllegalArgumentException()
+        if (expected(";", tokens)) {
+            currentStr += tokens.popCurrent()
+        } else throw IllegalArgumentException()
+        return  currentStr
+    }
+
+    /**
+     * Checks if the Road connection ([currentStr]) is unique in [blueprint]
+     */
+    private fun keyExists(blueprint: MutableMap<String, String>, currentStr: String): Boolean {
+        return blueprint.contains(currentStr)
+    }
+
+    /**
+     * Creates blueprint of id or id->if for Vertices and Roads
+     */
     private fun createBlueprint(): Map<String, String> {
         val blueprint = mutableMapOf<String, String>()
         try {
@@ -79,9 +268,9 @@ class CountyParser(private val dotFilePath: String) {
         return Graph(vertices)
     }
 
-//    protected fun createRoad(road: String): Road {
-//        return Road()
-//    }
+    protected fun createRoad(road: String): Road {
+        return Road()
+    }
 
     private fun createRoadList(blueprint: Map<String, String>): List<Road> {
         val roads = mutableListOf<Road>()
@@ -93,9 +282,9 @@ class CountyParser(private val dotFilePath: String) {
         return vertices
     }
 
-//    protected fun createVertex(vertex: String): Vertex {
-//        return Vertex()
-//    }
+    protected fun createVertex(vertex: String): Vertex {
+        return Vertex()
+    }
 
     private fun connectVertices(vertices: List<Vertex>, roads: List<Road>, blueprint: Map<String, String>) {
         return Unit

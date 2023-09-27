@@ -21,16 +21,26 @@ class StringTokenizer(str: String) {
      * Check if next token exists
      */
     fun hasNext(): Boolean {
-        return currentIndex + 1 < this.tokens.size
+        return currentIndex < this.tokens.size
+    }
+
+    /**
+     * Goes to the next token
+     */
+    fun next() {
+        if (hasNext()) {
+            this.currentIndex++
+        } else {
+            throw IndexOutOfBoundsException("Next element not exists")
+        }
     }
 
     /**
      * Returns next token
      */
-    fun next(): String {
+    fun checkNext(): String {
         if (hasNext()) {
-            this.currentIndex++
-            return tokens[this.currentIndex]
+            return tokens[this.currentIndex + 1]
         } else {
             throw IndexOutOfBoundsException("Next element not exists")
         }
@@ -39,7 +49,7 @@ class StringTokenizer(str: String) {
     /**
      * Returns current token
      */
-    fun pop(): String {
+    fun popCurrent(): String {
         return tokens[this.currentIndex]
     }
 
@@ -50,7 +60,7 @@ class StringTokenizer(str: String) {
         if (this.currentIndex != 0) {
             return tokens[this.currentIndex - 1]
         } else {
-            throw IndexOutOfBoundsException("Next element not exists")
+            throw IndexOutOfBoundsException("Previous element not exists")
         }
     }
 
@@ -59,6 +69,13 @@ class StringTokenizer(str: String) {
      */
     fun peek(kind: TokenKind, str: String): Boolean {
         return peekKind() == kind && tokens[this.currentIndex] == str
+    }
+
+    /**
+     * Checks if current token is of [kind]
+     */
+    fun peek(kind: TokenKind): Boolean {
+        return peekKind() == kind
     }
 
     /**
