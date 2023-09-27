@@ -153,7 +153,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
         // dijkstra's algorithm using the above structure
         while (unvisitedVertices.isNotEmpty()) {
             /**
-             * .poll() finds the next vertex in the queue in the order of the lamda expression
+             * .poll() finds the next vertex in the queue in the order of the lambda expression
              */
             val currentVertex = unvisitedVertices.poll()
 
@@ -248,7 +248,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
     }
 
     /**
-     * Filters the given list of bases based on the emergency.
+     * Filters the given list of bases according to the emergency.
      */
     private fun filterByEmergencyType(bases: MutableList<Base>, emergency: Emergency): MutableList<Base> {
         for (base in bases) {
@@ -301,13 +301,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
             distanceMapping[nextBase] = calculateShortestPath(startBaseVertex!!, nextBaseVertex!!, 0)
         }
 
-        /**
-         * sort the bases by closest distance to the start bases
-         * converts the map into a list
-         */
-        val sortedBases = distanceMapping.entries.sortedBy { it.value }.map { it.key }
-
-        return sortedBases
+        return distanceMapping.entries.sortedBy { it.value }.map { it.key }
     }
 
     /**
