@@ -8,29 +8,29 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.graph.Graph
 import de.unisaarland.cs.se.selab.graph.Vertex
 
-/**
+/**b
  * The DataHolder stores all relevant simulation data for the phases to manipulate.
  * Additionally, it contains multiple mappings used for fast lookups by the phases.
  */
 class DataHolder(
-    private val graph: Graph,
-    private val bases: Base,
-    private val events: Event,
-    private val emergencies: List<Emergency>,
+    val graph: Graph,
+    val bases: Base,
+    val events: Event,
+    val emergencies: List<Emergency>,
 
 ) {
-    private val ongoingEmergencies: List<Emergency> = mutableListOf<Emergency>()
-    private val resolvedEmergencies: List<Emergency> = mutableListOf<Emergency>()
-    private val activeVehicles: List<Vehicle> = mutableListOf<Vehicle>()
-    private val unavailableVehicles: List<Vehicle> = mutableListOf<Vehicle>()
-    private val requests: List<Request> = mutableListOf<Request>()
-    private var assetsRerouted: Int = 0
+    val ongoingEmergencies: List<Emergency> = mutableListOf<Emergency>()
+    val resolvedEmergencies: List<Emergency> = mutableListOf<Emergency>()
+    val activeVehicles: List<Vehicle> = mutableListOf<Vehicle>()
+    val unavailableVehicles: List<Vehicle> = mutableListOf<Vehicle>()
+    val requests: List<Request> = mutableListOf<Request>()
+    var assetsRerouted: Int = 0
 
-    private val emergencyToBase: MutableMap<Int, Base> = mutableMapOf()
-    private val emergencyToVehicles: MutableMap<Int, List<Vehicle>> = mutableMapOf()
-    private val vehicleToEmergency: MutableMap<Int, Emergency> = mutableMapOf()
-    private val vehiclesToBase: MutableMap<Int, Base> = mutableMapOf()
-    private val baseToVertex: MutableMap<Int, Vertex> = mutableMapOf() // should this be in map?
+    val emergencyToBase: MutableMap<Int, Base> = mutableMapOf()
+    val emergencyToVehicles: MutableMap<Int, List<Vehicle>> = mutableMapOf()
+    val vehicleToEmergency: MutableMap<Int, Emergency> = mutableMapOf()
+    val vehiclesToBase: MutableMap<Int, Base> = mutableMapOf()
+    val baseToVertex: MutableMap<Int, Vertex> = mutableMapOf() // should this be in map?
 
     /**
      * Initialises the DataHolder's mappings. Called by the DataHolder constructor.
