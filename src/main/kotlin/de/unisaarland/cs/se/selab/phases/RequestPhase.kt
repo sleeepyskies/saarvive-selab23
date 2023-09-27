@@ -124,6 +124,7 @@ class RequestPhase(val dataHolder: DataHolder) : Phase {
             }
         }
 
-        //request.requiredVehicles[VehicleType.FIRE_TRUCK_WATER] = request.requiredVehicles[VehicleType.FIRE_TRUCK_WATER]!! - 1
+        //request.requiredVehicles[VehicleType.FIRE_TRUCK_WATER] =
+    // request.requiredVehicles[VehicleType.FIRE_TRUCK_WATER]!! - 1
     }
 }
