@@ -22,7 +22,11 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
     /**
      * The main execute method of the phase.
      */
-    public override fun execute() {
+    override fun execute() {
+        // update each recharging vehicle
+        for (vehicle in dataHolder.rechargingVehicles) {
+            updateRecharging(vehicle)
+        }
         // update each active vehicle position
         for (vehicle in dataHolder.activeVehicles) {
             updateVehiclePosition(vehicle)
@@ -30,6 +34,7 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
             updateRouteEndReached(vehicle)
         }
     }
+
     /**
      * Updates a recharging vehicle
      */
