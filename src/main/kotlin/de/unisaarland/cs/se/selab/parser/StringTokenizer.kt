@@ -21,7 +21,7 @@ class StringTokenizer(str: String) {
      * Check if next token exists
      */
     fun hasNext(): Boolean {
-        return currentIndex < this.tokens.size
+        return currentIndex + 1 < this.tokens.size
     }
 
     /**
@@ -29,12 +29,18 @@ class StringTokenizer(str: String) {
      */
     fun next(): String {
         if (hasNext()) {
-            val token = tokens[this.currentIndex]
             this.currentIndex++
-            return token
+            return tokens[this.currentIndex]
         } else {
             throw IndexOutOfBoundsException("Next element not exists")
         }
+    }
+
+    /**
+     * Returns current token
+     */
+    fun pop(): String {
+        return tokens[this.currentIndex]
     }
 
     /**
@@ -56,12 +62,22 @@ class StringTokenizer(str: String) {
     }
 
     /**
+     * Check if current token equals [str]
+     */
+    fun peek(str: String): Boolean {
+        return tokens[this.currentIndex] == str
+    }
+
+    /**
      * Returns the kind of the symbol
      */
     fun peekKind(): TokenKind {
         val token = tokens[currentIndex]
         return when {
-            (token == "village" || token == "name" || token == "heightLimit" || token == "weight" || token == "primaryType" || token == "secondaryType") -> TokenKind.KEYWORD
+            token == "village" || token == "name" || token == "heightLimit" || token == "weight" ||
+                token == "primaryType" || token == "secondaryType"
+            -> TokenKind.KEYWORD
+
             Pattern.matches("\\w+", token) -> TokenKind.IDENTIFIER
             else -> TokenKind.SYMBOL
         }
