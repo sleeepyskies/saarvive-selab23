@@ -11,7 +11,7 @@ data class Emergency(
     val severity: Int,
     val startTick: Int,
     var handleTime: Int, // change it for "stalking" required time on every tick
-    val maxDuration: Int,
+    var maxDuration: Int,
     val villageName: String,
     val roadName: String
 ) {
