@@ -1,4 +1,9 @@
 package de.unisaarland.cs.se.selab.phases
 
-class EmergencyUpdatePhase {
+import de.unisaarland.cs.se.selab.simulation.DataHolder
+
+class EmergencyUpdatePhase (private val dataHolder: DataHolder) {
+    fun execute(){
+
+    }
 }
