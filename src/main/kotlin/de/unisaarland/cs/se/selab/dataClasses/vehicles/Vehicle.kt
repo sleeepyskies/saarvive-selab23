@@ -1,6 +1,5 @@
 package de.unisaarland.cs.se.selab.dataClasses.vehicles
 
-import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.Vertex
 
 /**
@@ -25,9 +24,6 @@ open class Vehicle(
      * Returns the status of the vehicle
      */
     fun getVehicleStatus(): VehicleStatus {
-        return status
+        return vehicleStatus
     }
 }
-
-
-
