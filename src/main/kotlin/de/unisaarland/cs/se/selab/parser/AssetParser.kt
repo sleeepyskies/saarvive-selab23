@@ -1,9 +1,9 @@
 package de.unisaarland.cs.se.selab.parser
 
-import FireStation
-import Hospital
-import PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
+import de.unisaarland.cs.se.selab.dataClasses.bases.FireStation
+import de.unisaarland.cs.se.selab.dataClasses.bases.Hospital
+import de.unisaarland.cs.se.selab.dataClasses.bases.PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWithLadder

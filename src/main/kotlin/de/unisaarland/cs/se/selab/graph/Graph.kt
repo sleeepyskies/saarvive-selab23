@@ -1,9 +1,9 @@
 package de.unisaarland.cs.se.selab.graph
 
-import FireStation
-import Hospital
-import PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
+import de.unisaarland.cs.se.selab.dataClasses.bases.FireStation
+import de.unisaarland.cs.se.selab.dataClasses.bases.Hospital
+import de.unisaarland.cs.se.selab.dataClasses.bases.PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
 import de.unisaarland.cs.se.selab.dataClasses.events.Construction
