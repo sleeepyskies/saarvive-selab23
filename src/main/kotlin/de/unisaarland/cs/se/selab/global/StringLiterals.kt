@@ -1,7 +1,8 @@
 package de.unisaarland.cs.se.selab.global
 
-import Hospital
-
+/**
+ * holds string literals for representing different bases
+ */
 object StringLiterals {
     const val POLICESTATION = "PoliceStation"
     const val FIRESTATION = "FireStation"
