@@ -4,7 +4,7 @@ import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.Vertex
 
 /**
- * an inheritance of vehicle that has an additonal attribute ladder length
+ * an inheritance of vehicle that has an additional attribute ladder length
  */
 class FireTruckWithLadder(
     override val vehicleType: VehicleType,
