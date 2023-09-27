@@ -43,8 +43,8 @@ class EmergencyPhase(private val dataHolder: DataHolder) {
      * Assigns Bases for each [emergencies]
      */
     private fun assignBasesToEmergencies(emergencies: List<Emergency>) {
-        emergencies.forEach { Emergency ->
-            assignBaseToEmergency(Emergency, findClosestBase(Emergency))
+        emergencies.forEach { emergency ->
+            assignBaseToEmergency(emergency, findClosestBase(emergency))
         }
     }
 
@@ -116,7 +116,7 @@ class EmergencyPhase(private val dataHolder: DataHolder) {
      */
     private fun assignBaseToEmergency(emergency: Emergency, base: Base) {
         emergency.emergencyStatus = EmergencyStatus.ASSIGNED
-        this.dataHolder.emergencyToBase.put(emergency.id, base)
+        this.dataHolder.emergencyToBase[emergency.id] = base
     }
 
     /**
@@ -129,7 +129,7 @@ class EmergencyPhase(private val dataHolder: DataHolder) {
                 val sortedEmergencyID = sortedEmergency.id
                 Log.displayEmergencyAssignment(
                     sortedEmergencyID,
-                    this.dataHolder.emergencyToBase.get(sortedEmergencyID)!!.baseID
+                    this.dataHolder.emergencyToBase[sortedEmergencyID]!!.baseID
                 )
             }
         }
