@@ -1,8 +1,8 @@
 package parser
 
-import de.unisaarland.cs.se.selab.dataClasses.VehicleType
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
 import de.unisaarland.cs.se.selab.parser.SimulationParser
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
