@@ -1,7 +1,7 @@
 package de.unisaarland.cs.se.selab.dataClasses.emergencies
 
-import de.unisaarland.cs.se.selab.dataClasses.CapacityType
-import de.unisaarland.cs.se.selab.dataClasses.VehicleType
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.CapacityType
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
 import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.graph.Vertex
 
