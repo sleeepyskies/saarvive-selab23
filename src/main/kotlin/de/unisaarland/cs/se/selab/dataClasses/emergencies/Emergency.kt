@@ -5,6 +5,16 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
 import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.graph.Vertex
 
+/**
+ * Creates an object of the Emergency, inherits from Event abstract class.
+ * Takes the [emergencyType] - the type of the emergency;
+ * [severity] - the severity of the emergency;
+ * [startTick] - the tick the emergency is planned for;
+ * [handleTime] - the time the emergency is handled;
+ * [maxDuration] - the maximum duration of the emergency;
+ * [villageName] - the name of the village the emergency is planned for;
+ * [roadName] - the name of the road the emergency is planned for
+ */
 data class Emergency(
     val id: Int,
     val emergencyType: EmergencyType,
@@ -190,10 +200,16 @@ data class Emergency(
         }
     }
 
+    /**
+     * Returns the required vehicles of the emergency
+     */
     fun getRequiredVehicles(): Map<VehicleType, Int> {
         return requiredVehicles
     }
 
+    /**
+     * Returns the status of the emergency
+     */
     fun getEmergencyStatus(): EmergencyStatus {
         return emergencyStatus
     }
