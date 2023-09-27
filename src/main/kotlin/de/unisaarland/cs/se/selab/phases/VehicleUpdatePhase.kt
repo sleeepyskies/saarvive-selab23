@@ -4,6 +4,7 @@ import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleStatus
+import de.unisaarland.cs.se.selab.graph.Vertex
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 
 /**
@@ -21,10 +22,22 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) {
     }
 
     /**
-     * Moves a vehicle along it's current route
+     * Moves a vehicle along its current route
      */
     private fun updateVehiclePosition(vehicle: Vehicle) {
+        // move vehicle 1 tick along road
+        vehicle.roadProgress -= 1
 
+        // check if vehicle has reached the end of a road
+        if (vehicle.roadProgress == 0) {
+            // check if vehicle has reached the end of its route
+            if (vehicle.currentRoute.size == 1) {
+                vehicle.status = VehicleStatus.ARRIVED
+            } else {
+                vehicle.lastVisitedVertex = vehicle.currentRoute[0]
+                vehicle.currentRoute.removeAt(0)
+            }
+        }
     }
 
     /**
@@ -45,10 +58,6 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) {
      * Changes the vehicles
      */
     private fun updateVehicleAvailability(vehicle: Vehicle) {
-
-    }
-
-    private fun updateVehicleStatus(vehicle: Vehicle, status: VehicleStatus) {
 
     }
 }

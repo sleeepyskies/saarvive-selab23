@@ -16,9 +16,7 @@ open class Vehicle(
     open var vehicleStatus: VehicleStatus = VehicleStatus.IN_BASE
     open var isAvailable = true
     open var assignedEmergencyID: Int? = null
-    open var currentRoad: Road? = null
-    open var lastVisitedVertex: Vertex? = null
-    open var ticksTillDestination: Int = 0
+    open lateinit var lastVisitedVertex: Vertex
     open var roadProgress: Int = 0
     open var currentRoute: MutableList<Vertex> = mutableListOf<Vertex>()
     open var ticksStillUnavailable: Int = 0
@@ -27,6 +25,9 @@ open class Vehicle(
      * Returns the status of the vehicle
      */
     fun getVehicleStatus(): VehicleStatus {
-        return vehicleStatus
+        return status
     }
 }
+
+
+
