@@ -1,9 +1,11 @@
 package de.unisaarland.cs.se.selab.dataClasses.vehicles
 
-import de.unisaarland.cs.se.selab.dataClasses.VehicleType
 import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.Vertex
 
+/**
+ * an inheritance of vehicle that has an additional attribute water capacity
+ */
 class FireTruckWater(
     override val vehicleType: VehicleType,
     override val id: Int,
