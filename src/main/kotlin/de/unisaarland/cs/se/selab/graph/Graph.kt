@@ -11,6 +11,7 @@ import de.unisaarland.cs.se.selab.dataClasses.events.Event
 import de.unisaarland.cs.se.selab.dataClasses.events.RoadClosure
 import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
 import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
+import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.global.StringLiterals
 import java.lang.Integer.min
 import java.util.PriorityQueue
@@ -87,12 +88,12 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
     /**
      * Returns the weight as ticks need to travel
      */
-    private fun weightToTicks (weight: Int): Int {
-        if (weight < 10) return 1
-        return if (weight % 10 == 0) {
+    private fun weightToTicks(weight: Int): Int {
+        if (weight < Number.TEN) return 1
+        return if (weight % Number.TEN == 0) {
             weight // number is already a multiple of ten
         } else {
-            weight + (10 - weight % 10) // round up
+            weight + (Number.TEN - weight % Number.TEN) // round up
         }
     }
 
