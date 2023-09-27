@@ -82,6 +82,7 @@ class AssetParser(private val baseFile: String, private val vehicleFile: String,
             val vehicleType = VehicleType.valueOf(jsonVehicle.getString("vehicleType"))
             val vehicleHeight = validateVehicleHeight(jsonVehicle.getInt("vehicleHeight"))
             val staffCapacity = validateStaffCapacity(jsonVehicle.getInt("staffCapacity"))
+            val maxCriminalCapacity = jsonVehicle.getInt("maxCriminalCapacity")
 
             val vehicle: Vehicle = when (vehicleType) {
                 VehicleType.POLICE_CAR -> PoliceCar(
@@ -90,7 +91,7 @@ class AssetParser(private val baseFile: String, private val vehicleFile: String,
                     staffCapacity,
                     vehicleHeight,
                     baseID,
-                    jsonVehicle.getInt("criminalCapacity")
+                    maxCriminalCapacity // need to be chanhed
                 )
                 VehicleType.K9_POLICE_CAR -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
                 VehicleType.POLICE_MOTORCYCLE -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
