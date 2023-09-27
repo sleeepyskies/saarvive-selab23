@@ -15,20 +15,22 @@ class EmergencyPhase(private val dataHolder: DataHolder) {
      * Main method that keeps track of all processes in EmergencyPhase: choosing the base, assigning, logging, sorting
      */
     fun execute() {
-        scheduleEmergencies()
-
-
+        val scheduledEmergencies = scheduleEmergencies()
+        assignBasesToEmergencies(scheduledEmergencies)
+        logEmergenciesByID(scheduledEmergencies)
+        sortBySeverity()
         currentTick++
     }
 
     /**
-     * Gives the dataHolder list of emergencies that should be removed from emergencies list and added to ongoing list
+     * Gives the dataHolder list of emergencies that should be removed from emergencies list and added to ongoing list.
      */
-    private fun scheduleEmergencies() {
+    private fun scheduleEmergencies(): MutableList<Emergency> {
         val listOfScheduledEmergencies =
             dataHolder.emergencies.filter { emergency: Emergency -> emergency.startTick == this.currentTick }
                 .toMutableList()
         dataHolder.updateScheduledEmergencies(listOfScheduledEmergencies)
+        return listOfScheduledEmergencies
     }
 
     /**
