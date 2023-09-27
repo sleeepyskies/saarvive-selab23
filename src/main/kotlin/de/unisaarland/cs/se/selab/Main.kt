@@ -1,5 +1,7 @@
 package de.unisaarland.cs.se.selab
 
+import de.unisaarland.cs.se.selab.parser.CountyParser
+
 /**
  * This is the entry point of the simulation.
  */

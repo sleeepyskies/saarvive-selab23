@@ -9,7 +9,7 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.graph.Graph
 import de.unisaarland.cs.se.selab.graph.Vertex
 
-/**b
+/**
  * The DataHolder stores all relevant simulation data for the phases to manipulate.
  * Additionally, it contains multiple mappings used for fast lookups by the phases.
  */
@@ -23,8 +23,9 @@ class DataHolder(
     val ongoingEmergencies = mutableListOf<Emergency>()
     val resolvedEmergencies: List<Emergency> = mutableListOf<Emergency>()
     val activeVehicles: MutableList<Vehicle> = mutableListOf<Vehicle>()
+    val rechargingVehicles: MutableList<Vehicle> = mutableListOf<Vehicle>()
     val unavailableVehicles: List<Vehicle> = mutableListOf<Vehicle>()
-    val requests: List<Request> = mutableListOf<Request>()
+    val requests: MutableList<Request> = mutableListOf<Request>()
     var assetsRerouted: Int = 0
 
     val emergencyToBase: MutableMap<Int, Base> = mutableMapOf()

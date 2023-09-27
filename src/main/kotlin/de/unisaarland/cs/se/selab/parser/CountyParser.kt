@@ -31,7 +31,7 @@ class CountyParser(private val dotFilePath: String) {
     fun parse(): Graph {
         // Creating it if the syntax is valid
         val blueprint = createBlueprint()
-
+        if (!validateBlueprint(blueprint)) exitProcess(1)
         return Graph()
     }
 
@@ -73,8 +73,8 @@ class CountyParser(private val dotFilePath: String) {
                         tokens.peek(";") -> {
                             if (!keyExists(blueprint, currentStr)) {
                                 (
-                                    blueprint.put(currentStr, "Vertex")
-                                    )
+                                        blueprint.put(currentStr, "Vertex")
+                                        )
                             } else {
                                 throw IllegalArgumentException()
                             }
