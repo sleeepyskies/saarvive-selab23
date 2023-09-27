@@ -99,7 +99,7 @@ class EmergencyPhase(private val dataHolder: DataHolder) : Phase {
         var distance = distance
         var base = base
         when {
-            shortestPath == distance -> if (base == null || base!!.baseID > baseId) {
+            shortestPath == distance -> if (base == null || base.baseID > baseId) {
                 base = responsibleBase
             }
 

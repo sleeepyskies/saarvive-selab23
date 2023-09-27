@@ -6,7 +6,7 @@ package de.unisaarland.cs.se.selab.graph
  * @param id The id of the vertex
  * @param connectingRoads The connected vertices and roads
  */
-class Vertex(
-    public val id: Int,
-    public val connectingRoads: MutableMap<Vertex, Road>
+data class Vertex(
+    val id: Int,
+    val connectingRoads: MutableMap<Vertex, Road>
 )

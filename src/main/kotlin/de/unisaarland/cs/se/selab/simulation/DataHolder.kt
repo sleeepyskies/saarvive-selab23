@@ -16,16 +16,16 @@ import de.unisaarland.cs.se.selab.graph.Vertex
 class DataHolder(
     val graph: Graph,
     val bases: List<Base>,
-    val events: Event,
+    val events: MutableList<Event>,
     val emergencies: List<Emergency>,
 
 ) {
     val ongoingEmergencies = mutableListOf<Emergency>()
-    val resolvedEmergencies: MutableList<Emergency> = mutableListOf<Emergency>()
-    val activeVehicles: MutableList<Vehicle> = mutableListOf<Vehicle>()
-    val rechargingVehicles: MutableList<Vehicle> = mutableListOf<Vehicle>()
-    val unavailableVehicles: List<Vehicle> = mutableListOf<Vehicle>()
-    val requests: MutableList<Request> = mutableListOf<Request>()
+    val resolvedEmergencies: MutableList<Emergency> = mutableListOf()
+    val activeVehicles: MutableList<Vehicle> = mutableListOf()
+    val rechargingVehicles: MutableList<Vehicle> = mutableListOf()
+    val unavailableVehicles: List<Vehicle> = mutableListOf()
+    val requests: MutableList<Request> = mutableListOf()
     var assetsRerouted: Int = 0
 
     val emergencyToBase: MutableMap<Int, Base> = mutableMapOf()
@@ -63,7 +63,7 @@ class DataHolder(
      * Updates DataHolder's lists of emergencies. Removes provided emergencies from
      * 'emergencies' and appends to 'ongoingEmergencies'
      */
-    public fun updateScheduledEmergencies(emergencies: MutableList<Emergency>) {
+    fun updateScheduledEmergencies(emergencies: MutableList<Emergency>) {
         for (emergency in emergencies) {
             if (emergency.getEmergencyStatus() == EmergencyStatus.ONGOING) {
                 emergencies.remove(emergency)
