@@ -26,5 +26,5 @@ class Ambulance(
     override var roadProgress: Int = 0
     override lateinit var currentRoute: MutableList<Vertex>
     override var ticksStillUnavailable: Int = 0
-    val hasPatient: Boolean = false
+    var hasPatient: Boolean = false
 }

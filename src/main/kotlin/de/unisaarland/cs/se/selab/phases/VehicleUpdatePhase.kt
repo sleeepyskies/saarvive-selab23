@@ -1,11 +1,10 @@
 package de.unisaarland.cs.se.selab.phases
 
-import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleStatus
-import de.unisaarland.cs.se.selab.graph.Vertex
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.*
+import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.simulation.DataHolder
+import kotlin.math.ceil
 
 /**
  * This phase is responsible for moving all active vehicles,
@@ -57,8 +56,9 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) {
                 updateReachedBase(vehicle)
             }
         } else {
-            // assign new roadProgress
-            vehicle.roadProgress = weightToTicks(vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[1]]!!.weight)
+            // assign new roadProgress if route end not reached
+            vehicle.roadProgress =
+                weightToTicks(vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[1]]!!.weight)
         }
     }
 
@@ -67,11 +67,19 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) {
      */
     private fun updateReachedEmergency(vehicle: Vehicle) {
         vehicle.vehicleStatus = VehicleStatus.ARRIVED
+        // add vehicle to emergency's list of vehicles
         dataHolder.emergencyToVehicles[vehicle.assignedEmergencyID]!!.add(vehicle)
+
+        // update the emergency's required vehicles
         val requiredVehicles = dataHolder.vehicleToEmergency[vehicle.id]!!.requiredVehicles
         requiredVehicles[vehicle.vehicleType] = requiredVehicles[vehicle.vehicleType]!! - 1
         if (requiredVehicles[vehicle.vehicleType] == 0) {
             requiredVehicles.remove(vehicle.vehicleType)
+        }
+
+        // check if all vehicles have reached emergency, if so change status to HANDLING
+        if (dataHolder.vehicleToEmergency[vehicle.id]!!.requiredCapacity == mutableMapOf<CapacityType, Int>()) {
+            dataHolder.vehicleToEmergency[vehicle.id]!!.emergencyStatus = EmergencyStatus.HANDLING
         }
     }
 
@@ -80,33 +88,35 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) {
      * Also checks if vehicle needs to recharge
      */
     private fun updateReachedBase(vehicle: Vehicle) {
-        // check if vehicle needs to recharge
         dataHolder.activeVehicles.remove(vehicle)
+        // check if vehicle needs to recharge
+        if (vehicle is PoliceCar && vehicle.currentCriminalCapcity > 0) {
+            vehicle.vehicleStatus = VehicleStatus.RECHARGING
+            vehicle.currentCriminalCapcity = 0
+            vehicle.ticksStillUnavailable = 2
+        } else if (vehicle is FireTruckWater && vehicle.currentWaterCapacity < vehicle.maxWaterCapacity) {
+            vehicle.vehicleStatus = VehicleStatus.RECHARGING
+            vehicle.currentWaterCapacity = vehicle.maxWaterCapacity
+            vehicle.ticksStillUnavailable =
+                ceil((vehicle.maxWaterCapacity - vehicle.currentWaterCapacity) / 300.0).toInt()
+        } else if (vehicle is Ambulance && vehicle.hasPatient) {
+            vehicle.hasPatient = false
+            vehicle.vehicleStatus = VehicleStatus.RECHARGING
+            vehicle.ticksStillUnavailable = 1
+        } else {
+            vehicle.vehicleStatus = VehicleStatus.IN_BASE
+        }
     }
 
     /**
      * Returns the weight as ticks need to travel
      */
-    private fun weightToTicks (weight: Int): Int {
-        if (weight < 10) return 1
-        return if (weight % 10 == 0) {
+    private fun weightToTicks(weight: Int): Int {
+        if (weight < Number.TEN) return 1
+        return if (weight % Number.TEN == 0) {
             weight // number is already a multiple of ten
         } else {
-            weight + (10 - weight % 10) // round up
+            weight + (Number.TEN - weight % Number.TEN) // round up
         }
-    }
-
-    /**
-     * Checks if a vehicle has reached it's assigned emergency.
-     */
-    private fun checkVehicleReachedEmergency(vehicle: Vehicle): Boolean {
-
-    }
-
-    /**
-     * Updates the given emergency's status
-     */
-    private fun updateEmergencyStatus(emergency: Emergency, status: EmergencyStatus) {
-
     }
 }
