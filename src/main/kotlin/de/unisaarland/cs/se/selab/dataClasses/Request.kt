@@ -9,6 +9,6 @@ data class Request(
     val baseIDsToVisit: List<Int>,
     val emergencyID: Int,
     val requestID: Int,
-    val requiredVehicles: Map<VehicleType, Int>,
-    val requiredCapacity: Map<CapacityType, Int>
+    val requiredVehicles: MutableMap<VehicleType, Int>,
+    val requiredCapacity: MutableMap<CapacityType, Int>
 )
