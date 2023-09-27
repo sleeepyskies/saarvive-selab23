@@ -5,10 +5,10 @@ import Hospital
 import PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
+import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
-import de.unisaarland.cs.se.selab.graph.Vertex
+import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.simulation.DataHolder
-import kotlin.reflect.typeOf
 
 /**
  * Class for selecting emergencies for the current tick, adding them to list of active ones,
@@ -53,15 +53,20 @@ class EmergencyPhase(private val dataHolder: DataHolder) {
      */
     private fun findClosestBase(emergency: Emergency): Base {
         val listOfResponsibleBases = mutableListOf<Base>()
+        // Retrieving list of responsible bases
         when (emergency.emergencyType) {
-            EmergencyType.FIRE, EmergencyType.ACCIDENT -> listOfResponsibleBases.addAll(dataHolder.bases.filterIsInstance<FireStation>())
+            EmergencyType.FIRE, EmergencyType.ACCIDENT -> listOfResponsibleBases.addAll(
+                dataHolder.bases.filterIsInstance<FireStation>()
+            )
+
             EmergencyType.CRIME -> listOfResponsibleBases.addAll(dataHolder.bases.filterIsInstance<PoliceStation>())
             EmergencyType.MEDICAL -> listOfResponsibleBases.addAll(dataHolder.bases.filterIsInstance<Hospital>())
         }
 
         val listOfEmergencyVertices = mutableListOf(emergency.location.first, emergency.location.second)
         var distance: Int = Int.MAX_VALUE
-        var base: Base
+        var base: Base? = null
+        // Check for the shortest distance and Base
         listOfResponsibleBases.forEach { responsibleBase ->
             run {
                 val baseId = responsibleBase.baseID
@@ -72,39 +77,67 @@ class EmergencyPhase(private val dataHolder: DataHolder) {
                         vertex,
                         0
                     )
-                    when {
-                        shortestPath == distance -> //check the baseID
-                            shortestPath < distance
-                        -> {
-
-                        }
-                    }
+                    val routeAndBase = chooseBaseAndRoute(shortestPath, distance, base, baseId, responsibleBase)
+                    distance = routeAndBase.first
+                    base = routeAndBase.second
                 }
             }
         }
-
+        return base!!
     }
-}
 
-/**
- * Assigns [base] to the [emergency]
- */
-private fun assignBaseToEmergency(emergency: Emergency, base: Base) {
+    /**
+     * Checks for shorter path and returns the base and distance
+     */
+    private fun chooseBaseAndRoute(
+        shortestPath: Int,
+        distance: Int,
+        base: Base?,
+        baseId: Int,
+        responsibleBase: Base
+    ): Pair<Int, Base> {
+        var distance = distance
+        var base = base
+        when {
+            shortestPath == distance -> if (base == null || base!!.baseID > baseId) {
+                base = responsibleBase
+            }
 
-}
+            shortestPath < distance -> {
+                distance = shortestPath
+                base = responsibleBase
+            }
+        }
+        return Pair(distance, base!!)
+    }
 
-/**
- * Create log for each ASSIGNED [emergencies] by ID
- */
-private fun logEmergenciesByID(emergencies: List<Emergency>) {
+    /**
+     * Assigns [base] to the [emergency]
+     */
+    private fun assignBaseToEmergency(emergency: Emergency, base: Base) {
+        emergency.emergencyStatus = EmergencyStatus.ASSIGNED
+        this.dataHolder.emergencyToBase.put(emergency.id, base)
+    }
 
-}
+    /**
+     * Create log for each ASSIGNED [emergencies] by ID
+     */
+    private fun logEmergenciesByID(emergencies: List<Emergency>) {
+        val sortedByID = emergencies.sortedBy { emergency: Emergency -> emergency.id }
+        sortedByID.forEach { sortedEmergency ->
+            run {
+                val sortedEmergencyID = sortedEmergency.id
+                Log.displayEmergencyAssignment(
+                    sortedEmergencyID,
+                    this.dataHolder.emergencyToBase.get(sortedEmergencyID)!!.baseID
+                )
+            }
+        }
+    }
 
-/**
- * Sort ongoing list by severity
- */
-private fun sortBySeverity() {
-
-}
-
+    /**
+     * Sort ongoing list by severity
+     */
+    private fun sortBySeverity() {
+    }
 }
