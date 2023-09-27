@@ -8,9 +8,9 @@ import de.unisaarland.cs.se.selab.simulation.DataHolder
 /**
  * deals with all requests created in the current tick
  */
-class RequestPhase(val dataHolder: DataHolder) : Phase {
+class RequestPhase(private val dataHolder: DataHolder) : Phase {
     /**
-     * excutes all the private functions based on logic
+     * executes all the private functions based on logic
      */
     override fun execute() {
         //code
@@ -20,7 +20,7 @@ class RequestPhase(val dataHolder: DataHolder) : Phase {
      * check if there are any requests in this tick
      */
     private fun requestsExits(): Boolean {
-        if (dataHolder.requests.isNotEmpty()) return true else return false
+        return dataHolder.requests.isNotEmpty()
     }
 
     /**
@@ -72,7 +72,7 @@ class RequestPhase(val dataHolder: DataHolder) : Phase {
         val requiredVehicles = request.requiredVehicles
         val emergencyVertex = emergency.location.first
 
-        // only procced to the next step if the request still needs this vehicle
+        // only proceed to the next step if the request still needs this vehicle
         for (vehicle in vehicles) if (requiredVehicles.containsKey(vehicle.vehicleType)) {
             val shortestPath = graph.calculateShortestPath(vehicle.lastVisitedVertex, emergencyVertex, vehicle.height)
             // check if the car can reach in time
