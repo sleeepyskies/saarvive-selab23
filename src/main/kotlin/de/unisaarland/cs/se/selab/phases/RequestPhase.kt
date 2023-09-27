@@ -8,11 +8,11 @@ import de.unisaarland.cs.se.selab.simulation.DataHolder
 /**
  * deals with all requests created in the current tick
  */
-class RequestPhase(val dataHolder: DataHolder) {
+class RequestPhase(val dataHolder: DataHolder) : Phase {
     /**
      * excutes all the private functions based on logic
      */
-    fun execute() {
+    override fun execute() {
     }
 
     /**
@@ -62,11 +62,12 @@ class RequestPhase(val dataHolder: DataHolder) {
         return requiredVehicle
     }
 
-    private fun assignWithoutCapacity(vehicles: List<Vehicle>, request: Request){
+    private fun assignWithoutCapacity(vehicles: List<Vehicle>, request: Request) {
         for (vehicle in vehicles) {
             request.requiredVehicles[] = request.requiredVehicles[vehicle.vehicleType]!! - 1
         }
     }
+
     private fun assignBasedOnCapacity(vehicles: List<Vehicle>, capacity: Map<CapacityType, Int>, request: Request) {
         for (vehicle in vehicles) {
             when (vehicle) {

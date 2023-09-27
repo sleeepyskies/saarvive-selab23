@@ -11,12 +11,12 @@ import kotlin.math.ceil
  * checks if vehicles have reached their emergency,
  * and updates both vehicle and emergency statuses
  */
-class VehicleUpdatePhase(private val dataHolder: DataHolder) {
+class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
 
     /**
      * The main execute method of the phase.
      */
-    public fun execute() {
+    public override fun execute() {
         // update each active vehicle position
         for (vehicle in dataHolder.activeVehicles) {
             updateVehiclePosition(vehicle)

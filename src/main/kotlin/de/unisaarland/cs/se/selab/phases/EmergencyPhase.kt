@@ -14,13 +14,13 @@ import de.unisaarland.cs.se.selab.simulation.DataHolder
  * Class for selecting emergencies for the current tick, adding them to list of active ones,
  * assigning bases to them and sorting. [dataHolder] - access to all lists, mappings
  */
-class EmergencyPhase(private val dataHolder: DataHolder) {
+class EmergencyPhase(private val dataHolder: DataHolder) : Phase {
     private var currentTick = 0
 
     /**
      * Main method that keeps track of all processes in EmergencyPhase: choosing the base, assigning, logging, sorting
      */
-    fun execute() {
+    override fun execute() {
         val scheduledEmergencies = scheduleEmergencies()
         assignBasesToEmergencies(scheduledEmergencies)
         logEmergenciesByID(scheduledEmergencies)
