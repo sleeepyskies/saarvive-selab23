@@ -12,5 +12,6 @@ class Road(
     internal val roadName: String,
     internal var weight: Int,
     internal val heightLimit: Int,
-    public val activeEvents: MutableList<Event>
-)
+) {
+    public val activeEvents: MutableList<Event> = mutableListOf<Event>()
+}

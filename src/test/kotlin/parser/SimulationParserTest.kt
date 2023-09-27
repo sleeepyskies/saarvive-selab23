@@ -1,4 +1,4 @@
-package parser.emergencyParser
+package parser
 
 import de.unisaarland.cs.se.selab.dataClasses.VehicleType
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
@@ -7,8 +7,9 @@ import de.unisaarland.cs.se.selab.parser.SimulationParser
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-class EmergencyParserTest {
+class SimulationParserTest {
 
+    // Emergency Parsing Tests
     @Test
     fun testValid1() {
         val parser = SimulationParser(

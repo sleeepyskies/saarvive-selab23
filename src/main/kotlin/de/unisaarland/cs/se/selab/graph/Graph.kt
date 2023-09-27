@@ -38,7 +38,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
         var neighbors: Map<Vertex, Road> = findValidNeighbors(currentVertex, carHeight)
 
         // Algorithm
-        while (unvisitedVertices.isNotEmpty() && neighbors.isNotEmpty()) {
+        while (unvisitedVertices.isNotEmpty()) {
             // gets all relevant neighbors based on height restrictions
             neighbors = findValidNeighbors(currentVertex, carHeight)
             // updates neighbor distances
