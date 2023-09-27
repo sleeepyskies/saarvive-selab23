@@ -4,6 +4,7 @@ import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleStatus
+import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 
 /**
@@ -20,20 +21,7 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 emergency.emergencyStatus == EmergencyStatus.HANDLING
             }
         )
-    }
-
-    /**
-     * Sends all the vehicles assigned to an emergency back to their
-     * respective bases
-     */
-    private fun sendVehiclesBack(vehicles: List<Vehicle>) {
-        for (vehicle in vehicles) {
-            vehicle.vehicleStatus = VehicleStatus.MOVING_TO_BASE
-            vehicle.assignedEmergencyID = null
-            vehicle.roadProgress = 1
-            vehicle.currentRoute = dataHolder.graph.calculateShortestRoute(vehicle.lastVisitedVertex, dataHolder.baseToVertex[vehicle.assignedBaseID]!!, vehicle.height)
-
-        }
+        updateEmergencies(dataHolder.ongoingEmergencies)
     }
 
     /**
@@ -51,6 +39,59 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
     private fun reduceHandleTime(emergencies: List<Emergency>) {
         for (emergency in emergencies) {
             emergency.handleTime -= 1
+        }
+    }
+
+    /**
+     * Checks if emergencies have failed or become resolved and updates accordingly
+     */
+    private fun updateEmergencies(emergencies: List<Emergency>) {
+        for (emergency in emergencies) {
+            // emergency resolved
+            if (emergency.handleTime == 0) {
+                emergency.emergencyStatus = EmergencyStatus.RESOLVED
+                // update mappings
+                dataHolder.ongoingEmergencies.remove(emergency)
+                dataHolder.resolvedEmergencies.add(emergency)
+            }
+            // emergency failed
+            if (emergency.maxDuration == 0) {
+                emergency.emergencyStatus = EmergencyStatus.FAILED
+                // update mappings
+                dataHolder.ongoingEmergencies.remove(emergency)
+                dataHolder.resolvedEmergencies.add(emergency)
+            }
+        }
+
+        /**
+         * Returns the weight as ticks need to travel
+         */
+        fun weightToTicks(weight: Int): Int {
+            if (weight < Number.TEN) return 1
+            return if (weight % Number.TEN == 0) {
+                weight // number is already a multiple of ten
+            } else {
+                weight + (Number.TEN - weight % Number.TEN) // round up
+            }
+        }
+
+        /**
+         * Sends all the vehicles assigned to an emergency back to their
+         * respective bases
+         */
+        fun sendVehiclesBack(vehicles: List<Vehicle>) {
+            for (vehicle in vehicles) {
+                vehicle.vehicleStatus = VehicleStatus.MOVING_TO_BASE
+                vehicle.assignedEmergencyID = null
+                vehicle.currentRoute =
+                    dataHolder.graph.calculateShortestRoute(
+                        vehicle.lastVisitedVertex,
+                        dataHolder.baseToVertex[vehicle.assignedBaseID]!!,
+                        vehicle.height
+                    )
+                vehicle.roadProgress =
+                    weightToTicks(vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[1]]!!.weight)
+            }
         }
     }
 }
