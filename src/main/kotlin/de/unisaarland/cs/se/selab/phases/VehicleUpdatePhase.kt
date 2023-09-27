@@ -1,7 +1,13 @@
 package de.unisaarland.cs.se.selab.phases
 
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.*
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.CapacityType
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleStatus
+import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 import kotlin.math.ceil
@@ -67,6 +73,8 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
      */
     private fun updateReachedEmergency(vehicle: Vehicle) {
         vehicle.vehicleStatus = VehicleStatus.ARRIVED
+        // log vehicle arrival
+        Log.displayAssetArrival(vehicle.id, vehicle.lastVisitedVertex.id)
         // add vehicle to emergency's list of vehicles
         dataHolder.emergencyToVehicles[vehicle.assignedEmergencyID]!!.add(vehicle)
 
@@ -77,9 +85,21 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
             requiredVehicles.remove(vehicle.vehicleType)
         }
 
+        // update the emergencies required capacity
+
+
         // check if all vehicles have reached emergency, if so change status to HANDLING
         if (dataHolder.vehicleToEmergency[vehicle.id]!!.requiredCapacity == mutableMapOf<CapacityType, Int>()) {
             dataHolder.vehicleToEmergency[vehicle.id]!!.emergencyStatus = EmergencyStatus.HANDLING
+            // Log emergency handling
+            Log.displayEmergencyHandlingStart(dataHolder.vehicleToEmergency[vehicle.id]!!.id)
+            // Update all vehicle statuses to HANDLING
+            val vehicles = dataHolder.emergencyToVehicles[dataHolder.vehicleToEmergency[vehicle.id]!!.id]
+            if (vehicles != null) {
+                for (v in vehicles) {
+                    v.vehicleStatus = VehicleStatus.HANDLING
+                }
+            }
         }
     }
 
@@ -98,7 +118,7 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
             vehicle.vehicleStatus = VehicleStatus.RECHARGING
             vehicle.currentWaterCapacity = vehicle.maxWaterCapacity
             vehicle.ticksStillUnavailable =
-                ceil((vehicle.maxWaterCapacity - vehicle.currentWaterCapacity) / 300.0).toInt()
+                ceil((vehicle.maxWaterCapacity - vehicle.currentWaterCapacity) / Number.THREE_HUNDRED_FLOAT).toInt()
         } else if (vehicle is Ambulance && vehicle.hasPatient) {
             vehicle.hasPatient = false
             vehicle.vehicleStatus = VehicleStatus.RECHARGING
