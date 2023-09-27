@@ -9,7 +9,7 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.graph.Graph
 import de.unisaarland.cs.se.selab.graph.Vertex
 
-/**b
+/**
  * The DataHolder stores all relevant simulation data for the phases to manipulate.
  * Additionally, it contains multiple mappings used for fast lookups by the phases.
  */
