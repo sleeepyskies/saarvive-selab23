@@ -16,7 +16,9 @@ fun main(args: Array<String>) {
     val simulationObjConstructor =
         SimulationObjectConstructor(arguments.mapFile, arguments.assetsFile, arguments.scenarioFile, arguments.maxTicks)
     val simulation = simulationObjConstructor.createSimulation()
-    simulation.start()
+    if (simulation != null) {
+        simulation.start()
+    }
 }
 
 /** Data class for command line arguments */

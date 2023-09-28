@@ -15,7 +15,6 @@ import de.unisaarland.cs.se.selab.graph.Vertex
 import de.unisaarland.cs.se.selab.parser.AssetParser
 import de.unisaarland.cs.se.selab.parser.CountyParser
 import de.unisaarland.cs.se.selab.parser.SimulationParser
-import kotlin.system.exitProcess
 
 /**
  * Is responsible for calling the parsers, cross
@@ -30,7 +29,7 @@ class SimulationObjectConstructor(
     /**
      * Creates and returns a parsed and validated Simulation object
      */
-    public fun createSimulation(): Simulation {
+    public fun createSimulation(): Simulation? {
         // parse, validate and create map
         val countyParser = CountyParser(countyFile)
         val graph = countyParser.parse()
@@ -54,8 +53,9 @@ class SimulationObjectConstructor(
             val dataHolder = DataHolder(graph, bases, events.toMutableList(), emergencies)
             return Simulation(dataHolder, maxTick)
         } else {
-            // If validation fails, exit
-            exitProcess(1)
+            // If validation fails, throw an exception
+            check(false) { "Validation of simulation data failed" }
+            return null
         }
     }
 
@@ -74,7 +74,10 @@ class SimulationObjectConstructor(
             // find base vertex
             val baseVertex = graph.graph.find { vertex: Vertex -> vertex.id == base.vertexID }
             // add base to mapping
-            mapping[baseVertex]!!.add(base)
+            mapping[baseVertex]?.add(base) ?: run {
+                // Handle the case where mapping[baseVertex] is null
+                // You can provide a default action here if needed
+            }
         }
 
         // Check each vertex has at most one base on it
@@ -114,7 +117,7 @@ class SimulationObjectConstructor(
             is Construction -> return roadExists(event.sourceID, event.targetID, graph)
             is RoadClosure -> return roadExists(event.sourceID, event.targetID, graph)
             is TrafficJam -> return roadExists(event.startVertex, event.endVertex, graph)
-            else -> exitProcess(1)
+            else -> throw IllegalArgumentException("Unsupported event type: ${event::class.simpleName}")
         }
     }
 
@@ -167,7 +170,10 @@ class SimulationObjectConstructor(
             if (emergencyRoad == null) return false
 
             // add emergency to the mapping
-            mapping[emergencyRoad]!!.add(emergency)
+            mapping[emergencyRoad]?.add(emergency) ?: run {
+                // Handle the case where mapping[emergencyRoad] is null
+                // You can provide a default action here if needed
+            }
         }
 
         // check two emergencies at the same location do not occur at the same time
