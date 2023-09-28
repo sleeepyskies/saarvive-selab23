@@ -107,9 +107,9 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
 
         // check if all vehicles have reached emergency, if so change status to HANDLING
         if ((
-            dataHolder.vehicleToEmergency[vehicle.id]?.requiredCapacity
-                ?: mutableMapOf()
-            ) == mutableMapOf<CapacityType, Int>()
+                dataHolder.vehicleToEmergency[vehicle.id]?.requiredCapacity
+                    ?: mutableMapOf()
+                ) == mutableMapOf<CapacityType, Int>()
         ) {
             dataHolder.vehicleToEmergency[vehicle.id]?.emergencyStatus = EmergencyStatus.HANDLING
             // Log emergency handling TODO Might have to be in EmergencyUpdatePhase...
