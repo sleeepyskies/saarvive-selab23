@@ -166,5 +166,4 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         val request = Request(baseIds, emergency.id, nextRequestId, requiredVehicles, emergency.requiredCapacity)
         dataHolder.requests.add(request)
     }
-
 }

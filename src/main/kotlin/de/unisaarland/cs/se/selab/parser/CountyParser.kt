@@ -213,8 +213,7 @@ class CountyParser(private val dotFilePath: String) {
         val mapping = mutableMapOf<String, MutableList<String>>()
         this.listOfEdges.values.forEach { key ->
             if (mapping.containsKey(key.getValue(StringLiterals.VILLAGE))) {
-                if (!mapping[key.getValue(StringLiterals.VILLAGE)]!!
-                        .contains(key.getValue(StringLiterals.NAME))
+                if (!mapping[key.getValue(StringLiterals.VILLAGE)]!!.contains(key.getValue(StringLiterals.NAME))
                 ) {
                     mapping[key.getValue(StringLiterals.VILLAGE)]!!.add(key.getValue("name"))
                 } else {
