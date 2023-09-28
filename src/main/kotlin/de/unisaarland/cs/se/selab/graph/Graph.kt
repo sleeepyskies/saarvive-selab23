@@ -61,7 +61,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
      * @param vehicleHeight The height of the vehicle driving
      */
     fun calculateShortestRoute(vehiclePosition: Vertex, destination: Vertex, vehicleHeight: Int): MutableList<Vertex> {
-        var route = listOf<Vertex>()
+        var route = mutableListOf<Vertex>()
         // maps how far all the vertices are from the current vertex
         val distances = mutableMapOf<Vertex, Int>()
         // allows a chain of previous vertices to be created that can be backtracked
