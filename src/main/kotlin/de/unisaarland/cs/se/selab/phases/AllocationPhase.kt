@@ -63,33 +63,41 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         for (asset in assets) {
             // check if vehicle has the required capacity
             val vehicleCapacity = getVehicleCapacity(asset)
-            if (vehicleCapacity.first in requiredCapacity) {
-                if (requiredCapacity[vehicleCapacity.first]?.let { vehicleCapacity.second >= it }
-                    ?: false &&
-                    assignIfCanArriveOnTime(asset, emergency)
-                ) {
-                    // assign vehicle to emergency, update vehicle status
-                    asset.assignedEmergencyID = emergency.id
-                    asset.vehicleStatus = VehicleStatus.ASSIGNED_TO_EMERGENCY
-                    emergency.requiredCapacity[vehicleCapacity.first] = -vehicleCapacity.second
-                    // add information about assigned vehicle to dataHolder
-                    dataHolder.vehicleToEmergency[asset.id] = emergency
+            checkAndAssign(vehicleCapacity, requiredCapacity, asset, emergency)
+        }
+    }
+
+    private fun checkAndAssign(
+        vehicleCapacity: Pair<CapacityType, Int>,
+        requiredCapacity: MutableMap<CapacityType, Int>,
+        asset: Vehicle,
+        emergency: Emergency
+    ) {
+        if (vehicleCapacity.first in requiredCapacity) {
+            if (requiredCapacity[vehicleCapacity.first]?.let { vehicleCapacity.second >= it } == true &&
+                assignIfCanArriveOnTime(asset, emergency)
+            ) {
+                // assign vehicle to emergency, update vehicle status
+                asset.assignedEmergencyID = emergency.id
+                asset.vehicleStatus = VehicleStatus.ASSIGNED_TO_EMERGENCY
+                emergency.requiredCapacity[vehicleCapacity.first] = -vehicleCapacity.second
+                // add information about assigned vehicle to dataHolder
+                dataHolder.vehicleToEmergency[asset.id] = emergency
+            } else {
+                // reroute vehicle -> need to implement
+                val emergencyToBase = dataHolder.emergencyToBase[emergency.id]
+                if (emergencyToBase != null) {
+                    val reallocatableVehicles = getReallocatableVehicles(emergencyToBase, emergency)
+                    rerouteVehicle(reallocatableVehicles, emergency)
                 } else {
-                    // reroute vehicle -> need to implement
-                    val emergencyToBase = dataHolder.emergencyToBase[emergency.id]
-                    if (emergencyToBase != null) {
-                        val reallocatableVehicles = getReallocatableVehicles(emergencyToBase, emergency)
-                        rerouteVehicle(reallocatableVehicles, emergency)
-                    } else {
-                        // Handle the case when emergencyToBase is null
-                        // You can throw an exception, log an error, or take appropriate action here.
-                    }
-                    emergency.requiredCapacity[vehicleCapacity.first] =
-                        emergency.requiredCapacity[vehicleCapacity.first]?.minus(vehicleCapacity.second) ?: 0
-                    asset.assignedEmergencyID = emergency.id
-                    asset.vehicleStatus = VehicleStatus.ASSIGNED_TO_EMERGENCY
-                    dataHolder.vehicleToEmergency[asset.id] = emergency
+                    // Handle the case when emergencyToBase is null
+                    // You can throw an exception, log an error, or take appropriate action here.
                 }
+                emergency.requiredCapacity[vehicleCapacity.first] =
+                    emergency.requiredCapacity[vehicleCapacity.first]?.minus(vehicleCapacity.second) ?: 0
+                asset.assignedEmergencyID = emergency.id
+                asset.vehicleStatus = VehicleStatus.ASSIGNED_TO_EMERGENCY
+                dataHolder.vehicleToEmergency[asset.id] = emergency
             }
         }
     }
