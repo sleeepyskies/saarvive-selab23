@@ -24,7 +24,7 @@ class Ambulance(
     override var assignedEmergencyID: Int? = null
     override lateinit var lastVisitedVertex: Vertex
     override var roadProgress: Int = 0
-    override lateinit var currentRoute: MutableList<Vertex>
+    override var currentRoute: List<Vertex> = emptyList<Vertex>()
     override var ticksStillUnavailable: Int = 0
     var hasPatient: Boolean = false
 }
