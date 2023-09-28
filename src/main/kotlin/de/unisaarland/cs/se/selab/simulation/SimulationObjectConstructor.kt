@@ -116,7 +116,29 @@ class SimulationObjectConstructor(
             is VehicleUnavailable -> return true // impossible to reach
             is Construction -> return roadExists(event.sourceID, event.targetID, graph)
             is RoadClosure -> return roadExists(event.sourceID, event.targetID, graph)
-            is TrafficJam -> return roadExists(event.sourceID, event.targetID, graph)
+            is TrafficJam -> return roadExists(event.startVertex, event.endVertex, graph)
+        }
+
+        return true
+    }
+
+    /**
+     *
+     */
+    private fun roadExists(sourceID: Int, targetID: Int, graph: Graph): Boolean {
+        // find the two event vertices
+        val sourceVertex = graph.graph.find { vertex: Vertex -> vertex.id == sourceID }
+        val targetVertex = graph.graph.find { vertex: Vertex -> vertex.id == targetID }
+
+        // check they exist
+        if (sourceVertex == null || targetVertex == null) return false
+
+        // check they are connected via an edge
+        if (
+            sourceVertex.connectingRoads[targetVertex] == null &&
+            targetVertex.connectingRoads[sourceVertex] == null
+            ) {
+            return false
         }
 
         return true
