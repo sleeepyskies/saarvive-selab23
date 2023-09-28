@@ -37,6 +37,8 @@ class AssetParser(assetSchemaFile: String, jsonFile: String) {
      * parse method returns a pair of list of bases and list of vehicles
      */
     fun parse(): Pair<List<Base>, List<Vehicle>> {
+        // assetSchema.validate(json) => for later (optimisation)
+
         allVehicles = parseVehicles()
         val allBases = parseBases()
 
@@ -56,7 +58,7 @@ class AssetParser(assetSchemaFile: String, jsonFile: String) {
             val baseType = validateBaseType(jsonBase.getString("baseType"))
             val location = validateLocation(jsonBase.getInt("location"))
             val staff = validateStaff(jsonBase.getInt("staff"))
-            val vehicles = parseVehicles().filter { it.assignedBaseID == id } // might be inefficient code
+            val vehicles = allVehicles.filter { it.assignedBaseID == id }
 
             val base: Base = when (baseType) {
                 "FIRE_STATION" -> FireStation(id, staff, location, vehicles)
@@ -72,7 +74,7 @@ class AssetParser(assetSchemaFile: String, jsonFile: String) {
 
     private fun parseVehicles(): List<Vehicle> {
         val parsedVehicles = mutableListOf<Vehicle>()
-        val vehiclesArray = json.getJSONArray("vehicle")
+        val vehiclesArray = json.getJSONArray("vehicles")
         for (i in 0 until vehiclesArray.length()) {
             val jsonVehicle = vehiclesArray.getJSONObject(i)
             assetSchema.validate(jsonVehicle)
