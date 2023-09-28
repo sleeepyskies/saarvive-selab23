@@ -82,18 +82,17 @@ fun parseCommandLineArguments(args: Array<String>): CommandLineArguments {
     return CommandLineArguments(mapFile, assetsFile, scenarioFile, ticks, outFile, help)
 }
 
-
 /** Prints the usage of the program
  */
 fun printUsage() {
     println(
-        "Usage: Saarvive & Thrive " +
-                "\n --map <mapFile> " +
-                "\n --assets <assetsFile> " +
-                "\n --scenario <scenarioFile> " +
-                "\n --ticks <ticks> " +
-                "\n --out <outFile> " +
-                "\n --help"
+        "Usage: Saarvive & Thrive"
     )
+    println("--map/-m <mapFile>")
+    println("--assets/-a <assetsFile>")
+    println("--scenario/-s <scenarioFile>")
+    println("--ticks/-t <ticks>")
+    println("--out/-o <outFile>")
+    println("--help/-h")
+    exitProcess(0)
 }
-
