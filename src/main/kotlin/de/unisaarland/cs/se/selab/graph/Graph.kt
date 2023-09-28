@@ -61,7 +61,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
      * @param vehicleHeight The height of the vehicle driving
      */
     fun calculateShortestRoute(vehiclePosition: Vertex, destination: Vertex, vehicleHeight: Int): MutableList<Vertex> {
-        var route = mutableListOf<Vertex>()
+        val route = mutableListOf<Vertex>()
         // maps how far all the vertices are from the current vertex
         val distances = mutableMapOf<Vertex, Int>()
         // allows a chain of previous vertices to be created that can be backtracked
@@ -74,7 +74,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
          * !! double bang operator
          * used when certain that the object won't be null and want to access it without null safety checks
          */
-        val unvisitedVertices = PriorityQueue<Vertex> { v1, v2 -> distances[v1]!! - distances[v2]!! }
+        val unvisitedVertices = PriorityQueue<Vertex> { v1, v2 -> (distances[v1]?:0) - (distances[v2]?:0)}
 
         // initializing distances and previous vertices for all vertices in the graph
         for (vertex in graph) {
@@ -114,9 +114,9 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         // Create mapping of base to it's distance to the emergency
         val distanceToEmergency: MutableMap<Base, Int> = mutableMapOf()
         for (base in relevantBases) {
-            val firstDistance = calculateShortestPath(baseToVertex[base.baseID]!!, emergency.location.first, 0)
-            val secondDistance = calculateShortestPath(baseToVertex[base.baseID]!!, emergency.location.second, 0)
-            distanceToEmergency[base] = min(firstDistance, secondDistance)
+            val firstDistance = baseToVertex[base.baseID]?.let { calculateShortestPath(it, emergency.location.first, 0) }
+            val secondDistance = baseToVertex[base.baseID]?.let { calculateShortestPath(it, emergency.location.second, 0) }
+            distanceToEmergency[base] = min (firstDistance?: 0, secondDistance?:0)
         }
 
         var minDistance = Int.MAX_VALUE
@@ -177,14 +177,14 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         val relevantBases = filterByEmergencyType(bases.toMutableList(), emergency)
         // stores the distance of each base from the start base
         val distanceMapping = mutableMapOf<Base, Int>()
-        val startBaseVertex = baseToVertex[startBase.baseID]
+        val startBaseVertex = baseToVertex[startBase.baseID]!!
 
         for (nextBase in relevantBases) {
             // ignore the start base
             if (nextBase == startBase) continue
-            val nextBaseVertex = baseToVertex[nextBase.baseID]
+            val nextBaseVertex = baseToVertex[nextBase.baseID]!!
             // get the shortest distance from the start base
-            distanceMapping[nextBase] = calculateShortestPath(startBaseVertex!!, nextBaseVertex!!, 0)
+            distanceMapping[nextBase] = calculateShortestPath(startBaseVertex, nextBaseVertex, 0)
         }
 
         return distanceMapping.entries.sortedBy { it.value }.map { it.key }
