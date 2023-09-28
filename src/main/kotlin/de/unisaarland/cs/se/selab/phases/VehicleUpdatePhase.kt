@@ -79,7 +79,10 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
         } else {
             // assign new roadProgress if route end not reached
             vehicle.roadProgress =
-                weightToTicks(vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[1]]!!.weight)
+                vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[1]]
+                    ?.weight
+                    ?.let { weightToTicks(it) }
+                    ?: 0/* Default value or action when null */
         }
     }
 
@@ -91,7 +94,7 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
         // log vehicle arrival
         Log.displayAssetArrival(vehicle.id, vehicle.lastVisitedVertex.id)
         // add vehicle to emergency's list of vehicles
-        dataHolder.emergencyToVehicles[vehicle.assignedEmergencyID]!!.add(vehicle)
+        dataHolder.emergencyToVehicles[vehicle.assignedEmergencyID]?.add(vehicle)
 
         // update the emergency's required vehicles
         val requiredVehicles = dataHolder.vehicleToEmergency[vehicle.id]!!.requiredVehicles
