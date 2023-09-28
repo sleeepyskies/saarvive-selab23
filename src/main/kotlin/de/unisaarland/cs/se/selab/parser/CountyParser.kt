@@ -1,8 +1,10 @@
 package de.unisaarland.cs.se.selab.parser
 
 import de.unisaarland.cs.se.selab.global.Log
-import de.unisaarland.cs.se.selab.graph.*
+import de.unisaarland.cs.se.selab.graph.Graph
+import de.unisaarland.cs.se.selab.graph.Road
 import java.io.File
+import java.lang.IllegalArgumentException
 import java.util.regex.Pattern
 import kotlin.system.exitProcess
 
@@ -14,37 +16,10 @@ class CountyParser(private val dotFilePath: String) {
     private val dotFile: File
     private val data: String
     private val roads = mutableListOf<Road>() // List of roads on the map (for compatability)
+    private var digraphName: String = ""
 
-    private val strPat = "[a-zA-Z][a-zA-Z_]*" // pattern for strings ID
-    private val numPat = "\\d+(\\.\\d+)?"      // pattern for numbers ID
-
-    private val mapPat = Pattern.compile("\\A(\\s*)digraph\\s+($strPat|$numPat)\\s*\\{([^}]*)\\}(\\s*)\\Z")
-
-    // general pattern for the whole mapping
-    private val vPat = Pattern.compile("\\s*($numPat)\\s*;\\s*") // pattern for vertex
-    private val vilPat = Pattern.compile("\\s*village\\s*=\\s*($strPat|$numPat)\\s*;") // village Pattern
-    private val namPat = Pattern.compile("\\s*name\\s*=\\s*($strPat|$numPat)\\s*;") // name Pattern
-    private val hPat = Pattern.compile("\\s*heightLimit\\s*=\\s*($numPat)\\s*;") // height Pattern
-    private val wPat = Pattern.compile("\\s*weight\\s*=\\s*($numPat)\\s*;") // weight Pattern
-    private val pTPat = Pattern.compile("\\s*primaryType\\s*=\\s*(mainStreet|sideStreet|countyRoad)\\s*;")
-
-    // primaryType Pattern
-
-    private val sTPat = Pattern.compile("\\s*secondaryType\\s*=\\s*(oneWayStreet|tunnel|none)\\s*;")
-
-    // secondaryType Pattern
-
-    private val atPat = Pattern.compile("$vilPat$namPat$hPat$wPat$pTPat$sTPat") // attribute pattern
-    private val ePat = Pattern.compile("\\s*($numPat)\\s*->\\s*($numPat)\\s*\\[(\\s*$atPat\\s*)\\]\\s*;\\s*")
-
-    // pattern for edge
-
-    private val listPattern = Pattern.compile("\\A($vPat)+($ePat)+\\s*\\Z")// general pattern for a list
-
-
-    // TRY TO SAVE LISTS LOCALLY
-    private val verticesAll = mutableMapOf<String, String>()
-    private val edgesAll = mutableMapOf<String, MutableMap<String, String>>()
+    private val listOfVertices = mutableListOf<Int>()
+    private val listOfEdges = mutableMapOf<Pair<Int, Int>, MutableMap<String, String>>()
 
     /**
      * Save the file and data in string
@@ -65,232 +40,174 @@ class CountyParser(private val dotFilePath: String) {
      * Receives results in parsing, validating, creates objects and returns Graph
      */
     fun parse(): Graph {
-        // Creating it if the syntax is valid
-        val blueprint = createBlueprint()
-        if (!validateBlueprint()) exitProcess(1)
+        val dataInScope = retrieveDataInScope()
+        if (!parsedAndValid(dataInScope)) {
+            Log.displayInitializationInfoInvalid(this.dotFile.name)
+            exitProcess(1)
+        }
         Log.displayInitializationInfoValid(this.dotFile.name)
-        val roads = createRoadList()
-        this.roads.addAll(roads)
-        val vertices = createVertexList()
-        connectVertices(vertices, roads, blueprint)
-        return createGraph(vertices, roads)
+        exitProcess(1)
     }
 
     /**
-     * Creates blueprint of digraph - name, id, id->id for Vertices and Roads
+     * Parse and create separate data structures, return the result
      */
-    private fun createBlueprint(): Map<String, String> {
-        val blueprint = mutableMapOf<String, String>()
+    private fun parsedAndValid(dataInScope: String): Boolean {
+        val vPat = Pattern.compile("\\A(\\s*(\\d+(\\.\\d+)?)\\s*;\\s*)+").toRegex() // pattern for vertex
 
-        // Match digraph
-        val mapMatcher = mapPat.matcher(this.data)
-        if (mapMatcher.find()) {
-            val mapID = mapMatcher.group(2) // returns name of the digraph
-            val list = mapMatcher.group(3) // returns String of the inner data
-            blueprint["digraph"] = mapID
-            blueprint.putAll(parseDataInScopes(list, mapID))
-        } else {
-            Log.displayInitializationInfoValid(this.dotFile.name)
+        val vertexMatched = vPat.find(dataInScope)
+        if (vertexMatched == null) {
+            Log.displayInitializationInfoInvalid(this.dotFile.name)
             exitProcess(1)
         }
-        return blueprint
+        val stringVertices = vertexMatched.groupValues[1]
+        val stringEdges = dataInScope.substring(vertexMatched.range.last + 1)
+
+        val parsedVertices = parseVertices(stringVertices)
+        val parsedEdges = parseEdges(stringEdges)
+
+        return if (parsedEdges && parsedVertices) validateTogether() else false
     }
 
     /**
-     * Receives the [list] - whole data - and [mapID] for some validation
+     * Validates vertices and edges together
      */
-    private fun parseDataInScopes(list: String?, mapID: String?): Map<String, String> {
-        val mapping = mutableMapOf<String, String>()
-        // Match list
-        val listMatcher = listPattern.matcher(list!!)
-        if (listMatcher.find()) {
-            val vertices = listMatcher.group(1)
-            val edges = listMatcher.group(2)
-            mapping.putAll(parseVertices(vertices))
-            mapping.putAll(parseEdges(edges, mapping, mapID))
-        } else {
-            Log.displayInitializationInfoValid(this.dotFile.name)
-            exitProcess(1)
+    private fun validateTogether(): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    /**
+     * Parses and validates Edges individually and creates mapping
+     */
+    private fun parseEdges(stringEdges: String): Boolean {
+        val edgeSkeleton =
+            Pattern.compile(
+                "\\A(\\s*(\\d+(\\.\\d+)?)\\s*->\\s*(\\d+(\\.\\d+)?)\\s*\\[(\\s*[^\\]]+\\s*)\\]\\s*;\\s*)+\\Z"
+            )
+        val edgePattern =
+            Pattern.compile("\\s*(\\d+(\\.\\d+)?)\\s*->\\s*(\\d+(\\.\\d+)?)\\s*\\[(\\s*[^\\]]+\\s*)\\]\\s*;\\s*")
+
+        val skeleton = edgeSkeleton.matcher(stringEdges)
+        if (!skeleton.find()) return false
+
+        val edge = edgePattern.matcher(stringEdges)
+        while (edge.find()) {
+            val id1 = edge.group(1)
+            val id2 = edge.group(3)
+            if (id1 == id2) return false
+            val check1 = Pair(id1.toInt(), id2.toInt())
+            val check2 = Pair(id2.toInt(), id1.toInt())
+            if (this.listOfEdges.containsKey(check1) || this.listOfEdges.containsKey(check2)) return false
+            val matchedEdge = edge.group(5)!!
+            if (!parsedAttributes(matchedEdge)) return false
+            val attributesMapping = parseAttributes(matchedEdge) // parse attributes
+            this.listOfEdges[Pair(id1.toInt(), id2.toInt())] = attributesMapping
         }
-
-        return mapping
+        if(!roadNameIsUnique()&&!commonVertex()&&!villageHasMainStreet()&&!sideStreetExists()) return false
+        return true
     }
 
-    /**
-     * Parses edges based on existing list of vertices
-     */
-    private fun parseEdges(
-        edges: String?, mapping: MutableMap<String, String>, // vertices for now
-        mapID: String?
-    ): Map<String, String> {
-        val listOfEdges = mutableMapOf<String, MutableMap<String, String>>()
-        val e = mutableMapOf<String, String>()
-        //Match edge
-        val edgeMatcher = ePat.matcher(edges!!)
-        while (edgeMatcher.find()) {
-            val ID1 = edgeMatcher.group(1) // id 1
-            val ID2 = edgeMatcher.group(2) // id 2
-            if (checkEdgeIDsAreAvailable(ID1, ID2, listOfEdges, mapping)) {
-                val attrib = edgeMatcher.group(3)
-                e.put("$ID1->$ID2", attrib)
-                val attributesMatcher = atPat.matcher(attrib!!)
-                while (attributesMatcher.find()) {
-                    val innerMap = mutableMapOf<String, String>()
-                    val village = attributesMatcher.group(1)
-                    val nameR = attributesMatcher.group(2)
-                    val height = attributesMatcher.group(3)
-                    val weight = attributesMatcher.group(4)
-                    val pt = attributesMatcher.group(5)
-                    val st = attributesMatcher.group(6)
-                    if (attributesSatisfy(village, nameR, height, weight, pt, st, mapID)) {
-                        innerMap.putAll(
-                            setOf(
-                                "village" to village,
-                                "nameRoad" to nameR,
-                                "heightLimit" to height,
-                                "weight" to weight,
-                                "primaryType" to pt,
-                                "secondarType" to st
-                            )
-                        )
-                        listOfEdges.put(ID1 + "->" + ID2, innerMap)
-                    } else {
-                        Log.displayInitializationInfoValid(this.dotFile.name)
-                        exitProcess(1)
-                    }
-                }
-            } else {
-                Log.displayInitializationInfoValid(this.dotFile.name)
-                exitProcess(1)
-            }
-        }
-        this.edgesAll.putAll(listOfEdges)
-        return e
+
+    private fun villageHasMainStreet(): Boolean {
+        TODO("Not yet implemented")
+    }
+    private fun roadNameIsUnique(): Boolean {
+        TODO("Not yet implemented")
     }
 
-    /**
-     * Check if we can continue working with the edge due to the attributes
-     */
-    private fun attributesSatisfy(
-        village: String?, nameR: String?, height: String?, weight: String?, pt: String?, st: String?, mapID: String?
-    ): Boolean {
-        return !((!pt.equals("countyRoad") && village == mapID) || (st.equals("tunnel") && height!!.toDouble() > 3) || weight!!.toDouble() <= 0 || height!!.toDouble() < 1)
+    private fun commonVertex(): Boolean {
+        TODO("Not yet implemented")
     }
 
-    /**
-     * Check if we can continue working with the edge
-     */
-    private fun checkEdgeIDsAreAvailable(
-        iD1: String?,
-        iD2: String?,
-        listOfEdges: MutableMap<String, MutableMap<String, String>>,
-        mapping: MutableMap<String, String>
-    ): Boolean {
-        return iD1 != iD2 && mapping.contains(iD1!!) && mapping.contains(iD2!!) && !listOfEdges.containsKey("$iD2->$iD1")
-    }
-
-    /**
-     * Parses [vertices]
-     */
-    private fun parseVertices(vertices: String?): Map<String, String> {
-        val v = mutableMapOf<String, String>()
-        // Match vertex
-        val vertexMatcher = vPat.matcher(vertices!!)
-        while (vertexMatcher.find()) {
-            val id = vertexMatcher.group(1)
-            val intId = id.toInt()
-            if (vertexSatisfies(v, intId)) {
-                v[id] = "vertex"
-            } else {
-                Log.displayInitializationInfoValid(this.dotFile.name)
-                exitProcess(1)
-            }
-        }
-
-        return v
-    }
-
-    /**
-     * Checks if vertexId [intId] is unique in [v], >=0 (1 condition)
-     */
-    private fun vertexSatisfies(v: MutableMap<String, String>, intId: Int): Boolean {
-        return !v.contains(intId.toString()) && intId >= 0
-    }
-
-    /**
-     * Return result in validating a [blueprint] (successful or not)
-     */
-    private fun validateBlueprint(): Boolean {
-        return roadNameUnique() && vertextConnects() && sideStreetExists()
-    }
-
-    /**
-     * Does something
-     */
     private fun sideStreetExists(): Boolean {
-        return true
+        TODO("Not yet implemented")
     }
-    /**
-     * Does something
-     */
-    private fun roadNameUnique(): Boolean {
+
+    private fun parsedAttributes(matchedEdge: String): Boolean {
+        val strPat = "[a-zA-Z][a-zA-Z_]*" // pattern for strings ID
+        val numPat = "\\d+(\\.\\d+)?" // pattern for numbers ID
+        val vilPat = Pattern.compile("\\s*village\\s*=\\s*($strPat|$numPat)\\s*;") // village Pattern
+        val namPat = Pattern.compile("\\s*name\\s*=\\s*($strPat|$numPat)\\s*;") // name Pattern
+        val hPat = Pattern.compile("\\s*heightLimit\\s*=\\s*($numPat)\\s*;") // height Pattern
+        val wPat = Pattern.compile("\\s*weight\\s*=\\s*($numPat)\\s*;") // weight Pattern
+        val pTPat = Pattern.compile("\\s*primaryType\\s*=\\s*(mainStreet|sideStreet|countyRoad)\\s*;")
+        // primaryType Pattern
+        val sTPat = Pattern.compile("\\s*secondaryType\\s*=\\s*(oneWayStreet|tunnel|none)\\s*;")
+        // secondaryType Pattern
+        val atPat = Pattern.compile("\\A$vilPat$namPat$hPat$wPat$pTPat$sTPat\\Z") // attribute pattern
+
+        val artPatter = atPat.matcher(matchedEdge)
+        if (!artPatter.find()) return false
         return true
     }
 
-    /**
-     * Each vertex connects at least to one another. //REDO
-     */
-    private fun vertextConnects(): Boolean {
-        verticesAll.forEach { vertex ->
-            run {
-                edgesAll.forEach { edge ->
-                    run {
-                        edge.key.split("->").forEach { part -> if (vertex.key == part) return true }
+    private fun parseAttributes(matchedEdge: String): MutableMap<String, String> {
+        val attributes = mutableMapOf<String, String>()
+        try {
+            val assignmentsArray = matchedEdge.split(";")
+            assignmentsArray.forEach { assignment ->
+                run {
+                    val keyValue = assignment.split("=")
+                    attributes[keyValue.elementAt(0)] = keyValue.elementAt(1)
+                    when (keyValue.elementAt(0)) {
+                        "weight" -> if (keyValue.elementAt(1).toInt() <= 0) throw IllegalArgumentException()
+                        "height" -> if (keyValue.elementAt(1).toInt() < 1) throw IllegalArgumentException()
                     }
                 }
             }
+        } catch (_: Exception) {
+            Log.displayInitializationInfoInvalid(this.dotFile.name)
+            exitProcess(1)
         }
-        return false
-
+        if (checkTunnel(attributes) || checkVillageName(attributes))
+         { throw IllegalArgumentException() }
+        return attributes
     }
 
     /**
-     * Creates object of Graph with [vertices] and [roads]
+     * Check tunnel
      */
-    private fun createGraph(vertices: List<Vertex>, roads: List<Road>): Graph {
+    private fun checkTunnel(attributes: MutableMap<String,String>):Boolean{
+        return attributes.getValue("secondaryType") == "tunnel" && attributes.getValue("height")
+            .toDouble() > 3
     }
 
     /**
-     * Creates single object of Road out of [road] data
+     * Check village name
      */
-    private fun createRoad(road: Map.Entry<String, MutableMap<String, String>>): Road {
-        return Road(PrimaryType.COUNTY_ROAD,SecondaryType.NONE,"s","k",4,2)
+    private fun checkVillageName(attributes: MutableMap<String,String>):Boolean{
+        return attributes.getValue("primaryType") != "countyRoad" && attributes.getValue("village") == this.digraphName
     }
-
     /**
-     * Returns list of Roads out of [blueprint] data
+     * Parses and validates Vertices individually and creates a list of Int
      */
-    private fun createRoadList(): List<Road> {
-        val roadList = mutableListOf<Road>()
-        edgesAll.forEach { edge ->
-            roadList.add(createRoad(edge))
+    private fun parseVertices(stringVertices: String): Boolean {
+        val stringVerticesList = stringVertices.split(";")
+        val intVertices = stringVerticesList.map { it.toInt() }
+        val distinctVertices = intVertices.distinct()
+        if (distinctVertices.count() != intVertices.count()) {
+            return false
         }
-
-        return roadList
+        intVertices.forEach { int -> if (int < 0) return false }
+        this.listOfVertices.addAll(intVertices)
+        return true
     }
 
     /**
-     * Returns list of Vertices out of [blueprint] data
+     * Returns only data in scopes
      */
-    private fun createVertexList(): List<Vertex> {
-    }
+    private fun retrieveDataInScope(): String {
+        val strPat = "[a-zA-Z][a-zA-Z_]*" // pattern for strings ID
+        val numPat = "\\d+(\\.\\d+)?" // pattern for numbers ID
+        val mapPat =
+            Pattern.compile("\\A(\\s*)digraph\\s+($strPat|$numPat)\\s*\\{([^}]*)\\}(\\s*)\\Z") // pattern for map
 
-    /**
-     * Creates single object of Vertex out of [vertex] data
-     */
-    private fun createVertex(vertex: String): Vertex {
-    }
-
-    private fun connectVertices(vertices: List<Vertex>, roads: List<Road>, blueprint: Map<String, String>) {
+        val mapMatcher = mapPat.matcher(this.data)
+        if (!mapMatcher.find()) {
+            Log.displayInitializationInfoInvalid(this.dotFile.name)
+            exitProcess(1)
+        }
+        this.digraphName = mapMatcher.group(2)
+        return mapMatcher.group(4) // returns data in the scope
     }
 }
