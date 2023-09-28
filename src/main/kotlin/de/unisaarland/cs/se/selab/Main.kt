@@ -3,7 +3,6 @@ package de.unisaarland.cs.se.selab
 import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.simulation.SimulationObjectConstructor
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import kotlin.system.exitProcess
 /**
  * This is the entry point of the simulation.
  */
@@ -44,7 +43,7 @@ fun parseCommandLineArguments(args: Array<String>): CommandLineArguments {
 
     fun requireArgument() {
         if (i >= args.size) {
-            exitProcess(1)
+            System.err.println("Missing argument for ${args[i - 1]}")
         }
     }
 
@@ -76,7 +75,7 @@ fun parseCommandLineArguments(args: Array<String>): CommandLineArguments {
                 outFile = args[i]
             }
             "--help", "-h" -> help = true
-            else -> exitProcess(1)
+            else -> System.err.println("Unknown argument: ${args[i]}")
         }
         i++
     }
@@ -95,5 +94,5 @@ fun printUsage() {
     logger("--ticks/-t <ticks>")
     logger("--out/-o <outFile>")
     logger("--help/-h")
-    exitProcess(0)
+    System.err.println("Exiting...")
 }
