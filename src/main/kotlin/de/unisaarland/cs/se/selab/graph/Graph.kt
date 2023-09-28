@@ -179,7 +179,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         val relevantBases = filterByEmergencyType(bases.toMutableList(), emergency)
         // stores the distance of each base from the start base
         val distanceMapping = mutableMapOf<Base, Int>()
-        val startBaseVertex: Vertex = baseToVertex[startBase.baseID]!!
+        val startBaseVertex = baseToVertex[startBase.baseID]!!
 
         for (nextBase in relevantBases) {
             // ignore the start base
