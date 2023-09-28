@@ -29,7 +29,7 @@ class SimulationParserTest {
         assert(emergency.roadName == "Bobski Street")
         assert(emergency.getEmergencyStatus() == EmergencyStatus.UNASSIGNED)
         assert(
-            emergency.getRequiredVehicles() == mutableMapOf(
+            emergency.requiredVehicles == mutableMapOf(
                 VehicleType.FIRE_TRUCK_WATER to 4,
                 VehicleType.FIRE_TRUCK_LADDER to 1,
                 VehicleType.FIREFIGHTER_TRANSPORTER to 1,
@@ -57,7 +57,7 @@ class SimulationParserTest {
         assert(emergency.villageName == "SPONGEBOOOOOOB")
         assert(emergency.roadName == "Street Street")
         assert(emergency.getEmergencyStatus() == EmergencyStatus.UNASSIGNED)
-        assert(emergency.getRequiredVehicles() == mutableMapOf(VehicleType.FIRE_TRUCK_TECHNICAL to 1))
+        assert(emergency.requiredVehicles == mutableMapOf(VehicleType.FIRE_TRUCK_TECHNICAL to 1))
     }
 
     @Test
@@ -81,7 +81,7 @@ class SimulationParserTest {
         assert(emergency1.roadName == "Road")
         assert(emergency1.getEmergencyStatus() == EmergencyStatus.UNASSIGNED)
         assert(
-            emergency1.getRequiredVehicles() == mutableMapOf(
+            emergency1.requiredVehicles == mutableMapOf(
                 VehicleType.AMBULANCE to 2,
                 VehicleType.EMERGENCY_DOCTOR_CAR to 1
             )
@@ -97,7 +97,7 @@ class SimulationParserTest {
         assert(emergency2.roadName == "BB")
         assert(emergency2.getEmergencyStatus() == EmergencyStatus.UNASSIGNED)
         assert(
-            emergency2.getRequiredVehicles() == mutableMapOf(
+            emergency2.requiredVehicles == mutableMapOf(
                 VehicleType.FIRE_TRUCK_TECHNICAL to 4,
                 VehicleType.POLICE_MOTORCYCLE to 2,
                 VehicleType.POLICE_CAR to 4,

@@ -20,7 +20,7 @@ class FireTruckWithLadder(
     assignedBaseID
 ) {
     override var isAvailable: Boolean = true
-    override lateinit var vehicleStatus: VehicleStatus
+    override var vehicleStatus: VehicleStatus = VehicleStatus.IN_BASE
     override var assignedEmergencyID: Int? = null
     override lateinit var lastVisitedVertex: Vertex
     override var roadProgress: Int = 0

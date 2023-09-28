@@ -108,7 +108,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
         var nextVertex: Vertex? = null
         var minWeight = Int.MAX_VALUE
 
-        for ((neighbor, road) in neighbors) {
+        for ((neighbor, _) in neighbors) {
             val distance = visitedVertices[neighbor]?.first ?: 0
             if (distance < minWeight) {
                 minWeight = distance

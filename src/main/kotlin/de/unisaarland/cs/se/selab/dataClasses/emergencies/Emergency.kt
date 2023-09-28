@@ -201,13 +201,6 @@ data class Emergency(
     }
 
     /**
-     * Returns the required vehicles of the emergency
-     */
-    fun getRequiredVehicles(): Map<VehicleType, Int> {
-        return requiredVehicles
-    }
-
-    /**
      * Returns the status of the emergency
      */
     fun getEmergencyStatus(): EmergencyStatus {
