@@ -1,3 +1,0 @@
-package parsertests
-
-class CountyParserTest
