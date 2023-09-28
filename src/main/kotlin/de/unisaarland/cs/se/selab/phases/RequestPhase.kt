@@ -2,7 +2,14 @@ package de.unisaarland.cs.se.selab.phases
 
 import de.unisaarland.cs.se.selab.dataClasses.Request
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.*
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.CapacityType
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWithLadder
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleStatus
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
 import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 
@@ -15,11 +22,11 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
      */
 
     override fun execute() {
-        if (requestExsists()) {
+        if (requestExists()) {
             for (request in dataHolder.requests) {
                 // only go through the list of bases if more vehicles need to be requested
                 for (baseID in request.baseIDsToVisit) if (request.requiredVehicles.isNotEmpty()) {
-                    val base = dataHolder.bases.first() { it.baseID == baseID }
+                    val base = dataHolder.bases.first { it.baseID == baseID }
                     val assignableVehicles = getAssignableAssets(base, request.requiredVehicles)
                     val normalVehicles = getNormalVehicles(assignableVehicles)
                     val specialVehicles = getSpecialVehicles(assignableVehicles)
@@ -41,7 +48,7 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
     /**
      * check if there are any requests in this tick
      */
-    private fun requestExsists(): Boolean {
+    private fun requestExists(): Boolean {
         return dataHolder.requests.isNotEmpty()
     }
 
@@ -81,11 +88,7 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
     }
 
     private fun assignWithoutCapacity(vehicles: List<Vehicle>, request: Request) {
-        val emergency = dataHolder.emergencies.first { it.id == request.emergencyID }
-        val graph = dataHolder.graph
         val requiredVehicles = request.requiredVehicles
-        val emergencyVertex = emergency.location.first
-
         // only proceed to the next step if the request still needs this vehicle
         for (vehicle in vehicles) if (requiredVehicles.containsKey(vehicle.vehicleType)) {
             assignVehicle(vehicle, request)
