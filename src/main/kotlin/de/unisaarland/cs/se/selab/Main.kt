@@ -16,7 +16,9 @@ fun main(args: Array<String>) {
 
     if (!validateFilePath(arguments.mapFile, ".dot") ||
         !validateFilePath(arguments.assetsFile, ".json") ||
-        !validateFilePath(arguments.scenarioFile, ".json")) {
+        !validateFilePath(arguments.scenarioFile, ".json"
+        )
+        ) {
         println("Error: Invalid file format")
     }
 
@@ -24,7 +26,6 @@ fun main(args: Array<String>) {
         SimulationObjectConstructor(arguments.mapFile, arguments.assetsFile, arguments.scenarioFile, arguments.maxTicks)
     val simulation = simulationObjConstructor.createSimulation()
     simulation.start()
-
 }
 
 /** Data class for command line arguments */
@@ -37,7 +38,9 @@ data class CommandLineArguments(
     val help: Boolean
 )
 
-// parse the command line arguments
+/**
+ * Parses the command line arguments and returns a [CommandLineArguments] object
+ */
 fun parseCommandLineArguments(args: Array<String>): CommandLineArguments {
     var mapFile = ""
     var assetsFile = ""
@@ -45,57 +48,51 @@ fun parseCommandLineArguments(args: Array<String>): CommandLineArguments {
     var ticks: Int? = null // default value
     var outFile = "stdout" // default value
     var help = false
-        var i = 0
-        val argsize = args.size
-        while (i < argsize) {
-            when (args[i]) {
-                "--map" -> {
-                    i++
-                    if (i < argsize) {
-                        mapFile = args[i]
-                    } else {
-                        println("Error: --map requires an argument")
-                    }
-                }
-                "--assets" -> {
-                    i++
-                    if (i < argsize) {
-                        assetsFile = args[i]
-                    } else {
-                        println("Error: --assets requires an argument")
-                    }
-                }
-                "--scenario" -> {
-                    i++
-                    if (i < argsize) {
-                        scenarioFile = args[i]
-                    } else {
-                        println("Error: --scenario requires an argument")
-                    }
-                }
-                "--ticks" -> {
-                    i++
-                    ticks = args[i].toIntOrNull() ?: Number.ONE_HUNDRED
-                }
-                "--out" -> {
-                    i++
-                    if (i < argsize) {
-                        outFile = args[i]
-                    } else {
-                        println("Error: --out requires an argument")
-                    }
-                }
-                "--help" -> {
-                    help = true
-                }
-                else -> {
-                    println("Error: Unknown argument ${args[i]}")
-                }
-            }
-            i++
+    var i = 0
+
+    fun requireArgument(errorMessage: String) {
+        if (i >= args.size) {
+            println("Error: $errorMessage")
+            return
         }
+    }
+
+    while (i < args.size) {
+        when (args[i]) {
+            "--map" -> {
+                i++
+                requireArgument("Missing value for --map")
+                mapFile = args[i]
+            }
+            "--assets" -> {
+                i++
+                requireArgument("Missing value for --assets")
+                assetsFile = args[i]
+            }
+            "--scenario" -> {
+                i++
+                requireArgument("Missing value for --scenario")
+                scenarioFile = args[i]
+            }
+            "--ticks" -> {
+                i++
+                requireArgument("Missing value for --ticks")
+                ticks = args[i].toIntOrNull() ?: Number.ONE_HUNDRED
+            }
+            "--out" -> {
+                i++
+                requireArgument("Missing value for --out")
+                outFile = args[i]
+            }
+            "--help" -> help = true
+            else -> println("Error: Unknown argument ${args[i]}")
+        }
+        i++
+    }
+
     return CommandLineArguments(mapFile, assetsFile, scenarioFile, ticks, outFile, help)
 }
+
 
 /**
  * Prints the usage of the program
@@ -108,7 +105,8 @@ fun printUsage() {
                 "\n --scenario <scenarioFile> " +
                 "\n --ticks <ticks> " +
                 "\n --out <outFile> " +
-                "\n --help")
+                "\n --help"
+    )
 }
 
 /**
@@ -118,7 +116,6 @@ fun validateFilePath(filePath: String, requiredExtension: String): Boolean {
     return filePath.endsWith(requiredExtension)
 }
 
-        // check if the files have the required format, if yes -> parse them
 
 
 
