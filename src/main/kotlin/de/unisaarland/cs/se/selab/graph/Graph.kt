@@ -74,7 +74,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
          * !! double bang operator
          * used when certain that the object won't be null and want to access it without null safety checks
          */
-        val unvisitedVertices = PriorityQueue<Vertex> { v1, v2 -> (distances[v1]?:0) - (distances[v2]?:0)}
+        val unvisitedVertices = PriorityQueue<Vertex> { v1, v2 -> (distances[v1] ?: 0) - (distances[v2] ?: 0) }
 
         // initializing distances and previous vertices for all vertices in the graph
         for (vertex in graph) {
@@ -114,9 +114,11 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         // Create mapping of base to it's distance to the emergency
         val distanceToEmergency: MutableMap<Base, Int> = mutableMapOf()
         for (base in relevantBases) {
-            val firstDistance = baseToVertex[base.baseID]?.let { calculateShortestPath(it, emergency.location.first, 0) }
-            val secondDistance = baseToVertex[base.baseID]?.let { calculateShortestPath(it, emergency.location.second, 0) }
-            distanceToEmergency[base] = min (firstDistance?: 0, secondDistance?:0)
+            val firstDistance =
+                baseToVertex[base.baseID]?.let { calculateShortestPath(it, emergency.location.first, 0) }
+            val secondDistance =
+                baseToVertex[base.baseID]?.let { calculateShortestPath(it, emergency.location.second, 0) }
+            distanceToEmergency[base] = min(firstDistance ?: 0, secondDistance ?: 0)
         }
 
         var minDistance = Int.MAX_VALUE
@@ -203,6 +205,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
             is Construction -> applyConstruction(event)
         }
     }
+
     private fun applyRushHour(event: RushHour) {
         for (road in roads) {
             if (road.pType in event.roadType) road.weight *= event.factor
@@ -220,6 +223,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         // check and change the road into a one way
         if (event.streetClosed) startVertex.connectingRoads.remove(targetVertex)
     }
+
     private fun applyTrafficJam(event: TrafficJam) {
         val startVertex = graph.find { it.id == event.startVertex }
         val targetVertex = graph.find { it.id == event.endVertex }

@@ -10,12 +10,13 @@ import de.unisaarland.cs.se.selab.simulation.DataHolder
  * It is executed in every tick.
  */
 class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
-    private var currentTick = 0
+    private val currentTick = 0
     override fun execute() {
         val events = dataHolder.events
         if (events.isNotEmpty()) {
             reduceEventDuration(events)
         }
+        currentTick++
     }
     private fun reduceEventDuration(events: MutableList<Event>) {
         events.forEach { event ->

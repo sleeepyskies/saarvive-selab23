@@ -10,7 +10,6 @@ import de.unisaarland.cs.se.selab.graph.SecondaryType
 import de.unisaarland.cs.se.selab.graph.Vertex
 import java.io.File
 import java.util.regex.Pattern
-import kotlin.system.exitProcess
 
 /**
  * Class for parsing the .dot file that contains information about Map. Receives [dotFilePath] as path to the .dot data
@@ -47,7 +46,7 @@ class CountyParser(private val dotFilePath: String) {
         val dataInScope = retrieveDataInScope()
         if (!parsedAndValid(dataInScope)) {
             Log.displayInitializationInfoInvalid(this.fileName)
-            exitProcess(1)
+            System.err.println("Invalid file format")
         }
         Log.displayInitializationInfoValid(this.fileName)
         // Start creation
@@ -113,19 +112,15 @@ class CountyParser(private val dotFilePath: String) {
     private fun parsedAndValid(dataInScope: String): Boolean {
         val vPat = Pattern.compile("\\A(\\s*(\\d+(\\.\\d+)?)\\s*;\\s*)+").toRegex() // pattern for vertex
 
-        val vertexMatched = vPat.find(dataInScope)
-        if (vertexMatched == null) {
-            Log.displayInitializationInfoInvalid(this.fileName)
-            exitProcess(1)
-        }
-        val stringVertices = vertexMatched.groupValues[1]
+        val vertexMatched = vPat.find(dataInScope)!!
+        val stringVertices = vertexMatched.groupValues?.get(1)
         val stringEdges = dataInScope.substring(vertexMatched.range.last + 1)
 
-        val parsedVertices = parseVertices(stringVertices)
+        val parsedVertices = stringVertices?.let { parseVertices(it) }
         val parsedEdges = parseEdges(stringEdges)
         if (!roadNameIsUnique() || !commonVertex()) return false
         if (!villageHasMainStreet() || !sideStreetExists()) return false
-        return if (parsedEdges && parsedVertices) {
+        return if (parsedEdges && parsedVertices == true) {
             vertexConnectedToAnother() && edgesConnectExistingVertices()
         } else {
             false
@@ -286,7 +281,7 @@ class CountyParser(private val dotFilePath: String) {
      */
     private fun outputInvalidAndFinish() {
         Log.displayInitializationInfoInvalid(this.fileName)
-        exitProcess(1)
+        System.err.println("Invalid file format")
     }
 
     /**
@@ -350,8 +345,7 @@ class CountyParser(private val dotFilePath: String) {
 
         val mapMatcher = mapPat.matcher(this.data)
         if (!mapMatcher.find()) {
-            Log.displayInitializationInfoInvalid(this.fileName)
-            exitProcess(1)
+            outputInvalidAndFinish()
         }
         this.digraphName = mapMatcher.group(2)
         return mapMatcher.group(Number.FOUR) // returns data in the scope
