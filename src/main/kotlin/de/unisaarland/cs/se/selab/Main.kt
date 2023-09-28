@@ -16,7 +16,9 @@ fun main(args: Array<String>) {
 
     if (!validateFilePath(arguments.mapFile, ".dot") ||
         !validateFilePath(arguments.assetsFile, ".json") ||
-        !validateFilePath(arguments.scenarioFile, ".json")) {
+        !validateFilePath(arguments.scenarioFile, ".json"
+        )
+        ) {
         println("Error: Invalid file format")
     }
 
@@ -24,7 +26,6 @@ fun main(args: Array<String>) {
         SimulationObjectConstructor(arguments.mapFile, arguments.assetsFile, arguments.scenarioFile, arguments.maxTicks)
     val simulation = simulationObjConstructor.createSimulation()
     simulation.start()
-
 }
 
 /** Data class for command line arguments */
@@ -104,7 +105,8 @@ fun printUsage() {
                 "\n --scenario <scenarioFile> " +
                 "\n --ticks <ticks> " +
                 "\n --out <outFile> " +
-                "\n --help")
+                "\n --help"
+    )
 }
 
 /**
