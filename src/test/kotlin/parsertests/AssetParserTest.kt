@@ -15,8 +15,8 @@ class AssetParserTest {
     @Test
     fun testValidAssetParsing() {
         val parser = AssetParser(
-            assetSchemaFile = "src/main/resources/schema/asset.schema",
-            jsonFile = "src/systemtest/resources/assetsJsons/example_assets.json"
+            assetSchemaFile = "src/main/resources/schema/assets.schema",
+            jsonFile = ""
         )
 
         val (allBases, allVehicles) = parser.parse()
@@ -61,8 +61,8 @@ class AssetParserTest {
     fun testInvalidPathToJSON() {
         assertThrows<IllegalArgumentException> {
             AssetParser(
-                assetSchemaFile = "src/main/resources/schema/asset.schema",
-                jsonFile = "invalid/path/to/json"
+                assetSchemaFile = "src/main/resources/schema/assets.schema",
+                jsonFile = ""
             )
         }
     }
@@ -71,8 +71,8 @@ class AssetParserTest {
     fun testInvalidAssetsJSON() {
         assertThrows<IllegalArgumentException> {
             AssetParser(
-                assetSchemaFile = "src/main/resources/schema/asset.schema",
-                jsonFile = "src/test/resources/parser/assetParser/invalid_assets.json"
+                assetSchemaFile = "src/main/resources/schema/assets.schema",
+                jsonFile = ""
             ).parse()
         }
     }
@@ -80,8 +80,8 @@ class AssetParserTest {
     @Test
     fun testEmptyAssetList() {
         val parser = AssetParser(
-            assetSchemaFile = "src/main/resources/schema/asset.schema",
-            jsonFile = "src/systemtest/resources/assetsJsons/empty_assets.json"
+            assetSchemaFile = "src/main/resources/schema/assets.schema",
+            jsonFile = ""
         )
 
         val (allBases, allVehicles) = parser.parse()
@@ -93,8 +93,8 @@ class AssetParserTest {
     @Test
     fun testSingleAsset() {
         val parser = AssetParser(
-            assetSchemaFile = "src/main/resources/schema/asset.schema",
-            jsonFile = "src/systemtest/resources/assetsJsons/single_asset.json"
+            assetSchemaFile = "src/main/resources/schema/assets.schema",
+            jsonFile = ""
         )
 
         val (allBases, allVehicles) = parser.parse()
