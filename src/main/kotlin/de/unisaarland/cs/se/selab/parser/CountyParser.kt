@@ -9,7 +9,6 @@ import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.SecondaryType
 import de.unisaarland.cs.se.selab.graph.Vertex
 import java.io.File
-import java.lang.IllegalArgumentException
 import java.util.regex.Pattern
 import kotlin.system.exitProcess
 
@@ -18,8 +17,8 @@ import kotlin.system.exitProcess
  * file
  */
 class CountyParser(private val dotFilePath: String) {
-    private val dotFile: File
-    private val data: String
+    private var fileName: String = ""
+    private var data: String = ""
     private val roads = mutableListOf<Road>() // List of roads on the map (for compatability)
     private val vertices = mutableListOf<Vertex>() // List of roads on the map (for compatability)
     private var digraphName: String = ""
@@ -33,12 +32,11 @@ class CountyParser(private val dotFilePath: String) {
     init {
         try {
             // Convert path to a file
-            this.dotFile = File(dotFilePath)
-            this.data = this.dotFile.readText()
+            this.fileName = File(dotFilePath).name
+            this.data = File(dotFilePath).readText()
         } catch (_: NullPointerException) {
             // File doesn't exist
-            Log.displayInitializationInfoInvalid(dotFilePath) // the file doesn't exist
-            exitProcess(1)
+            outputInvalidAndFinish()
         }
     }
 
@@ -48,10 +46,10 @@ class CountyParser(private val dotFilePath: String) {
     fun parse(): Graph {
         val dataInScope = retrieveDataInScope()
         if (!parsedAndValid(dataInScope)) {
-            Log.displayInitializationInfoInvalid(this.dotFile.name)
+            Log.displayInitializationInfoInvalid(this.fileName)
             exitProcess(1)
         }
-        Log.displayInitializationInfoValid(this.dotFile.name)
+        Log.displayInitializationInfoValid(this.fileName)
         // Start creation
         this.listOfVertices.forEach { vertex -> this.vertices.add(createVertex(vertex)) } // create Vertex List
         createRoadList()
@@ -117,7 +115,7 @@ class CountyParser(private val dotFilePath: String) {
 
         val vertexMatched = vPat.find(dataInScope)
         if (vertexMatched == null) {
-            Log.displayInitializationInfoInvalid(this.dotFile.name)
+            Log.displayInitializationInfoInvalid(this.fileName)
             exitProcess(1)
         }
         val stringVertices = vertexMatched.groupValues[1]
@@ -222,7 +220,7 @@ class CountyParser(private val dotFilePath: String) {
                 if (!mapping[key.getValue(StringLiterals.VILLAGE)]!!
                         .contains(key.getValue(StringLiterals.NAME))
                 ) {
-                    mapping.get(key.getValue(StringLiterals.VILLAGE))!!.add(key.getValue("name"))
+                    mapping[key.getValue(StringLiterals.VILLAGE)]!!.add(key.getValue("name"))
                 } else {
                     return false
                 }
@@ -249,8 +247,8 @@ class CountyParser(private val dotFilePath: String) {
                     if (mappingVertexToEdges.containsKey(vertex)) {
                         mappingVertexToEdges.getValue(vertex).add(edgeData)
                     } else {
-                        val mutablList = mutableListOf(edgeData)
-                        mappingVertexToEdges.put(vertex, mutablList)
+                        val mutableList = mutableListOf(edgeData)
+                        mappingVertexToEdges[vertex] = mutableList
                     }
                 }
             }
@@ -308,27 +306,27 @@ class CountyParser(private val dotFilePath: String) {
         return true
     }
 
+    private fun outputInvalidAndFinish() {
+        Log.displayInitializationInfoInvalid(this.fileName)
+        exitProcess(1)
+    }
+
     /**
      * Returns Map of parsed attributes
      */
     private fun parseAttributes(matchedEdge: String): MutableMap<String, String> {
         val attributes = mutableMapOf<String, String>()
-        try {
-            val assignmentsArray = matchedEdge.split(";")
-            assignmentsArray.forEach { assignment ->
-                val keyValue = assignment.split("=")
-                attributes[keyValue.elementAt(0)] = keyValue.elementAt(1)
-                when (keyValue.elementAt(0)) {
-                    "weight" -> if (keyValue.elementAt(1).toInt() <= 0) throw IllegalArgumentException()
-                    "height" -> if (keyValue.elementAt(1).toInt() < 1) throw IllegalArgumentException()
-                }
+        val assignmentsArray = matchedEdge.split(";")
+        assignmentsArray.forEach { assignment ->
+            val keyValue = assignment.split("=")
+            attributes[keyValue.elementAt(0)] = keyValue.elementAt(1)
+            when (keyValue.elementAt(0)) {
+                "weight" -> if (keyValue.elementAt(1).toInt() <= 0) outputInvalidAndFinish()
+                "height" -> if (keyValue.elementAt(1).toInt() < 1) outputInvalidAndFinish()
             }
-        } catch (_: Exception) {
-            Log.displayInitializationInfoInvalid(this.dotFile.name)
-            exitProcess(1)
         }
         if (checkTunnel(attributes) || checkVillageName(attributes)) {
-            throw IllegalArgumentException()
+            outputInvalidAndFinish()
         }
         return attributes
     }
@@ -374,7 +372,7 @@ class CountyParser(private val dotFilePath: String) {
 
         val mapMatcher = mapPat.matcher(this.data)
         if (!mapMatcher.find()) {
-            Log.displayInitializationInfoInvalid(this.dotFile.name)
+            Log.displayInitializationInfoInvalid(this.fileName)
             exitProcess(1)
         }
         this.digraphName = mapMatcher.group(2)

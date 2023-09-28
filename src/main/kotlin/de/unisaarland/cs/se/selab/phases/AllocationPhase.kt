@@ -2,8 +2,6 @@ package de.unisaarland.cs.se.selab.phases
 
 import de.unisaarland.cs.se.selab.dataClasses.Request
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
-import de.unisaarland.cs.se.selab.dataClasses.bases.Hospital
-import de.unisaarland.cs.se.selab.dataClasses.bases.PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.CapacityType
@@ -25,13 +23,14 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
     /** Executes the allocation phase
      */
     override fun execute() {
-        val assignableAssets =
-            getAssignableAssets(dataHolder.bases[0], dataHolder.emergencies[0]) // need to change accordingly
-        assignBasedOnCapacity(assignableAssets, dataHolder.emergencies[0]) // need to change accordingly
-        currentTick++
-
-        // TODO this is only to build project, remove later
-        getBuilding(dataHolder.bases.get(0))
+        for (emergency in dataHolder.emergencies) {
+            if (emergency.startTick == currentTick) {
+                val base = dataHolder.emergencyToBase[emergency.id]
+                if (base != null) {
+                    assignBasedOnCapacity(getAssignableAssets(base, emergency), emergency)
+                }
+            }
+        }
     }
 
     private fun getAssignableAssets(base: Base, emergency: Emergency): List<Vehicle> {
@@ -168,15 +167,4 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         dataHolder.requests.add(request)
     }
 
-    /**
-     * This method is only to use some attributes and get the project building, remove later
-     */
-    private fun getBuilding(base: Base) {
-        // TODO(remove)
-        when (base) {
-            is Hospital -> base.doctors += 0
-            is PoliceStation -> base.dogs += 0
-            else -> return
-        }
-    }
 }
