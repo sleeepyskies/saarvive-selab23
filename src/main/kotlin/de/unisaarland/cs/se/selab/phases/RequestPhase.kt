@@ -136,7 +136,7 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
     }
 
     /**
-     * implements the logic of assigning vehicles that depend capacity type
+     * implements the logic of assigning vehicles that depend on capacity type
      */
     private fun assignBasedOnCapacity(vehicles: List<Vehicle>, request: Request) {
         val requiredVehicles = request.requiredVehicles
@@ -237,5 +237,4 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
             }
         }
     }
-
 }
