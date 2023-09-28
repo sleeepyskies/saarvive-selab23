@@ -20,7 +20,7 @@ import java.util.PriorityQueue
  * @param graph A list of vertices containing connecting roads
  * @param roads A list of all the roads in the graph
  */
-class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
+class Graph(public val graph: List<Vertex>, public val roads: List<Road>) {
     private val helper = GraphHelper()
 
     /**

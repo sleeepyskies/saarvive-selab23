@@ -2,9 +2,15 @@ package de.unisaarland.cs.se.selab.simulation
 
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
-import de.unisaarland.cs.se.selab.dataClasses.events.*
+import de.unisaarland.cs.se.selab.dataClasses.events.Construction
+import de.unisaarland.cs.se.selab.dataClasses.events.Event
+import de.unisaarland.cs.se.selab.dataClasses.events.RoadClosure
+import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
+import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
+import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.graph.Graph
+import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.Vertex
 import de.unisaarland.cs.se.selab.parser.AssetParser
 import de.unisaarland.cs.se.selab.parser.CountyParser
@@ -21,17 +27,20 @@ class SimulationObjectConstructor(
     private val simulationFile: String,
     private val maxTick: Int?
 ) {
+    /**
+     * Creates and returns a parsed and validated Simulation object
+     */
     public fun createSimulation(): Simulation {
         // parse, validate and create map
         val countyParser = CountyParser(countyFile)
         val graph = countyParser.parse()
 
         // parse, validate and create assets
-        val assetParser = AssetParser("src/main/resources/schema/assets.schema",assetFile)
+        val assetParser = AssetParser("src/main/resources/schema/assets.schema", assetFile)
         val (bases, vehicles) = assetParser.parse()
 
         // parse, validate and create events and emergencies
-        val simulationParser = SimulationParser("src/main/resources/schema/simulation.schema",simulationFile)
+        val simulationParser = SimulationParser("src/main/resources/schema/simulation.schema", simulationFile)
         val emergencies = simulationParser.parseEmergencyCalls()
         val events = simulationParser.parseEvents()
 
@@ -40,7 +49,7 @@ class SimulationObjectConstructor(
             validateAssetsBasedOnGraph(graph, bases) &&
             validateEmergenciesBasedOnGraph(graph, emergencies) &&
             validateEventsBasedOnGraph(graph, events, vehicles)
-            ) {
+        ) {
             // If validation succeeds return simulation
             val dataHolder = DataHolder(graph, bases, events.toMutableList(), emergencies)
             return Simulation(dataHolder, maxTick)
@@ -48,17 +57,6 @@ class SimulationObjectConstructor(
             // If validation fails, exit
             exitProcess(1)
         }
-    }
-
-    /**
-     * Creates the DataHolder object
-     */
-    private fun createDataHolder(
-        graph: Graph, bases: List<Base>,
-        events: MutableList<Event>,
-        emergencies: MutableList<Emergency>
-    ) {
-
     }
 
     /**
@@ -103,7 +101,7 @@ class SimulationObjectConstructor(
      * Helper method for validateEventsBasedOnGraph(). Validates if the events vehicle ID exists
      */
     private fun validateVehicleEvent(event: VehicleUnavailable, vehicles: List<Vehicle>): Boolean {
-        val vehicle = vehicles.find { vehicle: Vehicle -> vehicle.id == event.vehicleID}
+        val vehicle = vehicles.find { vehicle: Vehicle -> vehicle.id == event.vehicleID }
         return vehicle != null
     }
 
@@ -113,17 +111,15 @@ class SimulationObjectConstructor(
     private fun validateGraphEvent(event: Event, graph: Graph): Boolean {
         when (event) {
             is RushHour -> return true
-            is VehicleUnavailable -> return true // impossible to reach
             is Construction -> return roadExists(event.sourceID, event.targetID, graph)
             is RoadClosure -> return roadExists(event.sourceID, event.targetID, graph)
             is TrafficJam -> return roadExists(event.startVertex, event.endVertex, graph)
+            else -> exitProcess(1)
         }
-
-        return true
     }
 
     /**
-     *
+     * Checks if the vertices and road exists, as well as checking the vertices are connected via the edge
      */
     private fun roadExists(sourceID: Int, targetID: Int, graph: Graph): Boolean {
         // find the two event vertices
@@ -137,7 +133,7 @@ class SimulationObjectConstructor(
         if (
             sourceVertex.connectingRoads[targetVertex] == null &&
             targetVertex.connectingRoads[sourceVertex] == null
-            ) {
+        ) {
             return false
         }
 
@@ -145,10 +141,52 @@ class SimulationObjectConstructor(
     }
 
     /**
-     * Cross validates the emergencies based on the graph
+     * Checks that the road name and village name correspond to a road in the map
      */
-    private fun validateEmergenciesBasedOnGraph(graph: Graph, emergencies: List<Emergency>): Boolean {
-
+    private fun getRoad(roadName: String, villageName: String, graph: Graph): Road? {
+        return graph.roads.find { road: Road -> road.roadName == roadName && road.villageName == villageName }
     }
 
+    /**
+     * Cross validates the emergencies based on the graph
+     * Needs to validate:
+     *      - if check the emergency's road name and village name correspond to a road
+     *      - two emergencies don't happen at the same time on the same road
+     */
+    private fun validateEmergenciesBasedOnGraph(graph: Graph, emergencies: List<Emergency>): Boolean {
+        // init mapping
+        val mapping: MutableMap<Road, MutableList<Emergency>> = mutableMapOf()
+        for (road in graph.roads) {
+            mapping[road] = mutableListOf()
+        }
+
+        // check each emergency road exists
+        for (emergency in emergencies) {
+            // get emergency road anc check it exists
+            val emergencyRoad = getRoad(emergency.roadName, emergency.villageName, graph)
+            if (emergencyRoad == null) return false
+
+            // add emergency to the mapping
+            mapping[emergencyRoad]!!.add(emergency)
+        }
+
+        // check two emergencies at the same location do not occur at the same time
+        // loop over all emergencyLists
+        for ((_, emergencyList) in mapping) {
+            // loop over all emergencies in emergencyList
+            for (emergencyOne in emergencyList) {
+                for (emergencyTwo in emergencyList) {
+                    if (isInRange(emergencyOne, emergencyTwo)) return false
+                }
+            }
+        }
+
+        return true
+    }
+
+
+    private fun isInRange(emergencyOne: Emergency, emergencyTwo: Emergency): Boolean {
+        return emergencyTwo.startTick >= emergencyOne.startTick &&
+            emergencyTwo.startTick < emergencyOne.startTick + emergencyOne.handleTime
+    }
 }
