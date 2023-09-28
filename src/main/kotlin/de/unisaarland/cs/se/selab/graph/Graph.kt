@@ -11,7 +11,6 @@ import de.unisaarland.cs.se.selab.dataClasses.events.Event
 import de.unisaarland.cs.se.selab.dataClasses.events.RoadClosure
 import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
 import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
-import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.global.StringLiterals
 import java.lang.Integer.min
 import java.util.PriorityQueue
@@ -22,6 +21,8 @@ import java.util.PriorityQueue
  * @param roads A list of all the roads in the graph
  */
 class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
+    private val helper = GraphHelper()
+
     /**
      * Returns the shortest time in ticks needed to travel from start the vertex
      * to the destination vertex
@@ -30,7 +31,7 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
      * @param carHeight the car's height, set to 0 when ignoring height restrictions
      */
     fun calculateShortestPath(start: Vertex, destination: Vertex, carHeight: Int): Int {
-        val visitedVertices: MutableMap<Vertex, Pair<Int, Vertex?>> = initVisitedVertices(start)
+        val visitedVertices: MutableMap<Vertex, Pair<Int, Vertex?>> = helper.initVisitedVertices(start, this.graph)
         val unvisitedVertices: MutableList<Vertex> = graph.toMutableList()
         var currentVertex = start
 
@@ -39,84 +40,16 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
             // gets all relevant neighbors based on height restrictions
             val neighbors = currentVertex.connectingRoads.filter { (_, road) -> carHeight <= road.heightLimit }
             // updates neighbor distances
-            updateNeighbors(neighbors, visitedVertices, currentVertex)
+            helper.updateNeighbors(neighbors, visitedVertices, currentVertex)
 
             unvisitedVertices.remove(currentVertex)
             // update nextVertex
-            val nextVertex = findNextVertex(neighbors, visitedVertices)
+            val nextVertex = helper.findNextVertex(neighbors, visitedVertices)
             if (nextVertex != null) {
                 currentVertex = nextVertex
             }
         }
         return visitedVertices[destination]?.first ?: -1
-    }
-
-    /**
-     * Creates a mapping of each vertex in the graph to it's distance to the start vertex
-     * and the previous vertex on the path. Distance initialised to Int.MAX_VALUE, previous vertex
-     * initialised to null.
-     */
-    private fun initVisitedVertices(start: Vertex): MutableMap<Vertex, Pair<Int, Vertex?>> {
-        val visitedVertices: MutableMap<Vertex, Pair<Int, Vertex?>> = mutableMapOf()
-        for (vertex in graph) {
-            visitedVertices[vertex] = if (vertex == start) Pair(0, null) else Pair(Int.MAX_VALUE, null)
-        }
-        return visitedVertices
-    }
-
-    /**
-     * Updates the distance for each neighbor and adds currentVertex as the previous vertex for each neighbor.
-     */
-    private fun updateNeighbors(
-        neighbors: Map<Vertex, Road>,
-        visitedVertices: MutableMap<
-            Vertex,
-            Pair<Int, Vertex?>
-            >,
-        currentVertex: Vertex
-    ) {
-        for ((neighbor, road) in neighbors) {
-            // currentRouteWeight + roadWeight
-            val distance = (visitedVertices[currentVertex]?.first ?: 0) + weightToTicks(road.weight)
-            // if newWeight < oldWeight
-            if (distance < (visitedVertices[neighbor]?.first ?: 0)) {
-                visitedVertices[neighbor] = Pair(distance, currentVertex)
-            }
-        }
-    }
-
-    /**
-     * Returns the weight as ticks need to travel
-     */
-    private fun weightToTicks(weight: Int): Int {
-        if (weight < Number.TEN) return 1
-        return if (weight % Number.TEN == 0) {
-            weight // number is already a multiple of ten
-        } else {
-            weight + (Number.TEN - weight % Number.TEN) // round up
-        }
-    }
-
-    /**
-     * Finds the next vertex to be used in Dijkstra's algorithm. Chooses the vertex connected
-     * to the road with the smallest weight.
-     */
-    private fun findNextVertex(
-        neighbors: Map<Vertex, Road>,
-        visitedVertices: Map<Vertex, Pair<Int, Vertex?>>
-    ): Vertex? {
-        var nextVertex: Vertex? = null
-        var minWeight = Int.MAX_VALUE
-
-        for ((neighbor, _) in neighbors) {
-            val distance = visitedVertices[neighbor]?.first ?: 0
-            if (distance < minWeight) {
-                minWeight = distance
-                nextVertex = neighbor
-            }
-        }
-
-        return nextVertex
     }
 
     /**
@@ -159,60 +92,13 @@ class Graph(val graph: List<Vertex>, private val roads: List<Road>) {
 
             if (currentVertex == destination) {
                 // found the shortest path to the end vertex
-                route = buildRoute(destination, previousVertices)
+                route = helper.buildRoute(destination, previousVertices)
             }
 
             // traverse connected vertices
-            exploreNeighbours(currentVertex, distances, previousVertices, vehicleHeight)
+            helper.exploreNeighbours(currentVertex, distances, previousVertices, vehicleHeight)
         }
         return route
-    }
-
-    /**
-     * used within the calculateShortestRoute method to explore all the connected vertices
-     * and update the mappings when shortest vertex is found
-     */
-    private fun exploreNeighbours(
-        currentVertex: Vertex,
-        distances: MutableMap<Vertex, Int>,
-        previousVertices: MutableMap<Vertex, Vertex?>,
-        vehicleHeight: Int
-    ) {
-        for ((neighborVertex, connectingRoad) in currentVertex.connectingRoads) {
-            // check if the cars height allows it to drive on the road
-            if (vehicleHeight > connectingRoad.heightLimit) {
-                continue
-            }
-            // calculate the weight of the route up till the neighbouring vertex
-            val tentativeDistance = distances[currentVertex]!! + connectingRoad.weight
-            // check if the route through this neighbour is shorter than the previous found route
-            if (tentativeDistance < distances[neighborVertex]!!) {
-                distances[neighborVertex] = tentativeDistance
-                // update for backtracking
-                previousVertices[neighborVertex] = currentVertex
-            }
-        }
-    }
-
-    /**
-     * used within the calculateShortestRoute method to create the route
-     * @param previousVertices contains backtracking of each vertex to its previous one in the optimal route
-     * the functions parses through the backtracking
-     */
-    private fun buildRoute(endVertex: Vertex, previousVertices: Map<Vertex, Vertex?>): MutableList<Vertex> {
-        val route = mutableListOf<Vertex>()
-        var currentVertex = endVertex
-        var previousVertex = previousVertices[endVertex]
-        // check if the start vertex is reached
-        while (previousVertex != null) {
-            route.add(currentVertex)
-            currentVertex = previousVertex
-            previousVertex = previousVertices[currentVertex]
-        }
-        // add the starting vertex to the list (not sure if it should be included)
-        route.add(currentVertex)
-        // the list of vertices starts with the first vertex in the route
-        return route.reversed().toMutableList()
     }
 
     /**
