@@ -104,11 +104,10 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
         }
 
         // update the emergencies required capacity
-
+        // used to reduce the line length
+        val m = mutableMapOf<CapacityType, Int>()
         // check if all vehicles have reached emergency, if so change status to HANDLING
-        if ((dataHolder.vehicleToEmergency[vehicle.id]?.requiredCapacity ?: mutableMapOf()) ==
-            mutableMapOf<CapacityType, Int>()
-        ) {
+        if ((dataHolder.vehicleToEmergency[vehicle.id]?.requiredCapacity ?: mutableMapOf()) == m) {
             dataHolder.vehicleToEmergency[vehicle.id]?.emergencyStatus = EmergencyStatus.HANDLING
             // Log emergency handling TODO Might have to be in EmergencyUpdatePhase...
             dataHolder.vehicleToEmergency[vehicle.id]?.let { Log.displayEmergencyHandlingStart(it.id) }
