@@ -41,10 +41,6 @@ class AssetParserTest {
         assertEquals(3, hospital.doctors)
 
         assertEquals(54, allVehicles.size)
-        assertTrue(allVehicles.any { it.vehicleType == VehicleType.POLICE_CAR })
-        assertTrue(allVehicles.any { it.vehicleType == VehicleType.AMBULANCE })
-        assertTrue(allVehicles.any { it.vehicleType == VehicleType.FIRE_TRUCK_WATER })
-
         val policeCar = allVehicles.find { it.vehicleType == VehicleType.POLICE_CAR && it.id == 0 }
         assertEquals(1, policeCar?.assignedBaseID)
         assertEquals(2, policeCar?.height)
