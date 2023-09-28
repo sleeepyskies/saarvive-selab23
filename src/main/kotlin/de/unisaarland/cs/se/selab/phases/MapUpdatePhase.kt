@@ -1,5 +1,6 @@
 package de.unisaarland.cs.se.selab.phases
 
+import de.unisaarland.cs.se.selab.dataClasses.events.Event
 import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
 import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.simulation.DataHolder
@@ -11,8 +12,13 @@ import de.unisaarland.cs.se.selab.simulation.DataHolder
 class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
     private var currentTick = 0
     override fun execute() {
-        fun reduceEventDuration() {
-            dataHolder.events.forEach { event ->
+        val events = dataHolder.events
+        if (events.isNotEmpty()) {
+            reduceEventDuration(events)
+        }
+    }
+    private fun reduceEventDuration(events: MutableList<Event>) {
+            events.forEach { event ->
                 when {
                     event.duration > 0 -> {
                         event.duration -= 1
@@ -40,8 +46,8 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 }
             }
             // Remove completed events from the list
-            dataHolder.events = dataHolder.events.filter { it.duration > 0 }.toMutableList()
+            events.removeIf { event -> event.duration == 0 }
         }
         // need to add logic for vehicles
-    }
 }
+
