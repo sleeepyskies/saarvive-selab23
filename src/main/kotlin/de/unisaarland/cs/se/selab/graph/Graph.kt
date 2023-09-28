@@ -23,6 +23,12 @@ import java.util.*
 class Graph(val graph: List<Vertex>, val roads: List<Road>) {
     private val helper = GraphHelper()
 
+    // extra objects used to resolve nullability issues
+    // private val v = Vehicle(VehicleType.FIREFIGHTER_TRANSPORTER, 1, 1, 1, 1)
+    // private val b = Base(1, 1, 1, listOf(v))
+    private val r = Road(PrimaryType.COUNTY_ROAD, SecondaryType.NONE, "s", "u", 1, 1)
+    private val ver = Vertex(1, mutableMapOf<Vertex, Road>())
+
     /**
      * Returns the shortest time in ticks needed to travel from start the vertex
      * to the destination vertex
@@ -61,7 +67,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
      * @param vehicleHeight The height of the vehicle driving
      */
     fun calculateShortestRoute(vehiclePosition: Vertex, destination: Vertex, vehicleHeight: Int): MutableList<Vertex> {
-        var route = listOf<Vertex>()
+        var route = emptyList<Vertex>()
         // maps how far all the vertices are from the current vertex
         val distances = mutableMapOf<Vertex, Int>()
         // allows a chain of previous vertices to be created that can be backtracked
@@ -179,12 +185,12 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         val relevantBases = filterByEmergencyType(bases.toMutableList(), emergency)
         // stores the distance of each base from the start base
         val distanceMapping = mutableMapOf<Base, Int>()
-        val startBaseVertex = baseToVertex[startBase.baseID]!!
+        val startBaseVertex = baseToVertex[startBase.baseID] ?: ver
 
         for (nextBase in relevantBases) {
             // ignore the start base
             if (nextBase == startBase) continue
-            val nextBaseVertex = baseToVertex[nextBase.baseID]!!
+            val nextBaseVertex = baseToVertex[nextBase.baseID] ?: ver
             // get the shortest distance from the start base
             distanceMapping[nextBase] = calculateShortestPath(startBaseVertex, nextBaseVertex, 0)
         }
@@ -213,20 +219,20 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
     }
 
     private fun applyConstruction(event: Construction) {
-        val startVertex = graph.find { it.id == event.sourceID }
-        val targetVertex = graph.find { it.id == event.targetID }
+        val startVertex = graph.find { it.id == event.sourceID } ?: ver
+        val targetVertex = graph.find { it.id == event.targetID } ?: ver
         // puts the required into the event
-        event.affectedRoad = startVertex!!.connectingRoads[targetVertex]!!
+        event.affectedRoad = startVertex.connectingRoads[targetVertex] ?: r
         // the factor is applied on the affected road
         event.affectedRoad.weight *= event.factor
         // check and change the road into a one way
         if (event.streetClosed) startVertex.connectingRoads.remove(targetVertex)
     }
     private fun applyTrafficJam(event: TrafficJam) {
-        val startVertex = graph.find { it.id == event.startVertex }
-        val targetVertex = graph.find { it.id == event.endVertex }
+        val startVertex = graph.find { it.id == event.startVertex } ?: ver
+        val targetVertex = graph.find { it.id == event.endVertex } ?: ver
 
-        val requiredRoad = startVertex!!.connectingRoads[targetVertex]!!
+        val requiredRoad = startVertex.connectingRoads[targetVertex] ?: r
         requiredRoad.weight *= event.factor
         requiredRoad.activeEvents.add(event)
 
@@ -235,13 +241,13 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
 
     private fun applyRoadClosure(event: RoadClosure) {
         // find source vertex
-        val sourceVertex = graph.find { vertex: Vertex -> vertex.id == event.sourceID }!!
+        val sourceVertex = graph.find { vertex: Vertex -> vertex.id == event.sourceID } ?: ver
         // find target vertex
-        val targetVertex = graph.find { vertex: Vertex -> vertex.id == event.targetID }!!
+        val targetVertex = graph.find { vertex: Vertex -> vertex.id == event.targetID } ?: ver
         // find required road
-        val requiredRoad = targetVertex.connectingRoads[sourceVertex]
+        val requiredRoad = targetVertex.connectingRoads[sourceVertex] ?: r
         // puts the road into the event
-        event.affectedRoad = requiredRoad!!
+        event.affectedRoad = requiredRoad
         // remove the road from the graph
         targetVertex.connectingRoads.remove(sourceVertex)
         sourceVertex.connectingRoads.remove(targetVertex)
@@ -282,9 +288,9 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
      */
     private fun addRoadToMap(event: Construction) {
         // find source vertex
-        val sourceVertex = graph.find { vertex: Vertex -> vertex.id == event.sourceID }!!
+        val sourceVertex = graph.find { vertex: Vertex -> vertex.id == event.sourceID } ?: ver
         // find target vertex
-        val targetVertex = graph.find { vertex: Vertex -> vertex.id == event.targetID }!!
+        val targetVertex = graph.find { vertex: Vertex -> vertex.id == event.targetID } ?: ver
 
         // add road back to the map
         sourceVertex.connectingRoads[targetVertex] = event.affectedRoad
@@ -295,9 +301,9 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
      */
     private fun revertRoadClosure(event: RoadClosure) {
         // find source vertex
-        val sourceVertex = graph.find { vertex: Vertex -> vertex.id == event.sourceID }!!
+        val sourceVertex = graph.find { vertex: Vertex -> vertex.id == event.sourceID } ?: ver
         // find target vertex
-        val targetVertex = graph.find { vertex: Vertex -> vertex.id == event.targetID }!!
+        val targetVertex = graph.find { vertex: Vertex -> vertex.id == event.targetID } ?: ver
 
         // add road back to the map
         targetVertex.connectingRoads[sourceVertex] = event.affectedRoad

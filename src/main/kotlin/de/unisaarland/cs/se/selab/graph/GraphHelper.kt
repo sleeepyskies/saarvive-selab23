@@ -93,9 +93,9 @@ class GraphHelper {
                 continue
             }
             // calculate the weight of the route up till the neighbouring vertex
-            val tentativeDistance = distances[currentVertex]!! + connectingRoad.weight
+            val tentativeDistance = (distances[currentVertex] ?: 0) + connectingRoad.weight
             // check if the route through this neighbour is shorter than the previous found route
-            if (tentativeDistance < distances[neighborVertex]!!) {
+            if (tentativeDistance < (distances[neighborVertex] ?: 0)) {
                 distances[neighborVertex] = tentativeDistance
                 // update for backtracking
                 previousVertices[neighborVertex] = currentVertex
