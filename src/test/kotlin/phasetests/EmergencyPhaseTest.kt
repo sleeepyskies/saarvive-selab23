@@ -31,6 +31,9 @@ class EmergencyPhaseTest {
      */
     @BeforeEach
     fun setUp() {
+        // Reset
+        emergencies = mutableListOf()
+        bases = mutableListOf()
         // Graph Init
         // Vertices Init
         val vertexA: Vertex = Vertex(0, mutableMapOf<Vertex, Road>())
@@ -102,5 +105,21 @@ class EmergencyPhaseTest {
         assert(dataHolder.ongoingEmergencies[0].emergencyStatus == EmergencyStatus.ASSIGNED)
         assert(dataHolder.emergencyToBase[this.emergencies[0].id]!!.baseID == 0)
         assert(dataHolder.emergencyToBase.size == 1)
+    }
+
+    @Test
+    fun test3() {
+        // Emergency Init
+        val emergencyA = Emergency(0, EmergencyType.CRIME, 1, 5, 5, 5, "VillageA", "RoadAB")
+
+        // Set Emergencies
+        this.emergencies = mutableListOf(emergencyA)
+
+        assert(dataHolder.emergencies.contains(this.emergencies[0]))
+        assert(dataHolder.emergencies.size == 1)
+        assert(dataHolder.resolvedEmergencies.isEmpty())
+        assert(dataHolder.ongoingEmergencies.isEmpty())
+        assert(dataHolder.emergencies[0].emergencyStatus == EmergencyStatus.UNASSIGNED)
+        assert(dataHolder.emergencyToBase.isEmpty())
     }
 }
