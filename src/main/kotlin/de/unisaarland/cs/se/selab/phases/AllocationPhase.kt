@@ -34,7 +34,7 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         val vehicles = base.vehicles
 
         return vehicles
-            .filter { it.getVehicleStatus() == VehicleStatus.IN_BASE }
+            .filter { it.vehicleStatus == VehicleStatus.IN_BASE }
             .filter { it.vehicleType in requiredVehicles }
     }
 
@@ -103,9 +103,9 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         // get all vehicles that are assigned to the emergency or are moving to the emergency
         val activeVehicles =
             base.vehicles.filter {
-                it.getVehicleStatus() == VehicleStatus.ASSIGNED_TO_EMERGENCY ||
-                    it.getVehicleStatus() == VehicleStatus.MOVING_TO_BASE ||
-                    it.getVehicleStatus() == VehicleStatus.MOVING_TO_BASE
+                it.vehicleStatus == VehicleStatus.ASSIGNED_TO_EMERGENCY ||
+                    it.vehicleStatus == VehicleStatus.MOVING_TO_BASE ||
+                    it.vehicleStatus == VehicleStatus.MOVING_TO_BASE
             }
         return activeVehicles.filter {
             it.vehicleType in neededTypes &&

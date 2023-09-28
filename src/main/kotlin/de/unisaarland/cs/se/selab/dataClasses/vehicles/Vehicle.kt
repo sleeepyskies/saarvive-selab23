@@ -19,11 +19,4 @@ open class Vehicle(
     open var roadProgress: Int = 0
     open var currentRoute: MutableList<Vertex> = mutableListOf()
     open var ticksStillUnavailable: Int = 0
-
-    /**
-     * Returns the status of the vehicle
-     */
-    fun getVehicleStatus(): VehicleStatus {
-        return vehicleStatus
-    }
 }
