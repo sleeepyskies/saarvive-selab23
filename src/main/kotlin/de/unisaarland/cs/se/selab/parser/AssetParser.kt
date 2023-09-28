@@ -15,7 +15,6 @@ import org.everit.json.schema.Schema
 import org.everit.json.schema.loader.SchemaLoader
 import org.json.JSONObject
 import java.io.File
-import kotlin.system.exitProcess
 
 /**
 * asset parser parses assets
@@ -129,43 +128,28 @@ class AssetParser(assetSchemaFile: String, jsonFile: String) {
     }
 
     private fun validateBaseId(id: Int): Int {
-        if (id < 0) {
-            System.err.println("Base ID must be positive")
-            exitProcess(1)
-        }
+        require(id >= 0) { "Base ID must be positive" }
         return id
     }
 
     private fun validateBaseType(baseType: String): String {
         val validBaseTypes = listOf("FIRE_STATION", "HOSPITAL", "POLICE_STATION")
-        if (baseType !in validBaseTypes) {
-            System.err.println("Invalid base type")
-            exitProcess(1)
-        }
+        require(baseType in validBaseTypes) { "Invalid base type" }
         return baseType
     }
 
     private fun validateLocation(location: Int): Int {
-        if (location < 0) {
-            System.err.println("Location must be non-negative")
-            exitProcess(1)
-        }
+        require(location >= 0) { "Location must be non-negative" }
         return location
     }
 
     private fun validateStaff(staff: Int): Int {
-        if (staff <= 0) {
-            System.err.println("Staff must be non-negative and non-zero")
-            exitProcess(1)
-        }
+        require(staff > 0) { "Staff must be non-negative and non-zero" }
         return staff
     }
 
     private fun validateVehicleId(id: Int): Int {
-        if (id < 0) {
-            System.err.println("Vehicle ID must be positive")
-            exitProcess(1)
-        }
+        require(id >= 0) { "Vehicle ID must be positive" }
         return id
     }
 
@@ -175,55 +159,34 @@ class AssetParser(assetSchemaFile: String, jsonFile: String) {
             "FIRE_TRUCK_WATER", "FIRE_TRUCK_TECHNICAL", "FIRE_TRUCK_LADDER", "FIREFIGHTER_TRANSPORTER",
             "AMBULANCE", "EMERGENCY_DOCTOR_CAR"
         )
-        if (vehicleType !in validVehicleTypes) {
-            System.err.println("Invalid vehicle type")
-            exitProcess(1)
-        }
+        require(vehicleType in validVehicleTypes) { "Invalid vehicle type" }
         return vehicleType
     }
 
     private fun validateVehicleHeight(height: Int): Int {
-        if (height < 1 || height > Number.FIVE) {
-            System.err.println("Vehicle height must be in btw 1 and 5")
-            exitProcess(1)
-        }
+        require(height in 1..Number.FIVE) { "Vehicle height must be between 1 and 5" }
         return height
     }
 
     private fun validateStaffCapacity(capacity: Int): Int {
-        if (capacity <= 0 || capacity > Number.TWELVE) {
-            System.err.println("Staff capacity must be positive")
-            exitProcess(1)
-        }
+        require(capacity in 1..Number.TWELVE) { "Staff capacity must be in bte 1 and 12" }
         return capacity
     }
 
     private fun validateCriminalCapacity(capacity: Int): Int {
-        if (capacity <= 0 || capacity > Number.FOUR) {
-            System.err.println("Criminal capacity must be between 1 and 4")
-            exitProcess(1)
-        }
+        require(capacity in 1..Number.FOUR) { "Criminal capacity must be between 1 and 4" }
         return capacity
     }
 
     private fun validateWaterCapacity(capacity: Int): Int {
-        if (capacity !in listOf(
-                Number.SIX_HUNDRED,
-                Number.ONE_THOUSAND_TWO_HUNDRED,
-                Number.TWO_THOUSAND_FOUR_HUNDRED
-            )
-        ) {
-            System.err.println("Water capacity must be one of 600, 1200, 2400")
-            exitProcess(1)
-        }
+        require(
+            capacity in listOf(Number.SIX_HUNDRED, Number.ONE_THOUSAND_TWO_HUNDRED, Number.TWO_THOUSAND_FOUR_HUNDRED)
+        ) { "Water capacity must be one of 600, 1200, 2400" }
         return capacity
     }
 
     private fun validateLadderLength(length: Int): Int {
-        if (length < Number.THIRTY || length > Number.SEVENTY) {
-            System.err.println("Ladder length must be between 30 and 70")
-            exitProcess(1)
-        }
+        require(length in Number.THIRTY..Number.SEVENTY) { "Ladder length must be between 30 and 70" }
         return length
     }
 
