@@ -2,7 +2,8 @@ package de.unisaarland.cs.se.selab.simulation
 
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
-import de.unisaarland.cs.se.selab.dataClasses.events.Event
+import de.unisaarland.cs.se.selab.dataClasses.events.*
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.graph.Graph
 import de.unisaarland.cs.se.selab.graph.Vertex
 import de.unisaarland.cs.se.selab.parser.AssetParser
@@ -27,8 +28,7 @@ class SimulationObjectConstructor(
 
         // parse, validate and create assets
         val assetParser = AssetParser("src/main/resources/schema/assets.schema",assetFile)
-        val assets = assetParser.parse()
-        val bases = assets.first
+        val (bases, vehicles) = assetParser.parse()
 
         // parse, validate and create events and emergencies
         val simulationParser = SimulationParser("src/main/resources/schema/simulation.schema",simulationFile)
@@ -39,13 +39,13 @@ class SimulationObjectConstructor(
         if (
             validateAssetsBasedOnGraph(graph, bases) &&
             validateEmergenciesBasedOnGraph(graph, emergencies) &&
-            validateEventsBasedOnGraph(graph, events)
+            validateEventsBasedOnGraph(graph, events, vehicles)
             ) {
             // If validation succeeds return simulation
             val dataHolder = DataHolder(graph, bases, events.toMutableList(), emergencies)
             return Simulation(dataHolder, maxTick)
         } else {
-            // If validation fails exit
+            // If validation fails, exit
             exitProcess(1)
         }
     }
@@ -89,10 +89,37 @@ class SimulationObjectConstructor(
     /**
      * Cross validates the events based on the graph
      */
-    private fun validateEventsBasedOnGraph(graph: Graph, events: List<Event>): Boolean {
+    private fun validateEventsBasedOnGraph(graph: Graph, events: List<Event>, vehicles: List<Vehicle>): Boolean {
         for (event in events) {
-
+            when (event) {
+                is VehicleUnavailable -> if (!validateVehicleEvent(event, vehicles)) return false
+                else -> if (!validateGraphEvent(event, graph)) return false
+            }
         }
+        return true
+    }
+
+    /**
+     * Helper method for validateEventsBasedOnGraph(). Validates if the events vehicle ID exists
+     */
+    private fun validateVehicleEvent(event: VehicleUnavailable, vehicles: List<Vehicle>): Boolean {
+        val vehicle = vehicles.find { vehicle: Vehicle -> vehicle.id == event.vehicleID}
+        return vehicle != null
+    }
+
+    /**
+     * Helper method for validateEventsBasedOnGraph(). Validates if the roads exist
+     */
+    private fun validateGraphEvent(event: Event, graph: Graph): Boolean {
+        when (event) {
+            is RushHour -> return true
+            is VehicleUnavailable -> return true // impossible to reach
+            is Construction -> return roadExists(event.sourceID, event.targetID, graph)
+            is RoadClosure -> return roadExists(event.sourceID, event.targetID, graph)
+            is TrafficJam -> return roadExists(event.sourceID, event.targetID, graph)
+        }
+
+        return true
     }
 
     /**
