@@ -1,4 +1,3 @@
 package phasetests
 
-class MapUpdatePhaseTest {
-}
+class MapUpdatePhaseTest

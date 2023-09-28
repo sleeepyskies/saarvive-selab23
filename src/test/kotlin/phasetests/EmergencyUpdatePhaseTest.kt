@@ -1,4 +1,3 @@
 package phasetests
 
-class EmergencyUpdatePhaseTest {
-}
+class EmergencyUpdatePhaseTest

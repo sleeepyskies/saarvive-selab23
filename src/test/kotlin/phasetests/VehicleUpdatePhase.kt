@@ -1,4 +1,3 @@
 package phasetests
 
-class VehicleUpdatePhase {
-}
+class VehicleUpdatePhase

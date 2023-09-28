@@ -1,4 +1,3 @@
 package phasetests
 
-class RequestPhaseTest {
-}
+class RequestPhaseTest
