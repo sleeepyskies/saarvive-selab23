@@ -60,7 +60,7 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
      */
     private fun updateRoadEndReached(vehicle: Vehicle) {
         if (vehicle.roadProgress == 0) {
-            vehicle.currentRoute.removeAt(0)
+            vehicle.currentRoute = vehicle.currentRoute.drop(1)
             vehicle.lastVisitedVertex = vehicle.currentRoute[0]
         }
     }
