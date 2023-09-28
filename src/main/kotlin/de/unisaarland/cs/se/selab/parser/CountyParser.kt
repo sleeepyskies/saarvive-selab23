@@ -1,9 +1,7 @@
 package de.unisaarland.cs.se.selab.parser
 
 import de.unisaarland.cs.se.selab.global.Log
-import de.unisaarland.cs.se.selab.graph.Graph
-import de.unisaarland.cs.se.selab.graph.Road
-import de.unisaarland.cs.se.selab.graph.Vertex
+import de.unisaarland.cs.se.selab.graph.*
 import java.io.File
 import java.util.regex.Pattern
 import kotlin.system.exitProcess
@@ -71,9 +69,9 @@ class CountyParser(private val dotFilePath: String) {
         val blueprint = createBlueprint()
         if (!validateBlueprint()) exitProcess(1)
         Log.displayInitializationInfoValid(this.dotFile.name)
-        val roads = createRoadList(blueprint)
+        val roads = createRoadList()
         this.roads.addAll(roads)
-        val vertices = createVertexList(blueprint)
+        val vertices = createVertexList()
         connectVertices(vertices, roads, blueprint)
         return createGraph(vertices, roads)
     }
@@ -265,19 +263,26 @@ class CountyParser(private val dotFilePath: String) {
     /**
      * Creates single object of Road out of [road] data
      */
-    private fun createRoad(road: String): Road {
+    private fun createRoad(road: Map.Entry<String, MutableMap<String, String>>): Road {
+        return Road(PrimaryType.COUNTY_ROAD,SecondaryType.NONE,"s","k",4,2)
     }
 
     /**
      * Returns list of Roads out of [blueprint] data
      */
-    private fun createRoadList(blueprint: Map<String, String>): List<Road> {
+    private fun createRoadList(): List<Road> {
+        val roadList = mutableListOf<Road>()
+        edgesAll.forEach { edge ->
+            roadList.add(createRoad(edge))
+        }
+
+        return roadList
     }
 
     /**
      * Returns list of Vertices out of [blueprint] data
      */
-    private fun createVertexList(blueprint: Map<String, String>): List<Vertex> {
+    private fun createVertexList(): List<Vertex> {
     }
 
     /**
