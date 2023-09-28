@@ -15,26 +15,26 @@ class SimulationObjectConstructor(
     private val maxTick: Int?
 ) {
     public fun createSimulation(): Simulation {
-
+        //code
     }
 
     private fun createDataHolder(
         graph: Graph, bases: List<Base>,
         events: MutableList<Event>,
         emergencies: MutableList<Emergency>
-    ): DataHolder {
+    ) {
 
     }
 
-    private fun validateAssetsBasedOnGraph(graph: Graph, bases: List<Base>): Boolean {
+    private fun validateAssetsBasedOnGraph(graph: Graph, bases: List<Base>) {
 
     }
 
-    private fun validateEventsBasedOnGraph(graph: Graph, events: List<Event>): Boolean {
+    private fun validateEventsBasedOnGraph(graph: Graph, events: List<Event>) {
 
     }
 
-    private fun validateEmergenciesBasedOnGraph(graph: Graph, emergencies: Emergency): Boolean {
+    private fun validateEmergenciesBasedOnGraph(graph: Graph, emergencies: Emergency) {
 
     }
 
