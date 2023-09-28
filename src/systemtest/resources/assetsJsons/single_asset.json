@@ -1,0 +1,21 @@
+{
+  "bases": [
+    {
+      "id": 0,
+      "baseType": "FIRE_STATION",
+      "location": 2,
+      "staff": 62
+    }
+  ],
+  "vehicles": [
+    {
+      "id": 0,
+      "baseID": 0,
+      "vehicleType": "FIRE_TRUCK_WATER",
+      "vehicleHeight": 2,
+      "staffCapacity": 5,
+      "waterCapacity": 600
+    }
+  ]
+}
+
