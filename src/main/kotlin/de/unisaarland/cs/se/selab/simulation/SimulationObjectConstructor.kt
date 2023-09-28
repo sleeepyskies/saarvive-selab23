@@ -173,14 +173,21 @@ class SimulationObjectConstructor(
         // check two emergencies at the same location do not occur at the same time
         // loop over all emergencyLists
         for ((_, emergencyList) in mapping) {
-            // loop over all emergencies in emergencyList
-            for (emergencyOne in emergencyList) {
-                for (emergencyTwo in emergencyList) {
-                    if (isInRange(emergencyOne, emergencyTwo)) return false
-                }
-            }
+            if (!checkOverlappingEmergencies(emergencyList)) return false
         }
 
+        return true
+    }
+
+    /**
+     * Checks that no two emergencies in the given list overlap in their duration
+     */
+    private fun checkOverlappingEmergencies(emergencyList: List<Emergency>): Boolean {
+        for (emergencyOne in emergencyList) {
+            for (emergencyTwo in emergencyList) {
+                if (isInRange(emergencyOne, emergencyTwo)) return false
+            }
+        }
         return true
     }
 
