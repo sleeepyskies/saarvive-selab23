@@ -5,7 +5,8 @@ import de.unisaarland.cs.se.selab.dataClasses.bases.Hospital
 import de.unisaarland.cs.se.selab.dataClasses.bases.PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
 import de.unisaarland.cs.se.selab.parser.AssetParser
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class AssetParserTest {
@@ -28,7 +29,7 @@ class AssetParserTest {
         assertEquals(2, fireStation.vertexID)
         assertEquals(62, fireStation.staff)
 
-        val policeStation = allBases.find { it is PoliceStation && it.baseID  == 1 } as PoliceStation
+        val policeStation = allBases.find { it is PoliceStation && it.baseID == 1 } as PoliceStation
         assertEquals(4, policeStation.vertexID)
         assertEquals(12, policeStation.staff)
         assertEquals(3, policeStation.dogs)
@@ -60,3 +61,4 @@ class AssetParserTest {
         assertEquals(2, fireTruckWater?.height)
         assertEquals(5, fireTruckWater?.staffCapacity)
     }
+}
