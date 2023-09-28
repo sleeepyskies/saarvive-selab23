@@ -12,7 +12,6 @@ import org.everit.json.schema.loader.SchemaLoader
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
-import kotlin.system.exitProcess
 
 /**
  * Parses the emergency configuration file.
@@ -136,10 +135,8 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     private fun validateEmergencyId(id: Int): Int {
         if (id <= 0) {
             System.err.println("ID must be positive")
-            exitProcess(1)
         } else if (emergencyIDSet.contains(id)) {
             System.err.println("ID must be unique")
-            exitProcess(1)
         }
         return id
     }
@@ -147,10 +144,8 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     private fun validateEventId(id: Int): Int {
         if (id < 0) {
             System.err.println("ID must be positive")
-            exitProcess(1)
         } else if (eventIDSet.contains(id)) {
             System.err.println("ID must be unique")
-            exitProcess(1)
         }
         return id
     }
@@ -161,7 +156,6 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     private fun validateSeverity(severity: Int): Int {
         if (severity !in 1..3) {
             System.err.println("Severity must be positive")
-            exitProcess(1)
         }
         return severity
     }
@@ -171,7 +165,6 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     private fun validateEmergencyTick(tick: Int): Int {
         if (tick < 1) {
             System.err.println("Tick must be greater than 1")
-            exitProcess(1)
         }
         return tick
     }
@@ -182,7 +175,6 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     private fun validateEventTick(tick: Int): Int {
         if (tick <= 0) {
             System.err.println("Tick must be greater than 0")
-            exitProcess(1)
         }
         return tick
     }
@@ -193,7 +185,6 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     private fun validateEmergencyType(emergencyType: String): EmergencyType {
         if (emergencyType != EmergencyType.valueOf(emergencyType).toString()) {
             System.err.println("EmergencyType must be one of the following: ${EmergencyType.values()}")
-            exitProcess(1)
         }
         return EmergencyType.valueOf(emergencyType)
     }
@@ -203,7 +194,6 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     private fun validateHandleTime(handleTime: Int): Int {
         if (handleTime < 1) {
             System.err.println("Minimum handle time is 1")
-            exitProcess(1)
         }
         return handleTime
     }
@@ -213,7 +203,6 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     private fun validateDuration(duration: Int): Int {
         if (duration < 1) {
             System.err.println("Minimum duration of an event should be at least 1")
-            exitProcess(1)
         }
         return duration
     }
@@ -224,7 +213,6 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     private fun validateMaxDuration(maxDuration: Int, handleTime: Int): Int {
         if (maxDuration <= handleTime) {
             System.err.println("Maximum duration must be greater than handle time")
-            exitProcess(1)
         }
         return maxDuration
     }
@@ -234,7 +222,6 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     private fun validateVillageName(villageName: String): String {
         if (villageName.isBlank()) {
             System.err.println("Village name must not be blank")
-            exitProcess(1)
         }
         return villageName
     }
@@ -244,7 +231,6 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     private fun validateEventFactor(factor: Int): Int {
         if (factor < 1) {
             System.err.println("Factor must be at least 1")
-            exitProcess(1)
         }
         return factor
     }
@@ -257,7 +243,6 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         for (type in roadType) {
             if (type !in validRoadTypes) {
                 System.err.println("RoadType must be one of the following: $validRoadTypes")
-                exitProcess(1)
             }
         }
         return roadType.map { enumValueOf(it.toString()) }
@@ -269,7 +254,6 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     private fun validateSourceId(sourceId: Int): Int {
         if (sourceId < 0) {
             System.err.println("Source ID must be positive")
-            exitProcess(1)
         }
         return sourceId
     }
@@ -280,7 +264,6 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     private fun validateTargetId(targetId: Int): Int {
         if (targetId < 0) {
             System.err.println("Target ID must be positive")
-            exitProcess(1)
         }
         return targetId
     }
@@ -291,7 +274,6 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     private fun validateVehicleId(vehicleId: Int): Int {
         if (vehicleId < 0) {
             System.err.println("Vehicle ID must be positive")
-            exitProcess(1)
         }
         return vehicleId
     }
