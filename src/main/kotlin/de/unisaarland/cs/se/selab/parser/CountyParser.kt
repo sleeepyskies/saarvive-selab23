@@ -3,9 +3,7 @@ package de.unisaarland.cs.se.selab.parser
 import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.global.StringLiterals
-import de.unisaarland.cs.se.selab.graph.Graph
-import de.unisaarland.cs.se.selab.graph.Road
-import de.unisaarland.cs.se.selab.graph.Vertex
+import de.unisaarland.cs.se.selab.graph.*
 import java.io.File
 import java.lang.IllegalArgumentException
 import java.util.regex.Pattern
@@ -50,8 +48,67 @@ class CountyParser(private val dotFilePath: String) {
             exitProcess(1)
         }
         Log.displayInitializationInfoValid(this.dotFile.name)
-        exitProcess(1)
-        val listRoads = mutableListOf<Road>()
+        // Start creation
+        createRoadList()
+        createVertexList()
+        connectVertices()
+        return Graph(this.vertices, this.roads)
+    }
+
+    /**
+     * Implement connecting roads
+     */
+    private fun connectVertices() {
+        TODO("Not yet implemented")
+    }
+
+    /**
+     * Assigns created object of Vertex to list
+     */
+    private fun createVertexList() {
+        this.listOfVertices.forEach { vertex -> this.vertices.add(createVertex(vertex)) }
+    }
+
+    /**
+     * Creates a single object of Vertex
+     */
+    private fun createVertex(vertex: Int): Vertex {
+       return Vertex(vertex, mutableMapOf())
+    }
+
+    /**
+     * Assigns list of created Road objects
+     */
+    private fun createRoadList() {
+        this.listOfEdges.forEach { edge ->
+            this.roads.add(createRoad(edge.value))
+        }
+    }
+
+    /**
+     * Creates a single object of road
+     */
+    private fun createRoad(edge: MutableMap<String, String>): Road {
+        val villageName = edge["village"]!!
+        val roadName = edge["name"]!!
+        val weight = edge["weight"]!!.toInt()
+        val heightLimit = edge["heightLimit"]!!.toInt()
+        val pType = when (edge["primaryType"]!!) {
+            "mainStreet" -> PrimaryType.MAIN_STREET
+            "sideStreet" -> PrimaryType.SIDE_STREET
+            else -> {
+                PrimaryType.COUNTY_ROAD
+            }
+        }
+        val sType = when (edge["secondaryType"]!!) {
+            "oneWayStreet" -> SecondaryType.ONE_WAY_STREET
+            "tunnel" -> SecondaryType.TUNNEL
+            else -> {
+                SecondaryType.NONE
+            }
+        }
+        return Road(pType, sType, villageName, roadName, weight, heightLimit)
+
     }
 
     /**
@@ -225,7 +282,6 @@ class CountyParser(private val dotFilePath: String) {
                         } else {
                             villageName = villageN
                             primaryType = prType
-
                         }
                     }
                 }
