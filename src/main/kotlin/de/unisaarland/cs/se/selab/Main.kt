@@ -3,8 +3,6 @@ package de.unisaarland.cs.se.selab
 import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.simulation.SimulationObjectConstructor
 import kotlin.system.exitProcess
-
-
 /**
  * This is the entry point of the simulation.
  */
@@ -51,7 +49,7 @@ fun parseCommandLineArguments(args: Array<String>): CommandLineArguments {
 
     while (i < args.size) {
         when (args[i]) {
-            "--map", "-m"-> {
+            "--map", "-m" -> {
                 i++
                 requireArgument()
                 mapFile = args[i]
@@ -61,7 +59,7 @@ fun parseCommandLineArguments(args: Array<String>): CommandLineArguments {
                 requireArgument()
                 assetsFile = args[i]
             }
-            "--scenario", "-s"-> {
+            "--scenario", "-s" -> {
                 i++
                 requireArgument()
                 scenarioFile = args[i]
@@ -84,23 +82,17 @@ fun parseCommandLineArguments(args: Array<String>): CommandLineArguments {
     return CommandLineArguments(mapFile, assetsFile, scenarioFile, ticks, outFile, help)
 }
 
-
-/**
- * Prints the usage of the program
+/** Prints the usage of the program
  */
 fun printUsage() {
     println(
-        "Usage: Saarvive & Thrive " +
-                "\n --map <mapFile> " +
-                "\n --assets <assetsFile> " +
-                "\n --scenario <scenarioFile> " +
-                "\n --ticks <ticks> " +
-                "\n --out <outFile> " +
-                "\n --help"
+        "Usage: Saarvive & Thrive"
     )
+    println("--map/-m <mapFile>")
+    println("--assets/-a <assetsFile>")
+    println("--scenario/-s <scenarioFile>")
+    println("--ticks/-t <ticks>")
+    println("--out/-o <outFile>")
+    println("--help/-h")
+    exitProcess(0)
 }
-
-
-
-
-

@@ -1,4 +1,3 @@
 package parsertests
 
-class CountyParserTest {
-}
+class CountyParserTest

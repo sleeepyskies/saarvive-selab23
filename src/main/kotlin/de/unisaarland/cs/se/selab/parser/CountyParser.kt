@@ -213,8 +213,7 @@ class CountyParser(private val dotFilePath: String) {
         val mapping = mutableMapOf<String, MutableList<String>>()
         this.listOfEdges.values.forEach { key ->
             if (mapping.containsKey(key.getValue(StringLiterals.VILLAGE))) {
-                if (!mapping[key.getValue(StringLiterals.VILLAGE)]!!
-                        .contains(key.getValue(StringLiterals.NAME))
+                if (!mapping[key.getValue(StringLiterals.VILLAGE)]!!.contains(key.getValue(StringLiterals.NAME))
                 ) {
                     mapping[key.getValue(StringLiterals.VILLAGE)]!!.add(key.getValue("name"))
                 } else {
@@ -236,35 +235,16 @@ class CountyParser(private val dotFilePath: String) {
      */
     private fun commonVertex(): Boolean {
         val mappingVertexToEdges = mutableMapOf<Int, MutableList<MutableMap<String, String>>>()
-        this.listOfVertices.forEach { vertex ->
-            this.listOfEdges.forEach { pair ->
-                if (pair.key.first == vertex || pair.key.second == vertex) {
-                    val edgeData = pair.value
-                    if (mappingVertexToEdges.containsKey(vertex)) {
-                        mappingVertexToEdges.getValue(vertex).add(edgeData)
-                    } else {
-                        val mutableList = mutableListOf(edgeData)
-                        mappingVertexToEdges[vertex] = mutableList
-                    }
-                }
+        for ((key, edgeData) in listOfEdges) {
+            val (firstVertex, secondVertex) = key
+            listOf(firstVertex, secondVertex).forEach {
+                mappingVertexToEdges.computeIfAbsent(it) { mutableListOf() }.add(edgeData)
             }
         }
-
-        mappingVertexToEdges.forEach { vertex ->
-            var villageName = ""
-            var primaryType = ""
-            vertex.value.forEach { list ->
-                val villageN = list["village"]!!
-                val prType = list["primaryType"]!!
-                if (!(villageName == "" && primaryType == "")) {
-                    if (villageN != villageName && prType != "countyRoad") return false
-                } else {
-                    villageName = villageN
-                    primaryType = prType
-                }
-            }
+        return mappingVertexToEdges.all { (_, edges) ->
+            val uniqueVillageCount = edges.map { it["village"] }.distinct().size
+            uniqueVillageCount == 1 || edges.all { it["primaryType"] == "countyRoad" }
         }
-        return true
     }
 
     /**
@@ -298,8 +278,7 @@ class CountyParser(private val dotFilePath: String) {
         val atPat = Pattern.compile("\\A$vilPat$namPat$hPat$wPat$pTPat$sTPat\\Z") // attribute pattern
 
         val artPatter = atPat.matcher(matchedEdge)
-        if (!artPatter.find()) return false
-        return true
+        return artPatter.find()
     }
 
     /**
