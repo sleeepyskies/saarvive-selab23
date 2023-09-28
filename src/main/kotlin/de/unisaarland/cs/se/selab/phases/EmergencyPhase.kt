@@ -8,6 +8,7 @@ import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
 import de.unisaarland.cs.se.selab.global.Log
+import de.unisaarland.cs.se.selab.graph.Vertex
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 
 /**
@@ -70,7 +71,7 @@ class EmergencyPhase(private val dataHolder: DataHolder) : Phase {
         listOfResponsibleBases.forEach { responsibleBase ->
             run {
                 val baseId = responsibleBase.baseID
-                val baseVertex = dataHolder.baseToVertex[baseId]!!
+                val baseVertex = dataHolder.baseToVertex[baseId] ?: Vertex(2, mutableMapOf())
                 listOfEmergencyVertices.forEach { vertex ->
                     val shortestPath = dataHolder.graph.calculateShortestPath(
                         baseVertex,
@@ -83,7 +84,7 @@ class EmergencyPhase(private val dataHolder: DataHolder) : Phase {
                 }
             }
         }
-        return base!!
+        return base ?: Hospital(1, 1, 1, 1, listOf())
     }
 
     /**
@@ -108,7 +109,7 @@ class EmergencyPhase(private val dataHolder: DataHolder) : Phase {
                 base = responsibleBase
             }
         }
-        return Pair(distance, base!!)
+        return Pair(distance, base ?: responsibleBase)
     }
 
     /**
@@ -129,7 +130,7 @@ class EmergencyPhase(private val dataHolder: DataHolder) : Phase {
                 val sortedEmergencyID = sortedEmergency.id
                 Log.displayEmergencyAssignment(
                     sortedEmergencyID,
-                    this.dataHolder.emergencyToBase[sortedEmergencyID]!!.baseID
+                    this.dataHolder.emergencyToBase[sortedEmergencyID]?.baseID ?: 1
                 )
             }
         }
