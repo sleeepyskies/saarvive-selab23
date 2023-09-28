@@ -93,8 +93,16 @@ class CountyParser(private val dotFilePath: String) {
         return true
     }
 
+    /**
+     * Each vertex is connected to at least one other vertex
+     */
     private fun vertexConnectedToAnother(): Boolean {
-        TODO("Not yet implemented")
+        this.listOfVertices.forEach { vertex ->
+            run {
+                this.listOfEdges.keys.forEach { pair -> if (!(pair.first == vertex || pair.second == vertex)) return false }
+            }
+        }
+        return true
     }
 
     /**
@@ -181,8 +189,49 @@ class CountyParser(private val dotFilePath: String) {
         return true
     }
 
+    /**
+     * All edges connected to the same vertex belong to the same village or are a countyRoad
+     */
     private fun commonVertex(): Boolean {
-        TODO("Not yet implemented")
+        val mappingVertexToEdges = mutableMapOf<Int, MutableList<MutableMap<String, String>>>()
+        this.listOfVertices.forEach { vertex ->
+            run {
+                this.listOfEdges.forEach { pair ->
+                    run {
+                        if ((pair.key.first == vertex || pair.key.second == vertex)) {
+                            val edgeData = pair.value
+                            if (mappingVertexToEdges.containsKey(vertex)) {
+                                mappingVertexToEdges.getValue(vertex).add(edgeData)
+                            } else {
+                                val mutablList = mutableListOf(edgeData)
+                                mappingVertexToEdges.put(vertex, mutablList)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        mappingVertexToEdges.forEach { vertex ->
+            run {
+                var villageName = ""
+                var primaryType = ""
+                vertex.value.forEach { list ->
+                    run {
+                        val villageN = list.get("village")!!
+                        val prType = list.get("primaryType")!!
+                        if (!(villageName == "" && primaryType == "")) {
+                            if (villageN != villageName && prType != "countyRoad") return false
+                        } else {
+                            villageName = villageN
+                            primaryType = prType
+
+                        }
+                    }
+                }
+            }
+        }
+        return true
     }
 
     /**
