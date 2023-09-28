@@ -18,36 +18,35 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
         }
     }
     private fun reduceEventDuration(events: MutableList<Event>) {
-            events.forEach { event ->
-                when {
-                    event.duration > 0 -> {
-                        event.duration -= 1
+        events.forEach { event ->
+            when {
+                event.duration > 0 -> {
+                    event.duration -= 1
+                }
+                event.duration == 0 -> {
+                    if (event is VehicleUnavailable) {
+                        dataHolder.unavailableVehicles.removeIf { vehicle -> vehicle.id == event.vehicleID }
                     }
-                    event.duration == 0 -> {
-                        if (event is VehicleUnavailable) {
-                            dataHolder.unavailableVehicles.removeIf { vehicle -> vehicle.id == event.vehicleID }
-                        }
-                        dataHolder.graph.revertGraphEvent(event)
-                        Log.displayEventEnded(event.eventID)
-                    }
-                    event.startTick == currentTick -> {
-                        dataHolder.graph.applyGraphEvent(event)
-                        Log.displayEventStarted(event.eventID)
-                        dataHolder.activeVehicles.forEach { vehicle ->
-                            val vehicleRoute = vehicle.currentRoute
-                            val vehiclePosition = vehicle.lastVisitedVertex
-                            vehicle.currentRoute = dataHolder.graph.calculateShortestRoute(
-                                vehiclePosition,
-                                vehicleRoute.last(),
-                                vehicle.height
-                            )
-                        }
+                    dataHolder.graph.revertGraphEvent(event)
+                    Log.displayEventEnded(event.eventID)
+                }
+                event.startTick == currentTick -> {
+                    dataHolder.graph.applyGraphEvent(event)
+                    Log.displayEventStarted(event.eventID)
+                    dataHolder.activeVehicles.forEach { vehicle ->
+                        val vehicleRoute = vehicle.currentRoute
+                        val vehiclePosition = vehicle.lastVisitedVertex
+                        vehicle.currentRoute = dataHolder.graph.calculateShortestRoute(
+                            vehiclePosition,
+                            vehicleRoute.last(),
+                            vehicle.height
+                        )
                     }
                 }
             }
-            // Remove completed events from the list
-            events.removeIf { event -> event.duration == 0 }
         }
-        // need to add logic for vehicles
+        // Remove completed events from the list
+        events.removeIf { event -> event.duration == 0 }
+    }
+    // need to add logic for vehicles
 }
-
