@@ -87,7 +87,7 @@ class CountyParser(private val dotFilePath: String) {
     private fun createRoad(edge: MutableMap<String, String>): Road {
         val villageName = edge[StringLiterals.VILLAGE] ?: "Saarbrucken"
         val roadName = edge[StringLiterals.NAME] ?: "Dudweiler-Straße"
-        val weight = edge["weight"]!!.toInt()
+        val weight = edge["weight"]?.toInt() ?: 2
         val heightLimit = edge["heightLimit"]?.toInt() ?: 2
         val pType = when (edge[StringLiterals.PRIMARY_TYPE] ?: "StringLiterals.PRIMARY_TYPE") {
             "mainStreet" -> PrimaryType.MAIN_STREET
@@ -113,7 +113,7 @@ class CountyParser(private val dotFilePath: String) {
         val vPat = Pattern.compile("\\A(\\s*(\\d+(\\.\\d+)?)\\s*;\\s*)+").toRegex() // pattern for vertex
 
         val vertexMatched = vPat.find(dataInScope)
-        val stringVertices = vertexMatched?.groupValues?.get(1) ?: ""
+        val stringVertices = vertexMatched?.groupValues?.get(1).orEmpty()
         val stringEdges = dataInScope.substring((vertexMatched?.range?.last ?: 1) + 1)
 
         val parsedVertices = parseVertices(stringVertices)
