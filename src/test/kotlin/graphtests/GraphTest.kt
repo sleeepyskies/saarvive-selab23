@@ -42,11 +42,7 @@ class GraphTest {
         val roads = listOf(roadAB, roadBC, roadCD, roadAE, roadDE)
         return Graph(vertices, roads)
     }
-    private fun createDisconnectedMockGraph(): Graph {
-        val vertexA = Vertex(0, mutableMapOf())
-        val vertexB = Vertex(1, mutableMapOf())
-        return Graph(listOf(vertexA, vertexB), emptyList())
-    }
+
     private fun createMockGraphWithMultipleShortestPaths(): Graph {
         val vertexA = Vertex(0, mutableMapOf())
         val vertexB = Vertex(1, mutableMapOf())
