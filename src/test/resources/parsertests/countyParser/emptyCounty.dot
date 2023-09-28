@@ -1,0 +1,13 @@
+digraph 1 {
+    0;
+    1;
+    2;
+    3;
+    4;
+    5;
+    6;
+    7;
+    8;
+    0 -> 1 [ village = "VillageA"; name = "Street1"; heightLimit = 4; weight = 10; primaryType = sideStreet; secondaryType = none; ]
+    1 -> 2 [ village = "VillageA"; name = "Street2"; heightLimit = 4; weight = 10; primaryType = mainStreet; secondaryType = oneWayStreet; ]
+}
