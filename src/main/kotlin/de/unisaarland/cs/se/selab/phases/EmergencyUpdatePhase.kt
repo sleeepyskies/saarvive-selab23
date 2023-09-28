@@ -63,14 +63,17 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
         for (vehicle in vehicles) {
             vehicle.vehicleStatus = VehicleStatus.MOVING_TO_BASE
             vehicle.assignedEmergencyID = null
-            vehicle.currentRoute =
-                dataHolder.graph.calculateShortestRoute(
+            dataHolder.baseToVertex[vehicle.assignedBaseID]?.let { baseVertex ->
+                vehicle.currentRoute = dataHolder.graph.calculateShortestRoute(
                     vehicle.lastVisitedVertex,
-                    dataHolder.baseToVertex[vehicle.assignedBaseID]!!,
+                    baseVertex,
                     vehicle.height
                 )
-            vehicle.roadProgress =
-                weightToTicks(vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[1]]!!.weight)
+            }
+            vehicle.roadProgress = vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[1]]
+                ?.weight
+                ?.let { weightToTicks(it) }
+                ?: 0
         }
     }
 
@@ -94,7 +97,7 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
             dataHolder.ongoingEmergencies.remove(emergency)
             dataHolder.resolvedEmergencies.add(emergency)
             // get and send vehicles back
-            sendVehiclesBack(dataHolder.emergencyToVehicles[emergency.id]!!)
+            dataHolder.emergencyToVehicles[emergency.id]?.let { sendVehiclesBack(it) }
         }
     }
 }
