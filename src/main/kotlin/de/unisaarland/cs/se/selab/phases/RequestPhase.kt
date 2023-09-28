@@ -155,6 +155,9 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
         }
     }
 
+    /**
+     * implements the logic of assigning a firetruck
+     */
     private fun assignFireTruckWater(vehicle: FireTruckWater, request: Request) {
         if (request.requiredCapacity.containsKey(CapacityType.WATER)) {
             val requiredNum = request.requiredVehicles[VehicleType.FIRE_TRUCK_WATER]
@@ -173,6 +176,9 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
         }
     }
 
+    /**
+     * implements the logic of assigning a firetruck with ladder
+     */
     private fun assignFireTruckLadder(vehicle: FireTruckWithLadder, request: Request) {
         if (request.requiredCapacity.containsKey(CapacityType.LADDER_LENGTH)) {
             val requiredNum = request.requiredVehicles[VehicleType.FIRE_TRUCK_LADDER]
@@ -190,6 +196,9 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
         }
     }
 
+    /**
+     * implements the logic of assigning a police car
+     */
     private fun assignPoliceCar(vehicle: PoliceCar, request: Request) {
         if (request.requiredCapacity.containsKey(CapacityType.CRIMINAL)) {
             val requiredNum = request.requiredVehicles[VehicleType.POLICE_CAR]
@@ -208,6 +217,9 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
         }
     }
 
+    /**
+     * implements the logic of assigning an ambulance
+     */
     private fun assignAmbulance(vehicle: Ambulance, request: Request) {
         if (request.requiredCapacity.containsKey(CapacityType.PATIENT)) {
             val requiredNum = request.requiredVehicles[VehicleType.AMBULANCE]
@@ -225,4 +237,5 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
             }
         }
     }
+
 }
