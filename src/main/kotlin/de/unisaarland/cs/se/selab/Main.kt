@@ -3,8 +3,6 @@ package de.unisaarland.cs.se.selab
 import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.simulation.SimulationObjectConstructor
 import kotlin.system.exitProcess
-
-
 /**
  * This is the entry point of the simulation.
  */
@@ -51,7 +49,7 @@ fun parseCommandLineArguments(args: Array<String>): CommandLineArguments {
 
     while (i < args.size) {
         when (args[i]) {
-            "--map", "-m"-> {
+            "--map", "-m" -> {
                 i++
                 requireArgument()
                 mapFile = args[i]
@@ -61,7 +59,7 @@ fun parseCommandLineArguments(args: Array<String>): CommandLineArguments {
                 requireArgument()
                 assetsFile = args[i]
             }
-            "--scenario", "-s"-> {
+            "--scenario", "-s" -> {
                 i++
                 requireArgument()
                 scenarioFile = args[i]
@@ -85,8 +83,7 @@ fun parseCommandLineArguments(args: Array<String>): CommandLineArguments {
 }
 
 
-/**
- * Prints the usage of the program
+/** Prints the usage of the program
  */
 fun printUsage() {
     println(
@@ -99,8 +96,4 @@ fun printUsage() {
                 "\n --help"
     )
 }
-
-
-
-
 
