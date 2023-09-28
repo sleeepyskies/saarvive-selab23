@@ -81,8 +81,16 @@ class CountyParser(private val dotFilePath: String) {
         return vertexConnectedToAnother() && edgesConnectExistingVertices()
     }
 
+    /**
+     * All edges connect two existing vertices
+     */
     private fun edgesConnectExistingVertices(): Boolean {
-        TODO("Not yet implemented")
+        this.listOfEdges.keys.forEach { key ->
+            run {
+                if (!(this.listOfVertices.contains(key.first) || this.listOfVertices.contains(key.second))) return false
+            }
+        }
+        return true
     }
 
     private fun vertexConnectedToAnother(): Boolean {
@@ -110,9 +118,13 @@ class CountyParser(private val dotFilePath: String) {
             if (id1 == id2) return false
             val check1 = Pair(id1.toInt(), id2.toInt())
             val check2 = Pair(id2.toInt(), id1.toInt())
-            if (this.listOfEdges.containsKey(check1) || this.listOfEdges.containsKey(check2)) return false
             val matchedEdge = edge.group(Number.FIVE)!!
-            if (!parsedAttributes(matchedEdge)) return false
+            if (this.listOfEdges.containsKey(check1) || this.listOfEdges.containsKey(check2) || !parsedAttributes(
+                    matchedEdge
+                )
+            ) {
+                return false
+            }
             val attributesMapping = parseAttributes(matchedEdge) // parse attributes
             this.listOfEdges[Pair(id1.toInt(), id2.toInt())] = attributesMapping
         }
@@ -142,8 +154,31 @@ class CountyParser(private val dotFilePath: String) {
         return villageToRoadTypeMap.values.all { it }
     }
 
+    /**
+     * Checks if the road name is unique within a village.
+     */
     private fun roadNameIsUnique(): Boolean {
-        TODO("Not yet implemented")
+        val mapping = mutableMapOf<String, MutableList<String>>()
+        this.listOfEdges.values.forEach { key ->
+            run {
+                if (mapping.containsKey(key.getValue("village"))) {
+                    if (!mapping.get(key.getValue("village"))!!
+                            .contains(key.getValue("name"))
+                    ) {
+                        mapping.get(key.getValue("village"))!!.add(key.getValue("name"))
+                    } else {
+                        return false
+                    }
+                } else {
+                    val newMutableList = mutableListOf<String>()
+                    val newVillageName = key.getValue("village")
+                    val newRoadName = key.getValue("name")
+                    newMutableList.add(newRoadName)
+                    mapping[newVillageName] = newMutableList
+                }
+            }
+        }
+        return true
     }
 
     private fun commonVertex(): Boolean {
