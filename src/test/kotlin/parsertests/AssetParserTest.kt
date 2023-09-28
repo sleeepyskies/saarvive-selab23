@@ -1,4 +1,4 @@
-package parser
+package parsertests
 
 import de.unisaarland.cs.se.selab.dataClasses.bases.FireStation
 import de.unisaarland.cs.se.selab.dataClasses.bases.Hospital
@@ -8,6 +8,7 @@ import de.unisaarland.cs.se.selab.parser.AssetParser
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class AssetParserTest {
 
@@ -39,13 +40,11 @@ class AssetParserTest {
         assertEquals(32, hospital.staff)
         assertEquals(3, hospital.doctors)
 
-        // Test vehicles
         assertEquals(54, allVehicles.size)
         assertTrue(allVehicles.any { it.vehicleType == VehicleType.POLICE_CAR })
         assertTrue(allVehicles.any { it.vehicleType == VehicleType.AMBULANCE })
         assertTrue(allVehicles.any { it.vehicleType == VehicleType.FIRE_TRUCK_WATER })
 
-        // Test specific vehicle attributes
         val policeCar = allVehicles.find { it.vehicleType == VehicleType.POLICE_CAR && it.id == 0 }
         assertEquals(1, policeCar?.assignedBaseID)
         assertEquals(2, policeCar?.height)
@@ -60,5 +59,59 @@ class AssetParserTest {
         assertEquals(0, fireTruckWater?.assignedBaseID)
         assertEquals(2, fireTruckWater?.height)
         assertEquals(5, fireTruckWater?.staffCapacity)
+    }
+
+    @Test
+    fun testInvalidPathToJSON() {
+        assertThrows<IllegalArgumentException> {
+            AssetParser(
+                assetSchemaFile = "src/main/resources/schema/asset.schema",
+                jsonFile = "invalid/path/to/json"
+            )
+        }
+    }
+
+    @Test
+    fun testInvalidAssetsJSON() {
+        assertThrows<IllegalArgumentException> {
+            AssetParser(
+                assetSchemaFile = "src/main/resources/schema/asset.schema",
+                jsonFile = "src/test/resources/parser/assetParser/invalid_assets.json"
+            ).parse()
+        }
+    }
+
+    @Test
+    fun testEmptyAssetList() {
+        val parser = AssetParser(
+            assetSchemaFile = "src/main/resources/schema/asset.schema",
+            jsonFile = "src/test/resources/parser/assetParser/empty_assets.json"
+        )
+
+        val (allBases, allVehicles) = parser.parse()
+
+        assertEquals(0, allBases.size)
+        assertEquals(0, allVehicles.size)
+    }
+
+    @Test
+    fun testSingleAsset() {
+        val parser = AssetParser(
+            assetSchemaFile = "src/main/resources/schema/asset.schema",
+            jsonFile = "src/test/resources/parser/assetParser/single_asset.json"
+        )
+
+        val (allBases, allVehicles) = parser.parse()
+
+        assertEquals(1, allBases.size)
+        assertEquals(1, allVehicles.size)
+
+        val singleBase = allBases.first()
+        assertTrue(singleBase is FireStation)
+        assertEquals(1, singleBase.baseID)
+
+        val singleVehicle = allVehicles.first()
+        assertEquals(VehicleType.FIRE_TRUCK_WATER, singleVehicle.vehicleType)
+        assertEquals(1, singleVehicle.id)
     }
 }
