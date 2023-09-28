@@ -13,7 +13,7 @@ import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
 import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import de.unisaarland.cs.se.selab.global.StringLiterals
 import java.lang.Integer.min
-import java.util.PriorityQueue
+import java.util.*
 
 /**
  * Holds the data for the simulation graph consisting of vertices and roads.
@@ -61,7 +61,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
      * @param vehicleHeight The height of the vehicle driving
      */
     fun calculateShortestRoute(vehiclePosition: Vertex, destination: Vertex, vehicleHeight: Int): MutableList<Vertex> {
-        val route = mutableListOf<Vertex>()
+        var route = listOf<Vertex>()
         // maps how far all the vertices are from the current vertex
         val distances = mutableMapOf<Vertex, Int>()
         // allows a chain of previous vertices to be created that can be backtracked
