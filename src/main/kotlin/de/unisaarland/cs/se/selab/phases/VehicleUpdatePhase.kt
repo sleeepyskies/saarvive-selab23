@@ -97,8 +97,8 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
         dataHolder.emergencyToVehicles[vehicle.assignedEmergencyID]?.add(vehicle)
 
         // update the emergency's required vehicles
-        val requiredVehicles = dataHolder.vehicleToEmergency[vehicle.id]!!.requiredVehicles
-        requiredVehicles[vehicle.vehicleType] = requiredVehicles[vehicle.vehicleType]!! - 1
+        val requiredVehicles = dataHolder.vehicleToEmergency[vehicle.id]?.requiredVehicles ?: mutableMapOf()
+        requiredVehicles[vehicle.vehicleType] = requiredVehicles[vehicle.vehicleType]?.minus(1) ?: 0
         if (requiredVehicles[vehicle.vehicleType] == 0) {
             requiredVehicles.remove(vehicle.vehicleType)
         }
@@ -106,12 +106,16 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
         // update the emergencies required capacity
 
         // check if all vehicles have reached emergency, if so change status to HANDLING
-        if (dataHolder.vehicleToEmergency[vehicle.id]!!.requiredCapacity == mutableMapOf<CapacityType, Int>()) {
-            dataHolder.vehicleToEmergency[vehicle.id]!!.emergencyStatus = EmergencyStatus.HANDLING
+        if ((
+            dataHolder.vehicleToEmergency[vehicle.id]?.requiredCapacity
+                ?: mutableMapOf()
+            ) == mutableMapOf<CapacityType, Int>()
+        ) {
+            dataHolder.vehicleToEmergency[vehicle.id]?.emergencyStatus = EmergencyStatus.HANDLING
             // Log emergency handling TODO Might have to be in EmergencyUpdatePhase...
-            Log.displayEmergencyHandlingStart(dataHolder.vehicleToEmergency[vehicle.id]!!.id)
+            dataHolder.vehicleToEmergency[vehicle.id]?.let { Log.displayEmergencyHandlingStart(it.id) }
             // Update all vehicle statuses to HANDLING
-            val vehicles = dataHolder.emergencyToVehicles[dataHolder.vehicleToEmergency[vehicle.id]!!.id]
+            val vehicles = dataHolder.emergencyToVehicles[dataHolder.vehicleToEmergency[vehicle.id]?.id]
             if (vehicles != null) {
                 for (v in vehicles) {
                     v.vehicleStatus = VehicleStatus.HANDLING
