@@ -2,6 +2,7 @@ package de.unisaarland.cs.se.selab.global
 
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import java.io.File
 
 /**
@@ -17,7 +18,7 @@ object Log {
         if (filePath != "stdout") {
             File(filePath).bufferedWriter().use { out -> out.write(message) }
         } else {
-            println(message)
+            logger(message)
         }
     }
 
