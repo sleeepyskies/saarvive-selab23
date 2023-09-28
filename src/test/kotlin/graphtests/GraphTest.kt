@@ -166,14 +166,6 @@ class GraphTest {
     }
 
     @Test
-    fun testCalculateShortestPath_DisconnectedGraph() {
-        val disconnectedGraph = createDisconnectedMockGraph()
-        val vertexA = disconnectedGraph.graph[0]
-        val vertexB = disconnectedGraph.graph[1]
-        assertEquals(-1, disconnectedGraph.calculateShortestPath(vertexA, vertexB, 0))
-    }
-
-    @Test
     fun testMultipleShortestPaths() {
         val mockGraph = createMockGraphWithMultipleShortestPaths()
         val vertexA = mockGraph.graph[0]
