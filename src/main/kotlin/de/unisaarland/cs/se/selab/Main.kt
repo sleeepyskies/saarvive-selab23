@@ -7,6 +7,6 @@ import de.unisaarland.cs.se.selab.parser.CountyParser
  */
 fun main(args: Array<String>) {
 
-    //will parse the command line -> give yo parser
-    println("Hello")
+    //will parse the command line -> give to parser
+    println("Hello World!")
 }
