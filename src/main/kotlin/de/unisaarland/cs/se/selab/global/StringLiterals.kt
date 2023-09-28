@@ -9,6 +9,7 @@ object StringLiterals {
     const val HOSPITAL = "Hospital"
     const val VILLAGE = "village"
     const val PRIMARY_TYPE = "primaryType"
+    const val SECONDARY_TYPE = "secondaryType"
     const val MAIN_STREET = "mainStreet"
     const val NAME = "name"
 }
