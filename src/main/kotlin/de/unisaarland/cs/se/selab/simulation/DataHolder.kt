@@ -52,10 +52,16 @@ class DataHolder(
 
     private fun initBaseToVertex(): MutableMap<Int, Vertex> {
         val mapping = mutableMapOf<Int, Vertex>()
+
         for (base in bases) {
-            val baseVertex = graph.graph.find { vertex: Vertex -> vertex.id == base.vertexID }!!
-            mapping[base.baseID] = baseVertex
+            val baseVertex = graph.graph.find { vertex -> vertex.id == base.vertexID }
+            if (baseVertex != null) {
+                mapping[base.baseID] = baseVertex
+            } else {
+                throw NoSuchElementException("Base with ID ${base.baseID} does not have a corresponding vertex.")
+            }
         }
+
         return mapping
     }
 
