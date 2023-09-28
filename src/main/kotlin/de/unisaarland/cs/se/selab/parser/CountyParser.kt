@@ -1,8 +1,10 @@
 package de.unisaarland.cs.se.selab.parser
 
 import de.unisaarland.cs.se.selab.global.Log
+import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.graph.Graph
 import de.unisaarland.cs.se.selab.graph.Road
+import de.unisaarland.cs.se.selab.graph.Vertex
 import java.io.File
 import java.lang.IllegalArgumentException
 import java.util.regex.Pattern
@@ -16,6 +18,7 @@ class CountyParser(private val dotFilePath: String) {
     private val dotFile: File
     private val data: String
     private val roads = mutableListOf<Road>() // List of roads on the map (for compatability)
+    private val vertices = mutableListOf<Vertex>() // List of roads on the map (for compatability)
     private var digraphName: String = ""
 
     private val listOfVertices = mutableListOf<Int>()
@@ -47,6 +50,7 @@ class CountyParser(private val dotFilePath: String) {
         }
         Log.displayInitializationInfoValid(this.dotFile.name)
         exitProcess(1)
+        val listRoads = mutableListOf<Road>()
     }
 
     /**
@@ -73,6 +77,14 @@ class CountyParser(private val dotFilePath: String) {
      * Validates vertices and edges together
      */
     private fun validateTogether(): Boolean {
+        return vertexConnectedToAnother()&&edgesConnectExistingVertices()
+    }
+
+    private fun edgesConnectExistingVertices(): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    private fun vertexConnectedToAnother(): Boolean {
         TODO("Not yet implemented")
     }
 
@@ -98,19 +110,37 @@ class CountyParser(private val dotFilePath: String) {
             val check1 = Pair(id1.toInt(), id2.toInt())
             val check2 = Pair(id2.toInt(), id1.toInt())
             if (this.listOfEdges.containsKey(check1) || this.listOfEdges.containsKey(check2)) return false
-            val matchedEdge = edge.group(5)!!
+            val matchedEdge = edge.group(Number.FIVE)!!
             if (!parsedAttributes(matchedEdge)) return false
             val attributesMapping = parseAttributes(matchedEdge) // parse attributes
             this.listOfEdges[Pair(id1.toInt(), id2.toInt())] = attributesMapping
         }
-        if(!roadNameIsUnique()&&!commonVertex()&&!villageHasMainStreet()&&!sideStreetExists()) return false
+        if (!roadNameIsUnique() || !commonVertex()) return false
+        if (!villageHasMainStreet() || !sideStreetExists()) return false
         return true
     }
 
-
+    /**
+     * Checks if each village has main street
+     */
     private fun villageHasMainStreet(): Boolean {
-        TODO("Not yet implemented")
+        val villageToRoadTypeMap = mutableMapOf<String, Boolean>()
+        for ((_, valueMap) in this.listOfEdges) {
+            if (!villageToRoadTypeMap.contains(valueMap.getValue("village"))) {
+                if (valueMap.getValue("primaryType") == "mainStreet") {
+                    villageToRoadTypeMap.put(valueMap.getValue("village"), true)
+                } else {
+                    villageToRoadTypeMap.put(valueMap.getValue("village"), false)
+                }
+            } else {
+                if (valueMap.getValue("primaryType") == "mainStreet") {
+                    villageToRoadTypeMap.put(valueMap.getValue("village"), true)
+                }
+            }
+        }
+        return villageToRoadTypeMap.values.all { it }
     }
+
     private fun roadNameIsUnique(): Boolean {
         TODO("Not yet implemented")
     }
@@ -119,8 +149,18 @@ class CountyParser(private val dotFilePath: String) {
         TODO("Not yet implemented")
     }
 
+    /**
+     * Checks if map has at least one sideStreet road
+     */
     private fun sideStreetExists(): Boolean {
-        TODO("Not yet implemented")
+        for ((_, valueMap) in this.listOfEdges) {
+            for (value in valueMap.values) {
+                if (value == "sideStreet") {
+                    return true
+                }
+            }
+        }
+        return false
     }
 
     private fun parsedAttributes(matchedEdge: String): Boolean {
@@ -159,15 +199,16 @@ class CountyParser(private val dotFilePath: String) {
             Log.displayInitializationInfoInvalid(this.dotFile.name)
             exitProcess(1)
         }
-        if (checkTunnel(attributes) || checkVillageName(attributes))
-         { throw IllegalArgumentException() }
+        if (checkTunnel(attributes) || checkVillageName(attributes)) {
+            throw IllegalArgumentException()
+        }
         return attributes
     }
 
     /**
      * Check tunnel
      */
-    private fun checkTunnel(attributes: MutableMap<String,String>):Boolean{
+    private fun checkTunnel(attributes: MutableMap<String, String>): Boolean {
         return attributes.getValue("secondaryType") == "tunnel" && attributes.getValue("height")
             .toDouble() > 3
     }
@@ -175,9 +216,10 @@ class CountyParser(private val dotFilePath: String) {
     /**
      * Check village name
      */
-    private fun checkVillageName(attributes: MutableMap<String,String>):Boolean{
+    private fun checkVillageName(attributes: MutableMap<String, String>): Boolean {
         return attributes.getValue("primaryType") != "countyRoad" && attributes.getValue("village") == this.digraphName
     }
+
     /**
      * Parses and validates Vertices individually and creates a list of Int
      */
