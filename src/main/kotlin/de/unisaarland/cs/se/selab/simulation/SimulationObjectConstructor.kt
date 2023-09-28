@@ -191,7 +191,6 @@ class SimulationObjectConstructor(
         return true
     }
 
-
     private fun isInRange(emergencyOne: Emergency, emergencyTwo: Emergency): Boolean {
         return emergencyTwo.startTick >= emergencyOne.startTick &&
             emergencyTwo.startTick < emergencyOne.startTick + emergencyOne.handleTime
