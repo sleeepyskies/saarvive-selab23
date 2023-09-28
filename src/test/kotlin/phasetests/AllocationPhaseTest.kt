@@ -1,4 +1,6 @@
 package phasetests
 
 class AllocationPhaseTest {
+    // ...
+
 }
