@@ -2,6 +2,7 @@ package de.unisaarland.cs.se.selab.parser
 
 import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.global.Number
+import de.unisaarland.cs.se.selab.global.StringLiterals
 import de.unisaarland.cs.se.selab.graph.Graph
 import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.Vertex
@@ -77,7 +78,7 @@ class CountyParser(private val dotFilePath: String) {
      * Validates vertices and edges together
      */
     private fun validateTogether(): Boolean {
-        return vertexConnectedToAnother()&&edgesConnectExistingVertices()
+        return vertexConnectedToAnother() && edgesConnectExistingVertices()
     }
 
     private fun edgesConnectExistingVertices(): Boolean {
@@ -126,15 +127,15 @@ class CountyParser(private val dotFilePath: String) {
     private fun villageHasMainStreet(): Boolean {
         val villageToRoadTypeMap = mutableMapOf<String, Boolean>()
         for ((_, valueMap) in this.listOfEdges) {
-            if (!villageToRoadTypeMap.contains(valueMap.getValue("village"))) {
-                if (valueMap.getValue("primaryType") == "mainStreet") {
-                    villageToRoadTypeMap.put(valueMap.getValue("village"), true)
+            if (!villageToRoadTypeMap.contains(valueMap.getValue(StringLiterals.VILLAGE))) {
+                if (valueMap.getValue(StringLiterals.PRIMARY_TYPE) == StringLiterals.MAIN_STREET) {
+                    villageToRoadTypeMap.put(valueMap.getValue(StringLiterals.VILLAGE), true)
                 } else {
-                    villageToRoadTypeMap.put(valueMap.getValue("village"), false)
+                    villageToRoadTypeMap.put(valueMap.getValue(StringLiterals.VILLAGE), false)
                 }
             } else {
-                if (valueMap.getValue("primaryType") == "mainStreet") {
-                    villageToRoadTypeMap.put(valueMap.getValue("village"), true)
+                if (valueMap.getValue(StringLiterals.PRIMARY_TYPE) == StringLiterals.MAIN_STREET) {
+                    villageToRoadTypeMap.put(valueMap.getValue(StringLiterals.VILLAGE), true)
                 }
             }
         }
@@ -250,6 +251,6 @@ class CountyParser(private val dotFilePath: String) {
             exitProcess(1)
         }
         this.digraphName = mapMatcher.group(2)
-        return mapMatcher.group(4) // returns data in the scope
+        return mapMatcher.group(Number.FOUR) // returns data in the scope
     }
 }
