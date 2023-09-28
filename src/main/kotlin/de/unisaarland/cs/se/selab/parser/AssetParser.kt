@@ -20,7 +20,7 @@ import kotlin.system.exitProcess
 /**
 * asset parser parses assets
 */
-class AssetParser(private val assetSchemaFile: String, private val jsonFile: String) {
+class AssetParser(assetSchemaFile: String, jsonFile: String) {
     private val assetSchema: Schema
     private val json: JSONObject
     private lateinit var allVehicles: List<Vehicle> // declare allVehicles as a member variable
@@ -39,6 +39,9 @@ class AssetParser(private val assetSchemaFile: String, private val jsonFile: Str
     fun parse(): Pair<List<Base>, List<Vehicle>> {
         allVehicles = parseVehicles()
         val allBases = parseBases()
+
+        validateVehiclesAtItsCorrectBases(allBases, allVehicles)
+
         return Pair(allBases, allVehicles)
     }
 
@@ -91,6 +94,7 @@ class AssetParser(private val assetSchemaFile: String, private val jsonFile: Str
                     baseID,
                     maxCriminalCapacity = validateCriminalCapacity(jsonVehicle.getInt("criminalCapacity"))
                 )
+
                 VehicleType.K9_POLICE_CAR -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
                 VehicleType.POLICE_MOTORCYCLE -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
                 VehicleType.FIRE_TRUCK_WATER -> FireTruckWater(
@@ -101,6 +105,7 @@ class AssetParser(private val assetSchemaFile: String, private val jsonFile: Str
                     baseID,
                     maxWaterCapacity = validateWaterCapacity(jsonVehicle.getInt("waterCapacity"))
                 )
+
                 VehicleType.FIRE_TRUCK_TECHNICAL -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
                 VehicleType.FIRE_TRUCK_LADDER -> FireTruckWithLadder(
                     vehicleType,
@@ -110,6 +115,7 @@ class AssetParser(private val assetSchemaFile: String, private val jsonFile: Str
                     baseID,
                     ladderLength = validateLadderLength(jsonVehicle.getInt("ladderLength"))
                 )
+
                 VehicleType.FIREFIGHTER_TRANSPORTER -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
                 VehicleType.AMBULANCE -> Ambulance(vehicleType, id, staffCapacity, vehicleHeight, baseID)
                 VehicleType.EMERGENCY_DOCTOR_CAR -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
@@ -173,6 +179,7 @@ class AssetParser(private val assetSchemaFile: String, private val jsonFile: Str
         }
         return vehicleType
     }
+
     private fun validateVehicleHeight(height: Int): Int {
         if (height < 1 || height > Number.FIVE) {
             System.err.println("Vehicle height must be in btw 1 and 5")
@@ -216,5 +223,31 @@ class AssetParser(private val assetSchemaFile: String, private val jsonFile: Str
             exitProcess(1)
         }
         return length
+    }
+
+    private fun validateVehiclesAtItsCorrectBases(allBases: List<Base>, allVehicles: List<Vehicle>) {
+        allVehicles.forEach { vehicle ->
+            val correspondingBase = allBases.find { it.baseID == vehicle.assignedBaseID }
+            require(correspondingBase != null) { "No base found for vehicle with id ${vehicle.id}" }
+
+            when (vehicle.vehicleType) {
+                VehicleType.POLICE_CAR, VehicleType.POLICE_MOTORCYCLE, VehicleType.K9_POLICE_CAR -> {
+                    require(
+                        correspondingBase is PoliceStation
+                    ) { "Vehicle with id ${vehicle.id} should be at a Police Station" }
+                }
+
+                VehicleType.FIRE_TRUCK_WATER, VehicleType.FIRE_TRUCK_TECHNICAL,
+                VehicleType.FIRE_TRUCK_LADDER, VehicleType.FIREFIGHTER_TRANSPORTER -> {
+                    require(
+                        correspondingBase is FireStation
+                    ) { "Vehicle with id ${vehicle.id} should be at a Fire Station" }
+                }
+
+                VehicleType.AMBULANCE, VehicleType.EMERGENCY_DOCTOR_CAR -> {
+                    require(correspondingBase is Hospital) { "Vehicle with id ${vehicle.id} should be at a Hospital" }
+                }
+            }
+        }
     }
 }
