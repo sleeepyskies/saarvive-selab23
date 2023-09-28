@@ -62,6 +62,9 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
         return requiredVehicle
     }
 
+    /**
+     * creates a list of vehicles that does not have a special capacity type
+     */
     private fun getNormalVehicles(vehicles: List<Vehicle>): List<Vehicle> {
         val requiredVehicle = vehicles.filter { vehicle ->
             vehicle.vehicleType in setOf(
@@ -75,6 +78,9 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
         return requiredVehicle
     }
 
+    /**
+     * gets a list of vehicles on which special capacity type is applicable
+     */
     private fun getSpecialVehicles(vehicles: List<Vehicle>): List<Vehicle> {
         val requiredVehicle = vehicles.filter { vehicle ->
             vehicle.vehicleType in setOf(
@@ -87,6 +93,9 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
         return requiredVehicle
     }
 
+    /**
+     * calls the assign function on the vehicles which do not depend on capacity type
+     */
     private fun assignWithoutCapacity(vehicles: List<Vehicle>, request: Request) {
         val requiredVehicles = request.requiredVehicles
         // only proceed to the next step if the request still needs this vehicle
@@ -94,6 +103,10 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
             assignVehicle(vehicle, request)
         }
     }
+
+    /**
+     * assigns a vehicle to the emergency and updates the corresponding attributes
+     */
 
     private fun assignVehicle(vehicle: Vehicle, request: Request) {
         val emergency = dataHolder.emergencies.first { it.id == request.emergencyID }
@@ -122,6 +135,9 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
         }
     }
 
+    /**
+     * implements the logic of assigning vehicles that depend capacity type
+     */
     private fun assignBasedOnCapacity(vehicles: List<Vehicle>, request: Request) {
         val requiredVehicles = request.requiredVehicles
         for (vehicle in vehicles) if (requiredVehicles.isNotEmpty()) {
@@ -133,6 +149,7 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
                     is PoliceCar -> assignPoliceCar(vehicle, request)
                 }
             } else {
+                // if all the vehicles are assigned we don't need to go through the list anymore
                 break
             }
         }
