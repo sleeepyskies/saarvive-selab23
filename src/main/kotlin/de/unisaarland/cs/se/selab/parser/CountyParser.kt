@@ -20,8 +20,7 @@ class CountyParser(private val dotFilePath: String) {
     private val strPat = "[a-zA-Z][a-zA-Z_]*" // pattern for strings ID
     private val numPat = "\\d+(\\.\\d+)?"      // pattern for numbers ID
 
-    private val mapPat =
-        Pattern.compile("\\A(\\s*)digraph\\s+($strPat|$numPat)\\s*\\{([^}]*)\\}(\\s*)\\Z")
+    private val mapPat = Pattern.compile("\\A(\\s*)digraph\\s+($strPat|$numPat)\\s*\\{([^}]*)\\}(\\s*)\\Z")
 
     // general pattern for the whole mapping
     private val vPat = Pattern.compile("\\s*($numPat)\\s*;\\s*") // pattern for vertex
@@ -32,15 +31,22 @@ class CountyParser(private val dotFilePath: String) {
     private val pTPat = Pattern.compile("\\s*primaryType\\s*=\\s*(mainStreet|sideStreet|countyRoad)\\s*;")
 
     // primaryType Pattern
+
     private val sTPat = Pattern.compile("\\s*secondaryType\\s*=\\s*(oneWayStreet|tunnel|none)\\s*;")
 
     // secondaryType Pattern
+
     private val atPat = Pattern.compile("$vilPat$namPat$hPat$wPat$pTPat$sTPat") // attribute pattern
     private val ePat = Pattern.compile("\\s*($numPat)\\s*->\\s*($numPat)\\s*\\[(\\s*$atPat\\s*)\\]\\s*;\\s*")
 
     // pattern for edge
-    private val listPattern =
-        Pattern.compile("\\A($vPat)+($ePat)+\\s*\\Z")// general pattern for a list
+
+    private val listPattern = Pattern.compile("\\A($vPat)+($ePat)+\\s*\\Z")// general pattern for a list
+
+
+    // TRY TO SAVE LISTS LOCALLY
+    private val verticesAll = mutableMapOf<String, String>()
+    private val edgesAll = mutableMapOf<String, MutableMap<String, String>>()
 
     /**
      * Save the file and data in string
@@ -63,7 +69,7 @@ class CountyParser(private val dotFilePath: String) {
     fun parse(): Graph {
         // Creating it if the syntax is valid
         val blueprint = createBlueprint()
-        if (!validateBlueprint(blueprint)) exitProcess(1)
+        if (!validateBlueprint()) exitProcess(1)
         Log.displayInitializationInfoValid(this.dotFile.name)
         val roads = createRoadList(blueprint)
         this.roads.addAll(roads)
@@ -112,12 +118,77 @@ class CountyParser(private val dotFilePath: String) {
         return mapping
     }
 
+    /**
+     * Parses edges based on existing list of vertices
+     */
     private fun parseEdges(
-        edges: String?,
-        mapping: MutableMap<String, String>,
+        edges: String?, mapping: MutableMap<String, String>, // vertices for now
         mapID: String?
     ): Map<String, String> {
-        TODO("Not yet implemented")
+        val listOfEdges = mutableMapOf<String, MutableMap<String, String>>()
+        val e = mutableMapOf<String, String>()
+        //Match edge
+        val edgeMatcher = ePat.matcher(edges!!)
+        while (edgeMatcher.find()) {
+            val ID1 = edgeMatcher.group(1) // id 1
+            val ID2 = edgeMatcher.group(2) // id 2
+            if (checkEdgeIDsAreAvailable(ID1, ID2, listOfEdges, mapping)) {
+                val attrib = edgeMatcher.group(3)
+                e.put("$ID1->$ID2", attrib)
+                val attributesMatcher = atPat.matcher(attrib!!)
+                while (attributesMatcher.find()) {
+                    val innerMap = mutableMapOf<String, String>()
+                    val village = attributesMatcher.group(1)
+                    val nameR = attributesMatcher.group(2)
+                    val height = attributesMatcher.group(3)
+                    val weight = attributesMatcher.group(4)
+                    val pt = attributesMatcher.group(5)
+                    val st = attributesMatcher.group(6)
+                    if (attributesSatisfy(village, nameR, height, weight, pt, st, mapID)) {
+                        innerMap.putAll(
+                            setOf(
+                                "village" to village,
+                                "nameRoad" to nameR,
+                                "heightLimit" to height,
+                                "weight" to weight,
+                                "primaryType" to pt,
+                                "secondarType" to st
+                            )
+                        )
+                        listOfEdges.put(ID1 + "->" + ID2, innerMap)
+                    } else {
+                        Log.displayInitializationInfoValid(this.dotFile.name)
+                        exitProcess(1)
+                    }
+                }
+            } else {
+                Log.displayInitializationInfoValid(this.dotFile.name)
+                exitProcess(1)
+            }
+        }
+        this.edgesAll.putAll(listOfEdges)
+        return e
+    }
+
+    /**
+     * Check if we can continue working with the edge due to the attributes
+     */
+    private fun attributesSatisfy(
+        village: String?, nameR: String?, height: String?, weight: String?, pt: String?, st: String?, mapID: String?
+    ): Boolean {
+        return !((!pt.equals("countyRoad") && village == mapID) || (st.equals("tunnel") && height!!.toDouble() > 3) || weight!!.toDouble() <= 0 || height!!.toDouble() < 1)
+    }
+
+    /**
+     * Check if we can continue working with the edge
+     */
+    private fun checkEdgeIDsAreAvailable(
+        iD1: String?,
+        iD2: String?,
+        listOfEdges: MutableMap<String, MutableMap<String, String>>,
+        mapping: MutableMap<String, String>
+    ): Boolean {
+        return iD1 != iD2 && mapping.contains(iD1!!) && mapping.contains(iD2!!) && !listOfEdges.containsKey("$iD2->$iD1")
     }
 
     /**
@@ -151,7 +222,38 @@ class CountyParser(private val dotFilePath: String) {
     /**
      * Return result in validating a [blueprint] (successful or not)
      */
-    private fun validateBlueprint(blueprint: Map<String, String>): Boolean {
+    private fun validateBlueprint(): Boolean {
+        return roadNameUnique() && vertextConnects() && sideStreetExists()
+    }
+
+    /**
+     * Does something
+     */
+    private fun sideStreetExists(): Boolean {
+        return true
+    }
+    /**
+     * Does something
+     */
+    private fun roadNameUnique(): Boolean {
+        return true
+    }
+
+    /**
+     * Each vertex connects at least to one another. //REDO
+     */
+    private fun vertextConnects(): Boolean {
+        verticesAll.forEach { vertex ->
+            run {
+                edgesAll.forEach { edge ->
+                    run {
+                        edge.key.split("->").forEach { part -> if (vertex.key == part) return true }
+                    }
+                }
+            }
+        }
+        return false
+
     }
 
     /**
