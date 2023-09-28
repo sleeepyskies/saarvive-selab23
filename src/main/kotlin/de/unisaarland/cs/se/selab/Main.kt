@@ -2,6 +2,7 @@ package de.unisaarland.cs.se.selab
 
 import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.simulation.SimulationObjectConstructor
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlin.system.exitProcess
 /**
  * This is the entry point of the simulation.
@@ -85,14 +86,14 @@ fun parseCommandLineArguments(args: Array<String>): CommandLineArguments {
 /** Prints the usage of the program
  */
 fun printUsage() {
-    println(
+    logger(
         "Usage: Saarvive & Thrive"
     )
-    println("--map/-m <mapFile>")
-    println("--assets/-a <assetsFile>")
-    println("--scenario/-s <scenarioFile>")
-    println("--ticks/-t <ticks>")
-    println("--out/-o <outFile>")
-    println("--help/-h")
+    logger("--map/-m <mapFile>")
+    logger("--assets/-a <assetsFile>")
+    logger("--scenario/-s <scenarioFile>")
+    logger("--ticks/-t <ticks>")
+    logger("--out/-o <outFile>")
+    logger("--help/-h")
     exitProcess(0)
 }

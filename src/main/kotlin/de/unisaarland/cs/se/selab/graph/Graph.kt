@@ -13,7 +13,7 @@ import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
 import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import de.unisaarland.cs.se.selab.global.StringLiterals
 import java.lang.Integer.min
-import java.util.PriorityQueue
+import java.util.*
 
 /**
  * Holds the data for the simulation graph consisting of vertices and roads.
@@ -74,7 +74,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
          * !! double bang operator
          * used when certain that the object won't be null and want to access it without null safety checks
          */
-        val unvisitedVertices = PriorityQueue<Vertex> { v1, v2 -> distances[v1]!! - distances[v2]!! }
+        val unvisitedVertices = PriorityQueue<Vertex> { v1, v2 -> (distances[v1] ?: 0) - (distances[v2] ?: 0) }
 
         // initializing distances and previous vertices for all vertices in the graph
         for (vertex in graph) {
@@ -114,9 +114,11 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         // Create mapping of base to it's distance to the emergency
         val distanceToEmergency: MutableMap<Base, Int> = mutableMapOf()
         for (base in relevantBases) {
-            val firstDistance = calculateShortestPath(baseToVertex[base.baseID]!!, emergency.location.first, 0)
-            val secondDistance = calculateShortestPath(baseToVertex[base.baseID]!!, emergency.location.second, 0)
-            distanceToEmergency[base] = min(firstDistance, secondDistance)
+            val firstDistance =
+                baseToVertex[base.baseID]?.let { calculateShortestPath(it, emergency.location.first, 0) }
+            val secondDistance =
+                baseToVertex[base.baseID]?.let { calculateShortestPath(it, emergency.location.second, 0) }
+            distanceToEmergency[base] = min(firstDistance ?: 0, secondDistance ?: 0)
         }
 
         var minDistance = Int.MAX_VALUE
@@ -177,14 +179,14 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         val relevantBases = filterByEmergencyType(bases.toMutableList(), emergency)
         // stores the distance of each base from the start base
         val distanceMapping = mutableMapOf<Base, Int>()
-        val startBaseVertex = baseToVertex[startBase.baseID]
+        val startBaseVertex = baseToVertex[startBase.baseID]!!
 
         for (nextBase in relevantBases) {
             // ignore the start base
             if (nextBase == startBase) continue
-            val nextBaseVertex = baseToVertex[nextBase.baseID]
+            val nextBaseVertex = baseToVertex[nextBase.baseID]!!
             // get the shortest distance from the start base
-            distanceMapping[nextBase] = calculateShortestPath(startBaseVertex!!, nextBaseVertex!!, 0)
+            distanceMapping[nextBase] = calculateShortestPath(startBaseVertex, nextBaseVertex, 0)
         }
 
         return distanceMapping.entries.sortedBy { it.value }.map { it.key }
@@ -203,6 +205,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
             is Construction -> applyConstruction(event)
         }
     }
+
     private fun applyRushHour(event: RushHour) {
         for (road in roads) {
             if (road.pType in event.roadType) road.weight *= event.factor
@@ -220,6 +223,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         // check and change the road into a one way
         if (event.streetClosed) startVertex.connectingRoads.remove(targetVertex)
     }
+
     private fun applyTrafficJam(event: TrafficJam) {
         val startVertex = graph.find { it.id == event.startVertex }
         val targetVertex = graph.find { it.id == event.endVertex }
