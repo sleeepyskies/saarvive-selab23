@@ -21,7 +21,7 @@ class CountyParser(private val dotFilePath: String) {
     private var data: String = ""
     private val roads = mutableListOf<Road>() // List of roads on the map (for compatability)
     private val vertices = mutableListOf<Vertex>() // List of roads on the map (for compatability)
-    private var digraphName: String = ""
+    var digraphName: String = ""
 
     private val listOfVertices = mutableListOf<Int>()
     private val listOfEdges = mutableMapOf<Pair<Int, Int>, MutableMap<String, String>>()
@@ -123,7 +123,8 @@ class CountyParser(private val dotFilePath: String) {
 
         val parsedVertices = parseVertices(stringVertices)
         val parsedEdges = parseEdges(stringEdges)
-
+        if (!roadNameIsUnique() || !commonVertex()) return false
+        if (!villageHasMainStreet() || !sideStreetExists()) return false
         return if (parsedEdges && parsedVertices) {
             vertexConnectedToAnother() && edgesConnectExistingVertices()
         } else {
@@ -184,8 +185,6 @@ class CountyParser(private val dotFilePath: String) {
             val attributesMapping = parseAttributes(matchedEdge) // parse attributes
             this.listOfEdges[Pair(id1.toInt(), id2.toInt())] = attributesMapping
         }
-        if (!roadNameIsUnique() || !commonVertex()) return false
-        if (!villageHasMainStreet() || !sideStreetExists()) return false
         return true
     }
 
@@ -196,11 +195,8 @@ class CountyParser(private val dotFilePath: String) {
         val villageToRoadTypeMap = mutableMapOf<String, Boolean>()
         for ((_, valueMap) in this.listOfEdges) {
             if (!villageToRoadTypeMap.contains(valueMap.getValue(StringLiterals.VILLAGE))) {
-                if (valueMap.getValue(StringLiterals.PRIMARY_TYPE) == StringLiterals.MAIN_STREET) {
-                    villageToRoadTypeMap[valueMap.getValue(StringLiterals.VILLAGE)] = true
-                } else {
-                    villageToRoadTypeMap[valueMap.getValue(StringLiterals.VILLAGE)] = false
-                }
+                villageToRoadTypeMap[valueMap.getValue(StringLiterals.VILLAGE)] =
+                    valueMap.getValue(StringLiterals.PRIMARY_TYPE) == StringLiterals.MAIN_STREET
             } else {
                 if (valueMap.getValue(StringLiterals.PRIMARY_TYPE) == StringLiterals.MAIN_STREET) {
                     villageToRoadTypeMap.put(valueMap.getValue(StringLiterals.VILLAGE), true)
@@ -306,6 +302,9 @@ class CountyParser(private val dotFilePath: String) {
         return true
     }
 
+    /**
+     * Outputs invalidity log, terminates the program
+     */
     private fun outputInvalidAndFinish() {
         Log.displayInitializationInfoInvalid(this.fileName)
         exitProcess(1)
