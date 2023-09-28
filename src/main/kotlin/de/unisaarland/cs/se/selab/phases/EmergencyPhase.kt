@@ -84,7 +84,7 @@ class EmergencyPhase(private val dataHolder: DataHolder) : Phase {
                 }
             }
         }
-        return base ?: Hospital(1, 1, 1, 1, listOf())
+        return base ?: Hospital(1, 1, 1, 1, emptyList())
     }
 
     /**
