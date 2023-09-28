@@ -61,7 +61,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
      * @param vehicleHeight The height of the vehicle driving
      */
     fun calculateShortestRoute(vehiclePosition: Vertex, destination: Vertex, vehicleHeight: Int): MutableList<Vertex> {
-        var route = mutableListOf<Vertex>()
+        var route = listOf<Vertex>()
         // maps how far all the vertices are from the current vertex
         val distances = mutableMapOf<Vertex, Int>()
         // allows a chain of previous vertices to be created that can be backtracked
@@ -98,7 +98,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
             // traverse connected vertices
             helper.exploreNeighbours(currentVertex, distances, previousVertices, vehicleHeight)
         }
-        return route
+        return route.toMutableList()
     }
 
     /**
@@ -179,7 +179,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         val relevantBases = filterByEmergencyType(bases.toMutableList(), emergency)
         // stores the distance of each base from the start base
         val distanceMapping = mutableMapOf<Base, Int>()
-        val startBaseVertex = baseToVertex[startBase.baseID]!!
+        val startBaseVertex: Vertex = baseToVertex[startBase.baseID]!!
 
         for (nextBase in relevantBases) {
             // ignore the start base
@@ -205,7 +205,6 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
             is Construction -> applyConstruction(event)
         }
     }
-
     private fun applyRushHour(event: RushHour) {
         for (road in roads) {
             if (road.pType in event.roadType) road.weight *= event.factor
@@ -223,7 +222,6 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         // check and change the road into a one way
         if (event.streetClosed) startVertex.connectingRoads.remove(targetVertex)
     }
-
     private fun applyTrafficJam(event: TrafficJam) {
         val startVertex = graph.find { it.id == event.startVertex }
         val targetVertex = graph.find { it.id == event.endVertex }
