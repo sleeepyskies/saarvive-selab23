@@ -16,6 +16,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
         if (events.isNotEmpty()) {
             reduceEventDuration(events)
         }
+        currentTick++
     }
     private fun reduceEventDuration(events: MutableList<Event>) {
         events.forEach { event ->
