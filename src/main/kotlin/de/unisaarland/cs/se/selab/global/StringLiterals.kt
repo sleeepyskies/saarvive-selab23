@@ -10,4 +10,5 @@ object StringLiterals {
     const val VILLAGE = "village"
     const val PRIMARY_TYPE = "primaryType"
     const val MAIN_STREET = "mainStreet"
+    const val NAME = "name"
 }
