@@ -1,0 +1,4 @@
+package phasetests
+
+class EmergencyUpdatePhaseTest {
+}

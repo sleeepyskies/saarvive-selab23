@@ -4,7 +4,9 @@ import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.global.StringLiterals
 import de.unisaarland.cs.se.selab.graph.Graph
+import de.unisaarland.cs.se.selab.graph.PrimaryType
 import de.unisaarland.cs.se.selab.graph.Road
+import de.unisaarland.cs.se.selab.graph.SecondaryType
 import de.unisaarland.cs.se.selab.graph.Vertex
 import java.io.File
 import java.lang.IllegalArgumentException
@@ -50,8 +52,61 @@ class CountyParser(private val dotFilePath: String) {
             exitProcess(1)
         }
         Log.displayInitializationInfoValid(this.dotFile.name)
-        exitProcess(1)
-        val listRoads = mutableListOf<Road>()
+        // Start creation
+        this.listOfVertices.forEach { vertex -> this.vertices.add(createVertex(vertex)) } // create Vertex List
+        createRoadList()
+        return Graph(this.vertices, this.roads)
+    }
+
+    /**
+     * Creates a single object of Vertex
+     */
+    private fun createVertex(vertex: Int): Vertex {
+        return Vertex(vertex, mutableMapOf())
+    }
+
+    /**
+     * Assigns list of created Road objects
+     */
+    private fun createRoadList() {
+        this.listOfEdges.forEach { edge ->
+            val roadObj = createRoad(edge.value)
+            val vertex1 = edge.key.first
+            val vertex2 = edge.key.second
+            this.roads.add(roadObj)
+            this.vertices.forEach { vertex ->
+                if (vertex.id == vertex1) {
+                    vertex.connectingRoads[this.vertices[vertex2]] = roadObj
+                } else if (vertex.id == vertex2) {
+                    vertex.connectingRoads[this.vertices[vertex1]] = roadObj
+                }
+            }
+        }
+    }
+
+    /**
+     * Creates a single object of road
+     */
+    private fun createRoad(edge: MutableMap<String, String>): Road {
+        val villageName = edge[StringLiterals.VILLAGE]!!
+        val roadName = edge[StringLiterals.NAME]!!
+        val weight = edge["weight"]!!.toInt()
+        val heightLimit = edge["heightLimit"]!!.toInt()
+        val pType = when (edge[StringLiterals.PRIMARY_TYPE]!!) {
+            "mainStreet" -> PrimaryType.MAIN_STREET
+            "sideStreet" -> PrimaryType.SIDE_STREET
+            else -> {
+                PrimaryType.COUNTY_ROAD
+            }
+        }
+        val sType = when (edge["secondaryType"]!!) {
+            "oneWayStreet" -> SecondaryType.ONE_WAY_STREET
+            "tunnel" -> SecondaryType.TUNNEL
+            else -> {
+                SecondaryType.NONE
+            }
+        }
+        return Road(pType, sType, villageName, roadName, weight, heightLimit)
     }
 
     /**
@@ -71,14 +126,11 @@ class CountyParser(private val dotFilePath: String) {
         val parsedVertices = parseVertices(stringVertices)
         val parsedEdges = parseEdges(stringEdges)
 
-        return if (parsedEdges && parsedVertices) validateTogether() else false
-    }
-
-    /**
-     * Validates vertices and edges together
-     */
-    private fun validateTogether(): Boolean {
-        return vertexConnectedToAnother() && edgesConnectExistingVertices()
+        return if (parsedEdges && parsedVertices) {
+            vertexConnectedToAnother() && edgesConnectExistingVertices()
+        } else {
+            false
+        }
     }
 
     /**
@@ -86,15 +138,21 @@ class CountyParser(private val dotFilePath: String) {
      */
     private fun edgesConnectExistingVertices(): Boolean {
         this.listOfEdges.keys.forEach { key ->
-            run {
-                if (!(this.listOfVertices.contains(key.first) || this.listOfVertices.contains(key.second))) return false
-            }
+            if (!(this.listOfVertices.contains(key.first) || this.listOfVertices.contains(key.second))) return false
         }
         return true
     }
 
+    /**
+     * Each vertex is connected to at least one other vertex
+     */
     private fun vertexConnectedToAnother(): Boolean {
-        TODO("Not yet implemented")
+        this.listOfVertices.forEach { vertex ->
+            this.listOfEdges.keys.forEach { pair ->
+                if (!(pair.first == vertex || pair.second == vertex)) return false
+            }
+        }
+        return true
     }
 
     /**
@@ -141,9 +199,9 @@ class CountyParser(private val dotFilePath: String) {
         for ((_, valueMap) in this.listOfEdges) {
             if (!villageToRoadTypeMap.contains(valueMap.getValue(StringLiterals.VILLAGE))) {
                 if (valueMap.getValue(StringLiterals.PRIMARY_TYPE) == StringLiterals.MAIN_STREET) {
-                    villageToRoadTypeMap.put(valueMap.getValue(StringLiterals.VILLAGE), true)
+                    villageToRoadTypeMap[valueMap.getValue(StringLiterals.VILLAGE)] = true
                 } else {
-                    villageToRoadTypeMap.put(valueMap.getValue(StringLiterals.VILLAGE), false)
+                    villageToRoadTypeMap[valueMap.getValue(StringLiterals.VILLAGE)] = false
                 }
             } else {
                 if (valueMap.getValue(StringLiterals.PRIMARY_TYPE) == StringLiterals.MAIN_STREET) {
@@ -160,29 +218,59 @@ class CountyParser(private val dotFilePath: String) {
     private fun roadNameIsUnique(): Boolean {
         val mapping = mutableMapOf<String, MutableList<String>>()
         this.listOfEdges.values.forEach { key ->
-            run {
-                if (mapping.containsKey(key.getValue("village"))) {
-                    if (!mapping.get(key.getValue("village"))!!
-                            .contains(key.getValue("name"))
-                    ) {
-                        mapping.get(key.getValue("village"))!!.add(key.getValue("name"))
-                    } else {
-                        return false
-                    }
+            if (mapping.containsKey(key.getValue(StringLiterals.VILLAGE))) {
+                if (!mapping[key.getValue(StringLiterals.VILLAGE)]!!
+                        .contains(key.getValue(StringLiterals.NAME))
+                ) {
+                    mapping.get(key.getValue(StringLiterals.VILLAGE))!!.add(key.getValue("name"))
                 } else {
-                    val newMutableList = mutableListOf<String>()
-                    val newVillageName = key.getValue("village")
-                    val newRoadName = key.getValue("name")
-                    newMutableList.add(newRoadName)
-                    mapping[newVillageName] = newMutableList
+                    return false
                 }
+            } else {
+                val newMutableList = mutableListOf<String>()
+                val newVillageName = key.getValue(StringLiterals.VILLAGE)
+                val newRoadName = key.getValue(StringLiterals.NAME)
+                newMutableList.add(newRoadName)
+                mapping[newVillageName] = newMutableList
             }
         }
         return true
     }
 
+    /**
+     * All edges connected to the same vertex belong to the same village or are a countyRoad
+     */
     private fun commonVertex(): Boolean {
-        TODO("Not yet implemented")
+        val mappingVertexToEdges = mutableMapOf<Int, MutableList<MutableMap<String, String>>>()
+        this.listOfVertices.forEach { vertex ->
+            this.listOfEdges.forEach { pair ->
+                if (pair.key.first == vertex || pair.key.second == vertex) {
+                    val edgeData = pair.value
+                    if (mappingVertexToEdges.containsKey(vertex)) {
+                        mappingVertexToEdges.getValue(vertex).add(edgeData)
+                    } else {
+                        val mutablList = mutableListOf(edgeData)
+                        mappingVertexToEdges.put(vertex, mutablList)
+                    }
+                }
+            }
+        }
+
+        mappingVertexToEdges.forEach { vertex ->
+            var villageName = ""
+            var primaryType = ""
+            vertex.value.forEach { list ->
+                val villageN = list["village"]!!
+                val prType = list["primaryType"]!!
+                if (!(villageName == "" && primaryType == "")) {
+                    if (villageN != villageName && prType != "countyRoad") return false
+                } else {
+                    villageName = villageN
+                    primaryType = prType
+                }
+            }
+        }
+        return true
     }
 
     /**
@@ -199,6 +287,9 @@ class CountyParser(private val dotFilePath: String) {
         return false
     }
 
+    /**
+     * Returns bool value if the attributes can be parsed
+     */
     private fun parsedAttributes(matchedEdge: String): Boolean {
         val strPat = "[a-zA-Z][a-zA-Z_]*" // pattern for strings ID
         val numPat = "\\d+(\\.\\d+)?" // pattern for numbers ID
@@ -217,18 +308,19 @@ class CountyParser(private val dotFilePath: String) {
         return true
     }
 
+    /**
+     * Returns Map of parsed attributes
+     */
     private fun parseAttributes(matchedEdge: String): MutableMap<String, String> {
         val attributes = mutableMapOf<String, String>()
         try {
             val assignmentsArray = matchedEdge.split(";")
             assignmentsArray.forEach { assignment ->
-                run {
-                    val keyValue = assignment.split("=")
-                    attributes[keyValue.elementAt(0)] = keyValue.elementAt(1)
-                    when (keyValue.elementAt(0)) {
-                        "weight" -> if (keyValue.elementAt(1).toInt() <= 0) throw IllegalArgumentException()
-                        "height" -> if (keyValue.elementAt(1).toInt() < 1) throw IllegalArgumentException()
-                    }
+                val keyValue = assignment.split("=")
+                attributes[keyValue.elementAt(0)] = keyValue.elementAt(1)
+                when (keyValue.elementAt(0)) {
+                    "weight" -> if (keyValue.elementAt(1).toInt() <= 0) throw IllegalArgumentException()
+                    "height" -> if (keyValue.elementAt(1).toInt() < 1) throw IllegalArgumentException()
                 }
             }
         } catch (_: Exception) {
