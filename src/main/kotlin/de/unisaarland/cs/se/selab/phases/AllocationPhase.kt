@@ -31,6 +31,7 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
                 }
             }
         }
+        currentTick++
     }
 
     private fun getAssignableAssets(base: Base, emergency: Emergency): List<Vehicle> {
