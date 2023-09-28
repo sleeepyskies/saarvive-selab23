@@ -1,4 +1,4 @@
-package parser
+package parsertests
 
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
