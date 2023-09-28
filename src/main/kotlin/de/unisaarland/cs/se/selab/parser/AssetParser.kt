@@ -199,7 +199,8 @@ class AssetParser(private val assetSchemaFile: String, private val jsonFile: Str
 
     private fun validateWaterCapacity(capacity: Int): Int {
         if (capacity !in listOf(
-                Number.SIX_HUNDRED, Number.ONE_THOUSAND_TWO_HUNDRED,
+                Number.SIX_HUNDRED,
+                Number.ONE_THOUSAND_TWO_HUNDRED,
                 Number.TWO_THOUSAND_FOUR_HUNDRED
             )
         ) {

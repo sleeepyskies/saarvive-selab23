@@ -1,6 +1,5 @@
 package de.unisaarland.cs.se.selab.phases
 
-import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
 import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 
