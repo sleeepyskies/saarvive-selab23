@@ -91,13 +91,13 @@ class EmergencyPhase(private val dataHolder: DataHolder) : Phase {
      */
     private fun chooseBaseAndRoute(
         shortestPath: Int,
-        distance: Int,
-        base: Base?,
+        distancee: Int,
+        basee: Base?,
         baseId: Int,
         responsibleBase: Base
     ): Pair<Int, Base> {
-        var distance = distance
-        var base = base
+        var distance = distancee
+        var base = basee
         when {
             shortestPath == distance -> if (base == null || base.baseID > baseId) {
                 base = responsibleBase

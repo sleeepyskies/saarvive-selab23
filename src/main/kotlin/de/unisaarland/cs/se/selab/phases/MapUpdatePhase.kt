@@ -11,7 +11,6 @@ import de.unisaarland.cs.se.selab.simulation.DataHolder
 class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
     private var currentTick = 0
     override fun execute() {
-
         fun reduceEventDuration() {
             dataHolder.events.forEach { event ->
                 when {
@@ -43,8 +42,6 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
             // Remove completed events from the list
             dataHolder.events = dataHolder.events.filter { it.duration > 0 }.toMutableList()
         }
-        //need to add logic for vehicles
-
-
+        // need to add logic for vehicles
     }
 }

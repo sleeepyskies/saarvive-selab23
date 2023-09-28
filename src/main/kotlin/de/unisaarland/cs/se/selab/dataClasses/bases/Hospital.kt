@@ -6,7 +6,7 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
  * represents a hospital base
  */
 data class Hospital(
-    var doctors: Int,
+    public var doctors: Int,
     override val baseID: Int,
     override var staff: Int,
     override val vertexID: Int,

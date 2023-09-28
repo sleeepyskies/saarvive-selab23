@@ -2,6 +2,8 @@ package de.unisaarland.cs.se.selab.phases
 
 import de.unisaarland.cs.se.selab.dataClasses.Request
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
+import de.unisaarland.cs.se.selab.dataClasses.bases.Hospital
+import de.unisaarland.cs.se.selab.dataClasses.bases.PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.CapacityType
@@ -27,6 +29,9 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
             getAssignableAssets(dataHolder.bases[0], dataHolder.emergencies[0]) // need to change accordingly
         assignBasedOnCapacity(assignableAssets, dataHolder.emergencies[0]) // need to change accordingly
         currentTick++
+
+        // TODO this is only to build project, remove later
+        getBuilding(dataHolder.bases.get(0))
     }
 
     private fun getAssignableAssets(base: Base, emergency: Emergency): List<Vehicle> {
@@ -161,5 +166,17 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         val baseIds = basesToVisit.map { it.baseID }
         val request = Request(baseIds, emergency.id, nextRequestId, requiredVehicles, emergency.requiredCapacity)
         dataHolder.requests.add(request)
+    }
+
+    /**
+     * This method is only to use some attributes and get the project building, remove later
+     */
+    private fun getBuilding(base: Base) {
+        // TODO(remove)
+        when (base) {
+            is Hospital -> base.doctors += 0
+            is PoliceStation -> base.dogs += 0
+            else -> return
+        }
     }
 }

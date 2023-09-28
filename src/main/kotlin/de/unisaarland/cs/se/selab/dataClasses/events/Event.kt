@@ -5,7 +5,7 @@ package de.unisaarland.cs.se.selab.dataClasses.events
  * [duration] - specifies for how long the event is active (also a condition of updating);
  * [startTick] - the tick the event is planned for
  */
-abstract class Event(
+open class Event(
     open val eventID: Int,
     open var duration: Int, // the property will be changed and have condition on
     open val startTick: Int

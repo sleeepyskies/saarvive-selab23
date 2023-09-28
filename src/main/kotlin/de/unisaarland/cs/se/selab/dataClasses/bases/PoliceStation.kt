@@ -6,7 +6,7 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
  * represents a police station base
  */
 data class PoliceStation(
-    var dogs: Int,
+    public var dogs: Int,
     override val baseID: Int,
     override var staff: Int,
     override val vertexID: Int,

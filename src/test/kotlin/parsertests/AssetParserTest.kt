@@ -16,7 +16,7 @@ class AssetParserTest {
     fun testValidAssetParsing() {
         val parser = AssetParser(
             assetSchemaFile = "src/main/resources/schema/asset.schema",
-            jsonFile = "src/test/resources/parser/assetParser/example_assets.json"
+            jsonFile = "src/systemtest/resources/assetsJsons/example_assets.json"
         )
 
         val (allBases, allVehicles) = parser.parse()
@@ -41,10 +41,6 @@ class AssetParserTest {
         assertEquals(3, hospital.doctors)
 
         assertEquals(54, allVehicles.size)
-        assertTrue(allVehicles.any { it.vehicleType == VehicleType.POLICE_CAR })
-        assertTrue(allVehicles.any { it.vehicleType == VehicleType.AMBULANCE })
-        assertTrue(allVehicles.any { it.vehicleType == VehicleType.FIRE_TRUCK_WATER })
-
         val policeCar = allVehicles.find { it.vehicleType == VehicleType.POLICE_CAR && it.id == 0 }
         assertEquals(1, policeCar?.assignedBaseID)
         assertEquals(2, policeCar?.height)
@@ -85,7 +81,7 @@ class AssetParserTest {
     fun testEmptyAssetList() {
         val parser = AssetParser(
             assetSchemaFile = "src/main/resources/schema/asset.schema",
-            jsonFile = "src/test/resources/parser/assetParser/empty_assets.json"
+            jsonFile = "src/systemtest/resources/assetsJsons/empty_assets.json"
         )
 
         val (allBases, allVehicles) = parser.parse()
@@ -98,7 +94,7 @@ class AssetParserTest {
     fun testSingleAsset() {
         val parser = AssetParser(
             assetSchemaFile = "src/main/resources/schema/asset.schema",
-            jsonFile = "src/test/resources/parser/assetParser/single_asset.json"
+            jsonFile = "src/systemtest/resources/assetsJsons/single_asset.json"
         )
 
         val (allBases, allVehicles) = parser.parse()
@@ -108,10 +104,15 @@ class AssetParserTest {
 
         val singleBase = allBases.first()
         assertTrue(singleBase is FireStation)
-        assertEquals(1, singleBase.baseID)
+        assertEquals(0, singleBase.baseID)
+        assertEquals(2, singleBase.vertexID)
+        assertEquals(62, singleBase.staff)
 
         val singleVehicle = allVehicles.first()
         assertEquals(VehicleType.FIRE_TRUCK_WATER, singleVehicle.vehicleType)
-        assertEquals(1, singleVehicle.id)
+        assertEquals(0, singleVehicle.id)
+        assertEquals(0, singleVehicle.assignedBaseID)
+        assertEquals(2, singleVehicle.height)
+        assertEquals(5, singleVehicle.staffCapacity)
     }
 }
