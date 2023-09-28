@@ -16,7 +16,7 @@ import de.unisaarland.cs.se.selab.graph.Vertex
 class DataHolder(
     val graph: Graph,
     val bases: List<Base>,
-    val events: MutableList<Event>,
+    var events: MutableList<Event>,
     val emergencies: List<Emergency>,
 
 ) {
@@ -24,7 +24,7 @@ class DataHolder(
     val resolvedEmergencies: MutableList<Emergency> = mutableListOf()
     val activeVehicles: MutableList<Vehicle> = mutableListOf()
     val rechargingVehicles: MutableList<Vehicle> = mutableListOf()
-    val unavailableVehicles: List<Vehicle> = mutableListOf()
+    val unavailableVehicles: MutableList<Vehicle> = mutableListOf()
     val requests: MutableList<Request> = mutableListOf()
     var assetsRerouted: Int = 0
 
