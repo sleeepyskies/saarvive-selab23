@@ -1,3 +1,0 @@
-package phasetests
-
-class EmergencyUpdatePhaseTest

@@ -2,6 +2,7 @@ package de.unisaarland.cs.se.selab
 
 import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.simulation.SimulationObjectConstructor
+import kotlin.system.exitProcess
 
 
 /**
@@ -12,14 +13,6 @@ fun main(args: Array<String>) {
 
     if (arguments.help) {
         printUsage()
-    }
-
-    if (!validateFilePath(arguments.mapFile, ".dot") ||
-        !validateFilePath(arguments.assetsFile, ".json") ||
-        !validateFilePath(arguments.scenarioFile, ".json"
-        )
-        ) {
-        println("Error: Invalid file format")
     }
 
     val simulationObjConstructor =
@@ -50,46 +43,44 @@ fun parseCommandLineArguments(args: Array<String>): CommandLineArguments {
     var help = false
     var i = 0
 
-    fun requireArgument(errorMessage: String) {
+    fun requireArgument() {
         if (i >= args.size) {
-            println("Error: $errorMessage")
-            return
+            exitProcess(1)
         }
     }
 
     while (i < args.size) {
         when (args[i]) {
-            "--map" -> {
+            "--map", "-m"-> {
                 i++
-                requireArgument("Missing value for --map")
+                requireArgument()
                 mapFile = args[i]
             }
-            "--assets" -> {
+            "--assets", "-a" -> {
                 i++
-                requireArgument("Missing value for --assets")
+                requireArgument()
                 assetsFile = args[i]
             }
-            "--scenario" -> {
+            "--scenario", "-s"-> {
                 i++
-                requireArgument("Missing value for --scenario")
+                requireArgument()
                 scenarioFile = args[i]
             }
-            "--ticks" -> {
+            "--ticks", "-t" -> {
                 i++
-                requireArgument("Missing value for --ticks")
+                requireArgument()
                 ticks = args[i].toIntOrNull() ?: Number.ONE_HUNDRED
             }
-            "--out" -> {
+            "--out", "-o" -> {
                 i++
-                requireArgument("Missing value for --out")
+                requireArgument()
                 outFile = args[i]
             }
-            "--help" -> help = true
-            else -> println("Error: Unknown argument ${args[i]}")
+            "--help", "-h" -> help = true
+            else -> exitProcess(1)
         }
         i++
     }
-
     return CommandLineArguments(mapFile, assetsFile, scenarioFile, ticks, outFile, help)
 }
 
@@ -107,13 +98,6 @@ fun printUsage() {
                 "\n --out <outFile> " +
                 "\n --help"
     )
-}
-
-/**
- * Checks if the files have the required format, if yes -> parse them
- */
-fun validateFilePath(filePath: String, requiredExtension: String): Boolean {
-    return filePath.endsWith(requiredExtension)
 }
 
 

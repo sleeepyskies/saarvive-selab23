@@ -1,17 +1,24 @@
 package de.unisaarland.cs.se.selab.global
+
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
+import java.io.File
 
 /**
  * Log class handles logging for the simulation.
  */
 object Log {
+    var filePath: String = "stdout"
 
     /**
      * helper function for logging messages.
      */
     private fun logIt(message: String) {
-        println(message)
+        if (filePath != "stdout") {
+            File(filePath).bufferedWriter().use { out -> out.write(message) }
+        } else {
+            println(message)
+        }
     }
 
     /**
