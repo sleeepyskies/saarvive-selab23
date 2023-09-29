@@ -25,19 +25,24 @@ class GraphHelper {
      * Updates the distance for each neighbor and adds currentVertex as the previous vertex for each neighbor.
      */
     fun updateNeighbors(
-        neighbors: Map<Vertex, Road>,
+        neighbors: Map<Int, Road>,
         visitedVertices: MutableMap<
             Vertex,
             Pair<Int, Vertex?>
             >,
-        currentVertex: Vertex
+        currentVertex: Vertex,
+        graph: List<Vertex>
     ) {
         for ((neighbor, road) in neighbors) {
             // currentRouteWeight + roadWeight
             val distance = (visitedVertices[currentVertex]?.first ?: 0) + weightToTicks(road.weight)
             // if newWeight < oldWeight
-            if (distance < (visitedVertices[neighbor]?.first ?: 0)) {
-                visitedVertices[neighbor] = Pair(distance, currentVertex)
+            if (distance < (visitedVertices[graph.find { vertex: Vertex -> vertex.id == neighbor }]?.first ?: 0)) {
+                visitedVertices[
+                    graph?.find { vertex: Vertex ->
+                        vertex.id == neighbor
+                    } ?: Vertex(0, mutableMapOf())
+                ] = Pair(distance, currentVertex)
             }
         }
     }
@@ -59,17 +64,18 @@ class GraphHelper {
      * to the road with the smallest weight.
      */
     fun findNextVertex(
-        neighbors: Map<Vertex, Road>,
-        visitedVertices: Map<Vertex, Pair<Int, Vertex?>>
+        neighbors: Map<Int, Road>,
+        visitedVertices: Map<Vertex, Pair<Int, Vertex?>>,
+        graph: List<Vertex>
     ): Vertex? {
         var nextVertex: Vertex? = null
         var minWeight = Int.MAX_VALUE
 
         for ((neighbor, _) in neighbors) {
-            val distance = visitedVertices[neighbor]?.first ?: 0
+            val distance = visitedVertices[graph.find { vertex: Vertex -> vertex.id == neighbor }]?.first ?: 0
             if (distance < minWeight) {
                 minWeight = distance
-                nextVertex = neighbor
+                nextVertex = graph.find { vertex: Vertex -> vertex.id == neighbor }
             }
         }
 

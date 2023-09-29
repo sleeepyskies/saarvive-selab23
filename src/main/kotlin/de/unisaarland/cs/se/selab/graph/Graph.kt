@@ -37,6 +37,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
      * @param carHeight the car's height, set to 0 when ignoring height restrictions
      */
     fun calculateShortestPath(start: Vertex, destination: Vertex, carHeight: Int): Int {
+        // Map from a vertex to its distance form start, and previous vertex on path
         val visitedVertices: MutableMap<Vertex, Pair<Int, Vertex?>> = helper.initVisitedVertices(start, this.graph)
         val unvisitedVertices: MutableList<Vertex> = graph.toMutableList()
         var currentVertex = start
@@ -46,11 +47,11 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
             // gets all relevant neighbors based on height restrictions
             val neighbors = currentVertex.connectingRoads.filter { (_, road) -> carHeight <= road.heightLimit }
             // updates neighbor distances
-            helper.updateNeighbors(neighbors, visitedVertices, currentVertex)
+            helper.updateNeighbors(neighbors, visitedVertices, currentVertex, this.graph)
 
             unvisitedVertices.remove(currentVertex)
             // update nextVertex
-            val nextVertex = helper.findNextVertex(neighbors, visitedVertices)
+            val nextVertex = helper.findNextVertex(neighbors, visitedVertices, this.graph)
             if (nextVertex != null) {
                 currentVertex = nextVertex
             }
