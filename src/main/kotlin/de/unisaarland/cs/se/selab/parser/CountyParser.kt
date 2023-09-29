@@ -22,8 +22,10 @@ class CountyParser(private val dotFilePath: String) {
     private val vertices = mutableListOf<Vertex>() // List of roads on the map (for compatability)
     var digraphName: String = ""
 
-    private val listOfVertices = mutableListOf<Int>()
-    private val listOfEdges = mutableMapOf<Pair<Int, Int>, MutableMap<String, String>>()
+    private val listOfVerticesData = mutableListOf<Int>()
+    private val listOfVerticesToRoads = mutableMapOf<Pair<Int, Int>, Road>()
+    private val listOfRoadAttributes = mutableListOf(mutableMapOf<String, String>()) // data in strings for validation
+    private val idToVertexMapping = mutableMapOf<Int, Vertex>()
 
     /**
      * Save the file and data in string
@@ -45,13 +47,12 @@ class CountyParser(private val dotFilePath: String) {
     fun parse(): Graph {
         val dataInScope = retrieveDataInScope()
         if (!parsedAndValid(dataInScope)) {
-            Log.displayInitializationInfoInvalid(this.fileName)
-            System.err.println("Invalid file format")
+            outputInvalidAndFinish()
         }
         Log.displayInitializationInfoValid(this.fileName)
         // Start creation
-        this.listOfVertices.forEach { vertex -> this.vertices.add(createVertex(vertex)) } // create Vertex List
-        createRoadList()
+        this.listOfVerticesData.forEach { vertex -> this.vertices.add(createVertex(vertex)) } // create Vertex List
+        addConnectionsToVertices()
         return Graph(this.vertices, this.roads)
     }
 
@@ -59,25 +60,25 @@ class CountyParser(private val dotFilePath: String) {
      * Creates a single object of Vertex
      */
     private fun createVertex(vertex: Int): Vertex {
-        return Vertex(vertex, mutableMapOf())
+        val vertexObject = Vertex(vertex, mutableMapOf())
+        this.idToVertexMapping.put(vertex, vertexObject)
+        return vertexObject
     }
 
     /**
      * Assigns list of created Road objects
      */
-    private fun createRoadList() {
-        this.listOfEdges.forEach { edge ->
-            val roadObj = createRoad(edge.value)
-            val vertex1 = edge.key.first
-            val vertex2 = edge.key.second
-            this.roads.add(roadObj)
-            this.vertices.forEach { vertex ->
-                if (vertex.id == vertex1) {
-                    vertex.connectingRoads[this.vertices[vertex2]] = roadObj
-                } else if (vertex.id == vertex2) {
-                    vertex.connectingRoads[this.vertices[vertex1]] = roadObj
-                }
-            }
+    private fun addConnectionsToVertices() {
+        this.listOfVerticesToRoads.forEach { edge ->
+            val vertex1 = edge.key.first // vertex id
+            val vertex2 = edge.key.second // vertex id
+
+            val vertex1Obj = this.idToVertexMapping.getValue(vertex1)
+            val vertex2Obj = this.idToVertexMapping.getValue(vertex2)
+
+            val road = edge.value
+            vertex1Obj.connectingRoads.put(vertex2, road)
+            vertex2Obj.connectingRoads.put(vertex1, road)
         }
     }
 
@@ -113,7 +114,7 @@ class CountyParser(private val dotFilePath: String) {
         val vPat = Pattern.compile("\\A(\\s*(\\d+(\\.\\d+)?)\\s*;\\s*)+").toRegex() // pattern for vertex
 
         val vertexMatched = vPat.find(dataInScope)
-        val stringVertices = vertexMatched?.groupValues?.get(1).orEmpty()
+        val stringVertices = vertexMatched?.groupValues?.get(0).orEmpty()
         val stringEdges = dataInScope.substring((vertexMatched?.range?.last ?: 1) + 1)
 
         val parsedVertices = parseVertices(stringVertices)
@@ -131,8 +132,10 @@ class CountyParser(private val dotFilePath: String) {
      * All edges connect two existing vertices
      */
     private fun edgesConnectExistingVertices(): Boolean {
-        this.listOfEdges.keys.forEach { key ->
-            if (!(this.listOfVertices.contains(key.first) || this.listOfVertices.contains(key.second))) return false
+        this.listOfVerticesToRoads.keys.forEach { key ->
+            if (!(this.listOfVerticesData.contains(key.first) || this.listOfVerticesData.contains(key.second))) {
+                return false
+            }
         }
         return true
     }
@@ -141,8 +144,8 @@ class CountyParser(private val dotFilePath: String) {
      * Each vertex is connected to at least one other vertex
      */
     private fun vertexConnectedToAnother(): Boolean {
-        this.listOfVertices.forEach { vertex ->
-            this.listOfEdges.keys.forEach { pair ->
+        this.listOfVerticesData.forEach { vertex ->
+            this.listOfVerticesToRoads.keys.forEach { pair ->
                 if (!(pair.first == vertex || pair.second == vertex)) return false
             }
         }
@@ -153,10 +156,9 @@ class CountyParser(private val dotFilePath: String) {
      * Parses and validates Edges individually and creates mapping
      */
     private fun parseEdges(stringEdges: String): Boolean {
-        val edgeSkeleton =
-            Pattern.compile(
-                "\\A(\\s*(\\d+(\\.\\d+)?)\\s*->\\s*(\\d+(\\.\\d+)?)\\s*\\[(\\s*[^\\]]+\\s*)\\]\\s*;\\s*)+\\Z"
-            )
+        val edgeSkeleton = Pattern.compile(
+            "\\A(\\s*(\\d+(\\.\\d+)?)\\s*->\\s*(\\d+(\\.\\d+)?)\\s*\\[(\\s*[^\\]]+\\s*)\\]\\s*;\\s*)+\\Z"
+        )
         val edgePattern =
             Pattern.compile("\\s*(\\d+(\\.\\d+)?)\\s*->\\s*(\\d+(\\.\\d+)?)\\s*\\[(\\s*[^\\]]+\\s*)\\]\\s*;\\s*")
 
@@ -171,15 +173,19 @@ class CountyParser(private val dotFilePath: String) {
             val check1 = Pair(id1.toInt(), id2.toInt())
             val check2 = Pair(id2.toInt(), id1.toInt())
             val matchedEdge = edge.group(Number.FIVE)!!
-            if (this.listOfEdges.containsKey(check1) || this.listOfEdges.containsKey(check2) || !parsedAttributes(
-                    matchedEdge
-                )
+            if (this.listOfVerticesToRoads.containsKey(check1) ||
+                this.listOfVerticesToRoads.containsKey(check2) || !parsedAttributes(matchedEdge)
             ) {
                 return false
             }
             val attributesMapping = parseAttributes(matchedEdge) // parse attributes
-            this.listOfEdges[Pair(id1.toInt(), id2.toInt())] = attributesMapping
+            this.listOfRoadAttributes.add(attributesMapping)
+            val singleRoadObj = createRoad(attributesMapping) // create road obj
+            this.roads.add(singleRoadObj)
+
+            this.listOfVerticesToRoads[Pair(id1.toInt(), id2.toInt())] = singleRoadObj
         }
+        this.listOfRoadAttributes.removeAt(0)
         return true
     }
 
@@ -188,16 +194,19 @@ class CountyParser(private val dotFilePath: String) {
      */
     private fun villageHasMainStreet(): Boolean {
         val villageToRoadTypeMap = mutableMapOf<String, Boolean>()
-        for ((_, valueMap) in this.listOfEdges) {
-            if (!villageToRoadTypeMap.contains(valueMap.getValue(StringLiterals.VILLAGE))) {
-                villageToRoadTypeMap[valueMap.getValue(StringLiterals.VILLAGE)] =
-                    valueMap.getValue(StringLiterals.PRIMARY_TYPE) == StringLiterals.MAIN_STREET
+        for (singleData in this.listOfRoadAttributes) {
+            if (!villageToRoadTypeMap.contains(singleData.get(StringLiterals.VILLAGE)) &&
+                singleData.get(StringLiterals.VILLAGE) != digraphName
+            ) {
+                villageToRoadTypeMap[singleData.getValue(StringLiterals.VILLAGE)] =
+                    singleData.getValue(StringLiterals.PRIMARY_TYPE) == StringLiterals.MAIN_STREET
             } else {
-                if (valueMap.getValue(StringLiterals.PRIMARY_TYPE) == StringLiterals.MAIN_STREET) {
-                    villageToRoadTypeMap.put(valueMap.getValue(StringLiterals.VILLAGE), true)
+                if (singleData.getValue(StringLiterals.PRIMARY_TYPE) == StringLiterals.MAIN_STREET) {
+                    villageToRoadTypeMap.put(singleData.getValue(StringLiterals.VILLAGE), true)
                 }
             }
         }
+
         return villageToRoadTypeMap.values.all { it }
     }
 
@@ -206,18 +215,20 @@ class CountyParser(private val dotFilePath: String) {
      */
     private fun roadNameIsUnique(): Boolean {
         val mapping = mutableMapOf<String, MutableList<String>>()
-        this.listOfEdges.values.forEach { key ->
-            if (mapping.containsKey(key.getValue(StringLiterals.VILLAGE))) {
-                if (mapping[key.getValue(StringLiterals.VILLAGE)]?.contains(key.getValue(StringLiterals.NAME)) == true
+        // String - village name, MutableList<String> - names of the roads in the village
+        this.listOfRoadAttributes.forEach { dataPiece ->
+            if (mapping.containsKey(dataPiece.getValue(StringLiterals.VILLAGE))) {
+                if (mapping[dataPiece.getValue(StringLiterals.VILLAGE)]
+                    ?.contains(dataPiece.getValue(StringLiterals.NAME)) == true
                 ) {
                     return false
                 } else {
-                    mapping[key.getValue(StringLiterals.VILLAGE)]?.add(key.getValue("name")) ?: "Saarburg"
+                    mapping[dataPiece.getValue(StringLiterals.VILLAGE)]?.add(dataPiece.getValue("name")) ?: "Saarburg"
                 }
             } else {
                 val newMutableList = mutableListOf<String>()
-                val newVillageName = key.getValue(StringLiterals.VILLAGE)
-                val newRoadName = key.getValue(StringLiterals.NAME)
+                val newVillageName = dataPiece.getValue(StringLiterals.VILLAGE)
+                val newRoadName = dataPiece.getValue(StringLiterals.NAME)
                 newMutableList.add(newRoadName)
                 mapping[newVillageName] = newMutableList
             }
@@ -230,10 +241,11 @@ class CountyParser(private val dotFilePath: String) {
      */
     private fun commonVertex(): Boolean {
         val mappingVertexToEdges = mutableMapOf<Int, MutableList<MutableMap<String, String>>>()
-        for ((key, edgeData) in listOfEdges) {
+        for ((key, road) in listOfVerticesToRoads) {
             val (firstVertex, secondVertex) = key
             listOf(firstVertex, secondVertex).forEach {
-                mappingVertexToEdges.computeIfAbsent(it) { mutableListOf() }.add(edgeData)
+                mappingVertexToEdges.computeIfAbsent(it) { mutableListOf() }
+                    .add(mutableMapOf(road.villageName to road.pType.toString()))
             }
         }
         return mappingVertexToEdges.all { (_, edges) ->
@@ -246,11 +258,9 @@ class CountyParser(private val dotFilePath: String) {
      * Checks if map has at least one sideStreet road
      */
     private fun sideStreetExists(): Boolean {
-        for ((_, valueMap) in this.listOfEdges) {
-            for (value in valueMap.values) {
-                if (value == "sideStreet") {
-                    return true
-                }
+        for (edge in this.listOfRoadAttributes) {
+            if (edge.getValue(StringLiterals.PRIMARY_TYPE) == "sideStreet") {
+                return true
             }
         }
         return false
@@ -289,10 +299,10 @@ class CountyParser(private val dotFilePath: String) {
      */
     private fun parseAttributes(matchedEdge: String): MutableMap<String, String> {
         val attributes = mutableMapOf<String, String>()
-        val assignmentsArray = matchedEdge.split(";")
+        val assignmentsArray = matchedEdge.split(";").filter { it.isNotEmpty() }
         assignmentsArray.forEach { assignment ->
             val keyValue = assignment.split("=")
-            attributes[keyValue.elementAt(0)] = keyValue.elementAt(1)
+            attributes[keyValue.elementAt(0).trim()] = keyValue.elementAt(1).trim()
             when (keyValue.elementAt(0)) {
                 "weight" -> if (keyValue.elementAt(1).toInt() <= 0) outputInvalidAndFinish()
                 "height" -> if (keyValue.elementAt(1).toInt() < 1) outputInvalidAndFinish()
@@ -308,8 +318,7 @@ class CountyParser(private val dotFilePath: String) {
      * Check tunnel
      */
     private fun checkTunnel(attributes: MutableMap<String, String>): Boolean {
-        return attributes.getValue("secondaryType") == "tunnel" && attributes.getValue("height")
-            .toDouble() > 3
+        return attributes.getValue("secondaryType") == "tunnel" && attributes.getValue("heightLimit").toDouble() > 3
     }
 
     /**
@@ -324,13 +333,22 @@ class CountyParser(private val dotFilePath: String) {
      */
     private fun parseVertices(stringVertices: String): Boolean {
         val stringVerticesList = stringVertices.split(";")
-        val intVertices = stringVerticesList.map { it.toInt() }
+        val intVertices = mutableListOf<Int>()
+        for (strInt in stringVerticesList) {
+            var n = strInt
+            n = n.trim()
+            if (n.isEmpty()) {
+                continue
+            }
+            val k = n.toInt()
+            intVertices.add(k)
+        }
         val distinctVertices = intVertices.distinct()
         if (distinctVertices.count() != intVertices.count()) {
             return false
         }
         intVertices.forEach { int -> if (int < 0) return false }
-        this.listOfVertices.addAll(intVertices)
+        this.listOfVerticesData.addAll(intVertices)
         return true
     }
 

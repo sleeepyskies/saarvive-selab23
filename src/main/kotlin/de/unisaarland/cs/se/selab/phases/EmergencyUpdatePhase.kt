@@ -70,7 +70,7 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
                     vehicle.height
                 )
             }
-            vehicle.roadProgress = vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[1]]
+            vehicle.roadProgress = vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[1].id]
                 ?.weight
                 ?.let { weightToTicks(it) }
                 ?: 0

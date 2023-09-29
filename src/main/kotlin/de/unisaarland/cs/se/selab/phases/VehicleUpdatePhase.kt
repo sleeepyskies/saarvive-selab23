@@ -2,7 +2,6 @@ package de.unisaarland.cs.se.selab.phases
 
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.CapacityType
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
@@ -60,6 +59,7 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
      */
     private fun updateRoadEndReached(vehicle: Vehicle) {
         if (vehicle.roadProgress == 0) {
+            // assign new route without first vertex
             vehicle.currentRoute = vehicle.currentRoute.drop(1)
             vehicle.lastVisitedVertex = vehicle.currentRoute[0]
         }
@@ -69,7 +69,7 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * Checks if a vehicle has reached the end of its route and updates accordingly
      */
     private fun updateRouteEndReached(vehicle: Vehicle) {
-        if (vehicle.currentRoute.size == 0) {
+        if (vehicle.currentRoute.isEmpty()) {
             // check if vehicle is moving to emergency or to base
             if (vehicle.vehicleStatus == VehicleStatus.MOVING_TO_EMERGENCY) {
                 updateReachedEmergency(vehicle)
@@ -79,7 +79,7 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
         } else {
             // assign new roadProgress if route end not reached
             vehicle.roadProgress =
-                vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[1]]
+                vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[1].id]
                     ?.weight
                     ?.let { weightToTicks(it) }
                     ?: 0/* Default value or action when null */
@@ -103,11 +103,8 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
             requiredVehicles.remove(vehicle.vehicleType)
         }
 
-        // update the emergencies required capacity
-        // used to reduce the line length
-        val m = mutableMapOf<CapacityType, Int>()
         // check if all vehicles have reached emergency, if so change status to HANDLING
-        if ((dataHolder.vehicleToEmergency[vehicle.id]?.requiredCapacity ?: mutableMapOf()) == m) {
+        if (dataHolder.vehicleToEmergency[vehicle.id]?.requiredCapacity?.isEmpty() == true) {
             dataHolder.vehicleToEmergency[vehicle.id]?.emergencyStatus = EmergencyStatus.HANDLING
             // Log emergency handling TODO Might have to be in EmergencyUpdatePhase...
             dataHolder.vehicleToEmergency[vehicle.id]?.let { Log.displayEmergencyHandlingStart(it.id) }

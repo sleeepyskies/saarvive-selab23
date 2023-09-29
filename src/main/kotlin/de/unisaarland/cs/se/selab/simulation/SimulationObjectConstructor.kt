@@ -35,11 +35,15 @@ class SimulationObjectConstructor(
         val graph = countyParser.parse()
 
         // parse, validate and create assets
-        val assetParser = AssetParser("src/main/resources/schema/assets.schema", assetFile)
-        val (bases, vehicles) = assetParser.parse()
+        val assetParser = AssetParser(
+            "assets.schema",
+            assetFile
+        )
+        val bases = assetParser.parseBases()
+        val vehicles = assetParser.allVehicles
 
         // parse, validate and create events and emergencies
-        val simulationParser = SimulationParser("src/main/resources/schema/simulation.schema", simulationFile)
+        val simulationParser = SimulationParser("simulation.schema", simulationFile)
         val emergencies = simulationParser.parseEmergencyCalls()
         val events = simulationParser.parseEvents()
 
@@ -74,9 +78,11 @@ class SimulationObjectConstructor(
             // find base vertex
             val baseVertex = graph.graph.find { vertex: Vertex -> vertex.id == base.vertexID }
             // add base to mapping
-            mapping[baseVertex]?.add(base) ?: run {
-                // Handle the case where mapping[baseVertex] is null
-                // You can provide a default action here if needed
+            if (baseVertex != null) {
+                // add base to mapping
+                mapping[baseVertex]?.add(base)
+            } else {
+                return false
             }
         }
 
@@ -134,8 +140,8 @@ class SimulationObjectConstructor(
 
         // check they are connected via an edge
         if (
-            sourceVertex.connectingRoads[targetVertex] == null &&
-            targetVertex.connectingRoads[sourceVertex] == null
+            sourceVertex.connectingRoads[targetVertex.id] == null &&
+            targetVertex.connectingRoads[sourceVertex.id] == null
         ) {
             return false
         }
@@ -167,12 +173,13 @@ class SimulationObjectConstructor(
         for (emergency in emergencies) {
             // get emergency road anc check it exists
             val emergencyRoad = getRoad(emergency.roadName, emergency.villageName, graph)
-            if (emergencyRoad == null) return false
 
             // add emergency to the mapping
-            mapping[emergencyRoad]?.add(emergency) ?: run {
-                // Handle the case where mapping[emergencyRoad] is null
-                // You can provide a default action here if needed
+            if (emergencyRoad != null) {
+                // add base to mapping
+                mapping[emergencyRoad]?.add(emergency)
+            } else {
+                return false
             }
         }
 
@@ -191,7 +198,9 @@ class SimulationObjectConstructor(
     private fun checkOverlappingEmergencies(emergencyList: List<Emergency>): Boolean {
         for (emergencyOne in emergencyList) {
             for (emergencyTwo in emergencyList) {
-                if (isInRange(emergencyOne, emergencyTwo)) return false
+                if (emergencyOne != emergencyTwo && isInRange(emergencyOne, emergencyTwo)) {
+                    return false
+                }
             }
         }
         return true
