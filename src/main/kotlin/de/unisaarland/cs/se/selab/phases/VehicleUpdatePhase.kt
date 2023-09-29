@@ -79,7 +79,7 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
         } else {
             // assign new roadProgress if route end not reached
             vehicle.roadProgress =
-                vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[1]]
+                vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[1].id]
                     ?.weight
                     ?.let { weightToTicks(it) }
                     ?: 0/* Default value or action when null */
