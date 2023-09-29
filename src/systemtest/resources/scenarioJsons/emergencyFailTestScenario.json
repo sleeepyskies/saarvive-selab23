@@ -1,0 +1,23 @@
+{
+    "events": [
+        {
+            "id": 0,
+            "type": "VEHICLE_UNAVAILABLE",
+            "tick": 0,
+            "duration": 2,
+            "vehicleID": 0
+        }
+    ],
+    "emergencyCalls": [
+        {
+            "id": 0,
+            "tick": 1,
+            "village": "VillageA",
+            "roadName": "Town_Hall_Square",
+            "emergencyType": "FIRE",
+            "severity": 1,
+            "handleTime": 1,
+            "maxDuration": 5
+        }
+    ]
+}
