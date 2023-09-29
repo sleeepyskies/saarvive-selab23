@@ -13,7 +13,7 @@ class GraphHelper {
      * and the previous vertex on the path. Distance initialised to Int.MAX_VALUE, previous vertex
      * initialised to null.
      */
-    public fun initVisitedVertices(start: Vertex, graph: List<Vertex>): MutableMap<Vertex, Pair<Int, Vertex?>> {
+    fun initVisitedVertices(start: Vertex, graph: List<Vertex>): MutableMap<Vertex, Pair<Int, Vertex?>> {
         val visitedVertices: MutableMap<Vertex, Pair<Int, Vertex?>> = mutableMapOf()
         for (vertex in graph) {
             visitedVertices[vertex] = if (vertex == start) Pair(0, null) else Pair(Int.MAX_VALUE, null)
@@ -24,7 +24,7 @@ class GraphHelper {
     /**
      * Updates the distance for each neighbor and adds currentVertex as the previous vertex for each neighbor.
      */
-    public fun updateNeighbors(
+    fun updateNeighbors(
         neighbors: Map<Vertex, Road>,
         visitedVertices: MutableMap<
             Vertex,
@@ -58,7 +58,7 @@ class GraphHelper {
      * Finds the next vertex to be used in Dijkstra's algorithm. Chooses the vertex connected
      * to the road with the smallest weight.
      */
-    public fun findNextVertex(
+    fun findNextVertex(
         neighbors: Map<Vertex, Road>,
         visitedVertices: Map<Vertex, Pair<Int, Vertex?>>
     ): Vertex? {
@@ -81,17 +81,20 @@ class GraphHelper {
      * used within the calculateShortestRoute method to explore all the connected vertices
      * and update the mappings when shortest vertex is found
      */
-    public fun exploreNeighbours(
+    fun exploreNeighbours(
         currentVertex: Vertex,
         distances: MutableMap<Vertex, Int>,
         previousVertices: MutableMap<Vertex, Vertex?>,
-        vehicleHeight: Int
+        vehicleHeight: Int,
+        vertices: List<Vertex>
     ) {
-        for ((neighborVertex, connectingRoad) in currentVertex.connectingRoads) {
+        for ((neighborVertexID, connectingRoad) in currentVertex.connectingRoads) {
             // check if the cars height allows it to drive on the road
             if (vehicleHeight > connectingRoad.heightLimit) {
                 continue
             }
+            // get the actual vertex
+            val neighborVertex = vertices.first { it.id == neighborVertexID }
             // calculate the weight of the route up till the neighbouring vertex
             val tentativeDistance = (distances[currentVertex] ?: 0) + connectingRoad.weight
             // check if the route through this neighbour is shorter than the previous found route
@@ -108,7 +111,7 @@ class GraphHelper {
      * @param previousVertices contains backtracking of each vertex to its previous one in the optimal route
      * the functions parses through the backtracking
      */
-    public fun buildRoute(endVertex: Vertex, previousVertices: Map<Vertex, Vertex?>): MutableList<Vertex> {
+    fun buildRoute(endVertex: Vertex, previousVertices: Map<Vertex, Vertex?>): MutableList<Vertex> {
         val route = mutableListOf<Vertex>()
         var currentVertex = endVertex
         var previousVertex = previousVertices[endVertex]
