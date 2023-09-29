@@ -2,8 +2,8 @@ package de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests
 
 import de.unisaarland.cs.se.selab.systemtest.api.SystemTest
 
-class RerouteTest : SystemTest() {
-    override val name = "RerouteTest"
+class ReallocationTest : SystemTest() {
+    override val name = "ReallocationTest"
 
     override val map = "mapFiles/rerouteTestMap.dot"
     override val assets = "assetsJsons/rerouteTestAssets.json"

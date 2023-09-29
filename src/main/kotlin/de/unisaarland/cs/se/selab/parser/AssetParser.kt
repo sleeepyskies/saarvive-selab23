@@ -22,7 +22,7 @@ import java.io.File
 class AssetParser(private val assetSchemaFile: String, private val jsonFile: String) {
     private val assetSchema: Schema
     private val json: JSONObject
-    private var allVehicles: List<Vehicle>
+    public var allVehicles: List<Vehicle>
 
     init {
         // Load the asset schema only
@@ -41,7 +41,7 @@ class AssetParser(private val assetSchemaFile: String, private val jsonFile: Str
     /**
      * parse Vehicles
      */
-    fun parseVehicles(): List<Vehicle> {
+    private fun parseVehicles(): List<Vehicle> {
         val vehiclesArray = json.getJSONArray("vehicles")
         val parsedVehicles = mutableListOf<Vehicle>()
         for (i in 0 until vehiclesArray.length()) {
@@ -115,9 +115,9 @@ class AssetParser(private val assetSchemaFile: String, private val jsonFile: Str
             val vehicles = allVehicles.filter { it.assignedBaseID == id }
 
             val base: Base = when (baseType) {
-                "FIRE_STATION" -> FireStation(id, staff, location, vehicles)
-                "HOSPITAL" -> Hospital(id, staff, location, jsonBase.getInt("doctors"), vehicles)
-                "POLICE_STATION" -> PoliceStation(id, staff, location, jsonBase.getInt("dogs"), vehicles)
+                "FIRE_STATION" -> FireStation(id, location, staff, vehicles)
+                "HOSPITAL" -> Hospital(id, location, staff, jsonBase.getInt("doctors"), vehicles)
+                "POLICE_STATION" -> PoliceStation(id, location, staff, jsonBase.getInt("dogs"), vehicles)
                 else -> throw IllegalArgumentException("Invalid baseType: $baseType")
             }
 

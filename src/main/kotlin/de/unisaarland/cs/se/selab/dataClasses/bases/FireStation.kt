@@ -7,7 +7,7 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
  */
 data class FireStation(
     override val baseID: Int,
-    override var staff: Int,
     override val vertexID: Int,
+    override var staff: Int,
     override val vehicles: List<Vehicle>
 ) : Base(baseID, staff, vertexID, vehicles)

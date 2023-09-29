@@ -40,7 +40,7 @@ class SimulationObjectConstructor(
             assetFile
         )
         val bases = assetParser.parseBases()
-        val vehicles = assetParser.parseVehicles()
+        val vehicles = assetParser.allVehicles
 
         // parse, validate and create events and emergencies
         val simulationParser = SimulationParser("simulation.schema", simulationFile)
@@ -49,9 +49,9 @@ class SimulationObjectConstructor(
 
         // cross validation and construction
         if (
-            // validateAssetsBasedOnGraph(graph, bases) &&
+            validateAssetsBasedOnGraph(graph, bases)
             // validateEmergenciesBasedOnGraph(graph, emergencies) &&
-            validateEventsBasedOnGraph(graph, events, vehicles)
+            // validateEventsBasedOnGraph(graph, events, vehicles)
         ) {
             // If validation succeeds return simulation
             val dataHolder = DataHolder(graph, bases, events.toMutableList(), emergencies)
@@ -78,9 +78,11 @@ class SimulationObjectConstructor(
             // find base vertex
             val baseVertex = graph.graph.find { vertex: Vertex -> vertex.id == base.vertexID }
             // add base to mapping
-            mapping[baseVertex]?.add(base) ?: run {
-                // Handle the case where mapping[baseVertex] is null
-                // You can provide a default action here if needed
+            if (baseVertex != null) {
+                // add base to mapping
+                mapping[baseVertex]?.add(base)
+            } else {
+                return false
             }
         }
 

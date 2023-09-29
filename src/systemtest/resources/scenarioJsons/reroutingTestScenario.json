@@ -1,0 +1,24 @@
+{
+    "events": [
+        {
+            "id": 0,
+            "type": "ROAD_CLOSURE",
+            "tick": 0,
+            "duration": 1,
+            "source": 3,
+            "target": 5
+        }
+    ],
+    "emergencyCalls": [
+        {
+            "id": 0,
+            "tick": 0,
+            "village": "BikiniBottom",
+            "roadName": "Mill_Lane",
+            "emergencyType": "FIRE",
+            "severity": 1,
+            "handleTime": 1,
+            "maxDuration": 15
+        }
+    ]
+}
