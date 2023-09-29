@@ -1,0 +1,30 @@
+digraph G {
+	0;
+	1;
+	2;
+	3;
+	4;
+	5;
+	6;
+	7;
+	8;
+	9;
+	10;
+	11;
+	12;
+
+	0 -> 1 [village=VillageA; name=By_the_Lake; heightLimit=4; weight=10; primaryType=sideStreet; secondaryType=oneWayStreet;];
+	1 -> 2 [village=VillageA; name=Valley_Road; heightLimit=2; weight=17; primaryType=sideStreet; secondaryType=tunnel;];
+	2 -> 3 [village=VillageA; name=Vineyard_Street; heightLimit=5; weight=10; primaryType=sideStreet; secondaryType=none;];
+	3 -> 4 [village=VillageA; name=Rose_Street; heightLimit=4; weight=11; primaryType=sideStreet; secondaryType=none;];
+	4 -> 5 [village=VillageA; name=Corner_Alley; heightLimit=5; weight=20; primaryType=mainStreet; secondaryType=none;];
+	5 -> 6 [village=VillageA; name=Maple_Way; heightLimit=5; weight=6; primaryType=mainStreet; secondaryType=none;];
+
+	6 -> 7 [village=VillageB; name=Flower_Path; heightLimit=3; weight=8; primaryType=sideStreet; secondaryType=none;];
+	7 -> 8 [village=VillageB; name=Old_Village_Street; heightLimit=3; weight=6; primaryType=sideStreet; secondaryType=none;];
+	8 -> 9 [village=VillageB; name=Ash_Way; heightLimit=3; weight=4; primaryType=mainStreet; secondaryType=none;];
+	9 -> 10 [village=VillageB; name=By_the_Lake; heightLimit=3; weight=10; primaryType=sideStreet; secondaryType=none;];
+	10 -> 11 [village=VillageB; name=Village_Square; heightLimit=3; weight=12; primaryType=sideStreet; secondaryType=none;];
+	11 -> 12 [village=VillageB; name=Rose_Street; heightLimit=3; weight=25; primaryType=mainStreet; secondaryType=none;];
+
+}
