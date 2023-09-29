@@ -1,8 +1,9 @@
 package de.unisaarland.cs.se.selab
 
+import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.simulation.SimulationObjectConstructor
-import io.github.oshai.kotlinlogging.KotlinLogging.logger
+
 /**
  * This is the entry point of the simulation.
  */
@@ -87,14 +88,5 @@ fun parseCommandLineArguments(args: Array<String>): CommandLineArguments {
 /** Prints the usage of the program
  */
 fun printUsage() {
-    logger(
-        "Usage: Saarvive & Thrive"
-    )
-    logger("--map/-m <mapFile>")
-    logger("--assets/-a <assetsFile>")
-    logger("--scenario/-s <scenarioFile>")
-    logger("--ticks/-t <ticks>")
-    logger("--out/-o <outFile>")
-    logger("--help/-h")
-    System.err.println("Exiting...")
+   Log.displayHelp()
 }
