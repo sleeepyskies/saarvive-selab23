@@ -1,0 +1,36 @@
+{
+    "events": [
+        {
+            "id": 0,
+            "type": "RUSH_HOUR",
+            "tick": 0,
+            "duration": 1,
+            "roadTypes": [
+                "SIDE_STREET"
+            ],
+            "factor": 1
+        }
+    ],
+    "emergencyCalls": [
+        {
+            "id": 0,
+            "tick": 2,
+            "village": "BikiniBottom",
+            "roadName": "Friedrich_Street",
+            "emergencyType": "FIRE",
+            "severity": 1,
+            "handleTime": 1,
+            "maxDuration": 5
+        },
+        {
+            "id": 1,
+            "tick": 3,
+            "village": "BikiniBottom",
+            "roadName": "By_the_Lake",
+            "emergencyType": "FIRE",
+            "severity": 2,
+            "handleTime": 1,
+            "maxDuration": 2
+        }
+    ]
+}
