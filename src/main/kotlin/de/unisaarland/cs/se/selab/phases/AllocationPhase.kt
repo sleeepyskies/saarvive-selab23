@@ -18,9 +18,10 @@ import de.unisaarland.cs.se.selab.simulation.DataHolder
  */
 class AllocationPhase(private val dataHolder: DataHolder) : Phase {
     private var currentTick = 0
-    private val nextRequestId = 0
+    private var nextRequestId = 0
 
-    /** Executes the allocation phase
+    /**
+     * Executes the allocation phase
      */
     override fun execute() {
         for (emergency in dataHolder.emergencies) {
@@ -183,7 +184,7 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
     private fun createRequest(emergency: Emergency, base: Base, requiredVehicles: MutableMap<VehicleType, Int>) {
         val basesToVisit = getBasesByProximity(emergency, base)
         val baseIds = basesToVisit.map { it.baseID }
-        val request = Request(baseIds, emergency.id, nextRequestId, requiredVehicles, emergency.requiredCapacity)
+        val request = Request(baseIds, emergency.id, nextRequestId++, requiredVehicles, emergency.requiredCapacity)
         dataHolder.requests.add(request)
     }
 }

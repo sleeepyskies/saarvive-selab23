@@ -1,0 +1,8 @@
+digraph G {
+	0;
+	1;
+
+	0 -> 1 [village=Frankfurt_am_Main; name=Cemetery_Lane; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
+	0 -> 1 [village=Frankfurt_am_Main; name=Spruce_Street; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
+
+}

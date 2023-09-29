@@ -1,6 +1,7 @@
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
+libs/selab.jar
 
 ### IntelliJ IDEA ###
 .idea/
@@ -36,4 +37,5 @@ bin/
 ### Mac OS ###
 .DS_Store
 
-
+### se lab ###
+selab.jar

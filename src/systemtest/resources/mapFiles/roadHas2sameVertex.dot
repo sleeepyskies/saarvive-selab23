@@ -1,0 +1,6 @@
+digraph G {
+	0;
+
+	0 -> 0 [village=Berlin; name=Harbor_Street; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
+
+}
