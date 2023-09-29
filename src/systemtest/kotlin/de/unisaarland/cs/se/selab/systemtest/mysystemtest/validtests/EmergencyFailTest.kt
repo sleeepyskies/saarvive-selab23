@@ -24,6 +24,8 @@ class EmergencyFailTest : SystemTest() {
         assertNextLine("Simulation Tick: 1")
         assertNextLine("Emergency Assignment: 0 assigned to 0")
         assertNextLine("Asset Allocation: 0 allocated to 0; 3 ticks to arrive.")
+        // do we create a request if there is only one base on the map?
+        // assertNextLine("Request Failed: 0 failed.")
         // Tick 2
         assertNextLine("Simulation Tick: 2")
         assertNextLine("Event Ended: 0 ended.")

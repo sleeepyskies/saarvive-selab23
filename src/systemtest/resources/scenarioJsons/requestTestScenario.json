@@ -1,0 +1,26 @@
+{
+    "events": [
+        {
+            "id": 0,
+            "type": "RUSH_HOUR",
+            "tick": 1,
+            "duration": 1,
+            "roadTypes": [
+                "MAIN_STREET"
+            ],
+            "factor": 1
+        }
+    ],
+    "emergencyCalls": [
+        {
+            "id": 0,
+            "tick": 2,
+            "village": "BikiniBottom",
+            "roadName": "Linden_Avenue",
+            "emergencyType": "FIRE",
+            "severity": 1,
+            "handleTime": 2,
+            "maxDuration": 9
+        }
+    ]
+}
