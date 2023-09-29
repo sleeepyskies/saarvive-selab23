@@ -39,7 +39,7 @@ class GraphHelper {
             // if newWeight < oldWeight
             if (distance < (visitedVertices[graph.find { vertex: Vertex -> vertex.id == neighbor }]?.first ?: 0)) {
                 visitedVertices[
-                    graph?.find { vertex: Vertex ->
+                    graph.find { vertex: Vertex ->
                         vertex.id == neighbor
                     } ?: Vertex(0, mutableMapOf())
                 ] = Pair(distance, currentVertex)
