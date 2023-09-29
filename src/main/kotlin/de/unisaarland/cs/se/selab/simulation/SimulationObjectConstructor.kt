@@ -53,7 +53,7 @@ class SimulationObjectConstructor(
         // cross validation and construction
         if (
             validateAssetsBasedOnGraph(graph, bases) &&
-            // validateEmergenciesBasedOnGraph(graph, emergencies) &&
+            validateEmergenciesBasedOnGraph(graph, emergencies) &&
             validateEventsBasedOnGraph(graph, events, vehicles)
         ) {
             // If validation succeeds return simulation
@@ -179,9 +179,11 @@ class SimulationObjectConstructor(
             if (emergencyRoad == null) return false
 
             // add emergency to the mapping
-            mapping[emergencyRoad]?.add(emergency) ?: run {
-                // Handle the case where mapping[emergencyRoad] is null
-                // You can provide a default action here if needed
+            if (emergencyRoad != null) {
+                // add base to mapping
+                mapping[emergencyRoad]?.add(emergency)
+            } else {
+                return false
             }
         }
 
@@ -200,7 +202,9 @@ class SimulationObjectConstructor(
     private fun checkOverlappingEmergencies(emergencyList: List<Emergency>): Boolean {
         for (emergencyOne in emergencyList) {
             for (emergencyTwo in emergencyList) {
-                if (isInRange(emergencyOne, emergencyTwo)) return false
+                if (emergencyOne != emergencyTwo && isInRange(emergencyOne, emergencyTwo)) {
+                    return false
+                }
             }
         }
         return true
