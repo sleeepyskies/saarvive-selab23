@@ -19,61 +19,31 @@ import java.io.File
 /**
 * asset parser parses assets
 */
-class AssetParser(assetSchemaFile: String, jsonFile: String) {
+class AssetParser(private val assetSchemaFile: String, private val jsonFile: String) {
     private val assetSchema: Schema
     private val json: JSONObject
-    private lateinit var allVehicles: List<Vehicle> // declare allVehicles as a member variable
+    private lateinit var allVehicles: List<Vehicle>
 
     init {
+        // Load the asset schema only
         val assetSchemaJson = JSONObject(File(assetSchemaFile).readText())
         assetSchema = SchemaLoader.load(assetSchemaJson)
 
+        // Load the JSON data
         val assetJsonData = File(jsonFile).readText()
         json = JSONObject(assetJsonData)
+
+        assetSchema.validate(json)
+
+        allVehicles = parseVehicles()
     }
 
     /**
-     * parse method returns a pair of list of bases and list of vehicles
+     * parse Vehicles
      */
-    fun parse(): Pair<List<Base>, List<Vehicle>> {
-        // assetSchema.validate(json) => for later (optimisation)
-
-        allVehicles = parseVehicles()
-        val allBases = parseBases()
-
-        validateVehiclesAtItsCorrectBases(allBases, allVehicles)
-
-        return Pair(allBases, allVehicles)
-    }
-
-    private fun parseBases(): List<Base> {
-        val parsedBases = mutableListOf<Base>()
-        val basesArray = json.getJSONArray("bases")
-        for (i in 0 until basesArray.length()) {
-            val jsonBase = basesArray.getJSONObject(i)
-            assetSchema.validate(jsonBase)
-
-            val id = validateBaseId(jsonBase.getInt("id"))
-            val baseType = validateBaseType(jsonBase.getString("baseType"))
-            val location = validateLocation(jsonBase.getInt("location"))
-            val staff = validateStaff(jsonBase.getInt("staff"))
-            val vehicles = allVehicles.filter { it.assignedBaseID == id }
-
-            val base: Base = when (baseType) {
-                "FIRE_STATION" -> FireStation(id, staff, location, vehicles)
-                "HOSPITAL" -> Hospital(id, staff, location, jsonBase.getInt("doctors"), vehicles)
-                "POLICE_STATION" -> PoliceStation(id, staff, location, jsonBase.getInt("dogs"), vehicles)
-                else -> throw IllegalArgumentException("Invalid baseType: $baseType")
-            }
-
-            parsedBases.add(base)
-        }
-        return parsedBases
-    }
-
-    private fun parseVehicles(): List<Vehicle> {
-        val parsedVehicles = mutableListOf<Vehicle>()
+    fun parseVehicles(): List<Vehicle> {
         val vehiclesArray = json.getJSONArray("vehicles")
+        val parsedVehicles = mutableListOf<Vehicle>()
         for (i in 0 until vehiclesArray.length()) {
             val jsonVehicle = vehiclesArray.getJSONObject(i)
             assetSchema.validate(jsonVehicle)
@@ -125,6 +95,34 @@ class AssetParser(assetSchemaFile: String, jsonFile: String) {
             parsedVehicles.add(vehicle)
         }
         return parsedVehicles
+    }
+
+    /**
+     * parse Bases
+     */
+    fun parseBases(): List<Base> {
+        val basesArray = json.getJSONArray("bases")
+        val parsedBases = mutableListOf<Base>()
+        for (i in 0 until basesArray.length()) {
+            val jsonBase = basesArray.getJSONObject(i)
+            assetSchema.validate(jsonBase)
+
+            val id = validateBaseId(jsonBase.getInt("id"))
+            val baseType = validateBaseType(jsonBase.getString("baseType"))
+            val location = validateLocation(jsonBase.getInt("location"))
+            val staff = validateStaff(jsonBase.getInt("staff"))
+            val vehicles = allVehicles.filter { it.assignedBaseID == id }
+
+            val base: Base = when (baseType) {
+                "FIRE_STATION" -> FireStation(id, staff, location, vehicles)
+                "HOSPITAL" -> Hospital(id, staff, location, jsonBase.getInt("doctors"), vehicles)
+                "POLICE_STATION" -> PoliceStation(id, staff, location, jsonBase.getInt("dogs"), vehicles)
+                else -> throw IllegalArgumentException("Invalid baseType: $baseType")
+            }
+
+            parsedBases.add(base)
+        }
+        return parsedBases
     }
 
     private fun validateBaseId(id: Int): Int {
@@ -188,31 +186,5 @@ class AssetParser(assetSchemaFile: String, jsonFile: String) {
     private fun validateLadderLength(length: Int): Int {
         require(length in Number.THIRTY..Number.SEVENTY) { "Ladder length must be between 30 and 70" }
         return length
-    }
-
-    private fun validateVehiclesAtItsCorrectBases(allBases: List<Base>, allVehicles: List<Vehicle>) {
-        allVehicles.forEach { vehicle ->
-            val correspondingBase = allBases.find { it.baseID == vehicle.assignedBaseID }
-            requireNotNull(correspondingBase) { "No base found for vehicle with id ${vehicle.id}" }
-
-            when (vehicle.vehicleType) {
-                VehicleType.POLICE_CAR, VehicleType.POLICE_MOTORCYCLE, VehicleType.K9_POLICE_CAR -> {
-                    require(
-                        correspondingBase is PoliceStation
-                    ) { "Vehicle with id ${vehicle.id} should be at a Police Station" }
-                }
-
-                VehicleType.FIRE_TRUCK_WATER, VehicleType.FIRE_TRUCK_TECHNICAL,
-                VehicleType.FIRE_TRUCK_LADDER, VehicleType.FIREFIGHTER_TRANSPORTER -> {
-                    require(
-                        correspondingBase is FireStation
-                    ) { "Vehicle with id ${vehicle.id} should be at a Fire Station" }
-                }
-
-                VehicleType.AMBULANCE, VehicleType.EMERGENCY_DOCTOR_CAR -> {
-                    require(correspondingBase is Hospital) { "Vehicle with id ${vehicle.id} should be at a Hospital" }
-                }
-            }
-        }
     }
 }
