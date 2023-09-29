@@ -48,14 +48,13 @@ class SimulationObjectConstructor(
         val events = simulationParser.parseEvents()
 
         // added here so we don't fail the build, remove after they're correctly implemented
-        validateAssetsBasedOnGraph(graph, bases)
         validateEmergenciesBasedOnGraph(graph, emergencies)
 
         // cross validation and construction
         if (
-            validateAssetsBasedOnGraph(graph, bases)
+            validateAssetsBasedOnGraph(graph, bases) &&
             // validateEmergenciesBasedOnGraph(graph, emergencies) &&
-            // validateEventsBasedOnGraph(graph, events, vehicles)
+            validateEventsBasedOnGraph(graph, events, vehicles)
         ) {
             // If validation succeeds return simulation
             val dataHolder = DataHolder(graph, bases, events.toMutableList(), emergencies)
