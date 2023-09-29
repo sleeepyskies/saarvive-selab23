@@ -47,9 +47,6 @@ class SimulationObjectConstructor(
         val emergencies = simulationParser.parseEmergencyCalls()
         val events = simulationParser.parseEvents()
 
-        // added here so we don't fail the build, remove after they're correctly implemented
-        validateEmergenciesBasedOnGraph(graph, emergencies)
-
         // cross validation and construction
         if (
             validateAssetsBasedOnGraph(graph, bases) &&
