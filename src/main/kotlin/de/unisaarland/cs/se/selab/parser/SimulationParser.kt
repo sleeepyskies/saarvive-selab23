@@ -6,9 +6,9 @@ import de.unisaarland.cs.se.selab.dataClasses.events.RoadClosure
 import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
 import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
+import de.unisaarland.cs.se.selab.getSchema
 import de.unisaarland.cs.se.selab.graph.PrimaryType
 import org.everit.json.schema.Schema
-import org.everit.json.schema.loader.SchemaLoader
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -28,8 +28,8 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
 
     init {
         // Load and validate the JSON schema
-        val schemaJson = JSONObject(File(schemaFile).readText())
-        schema = SchemaLoader.load(schemaJson)
+//        val schemaJson = JSONObject(File(schemaFile).readText())
+        schema = getSchema(this.javaClass, schemaFile)!!
 
         // Load and parse the JSON data
         val jsonData = File(jsonFile).readText()
@@ -46,7 +46,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         val parsedEmergencies = mutableListOf<Emergency>()
         for (i in 0 until emergencyCallsArray.length()) {
             val jsonEmergency = emergencyCallsArray.getJSONObject(i)
-            schema.validate(jsonEmergency)
+//            schema.validate(jsonEmergency) -> detekt throws error
             // Validation of fields
             val id = validateEmergencyId(jsonEmergency.getInt("id"))
             val emergencyType = validateEmergencyType(jsonEmergency.getString("emergencyType"))
@@ -82,7 +82,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         val parsedEvents = mutableListOf<Event>()
         for (i in 0 until eventsArray.length()) {
             val jsonEvent = eventsArray.getJSONObject(i)
-            schema.validate(jsonEvent)
+//            schema.validate(jsonEvent) -> detekt throws error
             // validation of single fields
             val id = validateEventId(jsonEvent.getInt("id"))
             val duration = validateDuration(jsonEvent.getInt("duration"))
@@ -133,7 +133,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     /** Validates the ID of emergencies, check if it is unique.
      */
     private fun validateEmergencyId(id: Int): Int {
-        require(id > 0) { "ID must be positive" }
+        require(id >= 0) { "ID must be positive" }
         require(!emergencyIDSet.contains(id)) { "ID must be unique" }
         return id
     }

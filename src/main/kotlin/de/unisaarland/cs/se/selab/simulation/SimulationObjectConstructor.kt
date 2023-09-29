@@ -43,7 +43,7 @@ class SimulationObjectConstructor(
         val vehicles = assetParser.parseVehicles()
 
         // parse, validate and create events and emergencies
-        val simulationParser = SimulationParser("src/main/resources/schema/simulation.schema", simulationFile)
+        val simulationParser = SimulationParser("simulation.schema", simulationFile)
         val emergencies = simulationParser.parseEmergencyCalls()
         val events = simulationParser.parseEvents()
 
