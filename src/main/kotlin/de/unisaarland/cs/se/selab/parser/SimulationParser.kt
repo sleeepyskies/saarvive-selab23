@@ -124,7 +124,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
                     // add event to list of events
                     parsedEvents.add(event)
                 }
-                else -> System.err.println("Invalid Event Type")
+                else -> require(false) { "Invalid Event Type" }
             }
         }
         return parsedEvents
@@ -133,20 +133,14 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     /** Validates the ID of emergencies, check if it is unique.
      */
     private fun validateEmergencyId(id: Int): Int {
-        if (id <= 0) {
-            System.err.println("ID must be positive")
-        } else if (emergencyIDSet.contains(id)) {
-            System.err.println("ID must be unique")
-        }
+        require(id > 0) { "ID must be positive" }
+        require(!emergencyIDSet.contains(id)) { "ID must be unique" }
         return id
     }
 
     private fun validateEventId(id: Int): Int {
-        if (id < 0) {
-            System.err.println("ID must be positive")
-        } else if (eventIDSet.contains(id)) {
-            System.err.println("ID must be unique")
-        }
+        require(id >= 0) { "ID must be positive" }
+        require(!eventIDSet.contains(id)) { "ID must be unique" }
         return id
     }
 
@@ -154,18 +148,14 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      * Checks whether the specified severity value belongs to the range of valid values.
      */
     private fun validateSeverity(severity: Int): Int {
-        if (severity !in 1..3) {
-            System.err.println("Severity must be positive")
-        }
+        require(severity in 1..3) { "Severity must be between 1 and 3" }
         return severity
     }
 
     /** Validates the tick of emergencies
      */
     private fun validateEmergencyTick(tick: Int): Int {
-        if (tick < 1) {
-            System.err.println("Tick must be greater than 1")
-        }
+        require(tick >= 1) { "Tick must be greater than or equal to 1" }
         return tick
     }
 
@@ -183,8 +173,8 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      * Checks whether the specified emergency type belongs to EmergencyType.
      */
     private fun validateEmergencyType(emergencyType: String): EmergencyType {
-        if (emergencyType != EmergencyType.valueOf(emergencyType).toString()) {
-            System.err.println("EmergencyType must be one of the following: ${EmergencyType.values()}")
+        require(EmergencyType.values().any { it.name == emergencyType }) {
+            "EmergencyType must be one of the following: ${EmergencyType.values().joinToString(", ") { it.name }}"
         }
         return EmergencyType.valueOf(emergencyType)
     }
@@ -192,18 +182,14 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     /** Validates the handle time of emergencies
      */
     private fun validateHandleTime(handleTime: Int): Int {
-        if (handleTime < 1) {
-            System.err.println("Minimum handle time is 1")
-        }
+        require(handleTime >= 1) { "Minimum handle time is 1" }
         return handleTime
     }
 
     /** Validates the duration of events
      */
     private fun validateDuration(duration: Int): Int {
-        if (duration < 1) {
-            System.err.println("Minimum duration of an event should be at least 1")
-        }
+        require(duration >= 1) { "Minimum duration of an event should be at least 1" }
         return duration
     }
 
@@ -211,27 +197,21 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      * is greater than the handle time.
      */
     private fun validateMaxDuration(maxDuration: Int, handleTime: Int): Int {
-        if (maxDuration <= handleTime) {
-            System.err.println("Maximum duration must be greater than handle time")
-        }
+        require(maxDuration > handleTime) { "Maximum duration must be greater than handle time" }
         return maxDuration
     }
 
     /** Validates the village name of emergencies --> will be changes after Ira is done with Parsing
      */
     private fun validateVillageName(villageName: String): String {
-        if (villageName.isBlank()) {
-            System.err.println("Village name must not be blank")
-        }
+        require(villageName.isNotBlank()) { "Village name must not be blank" }
         return villageName
     }
 
     /** Validates the factor of events
      */
     private fun validateEventFactor(factor: Int): Int {
-        if (factor < 1) {
-            System.err.println("Factor must be at least 1")
-        }
+        require(factor >= 1) { "Factor must be at least 1" }
         return factor
     }
 
@@ -241,9 +221,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     private fun validateRoadTypes(roadType: JSONArray): List<PrimaryType> {
         val validRoadTypes = listOf("MAIN_STREET", "SIDE_STREET", "COUNTY_ROAD")
         for (type in roadType) {
-            if (type !in validRoadTypes) {
-                System.err.println("RoadType must be one of the following: $validRoadTypes")
-            }
+            require(type in validRoadTypes) { "RoadType must be one of the following: $validRoadTypes" }
         }
         return roadType.map { enumValueOf(it.toString()) }
     }
@@ -252,9 +230,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      * Will be changed after Ira is done with map
      */
     private fun validateSourceId(sourceId: Int): Int {
-        if (sourceId < 0) {
-            System.err.println("Source ID must be positive")
-        }
+        require(sourceId >= 0) { "Source ID must be positive" }
         return sourceId
     }
 
@@ -262,9 +238,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      * Will be changed after Ira is done with map
      */
     private fun validateTargetId(targetId: Int): Int {
-        if (targetId < 0) {
-            System.err.println("Target ID must be positive")
-        }
+        require(targetId >= 0) { "Target ID must be positive" }
         return targetId
     }
 
@@ -272,9 +246,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      * Will be changed after Min is done with map
      */
     private fun validateVehicleId(vehicleId: Int): Int {
-        if (vehicleId < 0) {
-            System.err.println("Vehicle ID must be positive")
-        }
+        require(vehicleId >= 0) { "Vehicle ID must be positive" }
         return vehicleId
     }
 }
