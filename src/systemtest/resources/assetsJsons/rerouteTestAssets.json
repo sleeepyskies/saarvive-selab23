@@ -4,7 +4,14 @@
             "id": 0,
             "baseType": "FIRE_STATION",
             "location": 0,
-            "staff": 3
+            "staff": 10
+        },
+        {
+            "id": 1,
+            "baseType": "HOSPITAL",
+            "location": 0,
+            "staff": 1,
+            "doctors": 0
         }
     ],
     "vehicles": [
@@ -12,37 +19,53 @@
             "id": 0,
             "baseID": 0,
             "vehicleType": "FIRE_TRUCK_WATER",
-            "vehicleHeight": 2,
+            "vehicleHeight": 1,
             "staffCapacity": 1,
-            "waterCapacity": 600
+            "waterCapacity": 1200
         },
         {
             "id": 1,
             "baseID": 0,
             "vehicleType": "FIRE_TRUCK_WATER",
-            "vehicleHeight": 2,
+            "vehicleHeight": 1,
             "staffCapacity": 1,
             "waterCapacity": 1200
         },
         {
             "id": 2,
             "baseID": 0,
-            "vehicleType": "FIRE_TRUCK_TECHNICAL",
-            "vehicleHeight": 2,
-            "staffCapacity": 1
+            "vehicleType": "FIRE_TRUCK_WATER",
+            "vehicleHeight": 1,
+            "staffCapacity": 1,
+            "waterCapacity": 1200
         },
         {
             "id": 3,
             "baseID": 0,
-            "vehicleType": "FIRE_TRUCK_LADDER",
+            "vehicleType": "FIRE_TRUCK_WATER",
             "vehicleHeight": 1,
-            "staffCapacity": 12,
-            "ladderLength": 30
+            "staffCapacity": 1,
+            "waterCapacity": 1200
         },
         {
             "id": 4,
             "baseID": 0,
+            "vehicleType": "FIRE_TRUCK_LADDER",
+            "vehicleHeight": 1,
+            "staffCapacity": 1,
+            "ladderLength": 30
+        },
+        {
+            "id": 5,
+            "baseID": 0,
             "vehicleType": "FIREFIGHTER_TRANSPORTER",
+            "vehicleHeight": 1,
+            "staffCapacity": 1
+        },
+        {
+            "id": 6,
+            "baseID": 1,
+            "vehicleType": "AMBULANCE",
             "vehicleHeight": 1,
             "staffCapacity": 1
         }

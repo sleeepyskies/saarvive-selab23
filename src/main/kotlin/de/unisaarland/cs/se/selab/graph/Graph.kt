@@ -27,7 +27,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
     // private val v = Vehicle(VehicleType.FIREFIGHTER_TRANSPORTER, 1, 1, 1, 1)
     // private val b = Base(1, 1, 1, listOf(v))
     private val r = Road(PrimaryType.COUNTY_ROAD, SecondaryType.NONE, "s", "u", 1, 1)
-    private val ver = Vertex(1, mutableMapOf<Vertex, Road>())
+    private val ver = Vertex(1, mutableMapOf<Int, Road>())
 
     /**
      * Returns the shortest time in ticks needed to travel from start the vertex
@@ -37,6 +37,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
      * @param carHeight the car's height, set to 0 when ignoring height restrictions
      */
     fun calculateShortestPath(start: Vertex, destination: Vertex, carHeight: Int): Int {
+        // Map from a vertex to its distance form start, and previous vertex on path
         val visitedVertices: MutableMap<Vertex, Pair<Int, Vertex?>> = helper.initVisitedVertices(start, this.graph)
         val unvisitedVertices: MutableList<Vertex> = graph.toMutableList()
         var currentVertex = start
@@ -46,11 +47,11 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
             // gets all relevant neighbors based on height restrictions
             val neighbors = currentVertex.connectingRoads.filter { (_, road) -> carHeight <= road.heightLimit }
             // updates neighbor distances
-            helper.updateNeighbors(neighbors, visitedVertices, currentVertex)
+            helper.updateNeighbors(neighbors, visitedVertices, currentVertex, this.graph)
 
             unvisitedVertices.remove(currentVertex)
             // update nextVertex
-            val nextVertex = helper.findNextVertex(neighbors, visitedVertices)
+            val nextVertex = helper.findNextVertex(neighbors, visitedVertices, this.graph)
             if (nextVertex != null) {
                 currentVertex = nextVertex
             }
@@ -102,7 +103,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
             }
 
             // traverse connected vertices
-            helper.exploreNeighbours(currentVertex, distances, previousVertices, vehicleHeight)
+            helper.exploreNeighbours(currentVertex, distances, previousVertices, vehicleHeight, graph)
         }
         return route.toMutableList()
     }
@@ -222,17 +223,17 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         val startVertex = graph.find { it.id == event.sourceID } ?: ver
         val targetVertex = graph.find { it.id == event.targetID } ?: ver
         // puts the required into the event
-        event.affectedRoad = startVertex.connectingRoads[targetVertex] ?: r
+        event.affectedRoad = startVertex.connectingRoads[targetVertex.id] ?: r
         // the factor is applied on the affected road
         event.affectedRoad.weight *= event.factor
         // check and change the road into a one way
-        if (event.streetClosed) startVertex.connectingRoads.remove(targetVertex)
+        if (event.streetClosed) startVertex.connectingRoads.remove(targetVertex.id)
     }
     private fun applyTrafficJam(event: TrafficJam) {
         val startVertex = graph.find { it.id == event.startVertex } ?: ver
         val targetVertex = graph.find { it.id == event.endVertex } ?: ver
 
-        val requiredRoad = startVertex.connectingRoads[targetVertex] ?: r
+        val requiredRoad = startVertex.connectingRoads[targetVertex.id] ?: r
         requiredRoad.weight *= event.factor
         requiredRoad.activeEvents.add(event)
 
@@ -245,12 +246,12 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         // find target vertex
         val targetVertex = graph.find { vertex: Vertex -> vertex.id == event.targetID } ?: ver
         // find required road
-        val requiredRoad = targetVertex.connectingRoads[sourceVertex] ?: r
+        val requiredRoad = targetVertex.connectingRoads[sourceVertex.id] ?: r
         // puts the road into the event
         event.affectedRoad = requiredRoad
         // remove the road from the graph
-        targetVertex.connectingRoads.remove(sourceVertex)
-        sourceVertex.connectingRoads.remove(targetVertex)
+        targetVertex.connectingRoads.remove(sourceVertex.id)
+        sourceVertex.connectingRoads.remove(targetVertex.id)
         // add this event to the list of event
         requiredRoad.activeEvents.add(event)
     }
@@ -293,7 +294,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         val targetVertex = graph.find { vertex: Vertex -> vertex.id == event.targetID } ?: ver
 
         // add road back to the map
-        sourceVertex.connectingRoads[targetVertex] = event.affectedRoad
+        sourceVertex.connectingRoads[targetVertex.id] = event.affectedRoad
     }
 
     /**
@@ -306,8 +307,8 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         val targetVertex = graph.find { vertex: Vertex -> vertex.id == event.targetID } ?: ver
 
         // add road back to the map
-        targetVertex.connectingRoads[sourceVertex] = event.affectedRoad
-        sourceVertex.connectingRoads[targetVertex] = event.affectedRoad
+        targetVertex.connectingRoads[sourceVertex.id] = event.affectedRoad
+        sourceVertex.connectingRoads[targetVertex.id] = event.affectedRoad
     }
 
     /**

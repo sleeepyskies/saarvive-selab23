@@ -1,0 +1,9 @@
+digraph G {
+	0;
+	1;
+	2;
+
+	0 -> 1 [village=Hamburg; name=Rose_Way; heightLimit=3; weight=10; primaryType=sideStreet; secondaryType=none;];
+	2 -> 1 [village=Hamburg; name=Umama_Road; heightLimit=3; weight=10; primaryType=sideStreet; secondaryType=none;];
+
+}

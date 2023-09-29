@@ -36,7 +36,8 @@ class SimulationObjectConstructor(
 
         // parse, validate and create assets
         val assetParser = AssetParser("src/main/resources/schema/assets.schema", assetFile)
-        val (bases, vehicles) = assetParser.parse()
+        val bases = assetParser.parseBases()
+        val vehicles = assetParser.parseVehicles()
 
         // parse, validate and create events and emergencies
         val simulationParser = SimulationParser("src/main/resources/schema/simulation.schema", simulationFile)
