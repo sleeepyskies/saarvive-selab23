@@ -135,8 +135,8 @@ class SimulationObjectConstructor(
 
         // check they are connected via an edge
         if (
-            sourceVertex.connectingRoads[targetVertex] == null &&
-            targetVertex.connectingRoads[sourceVertex] == null
+            sourceVertex.connectingRoads[targetVertex.id] == null &&
+            targetVertex.connectingRoads[sourceVertex.id] == null
         ) {
             return false
         }
