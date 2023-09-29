@@ -35,7 +35,10 @@ class SimulationObjectConstructor(
         val graph = countyParser.parse()
 
         // parse, validate and create assets
-        val assetParser = AssetParser("src/main/resources/schema/assets.schema", assetFile)
+        val assetParser = AssetParser(
+            "assets.schema",
+            assetFile
+        )
         val bases = assetParser.parseBases()
         val vehicles = assetParser.parseVehicles()
 

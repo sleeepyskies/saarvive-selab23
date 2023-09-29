@@ -15,7 +15,7 @@ class AssetParserTest {
     @Test
     fun testValidAssetBASE() {
         val parser = AssetParser(
-            assetSchemaFile = "src/main/resources/schema/base.schema",
+            assetSchemaFile = "base.schema",
             jsonFile = "src/test/resources/parsertests/assetParser/validAssets.json"
         )
 
@@ -32,7 +32,7 @@ class AssetParserTest {
     @Test
     fun testValidAssetVEHICLE() {
         val parser = AssetParser(
-            assetSchemaFile = "src/main/resources/schema/vehicle.schema",
+            assetSchemaFile = "vehicle.schema",
             jsonFile = "src/test/resources/parsertests/assetParser/validAssets.json"
         )
 
@@ -49,7 +49,7 @@ class AssetParserTest {
     fun testInvalidPathToJSON() {
         assertThrows<FileNotFoundException> {
             AssetParser(
-                assetSchemaFile = "src/main/resources/schema/base.schema",
+                assetSchemaFile = "base.schema",
                 jsonFile = "invalid/path/to/json"
             )
         }
@@ -59,7 +59,7 @@ class AssetParserTest {
     fun testInvalidAssetsJSONBASE() {
         assertThrows<JSONException> {
             AssetParser(
-                assetSchemaFile = "src/main/resources/schema/base.schema",
+                assetSchemaFile = "base.schema",
                 jsonFile = "src/test/resources/parsertests/assetParser/invalid_assets.json"
             ).parseBases()
         }
@@ -69,7 +69,7 @@ class AssetParserTest {
     fun testInvalidAssetsJSONVEHICLE() {
         assertThrows<JSONException> {
             AssetParser(
-                assetSchemaFile = "src/main/resources/schema/vehicle.schema",
+                assetSchemaFile = "vehicle.schema",
                 jsonFile = "src/test/resources/parsertests/assetParser/invalid_assets.json"
             ).parseVehicles()
         }
@@ -78,7 +78,7 @@ class AssetParserTest {
     @Test
     fun testEmptyAssetListBASE() {
         val parser = AssetParser(
-            assetSchemaFile = "src/main/resources/schema/base.schema",
+            assetSchemaFile = "base.schema",
             jsonFile = "src/test/resources/parsertests/assetParser/empty_assets.json"
         )
 
@@ -89,7 +89,7 @@ class AssetParserTest {
     @Test
     fun testEmptyAssetListVEHICLE() {
         val parser = AssetParser(
-            assetSchemaFile = "src/main/resources/schema/vehicle.schema",
+            assetSchemaFile = "vehicle.schema",
             jsonFile = "src/test/resources/parsertests/assetParser/empty_assets.json"
         )
 
@@ -100,7 +100,7 @@ class AssetParserTest {
     @Test
     fun testSingleAssetBASE() {
         val parser = AssetParser(
-            assetSchemaFile = "src/main/resources/schema/base.schema",
+            assetSchemaFile = "base.schema",
             jsonFile = "src/test/resources/parsertests/assetParser/single_asset.json"
         )
 
@@ -117,7 +117,7 @@ class AssetParserTest {
     @Test
     fun testSingleAssetVEHICLE() {
         val parser = AssetParser(
-            assetSchemaFile = "src/main/resources/schema/vehicle.schema",
+            assetSchemaFile = "vehicle.schema",
             jsonFile = "src/test/resources/parsertests/assetParser/single_asset.json"
         )
 
