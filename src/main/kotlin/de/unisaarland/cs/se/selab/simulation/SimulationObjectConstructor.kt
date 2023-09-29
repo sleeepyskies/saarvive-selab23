@@ -49,8 +49,8 @@ class SimulationObjectConstructor(
 
         // cross validation and construction
         if (
-            validateAssetsBasedOnGraph(graph, bases) &&
-            validateEmergenciesBasedOnGraph(graph, emergencies) &&
+            // validateAssetsBasedOnGraph(graph, bases) &&
+            // validateEmergenciesBasedOnGraph(graph, emergencies) &&
             validateEventsBasedOnGraph(graph, events, vehicles)
         ) {
             // If validation succeeds return simulation
