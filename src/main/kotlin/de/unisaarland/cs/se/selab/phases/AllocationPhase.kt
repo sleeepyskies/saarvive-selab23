@@ -18,9 +18,10 @@ import de.unisaarland.cs.se.selab.simulation.DataHolder
  */
 class AllocationPhase(private val dataHolder: DataHolder) : Phase {
     private var currentTick = 0
-    private val nextRequestId = 0
+    private var nextRequestId = 0
 
-    /** Executes the allocation phase
+    /**
+     * Executes the allocation phase
      */
     override fun execute() {
         for (emergency in dataHolder.emergencies) {
