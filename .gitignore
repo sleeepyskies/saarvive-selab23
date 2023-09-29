@@ -1,6 +1,7 @@
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
+libs/selab.jar
 
 ### IntelliJ IDEA ###
 .idea/
