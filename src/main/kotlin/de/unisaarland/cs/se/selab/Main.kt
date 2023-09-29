@@ -88,5 +88,5 @@ fun parseCommandLineArguments(args: Array<String>): CommandLineArguments {
 /** Prints the usage of the program
  */
 fun printUsage() {
-   Log.displayHelp()
+    Log.displayHelp()
 }
