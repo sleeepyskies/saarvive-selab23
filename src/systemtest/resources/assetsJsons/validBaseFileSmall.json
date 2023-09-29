@@ -14,17 +14,25 @@
             "vehicleType": "FIRE_TRUCK_WATER",
             "vehicleHeight": 2,
             "staffCapacity": 1,
-            "waterCapacity": 1200
+            "waterCapacity": 600
         },
         {
             "id": 1,
+            "baseID": 0,
+            "vehicleType": "FIRE_TRUCK_WATER",
+            "vehicleHeight": 2,
+            "staffCapacity": 1,
+            "waterCapacity": 1200
+        },
+        {
+            "id": 2,
             "baseID": 0,
             "vehicleType": "FIRE_TRUCK_TECHNICAL",
             "vehicleHeight": 2,
             "staffCapacity": 1
         },
         {
-            "id": 2,
+            "id": 3,
             "baseID": 0,
             "vehicleType": "FIRE_TRUCK_LADDER",
             "vehicleHeight": 1,
@@ -32,7 +40,7 @@
             "ladderLength": 30
         },
         {
-            "id": 3,
+            "id": 4,
             "baseID": 0,
             "vehicleType": "FIREFIGHTER_TRANSPORTER",
             "vehicleHeight": 1,

@@ -1,15 +1,26 @@
 {
-    "events": [],
+    "events": [
+        {
+            "id": 0,
+            "type": "RUSH_HOUR",
+            "tick": 0,
+            "duration": 1,
+            "roadTypes": [
+                "SIDE_STREET"
+            ],
+            "factor": 1
+        }
+    ],
     "emergencyCalls": [
         {
             "id": 0,
             "tick": 1,
             "village": "Bikini_Bottom",
-            "roadName": "Krusty_Krab_Street",
+            "roadName": "Not_Krusty_Krab_Street",
             "emergencyType": "FIRE",
             "severity": 1,
-            "handleTime": 1,
-            "maxDuration": 2
+            "handleTime": 2,
+            "maxDuration": 5
         }
     ]
 }
