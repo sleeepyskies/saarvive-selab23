@@ -174,9 +174,7 @@ class CountyParser(private val dotFilePath: String) {
             val check2 = Pair(id2.toInt(), id1.toInt())
             val matchedEdge = edge.group(Number.FIVE)!!
             if (this.listOfVerticesToRoads.containsKey(check1) ||
-                this.listOfVerticesToRoads.containsKey(check2) || !parsedAttributes(
-                    matchedEdge
-                )
+                this.listOfVerticesToRoads.containsKey(check2) || !parsedAttributes(matchedEdge)
             ) {
                 return false
             }
@@ -221,7 +219,7 @@ class CountyParser(private val dotFilePath: String) {
         this.listOfRoadAttributes.forEach { dataPiece ->
             if (mapping.containsKey(dataPiece.getValue(StringLiterals.VILLAGE))) {
                 if (mapping[dataPiece.getValue(StringLiterals.VILLAGE)]
-                        ?.contains(dataPiece.getValue(StringLiterals.NAME)) == true
+                    ?.contains(dataPiece.getValue(StringLiterals.NAME)) == true
                 ) {
                     return false
                 } else {
