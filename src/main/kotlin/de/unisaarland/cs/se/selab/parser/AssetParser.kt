@@ -41,7 +41,7 @@ class AssetParser(private val assetSchemaFile: String, private val jsonFile: Str
     /**
      * parse Vehicles
      */
-    private fun parseVehicles(): List<Vehicle> {
+    fun parseVehicles(): List<Vehicle> {
         val vehiclesArray = json.getJSONArray("vehicles")
         val parsedVehicles = mutableListOf<Vehicle>()
         for (i in 0 until vehiclesArray.length()) {

@@ -7,8 +7,8 @@ import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.TwoRoadsSa
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.ZeroHeightTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.CorrectSystemTestSmall
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.EmergencyFailTest
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.RequestTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.ReallocationTest
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.RequestTest
 import de.unisaarland.cs.se.selab.systemtest.runner.SystemTestManager
 
 object SystemTestRegistration {
