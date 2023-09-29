@@ -8,5 +8,6 @@ package de.unisaarland.cs.se.selab.graph
  */
 data class Vertex(
     val id: Int,
-    val connectingRoads: MutableMap<Vertex, Road>
+    // the key is the ID of the vertex that this vertes is connected
+    val connectingRoads: MutableMap<Int, Road>
 )
