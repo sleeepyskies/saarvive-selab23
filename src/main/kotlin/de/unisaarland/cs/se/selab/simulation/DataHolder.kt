@@ -77,4 +77,20 @@ class DataHolder(
             }
         }
     }
+
+    /**
+     * initializes the location of each emergency
+     */
+    init {
+        for (emergency in emergencies) {
+            val roadList = graph.roads
+            // get the road this emergency is on
+            val road = roadList.first { it.roadName == emergency.roadName }
+            val vertexList = graph.graph
+            // find the vertices it is connected to
+            val vertices = vertexList.filter { it.connectingRoads.containsValue(road) }
+            val vertexPair = Pair(vertices[0], vertices[1])
+            emergency.location = vertexPair
+        }
+    }
 }
