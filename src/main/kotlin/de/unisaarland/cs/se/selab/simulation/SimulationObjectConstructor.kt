@@ -173,7 +173,6 @@ class SimulationObjectConstructor(
         for (emergency in emergencies) {
             // get emergency road anc check it exists
             val emergencyRoad = getRoad(emergency.roadName, emergency.villageName, graph)
-            if (emergencyRoad == null) return false
 
             // add emergency to the mapping
             if (emergencyRoad != null) {
