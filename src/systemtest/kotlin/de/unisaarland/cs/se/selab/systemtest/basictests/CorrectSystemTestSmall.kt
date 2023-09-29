@@ -12,9 +12,9 @@ class CorrectSystemTestSmall : SystemTest() {
 
     override suspend fun run() {
         // Everything is parsed and validated
-        assertNextLine("Initialization Info: example_map.dot successfully parsed and validated")
-        assertNextLine("Initialization Info: example_assets.json successfully parsed and validated")
-        assertNextLine("Initialization Info: example_scenario.json successfully parsed and validated")
+        assertNextLine("Initialization Info: validMapSmall.dot successfully parsed and validated")
+        assertNextLine("Initialization Info: validBaseFileSmall.json successfully parsed and validated")
+        assertNextLine("Initialization Info: validScenarioFileSmall.json successfully parsed and validated")
         // The Simulation starts with Tick 0
         assertNextLine("Simulation starts")
         // Tick 0
