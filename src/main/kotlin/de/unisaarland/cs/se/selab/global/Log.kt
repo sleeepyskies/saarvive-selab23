@@ -2,8 +2,8 @@ package de.unisaarland.cs.se.selab.global
 
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
-import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import java.io.File
+import java.io.PrintWriter
 
 /**
  * Log class handles logging for the simulation.
@@ -12,13 +12,16 @@ object Log {
     var filePath: String = "stdout"
 
     /**
-     * helper function for logging messages.
+     * Helper function for logging messages.
      */
     private fun logIt(message: String) {
         if (filePath != "stdout") {
-            File(filePath).bufferedWriter().use { out -> out.write(message) }
+            PrintWriter(File(filePath)).use { out ->
+                out.println(message)
+                out.flush() // Flush the PrintWriter
+            }
         } else {
-            logger(message)
+            println(message) // Print to standard output
         }
     }
 
