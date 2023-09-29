@@ -22,12 +22,12 @@ import java.io.File
 class AssetParser(private val assetSchemaFile: String, private val jsonFile: String) {
     private val assetSchema: Schema
     private val json: JSONObject
-    private lateinit var allVehicles: List<Vehicle>
+    private var allVehicles: List<Vehicle>
 
     init {
         // Load the asset schema only
         // val assetSchemaJson = JSONObject(File(assetSchemaFile).readText())
-        assetSchema = getSchema(this.javaClass, assetSchemaFile)!!
+        assetSchema = getSchema(this.javaClass, assetSchemaFile) ?: throw IllegalArgumentException("Schema not found")
 
         // Load the JSON data
         val assetJsonData = File(jsonFile).readText()
