@@ -170,10 +170,10 @@ object Log {
         logIt("Assets Rerouted: $assetsRerouted")
     }
 
-    /**
+/*    *//**
      * log the end of simulation if parsed files invalid
-     */
+     *//*
     fun displaySimulationEnd() {
         logIt("Simulation End")
-    }
+    }*/
 }
