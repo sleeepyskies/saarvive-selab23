@@ -16,6 +16,7 @@ import de.unisaarland.cs.se.selab.graph.Vertex
 import de.unisaarland.cs.se.selab.parser.AssetParser
 import de.unisaarland.cs.se.selab.parser.CountyParser
 import de.unisaarland.cs.se.selab.parser.SimulationParser
+import java.io.File
 
 /**
  * Is responsible for calling the parsers, cross
@@ -60,11 +61,13 @@ class SimulationObjectConstructor(
         simulationParser.parseEmergencyCalls()
         simulationParser.parseEvents()
         if (simulationParser.validEmergency && simulationParser.validEvent) {
-            Log.displayInitializationInfoValid(simulationFile)
+            val name = File(simulationFile).name
+            Log.displayInitializationInfoValid(name)
             emergencies = simulationParser.parsedEmergencies
             events = simulationParser.parsedEvents
         } else {
-            Log.displayInitializationInfoInvalid(simulationFile)
+            val name = File(simulationFile).name
+            Log.displayInitializationInfoInvalid(name)
             return null
         }
 
