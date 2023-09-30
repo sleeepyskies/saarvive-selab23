@@ -64,6 +64,7 @@ class SimulationObjectConstructor(
             emergencies = simulationParser.parsedEmergencies
             events = simulationParser.parsedEvents
         } else {
+            Log.displayInitializationInfoInvalid(simulationFile)
             return null
         }
 
