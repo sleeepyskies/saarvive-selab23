@@ -32,8 +32,14 @@ class SimulationObjectConstructor(
      */
     public fun createSimulation(): Simulation? {
         // parse, validate and create map
-        val countyParser = CountyParser(countyFile)
-        val graph = countyParser.parse()
+        var countyParser: CountyParser
+        var graph: Graph
+        try {
+            countyParser = CountyParser(countyFile)
+            graph = countyParser.parse()
+        } catch (e: IllegalArgumentException) {
+            throw IllegalArgumentException("Map file is invalid", e)
+        }
 
         // parse, validate and create assets
         val assetParser = AssetParser(
