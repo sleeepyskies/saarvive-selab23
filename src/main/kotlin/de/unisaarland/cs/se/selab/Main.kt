@@ -1,6 +1,7 @@
 package de.unisaarland.cs.se.selab
 
 import de.unisaarland.cs.se.selab.global.Number
+import de.unisaarland.cs.se.selab.simulation.Simulation
 import de.unisaarland.cs.se.selab.simulation.SimulationObjectConstructor
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 /**
@@ -13,9 +14,21 @@ fun main(args: Array<String>) {
         printUsage()
     }
 
-    val simulationObjConstructor =
-        SimulationObjectConstructor(arguments.mapFile, arguments.assetsFile, arguments.scenarioFile, arguments.maxTicks)
-    val simulation = simulationObjConstructor.createSimulation()
+    var simulationObjConstructor: SimulationObjectConstructor
+    var simulation: Simulation? = null
+    try {
+        simulationObjConstructor =
+            SimulationObjectConstructor(
+                arguments.mapFile,
+                arguments.assetsFile,
+                arguments.scenarioFile,
+                arguments.maxTicks
+            )
+        simulation = simulationObjConstructor.createSimulation()
+    } catch (e: IllegalArgumentException) {
+        System.err.println(e.message)
+        System.exit(0)
+    }
     if (simulation != null) {
         simulation.start()
     }
@@ -56,26 +69,31 @@ fun parseCommandLineArguments(args: Array<String>): CommandLineArguments {
                 requireArgument()
                 mapFile = args[i]
             }
+
             "--assets", "-a" -> {
                 i++
                 requireArgument()
                 assetsFile = args[i]
             }
+
             "--scenario", "-s" -> {
                 i++
                 requireArgument()
                 scenarioFile = args[i]
             }
+
             "--ticks", "-t" -> {
                 i++
                 requireArgument()
                 ticks = args[i].toIntOrNull() ?: Number.ONE_HUNDRED
             }
+
             "--out", "-o" -> {
                 i++
                 requireArgument()
                 outFile = args[i]
             }
+
             "--help", "-h" -> help = true
             else -> System.err.println("Unknown argument: ${args[i]}")
         }
