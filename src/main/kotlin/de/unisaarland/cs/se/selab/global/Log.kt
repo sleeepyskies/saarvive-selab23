@@ -15,15 +15,14 @@ object Log {
      * Helper function for logging messages.
      */
     private fun logIt(message: String) {
-        val writer = if (filePath != "stdout") {
-            PrintWriter(File(filePath))
+        if (filePath == "stdout") {
+            val writer = PrintWriter(System.out)
+            writer.println(message)
+            writer.flush()
         } else {
-            PrintWriter(System.out) // Use standard output
-        }
-
-        writer.use { out ->
-            out.println(message)
-            out.flush()
+            val writer = PrintWriter(File(filePath))
+            writer.println(message)
+            writer.flush()
         }
     }
 
