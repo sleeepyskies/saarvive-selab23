@@ -42,12 +42,16 @@ class SimulationObjectConstructor(
         }
 
         // parse, validate and create assets
-        val assetParser = AssetParser(
-            "assets.schema",
-            assetFile
-        )
-        val bases = assetParser.parseBases()
-        val vehicles = assetParser.allVehicles
+        var assetParser: AssetParser
+        var bases: List<Base>
+        var vehicles: List<Vehicle>
+        try {
+            assetParser = AssetParser("assets.schema", assetFile)
+            bases = assetParser.parseBases()
+            vehicles = assetParser.allVehicles
+        } catch (e: IllegalArgumentException) {
+            throw IllegalArgumentException("Asset file is invalid", e)
+        }
 
         // parse, validate and create events and emergencies
         val simulationParser = SimulationParser("simulation.schema", simulationFile)

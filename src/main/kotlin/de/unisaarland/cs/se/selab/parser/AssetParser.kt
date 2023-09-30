@@ -22,7 +22,7 @@ import java.io.File
 class AssetParser(private val assetSchemaFile: String, private val jsonFile: String) {
     private val assetSchema: Schema
     private val json: JSONObject
-    public var allVehicles: List<Vehicle>
+    var allVehicles: List<Vehicle>
 
     init {
         // Load the asset schema only
@@ -35,13 +35,20 @@ class AssetParser(private val assetSchemaFile: String, private val jsonFile: Str
 
         assetSchema.validate(json)
 
-        allVehicles = parseVehicles()
+        allVehicles = parseVehiclesInternal()
     }
 
     /**
      * parse Vehicles
      */
     fun parseVehicles(): List<Vehicle> {
+        return allVehicles
+    }
+
+    /**
+     * parse Vehicles helper function
+     */
+    private fun parseVehiclesInternal(): List<Vehicle> {
         val vehiclesArray = json.getJSONArray("vehicles")
         val parsedVehicles = mutableListOf<Vehicle>()
         for (i in 0 until vehiclesArray.length()) {
