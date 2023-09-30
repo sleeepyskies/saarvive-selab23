@@ -11,6 +11,7 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
 import de.unisaarland.cs.se.selab.getSchema
+import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.global.Number
 import org.everit.json.schema.Schema
 import org.json.JSONObject
@@ -19,38 +20,54 @@ import java.io.File
 /**
 * asset parser parses assets
 */
-class AssetParser(private val assetSchemaFile: String, private val jsonFile: String) {
+class AssetParser(private val assetSchemaFile: String, private val assetJsonFile: String) {
     private val assetSchema: Schema
     private val json: JSONObject
-    var allVehicles: List<Vehicle>
+    private var fileName = "" // for logging
+    public val parsedVehicles = mutableListOf<Vehicle>()
+    public val parsedBases = mutableListOf<Base>()
+
+    // for validation of unique IDs
+    // private val baseIDSet = mutableSetOf<Int>()
+    private val vehicleIDSet = mutableSetOf<Int>()
 
     init {
         // Load the asset schema only
         // val assetSchemaJson = JSONObject(File(assetSchemaFile).readText())
+        try {
+            this.fileName = File(assetJsonFile).name
+        } catch (_: Exception) {
+            outputInvalidAndFinish()
+        }
         assetSchema = getSchema(this.javaClass, assetSchemaFile) ?: throw IllegalArgumentException("Schema not found")
 
         // Load the JSON data
-        val assetJsonData = File(jsonFile).readText()
+        val assetJsonData = File(assetJsonFile).readText()
         json = JSONObject(assetJsonData)
 
         assetSchema.validate(json)
-
-        allVehicles = parseVehiclesInternal()
     }
 
     /**
      * parse Vehicles
      */
-    fun parseVehicles(): List<Vehicle> {
-        return allVehicles
+    fun parse(): Pair<MutableList<Vehicle>, MutableList<Base>> {
+        try {
+            parseVehiclesInternal()
+            parseBases()
+        } catch (_: Exception) {
+            outputInvalidAndFinish()
+        }
+        Log.displayInitializationInfoValid(this.fileName)
+        return Pair(parsedVehicles, parsedBases)
     }
 
     /**
      * parse Vehicles helper function
      */
-    private fun parseVehiclesInternal(): List<Vehicle> {
+    private fun parseVehiclesInternal() {
         val vehiclesArray = json.getJSONArray("vehicles")
-        val parsedVehicles = mutableListOf<Vehicle>()
+        // val parsedVehicles = mutableListOf<Vehicle>()
         for (i in 0 until vehiclesArray.length()) {
             val jsonVehicle = vehiclesArray.getJSONObject(i)
             // assetSchema.validate(jsonVehicle)
@@ -101,15 +118,14 @@ class AssetParser(private val assetSchemaFile: String, private val jsonFile: Str
 
             parsedVehicles.add(vehicle)
         }
-        return parsedVehicles
     }
 
     /**
      * parse Bases
      */
-    fun parseBases(): List<Base> {
+    fun parseBases() {
         val basesArray = json.getJSONArray("bases")
-        val parsedBases = mutableListOf<Base>()
+        // val parsedBases = mutableListOf<Base>()
         for (i in 0 until basesArray.length()) {
             val jsonBase = basesArray.getJSONObject(i)
             // commented out to build
@@ -119,7 +135,7 @@ class AssetParser(private val assetSchemaFile: String, private val jsonFile: Str
             val baseType = validateBaseType(jsonBase.getString("baseType"))
             val location = validateLocation(jsonBase.getInt("location"))
             val staff = validateStaff(jsonBase.getInt("staff"))
-            val vehicles = allVehicles.filter { it.assignedBaseID == id }
+            val vehicles = parsedVehicles.filter { it.assignedBaseID == id }
 
             val base: Base = when (baseType) {
                 "FIRE_STATION" -> FireStation(id, location, staff, vehicles)
@@ -127,35 +143,47 @@ class AssetParser(private val assetSchemaFile: String, private val jsonFile: Str
                 "POLICE_STATION" -> PoliceStation(id, location, staff, jsonBase.getInt("dogs"), vehicles)
                 else -> throw IllegalArgumentException("Invalid baseType: $baseType")
             }
-
             parsedBases.add(base)
         }
-        return parsedBases
     }
 
     private fun validateBaseId(id: Int): Int {
-        require(id >= 0) { "Base ID must be positive" }
+        if (id < 0) {
+            System.err.println("Base ID must be positive")
+        }
         return id
     }
 
     private fun validateBaseType(baseType: String): String {
         val validBaseTypes = listOf("FIRE_STATION", "HOSPITAL", "POLICE_STATION")
-        require(baseType in validBaseTypes) { "Invalid base type" }
+        if (baseType !in validBaseTypes) {
+            System.err.println("Invalid base type")
+        }
         return baseType
     }
 
     private fun validateLocation(location: Int): Int {
-        require(location >= 0) { "Location must be non-negative" }
+        if (location < 0) {
+            System.err.println("Location must be non-negative")
+        }
         return location
     }
 
     private fun validateStaff(staff: Int): Int {
-        require(staff > 0) { "Staff must be non-negative and non-zero" }
+        if (staff <= 0) {
+            System.err.println("Staff must be positive")
+        }
         return staff
     }
 
     private fun validateVehicleId(id: Int): Int {
-        require(id >= 0) { "Vehicle ID must be positive" }
+        if (id < 0) {
+            System.err.println("Vehicle ID must be positive")
+        } else if (id in vehicleIDSet) {
+            System.err.println("Vehicle ID must be unique")
+        } else {
+            vehicleIDSet.add(id)
+        }
         return id
     }
 
@@ -165,34 +193,54 @@ class AssetParser(private val assetSchemaFile: String, private val jsonFile: Str
             "FIRE_TRUCK_WATER", "FIRE_TRUCK_TECHNICAL", "FIRE_TRUCK_LADDER", "FIREFIGHTER_TRANSPORTER",
             "AMBULANCE", "EMERGENCY_DOCTOR_CAR"
         )
-        require(vehicleType in validVehicleTypes) { "Invalid vehicle type" }
+        if (vehicleType !in validVehicleTypes) {
+            System.err.println("Invalid vehicle type")
+        }
         return vehicleType
     }
 
     private fun validateVehicleHeight(height: Int): Int {
-        require(height in 1..Number.FIVE) { "Vehicle height must be between 1 and 5" }
+        if (height !in 1..Number.FIVE) {
+            System.err.println("Vehicle height must be between 1 and 5")
+        }
         return height
     }
 
     private fun validateStaffCapacity(capacity: Int): Int {
-        require(capacity in 1..Number.TWELVE) { "Staff capacity must be in bte 1 and 12" }
+        if (capacity !in 1..Number.TWELVE) {
+            System.err.println("Staff capacity must be between 1 and 12")
+        }
         return capacity
     }
 
     private fun validateCriminalCapacity(capacity: Int): Int {
-        require(capacity in 1..Number.FOUR) { "Criminal capacity must be between 1 and 4" }
+        if (capacity !in 1..Number.FOUR) {
+            System.err.println("Criminal capacity must be between 1 and 4")
+        }
         return capacity
     }
 
     private fun validateWaterCapacity(capacity: Int): Int {
-        require(
-            capacity in listOf(Number.SIX_HUNDRED, Number.ONE_THOUSAND_TWO_HUNDRED, Number.TWO_THOUSAND_FOUR_HUNDRED)
-        ) { "Water capacity must be one of 600, 1200, 2400" }
+        val validWaterCapacities =
+            listOf(Number.SIX_HUNDRED, Number.ONE_THOUSAND_TWO_HUNDRED, Number.TWO_THOUSAND_FOUR_HUNDRED)
+        if (capacity !in validWaterCapacities) {
+            System.err.println("Water capacity must be one of 600, 1200, 2400")
+        }
         return capacity
     }
 
     private fun validateLadderLength(length: Int): Int {
-        require(length in Number.THIRTY..Number.SEVENTY) { "Ladder length must be between 30 and 70" }
+        if (length !in Number.THIRTY..Number.SEVENTY) {
+            System.err.println("Ladder length must be between 30 and 70")
+        }
         return length
+    }
+
+    /**
+     * Outputs invalidity log, terminates the program
+     */
+    private fun outputInvalidAndFinish() {
+        Log.displayInitializationInfoInvalid(this.fileName)
+        throw java.lang.IllegalArgumentException("Invalid asset")
     }
 }

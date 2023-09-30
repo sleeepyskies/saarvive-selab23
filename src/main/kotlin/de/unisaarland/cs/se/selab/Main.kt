@@ -1,6 +1,5 @@
 package de.unisaarland.cs.se.selab
 
-import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.simulation.Simulation
 import de.unisaarland.cs.se.selab.simulation.SimulationObjectConstructor
@@ -32,7 +31,6 @@ fun main(args: Array<String>) {
         System.exit(0)
     }
     if (simulation != null) {
-        Log.displaySimulationStart()
         simulation.start()
     }
 }

@@ -46,8 +46,9 @@ class SimulationObjectConstructor(
         var vehicles: List<Vehicle>
         try {
             assetParser = AssetParser("assets.schema", assetFile)
-            bases = assetParser.parseBases()
-            vehicles = assetParser.allVehicles
+            assetParser.parse()
+            bases = assetParser.parsedBases
+            vehicles = assetParser.parsedVehicles
         } catch (e: IllegalArgumentException) {
             throw IllegalArgumentException("Asset file is invalid", e)
         }

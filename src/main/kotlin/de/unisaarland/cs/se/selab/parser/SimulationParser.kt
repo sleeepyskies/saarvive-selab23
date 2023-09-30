@@ -34,7 +34,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         // Load and validate the JSON schema
 //        val schemaJson = JSONObject(File(schemaFile).readText())
         try {
-            this.fileName = File(schemaFile).name
+            this.fileName = File(jsonFile).name
         } catch (_: Exception) {
             outputInvalidAndFinish()
         }
@@ -63,7 +63,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     /** Parses the JSON data and returns a list of emergencies, uses private method
      * to parse single emergencies.
      */
-    fun parseEmergencyCalls() {
+    private fun parseEmergencyCalls() {
         val emergencyCallsArray = json.getJSONArray("emergencyCalls")
         for (i in 0 until emergencyCallsArray.length()) {
             val jsonEmergency = emergencyCallsArray.getJSONObject(i)
@@ -97,7 +97,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
 
     /** Parses the JSON data and returns a list of events
      */
-    fun parseEvents() {
+    private fun parseEvents() {
         val eventsArray = json.getJSONArray("events")
         for (i in 0 until eventsArray.length()) {
             val jsonEvent = eventsArray.getJSONObject(i)
@@ -303,6 +303,6 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     private fun outputInvalidAndFinish() {
         Log.displayInitializationInfoInvalid(this.fileName)
-        throw java.lang.IllegalArgumentException("Invalid map")
+        throw java.lang.IllegalArgumentException("Invalid simulator configuration")
     }
 }

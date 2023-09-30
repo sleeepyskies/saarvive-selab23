@@ -44,14 +44,14 @@ object Log {
      * log start of simulation.
      */
     fun displaySimulationStart() {
-        logIt("Simulation started")
+        logIt("Simulation starts")
     }
 
     /**
      * log current simulation tick.
      */
     fun displaySimulationTick(tickNumber: Int) {
-        logIt("Simulation tick: $tickNumber")
+        logIt("Simulation Tick: $tickNumber")
     }
 
     /**
@@ -153,5 +153,12 @@ object Log {
      */
     fun displayAssetsRerouted(assetsRerouted: Int) {
         logIt("Assets Rerouted: $assetsRerouted")
+    }
+
+    /**
+     * log the end of simulation if parsed files invalid
+     */
+    fun displaySimulationEnd() {
+        logIt("Simulation End")
     }
 }
