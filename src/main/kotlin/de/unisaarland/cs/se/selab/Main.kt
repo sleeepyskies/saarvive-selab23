@@ -34,11 +34,9 @@ fun main(args: Array<String>) {
     if (simulation != null) {
         simulation.start()
     } else {
-        Log.displayInitializationInfoValid("Simulation")
+        Log.displayInitializationInfoInvalid("Simulation")
     }
 
-    requireNotNull(simulation)
-    simulation.start()
 }
 
 /** Data class for command line arguments */
