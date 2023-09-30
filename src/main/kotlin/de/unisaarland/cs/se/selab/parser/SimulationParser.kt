@@ -203,7 +203,8 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      * Checks whether the specified emergency type belongs to EmergencyType.
      */
     private fun validateEmergencyType(emergencyType: String): EmergencyType {
-        if (emergencyType !in EmergencyType.values().toString()) {
+        val validTypes = listOf("FIRE", "ACCIDENT", "CRIME", "MEDICAL")
+        if (emergencyType !in validTypes) {
             System.err.println("Invalid emergency type")
         }
         return EmergencyType.valueOf(emergencyType)
