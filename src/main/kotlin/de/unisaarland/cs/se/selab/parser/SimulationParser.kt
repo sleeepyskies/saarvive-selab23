@@ -21,10 +21,14 @@ import java.io.File
 class SimulationParser(private val schemaFile: String, private val jsonFile: String) {
     private val schema: Schema
     private val json: JSONObject
+    public val parsedEmergencies = mutableListOf<Emergency>()
+    public val parsedEvents = mutableListOf<Event>()
 
     // a set of all emergency IDs to make sure they are unique
     private val emergencyIDSet = mutableSetOf<Int>()
     private val eventIDSet = mutableSetOf<Int>()
+    public var validEmergency = true
+    public var validEvent = true
 
     init {
         // Load and validate the JSON schema
@@ -32,8 +36,8 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         schema = getSchema(this.javaClass, schemaFile) ?: throw IllegalArgumentException("Schema not found")
 
         // Load and parse the JSON data
-        val jsonData = File(jsonFile).readText()
-        json = JSONObject(jsonData)
+        val simulationJsonData = File(jsonFile).readText()
+        json = JSONObject(simulationJsonData)
 
         schema.validate(json)
     }
@@ -41,10 +45,12 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     /** Parses the JSON data and returns a list of emergencies, uses private method
      * to parse single emergencies.
      */
-    fun parseEmergencyCalls(): List<Emergency> {
+    fun parseEmergencyCalls() {
         val emergencyCallsArray = json.getJSONArray("emergencyCalls")
-        val parsedEmergencies = mutableListOf<Emergency>()
         for (i in 0 until emergencyCallsArray.length()) {
+            if (!validEmergency) {
+                return
+            }
             val jsonEmergency = emergencyCallsArray.getJSONObject(i)
 //            schema.validate(jsonEmergency) -> detekt throws error
             // Validation of fields
@@ -72,15 +78,16 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
             // add emergency to list of emergencies
             parsedEmergencies.add(emergency)
         }
-        return parsedEmergencies
     }
 
     /** Parses the JSON data and returns a list of events
      */
-    fun parseEvents(): List<Event> {
+    fun parseEvents() {
         val eventsArray = json.getJSONArray("events")
-        val parsedEvents = mutableListOf<Event>()
         for (i in 0 until eventsArray.length()) {
+            if (!validEvent) {
+                return
+            }
             val jsonEvent = eventsArray.getJSONObject(i)
 //            schema.validate(jsonEvent) -> detekt throws error
             // validation of single fields
@@ -127,20 +134,27 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
                 else -> require(false) { "Invalid Event Type" }
             }
         }
-        return parsedEvents
     }
 
     /** Validates the ID of emergencies, check if it is unique.
      */
     private fun validateEmergencyId(id: Int): Int {
-        require(id >= 0) { "ID must be positive" }
-        require(!emergencyIDSet.contains(id)) { "ID must be unique" }
+        if (id < 0) {
+            validEmergency = false
+        } else if (emergencyIDSet.contains(id)) {
+            validEmergency = false
+        } else { emergencyIDSet.add(id) }
         return id
     }
 
     private fun validateEventId(id: Int): Int {
-        require(id >= 0) { "ID must be positive" }
-        require(!eventIDSet.contains(id)) { "ID must be unique" }
+        if (id < 0) {
+            validEvent = false
+        } else if (eventIDSet.contains(id)) {
+            validEvent = false
+        } else {
+            eventIDSet.add(id)
+        }
         return id
     }
 
@@ -148,14 +162,18 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      * Checks whether the specified severity value belongs to the range of valid values.
      */
     private fun validateSeverity(severity: Int): Int {
-        require(severity in 1..3) { "Severity must be between 1 and 3" }
+        if (severity !in 1..3) {
+            validEmergency = false
+        }
         return severity
     }
 
     /** Validates the tick of emergencies
      */
     private fun validateEmergencyTick(tick: Int): Int {
-        require(tick >= 1) { "Tick must be greater than or equal to 1" }
+        if (tick <= 0) {
+            validEmergency = false
+        }
         return tick
     }
 
@@ -163,8 +181,8 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      * Checks whether the specified tick value belongs to the range of valid values.
      */
     private fun validateEventTick(tick: Int): Int {
-        if (tick <= 0) {
-            System.err.println("Tick must be greater than 0")
+        if (tick < 0) {
+            validEvent = false
         }
         return tick
     }
@@ -173,8 +191,8 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      * Checks whether the specified emergency type belongs to EmergencyType.
      */
     private fun validateEmergencyType(emergencyType: String): EmergencyType {
-        require(EmergencyType.values().any { it.name == emergencyType }) {
-            "EmergencyType must be one of the following: ${EmergencyType.values().joinToString(", ") { it.name }}"
+        if (emergencyType !in EmergencyType.values().toString()) {
+            validEmergency = false
         }
         return EmergencyType.valueOf(emergencyType)
     }
@@ -182,14 +200,18 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     /** Validates the handle time of emergencies
      */
     private fun validateHandleTime(handleTime: Int): Int {
-        require(handleTime >= 1) { "Minimum handle time is 1" }
+        if (handleTime < 1) {
+            validEmergency = false
+        }
         return handleTime
     }
 
     /** Validates the duration of events
      */
     private fun validateDuration(duration: Int): Int {
-        require(duration >= 1) { "Minimum duration of an event should be at least 1" }
+        if (duration < 1) {
+            validEvent = false
+        }
         return duration
     }
 
@@ -197,21 +219,27 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      * is greater than the handle time.
      */
     private fun validateMaxDuration(maxDuration: Int, handleTime: Int): Int {
-        require(maxDuration > handleTime) { "Maximum duration must be greater than handle time" }
+        if (maxDuration < handleTime) {
+            validEmergency = false
+        }
         return maxDuration
     }
 
     /** Validates the village name of emergencies --> will be changes after Ira is done with Parsing
      */
     private fun validateVillageName(villageName: String): String {
-        require(villageName.isNotBlank()) { "Village name must not be blank" }
+        if (villageName.isBlank()) {
+            validEmergency = false
+        }
         return villageName
     }
 
     /** Validates the factor of events
      */
     private fun validateEventFactor(factor: Int): Int {
-        require(factor >= 1) { "Factor must be at least 1" }
+        if (factor < 1) {
+            validEvent = false
+        }
         return factor
     }
 
@@ -221,7 +249,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     private fun validateRoadTypes(roadType: JSONArray): List<PrimaryType> {
         val validRoadTypes = listOf("MAIN_STREET", "SIDE_STREET", "COUNTY_ROAD")
         for (type in roadType) {
-            require(type in validRoadTypes) { "RoadType must be one of the following: $validRoadTypes" }
+            if (type !in validRoadTypes) validEvent = false
         }
         return roadType.map { enumValueOf(it.toString()) }
     }
@@ -230,7 +258,9 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      * Will be changed after Ira is done with map
      */
     private fun validateSourceId(sourceId: Int): Int {
-        require(sourceId >= 0) { "Source ID must be positive" }
+        if (sourceId < 0) {
+            validEvent = false
+        }
         return sourceId
     }
 
@@ -238,7 +268,9 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      * Will be changed after Ira is done with map
      */
     private fun validateTargetId(targetId: Int): Int {
-        require(targetId >= 0) { "Target ID must be positive" }
+        if (targetId < 0) {
+            validEvent = false
+        }
         return targetId
     }
 
@@ -246,7 +278,9 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      * Will be changed after Min is done with map
      */
     private fun validateVehicleId(vehicleId: Int): Int {
-        require(vehicleId >= 0) { "Vehicle ID must be positive" }
+        if (vehicleId < 0) {
+            validEvent = false
+        }
         return vehicleId
     }
 }
