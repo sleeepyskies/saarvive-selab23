@@ -32,8 +32,8 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         schema = getSchema(this.javaClass, schemaFile) ?: throw IllegalArgumentException("Schema not found")
 
         // Load and parse the JSON data
-        val jsonData = File(jsonFile).readText()
-        json = JSONObject(jsonData)
+        val simulationJsonData = File(jsonFile).readText()
+        json = JSONObject(simulationJsonData)
 
         schema.validate(json)
     }
