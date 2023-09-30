@@ -9,6 +9,7 @@ import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
 import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
+import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.graph.Graph
 import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.Vertex
@@ -31,8 +32,14 @@ class SimulationObjectConstructor(
      */
     public fun createSimulation(): Simulation? {
         // parse, validate and create map
-        val countyParser = CountyParser(countyFile)
-        val graph = countyParser.parse()
+        var countyParser: CountyParser
+        var graph: Graph
+        try {
+            countyParser = CountyParser(countyFile)
+            graph = countyParser.parse()
+        } catch (e: IllegalArgumentException) {
+            throw IllegalArgumentException("Map file is invalid", e)
+        }
 
         // parse, validate and create assets
         val assetParser = AssetParser(
@@ -44,8 +51,17 @@ class SimulationObjectConstructor(
 
         // parse, validate and create events and emergencies
         val simulationParser = SimulationParser("simulation.schema", simulationFile)
-        val emergencies = simulationParser.parseEmergencyCalls()
-        val events = simulationParser.parseEvents()
+        val emergencies: MutableList<Emergency>
+        val events: MutableList<Event>
+        simulationParser.parseEmergencyCalls()
+        simulationParser.parseEvents()
+        if (simulationParser.validEmergency && simulationParser.validEvent) {
+            Log.displayInitializationInfoValid(simulationFile)
+            emergencies = simulationParser.parsedEmergencies
+            events = simulationParser.parsedEvents
+        } else {
+            return null
+        }
 
         // cross validation and construction
         if (
