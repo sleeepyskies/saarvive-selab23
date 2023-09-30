@@ -12,4 +12,7 @@ object StringLiterals {
     const val SECONDARY_TYPE = "secondaryType"
     const val MAIN_STREET = "mainStreet"
     const val NAME = "name"
+    const val COUNTY_ROAD = "countyRoad"
+    const val SIDE_STREET = "sideStreet"
+    const val ERROR = "ERROR"
 }
