@@ -19,6 +19,8 @@ fun main(args: Array<String>) {
     val simulation = simulationObjConstructor.createSimulation()
     if (simulation != null) {
         simulation.start()
+    } else {
+        Log.displayInitializationInfoInvalid("Simulation")
     }
 }
 
