@@ -183,29 +183,22 @@ class CountyParser(private val dotFilePath: String) {
      * Parses and validates Edges individually and creates mapping
      */
     private fun parseEdges(stringEdges: String): Boolean {
-        val edgeSkeleton = Pattern.compile(
-            "\\A(\\s*($nPat)\\s*->\\s*($nPat)\\s*\\[(\\s*[^\\]]+\\s*)\\]\\s*;\\s*)+\\Z"
-        ) // Pattern for the whole "edge" part of received string
         val edgePattern =
-            Pattern.compile("\\s*($nPat)\\s*->\\s*($nPat)\\s*\\[(\\s*[^\\]]+\\s*)\\]\\s*;\\s*")
+            Pattern.compile("\\A\\s*($nPat)\\s*->\\s*($nPat)\\s*\\[(\\s*[^\\]]+\\s*)\\]\\s*;\\s*")
 // Pattern for individual edge
-        val skeleton = edgeSkeleton.matcher(stringEdges)
-        if (!skeleton.find()) {
-            System.err.println("Edge skeleton is invalid. Called in parseEdges().")
-            return false
-        } // Invalid format
-
-        val edge = edgePattern.matcher(stringEdges)
-        while (edge.find()) { // Get one "edge" by one
-            val id1 = edge.group(1).trim().toInt() // The 1st vertex
-            val id2 = edge.group(2).trim().toInt() // The 2nd vertex
+        var stringEdgesForChanges = stringEdges
+        while (edgePattern.matcher(stringEdgesForChanges).find()) { // Get one "edge" by one
+            val edgeFound = edgePattern.toRegex().find(stringEdgesForChanges)
+            val startIndex = (edgeFound?.range?.last ?: 1) + 1
+            val id1 = edgeFound?.groupValues?.get(1).orEmpty().trim().toInt() // The 1st vertex
+            val id2 = edgeFound?.groupValues?.get(2).orEmpty().trim().toInt() // The 2nd vertex
             if (id1 == id2) {
                 System.err.println("Edge connects vertex to itself. Called in parseEdges().")
                 return false
             } // (4. No edges from one vertex to itself)
             val check1 = Pair(id1, id2) // Check for already existing pair in the list of roads
             val check2 = Pair(id2, id1) // Check for already existing pair in the list of roads
-            val matchedEdge = edge.group(3) // Attributes
+            val matchedEdge = edgeFound?.groupValues?.get(3).orEmpty() // Attributes
             if (this.listOfVerticesToRoads.containsKey(check1) ||
                 this.listOfVerticesToRoads.containsKey(check2) || !attributesCanBeParsed(matchedEdge)
             ) {
@@ -219,6 +212,14 @@ class CountyParser(private val dotFilePath: String) {
             val singleRoadObj = createRoad(attributesMapping) // Create road obj
             this.roads.add(singleRoadObj)
             this.listOfVerticesToRoads[Pair(id1, id2)] = singleRoadObj
+
+            // Remove already read data from the string
+            stringEdgesForChanges =
+                stringEdgesForChanges.takeIf { startIndex <= it.length }?.substring(startIndex).orEmpty()
+        }
+        if (!stringEdgesForChanges.matches("\\s*".toRegex())) {
+            System.err.println("Edges syntax failed. Called in parseEdges().")
+            outputInvalidAndFinish()
         }
         this.listOfRoadAttributes.removeAt(0) // Remove empty obj
         return true
@@ -304,8 +305,7 @@ class CountyParser(private val dotFilePath: String) {
 
         return mappingVertexToEdges.all { (_, edges) ->
             val filteredWithoutCountyRoad = edges.filter {
-                it[StringLiterals.PRIMARY_TYPE] !=
-                    StringLiterals.COUNTY_ROAD
+                it[StringLiterals.PRIMARY_TYPE] != StringLiterals.COUNTY_ROAD
             }
             val uniqueVillageCount = filteredWithoutCountyRoad.map { it[StringLiterals.VILLAGE] }.distinct().size
             uniqueVillageCount == 1
@@ -437,13 +437,13 @@ class CountyParser(private val dotFilePath: String) {
      */
     private fun retrieveDataInScope(): String {
         val mapPat =
-            Pattern.compile("\\A(\\s*)digraph\\s+($sPat|$nPat)\\s*\\{([^}]+)\\}(\\s*)\\Z") // Pattern for map
+            Pattern.compile("\\A\\s*digraph\\s+($sPat|$nPat)\\s*\\{([^}]+)\\}\\s*\\Z") // Pattern for map
 
         val mapMatcher = mapPat.matcher(this.data)
         if (!mapMatcher.find()) {
             outputInvalidAndFinish() // General structure is wrong
         }
-        this.digraphName = mapMatcher.group(2) // Puts the digraph name
-        return mapMatcher.group(3) // Returns data in the scope
+        this.digraphName = mapMatcher.group(1) // Puts the digraph name
+        return mapMatcher.group(2) // Returns data in the scope
     }
 }

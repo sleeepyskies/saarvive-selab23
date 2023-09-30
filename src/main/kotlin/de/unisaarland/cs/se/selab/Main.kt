@@ -28,7 +28,7 @@ fun main(args: Array<String>) {
         simulation = simulationObjConstructor.createSimulation()
     } catch (e: IllegalArgumentException) {
         System.err.println(e.message)
-        System.exit(0)
+        System.exit(1)
     }
     if (simulation != null) {
         simulation.start()
