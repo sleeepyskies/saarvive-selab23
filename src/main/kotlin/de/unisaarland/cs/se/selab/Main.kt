@@ -36,7 +36,6 @@ fun main(args: Array<String>) {
     } else {
         Log.displayInitializationInfoInvalid("Simulation")
     }
-
 }
 
 /** Data class for command line arguments */
