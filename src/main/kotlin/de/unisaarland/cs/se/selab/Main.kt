@@ -33,7 +33,7 @@ fun main(args: Array<String>) {
     if (simulation != null) {
         simulation.start()
     } else {
-        Log.displayInitializationInfoInvalid("Simulation")
+        Log.displayInitializationInfoValid("Simulation")
     }
 }
 
