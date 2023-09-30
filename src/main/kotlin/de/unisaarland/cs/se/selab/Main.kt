@@ -5,6 +5,7 @@ import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.simulation.Simulation
 import de.unisaarland.cs.se.selab.simulation.SimulationObjectConstructor
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+
 /**
  * This is the entry point of the simulation.
  */
@@ -35,6 +36,9 @@ fun main(args: Array<String>) {
     } else {
         Log.displayInitializationInfoValid("Simulation")
     }
+
+    requireNotNull(simulation)
+    simulation.start()
 }
 
 /** Data class for command line arguments */
