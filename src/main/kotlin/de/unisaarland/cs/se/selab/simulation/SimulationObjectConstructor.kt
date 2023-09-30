@@ -9,7 +9,6 @@ import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
 import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
-import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.graph.Graph
 import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.Vertex
@@ -42,25 +41,29 @@ class SimulationObjectConstructor(
         }
 
         // parse, validate and create assets
-        val assetParser = AssetParser(
-            "assets.schema",
-            assetFile
-        )
-        val bases = assetParser.parseBases()
-        val vehicles = assetParser.allVehicles
+        var assetParser: AssetParser
+        var bases: List<Base>
+        var vehicles: List<Vehicle>
+        try {
+            assetParser = AssetParser("assets.schema", assetFile)
+            assetParser.parse()
+            bases = assetParser.parsedBases
+            vehicles = assetParser.parsedVehicles
+        } catch (e: IllegalArgumentException) {
+            throw IllegalArgumentException("Asset file is invalid", e)
+        }
 
         // parse, validate and create events and emergencies
-        val simulationParser = SimulationParser("simulation.schema", simulationFile)
-        val emergencies: MutableList<Emergency>
-        val events: MutableList<Event>
-        simulationParser.parseEmergencyCalls()
-        simulationParser.parseEvents()
-        if (simulationParser.validEmergency && simulationParser.validEvent) {
-            Log.displayInitializationInfoValid(simulationFile)
+        var simulationParser: SimulationParser
+        var emergencies: List<Emergency>
+        var events: List<Event>
+        try {
+            simulationParser = SimulationParser("simulation.schema", simulationFile)
+            simulationParser.parse()
             emergencies = simulationParser.parsedEmergencies
             events = simulationParser.parsedEvents
-        } else {
-            return null
+        } catch (e: IllegalArgumentException) {
+            throw IllegalArgumentException("Simulation file is invalid", e)
         }
 
         // cross validation and construction

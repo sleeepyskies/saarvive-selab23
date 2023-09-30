@@ -242,9 +242,9 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
 
     private fun applyRoadClosure(event: RoadClosure) {
         // find source vertex
-        val sourceVertex = graph.find { vertex: Vertex -> vertex.id == event.sourceID } ?: ver
+        val sourceVertex = graph.find { it.id == event.sourceID } ?: ver
         // find target vertex
-        val targetVertex = graph.find { vertex: Vertex -> vertex.id == event.targetID } ?: ver
+        val targetVertex = graph.find { it.id == event.targetID } ?: ver
         // find required road
         val requiredRoad = targetVertex.connectingRoads[sourceVertex.id] ?: r
         // puts the road into the event
