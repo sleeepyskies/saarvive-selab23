@@ -32,9 +32,8 @@ fun main(args: Array<String>) {
         System.exit(0)
     }
     if (simulation != null) {
+        Log.displaySimulationStart()
         simulation.start()
-    } else {
-        Log.displayInitializationInfoInvalid("Simulation")
     }
 }
 

@@ -9,14 +9,12 @@ import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
 import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
-import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.graph.Graph
 import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.Vertex
 import de.unisaarland.cs.se.selab.parser.AssetParser
 import de.unisaarland.cs.se.selab.parser.CountyParser
 import de.unisaarland.cs.se.selab.parser.SimulationParser
-import java.io.File
 
 /**
  * Is responsible for calling the parsers, cross
@@ -55,20 +53,16 @@ class SimulationObjectConstructor(
         }
 
         // parse, validate and create events and emergencies
-        val simulationParser = SimulationParser("simulation.schema", simulationFile)
-        val emergencies: MutableList<Emergency>
-        val events: MutableList<Event>
-        simulationParser.parseEmergencyCalls()
-        simulationParser.parseEvents()
-        if (simulationParser.validEmergency && simulationParser.validEvent) {
-            val name = File(simulationFile).name
-            Log.displayInitializationInfoValid(name)
+        var simulationParser: SimulationParser
+        var emergencies: List<Emergency>
+        var events: List<Event>
+        try {
+            simulationParser = SimulationParser("simulation.schema", simulationFile)
+            simulationParser.parse()
             emergencies = simulationParser.parsedEmergencies
             events = simulationParser.parsedEvents
-        } else {
-            val name = File(simulationFile).name
-            Log.displayInitializationInfoInvalid(name)
-            return null
+        } catch (e: IllegalArgumentException) {
+            throw IllegalArgumentException("Simulation file is invalid", e)
         }
 
         // cross validation and construction
