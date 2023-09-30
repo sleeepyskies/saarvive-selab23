@@ -1,9 +1,9 @@
 package de.unisaarland.cs.se.selab
 
-import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.simulation.Simulation
 import de.unisaarland.cs.se.selab.simulation.SimulationObjectConstructor
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 
 /**
  * This is the entry point of the simulation.
@@ -28,12 +28,10 @@ fun main(args: Array<String>) {
         simulation = simulationObjConstructor.createSimulation()
     } catch (e: IllegalArgumentException) {
         System.err.println(e.message)
-        System.exit(0)
+        System.exit(1)
     }
     if (simulation != null) {
         simulation.start()
-    } else {
-        Log.displayInitializationInfoInvalid("Simulation")
     }
 }
 
@@ -108,5 +106,14 @@ fun parseCommandLineArguments(args: Array<String>): CommandLineArguments {
 /** Prints the usage of the program
  */
 fun printUsage() {
-    Log.displayHelp()
+    logger(
+        "Usage: Saarvive & Thrive"
+    )
+    logger("--map/-m <mapFile>")
+    logger("--assets/-a <assetsFile>")
+    logger("--scenario/-s <scenarioFile>")
+    logger("--ticks/-t <ticks>")
+    logger("--out/-o <outFile>")
+    logger("--help/-h")
+    System.err.println("Exiting...")
 }

@@ -15,15 +15,14 @@ object Log {
      * Helper function for logging messages.
      */
     private fun logIt(message: String) {
-        val writer = if (filePath != "stdout") {
-            PrintWriter(File(filePath))
+        if (filePath == "stdout") {
+            val writer = PrintWriter(System.out)
+            writer.println(message)
+            writer.flush()
         } else {
-            PrintWriter(System.out) // Use standard output
-        }
-
-        writer.use { out ->
-            out.println(message)
-            out.flush()
+            val writer = PrintWriter(File(filePath))
+            writer.println(message)
+            writer.flush()
         }
     }
 
@@ -60,14 +59,14 @@ object Log {
      * log start of simulation.
      */
     fun displaySimulationStart() {
-        logIt("Simulation started")
+        logIt("Simulation starts")
     }
 
     /**
      * log current simulation tick.
      */
     fun displaySimulationTick(tickNumber: Int) {
-        logIt("Simulation tick: $tickNumber")
+        logIt("Simulation Tick: $tickNumber")
     }
 
     /**
@@ -169,5 +168,12 @@ object Log {
      */
     fun displayAssetsRerouted(assetsRerouted: Int) {
         logIt("Assets Rerouted: $assetsRerouted")
+    }
+
+    /**
+     * log the end of simulation if parsed files invalid
+     */
+    fun displaySimulationEnd() {
+        logIt("Simulation End")
     }
 }

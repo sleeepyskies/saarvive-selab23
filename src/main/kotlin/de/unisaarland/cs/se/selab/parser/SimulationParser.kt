@@ -7,6 +7,7 @@ import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
 import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
 import de.unisaarland.cs.se.selab.getSchema
+import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.graph.PrimaryType
 import org.everit.json.schema.Schema
 import org.json.JSONArray
@@ -21,20 +22,23 @@ import java.io.File
 class SimulationParser(private val schemaFile: String, private val jsonFile: String) {
     private val schema: Schema
     private val json: JSONObject
+    private var fileName = "" // for Logging
     public val parsedEmergencies = mutableListOf<Emergency>()
     public val parsedEvents = mutableListOf<Event>()
 
     // a set of all emergency IDs to make sure they are unique
     private val emergencyIDSet = mutableSetOf<Int>()
     private val eventIDSet = mutableSetOf<Int>()
-    public var validEmergency = true
-    public var validEvent = true
 
     init {
         // Load and validate the JSON schema
 //        val schemaJson = JSONObject(File(schemaFile).readText())
-        schema = getSchema(this.javaClass, schemaFile) ?: throw IllegalArgumentException("Schema not found")
-
+        try {
+            this.fileName = File(jsonFile).name
+        } catch (_: Exception) {
+            outputInvalidAndFinish()
+        }
+        this.schema = getSchema(this.javaClass, schemaFile) ?: throw IllegalArgumentException("Schema not found")
         // Load and parse the JSON data
         val simulationJsonData = File(jsonFile).readText()
         json = JSONObject(simulationJsonData)
@@ -42,15 +46,26 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         schema.validate(json)
     }
 
+    /**
+     * Parses the JSON data and returns a pair of emergencies and events
+     */
+    fun parse(): Pair<List<Emergency>, List<Event>> {
+        try {
+            parseEmergencyCalls()
+            parseEvents()
+        } catch (_: IllegalArgumentException) {
+            outputInvalidAndFinish()
+        }
+        Log.displayInitializationInfoValid(this.fileName)
+        return Pair(parsedEmergencies, parsedEvents)
+    }
+
     /** Parses the JSON data and returns a list of emergencies, uses private method
      * to parse single emergencies.
      */
-    fun parseEmergencyCalls() {
+    private fun parseEmergencyCalls() {
         val emergencyCallsArray = json.getJSONArray("emergencyCalls")
         for (i in 0 until emergencyCallsArray.length()) {
-            if (!validEmergency) {
-                return
-            }
             val jsonEmergency = emergencyCallsArray.getJSONObject(i)
 //            schema.validate(jsonEmergency) -> detekt throws error
             // Validation of fields
@@ -82,12 +97,9 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
 
     /** Parses the JSON data and returns a list of events
      */
-    fun parseEvents() {
+    private fun parseEvents() {
         val eventsArray = json.getJSONArray("events")
         for (i in 0 until eventsArray.length()) {
-            if (!validEvent) {
-                return
-            }
             val jsonEvent = eventsArray.getJSONObject(i)
 //            schema.validate(jsonEvent) -> detekt throws error
             // validation of single fields
@@ -140,18 +152,18 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     private fun validateEmergencyId(id: Int): Int {
         if (id < 0) {
-            validEmergency = false
+            System.err.println("Emergency ID must be positive")
         } else if (emergencyIDSet.contains(id)) {
-            validEmergency = false
+            System.err.println("Emergency ID must be unique")
         } else { emergencyIDSet.add(id) }
         return id
     }
 
     private fun validateEventId(id: Int): Int {
         if (id < 0) {
-            validEvent = false
+            System.err.println("Event ID must be positive")
         } else if (eventIDSet.contains(id)) {
-            validEvent = false
+            System.err.println("Event ID must be unique")
         } else {
             eventIDSet.add(id)
         }
@@ -163,7 +175,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     private fun validateSeverity(severity: Int): Int {
         if (severity !in 1..3) {
-            validEmergency = false
+            System.err.println("Severity must be between 1 and 3")
         }
         return severity
     }
@@ -172,7 +184,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     private fun validateEmergencyTick(tick: Int): Int {
         if (tick <= 0) {
-            validEmergency = false
+            System.err.println("Emergency tick must be positive")
         }
         return tick
     }
@@ -182,7 +194,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     private fun validateEventTick(tick: Int): Int {
         if (tick < 0) {
-            validEvent = false
+            System.err.println("Event tick must be non-negative")
         }
         return tick
     }
@@ -192,7 +204,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     private fun validateEmergencyType(emergencyType: String): EmergencyType {
         if (emergencyType !in EmergencyType.values().toString()) {
-            validEmergency = false
+            System.err.println("Invalid emergency type")
         }
         return EmergencyType.valueOf(emergencyType)
     }
@@ -201,7 +213,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     private fun validateHandleTime(handleTime: Int): Int {
         if (handleTime < 1) {
-            validEmergency = false
+            System.err.println("Handle time must be positive")
         }
         return handleTime
     }
@@ -210,7 +222,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     private fun validateDuration(duration: Int): Int {
         if (duration < 1) {
-            validEvent = false
+            System.err.println("Duration must be positive")
         }
         return duration
     }
@@ -220,7 +232,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     private fun validateMaxDuration(maxDuration: Int, handleTime: Int): Int {
         if (maxDuration < handleTime) {
-            validEmergency = false
+            System.err.println("Max duration must be greater than handle time")
         }
         return maxDuration
     }
@@ -229,7 +241,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     private fun validateVillageName(villageName: String): String {
         if (villageName.isBlank()) {
-            validEmergency = false
+            System.err.println("Village name must not be blank")
         }
         return villageName
     }
@@ -238,7 +250,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     private fun validateEventFactor(factor: Int): Int {
         if (factor < 1) {
-            validEvent = false
+            System.err.println("Factor must be positive")
         }
         return factor
     }
@@ -249,7 +261,9 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     private fun validateRoadTypes(roadType: JSONArray): List<PrimaryType> {
         val validRoadTypes = listOf("MAIN_STREET", "SIDE_STREET", "COUNTY_ROAD")
         for (type in roadType) {
-            if (type !in validRoadTypes) validEvent = false
+            if (type !in validRoadTypes) {
+                System.err.println("Invalid road type")
+            }
         }
         return roadType.map { enumValueOf(it.toString()) }
     }
@@ -259,7 +273,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     private fun validateSourceId(sourceId: Int): Int {
         if (sourceId < 0) {
-            validEvent = false
+            System.err.println("Source ID must be positive")
         }
         return sourceId
     }
@@ -269,7 +283,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     private fun validateTargetId(targetId: Int): Int {
         if (targetId < 0) {
-            validEvent = false
+            System.err.println("Target ID must be positive")
         }
         return targetId
     }
@@ -279,8 +293,16 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     private fun validateVehicleId(vehicleId: Int): Int {
         if (vehicleId < 0) {
-            validEvent = false
+            System.err.println("Vehicle ID must be positive")
         }
         return vehicleId
+    }
+
+    /**
+     * Outputs invalidity log, terminates the program
+     */
+    private fun outputInvalidAndFinish() {
+        Log.displayInitializationInfoInvalid(this.fileName)
+        throw java.lang.IllegalArgumentException("Invalid simulator configuration")
     }
 }
