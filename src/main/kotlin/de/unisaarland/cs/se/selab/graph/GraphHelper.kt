@@ -66,14 +66,15 @@ class GraphHelper {
     fun findNextVertex(
         neighbors: Map<Int, Road>,
         visitedVertices: Map<Vertex, Pair<Int, Vertex?>>,
-        graph: List<Vertex>
+        graph: List<Vertex>,
+        unvisitedVertices: List<Vertex>
     ): Vertex? {
         var nextVertex: Vertex? = null
         var minWeight = Int.MAX_VALUE
 
         for ((neighbor, _) in neighbors) {
             val distance = visitedVertices[graph.find { vertex: Vertex -> vertex.id == neighbor }]?.first ?: 0
-            if (distance < minWeight) {
+            if (distance < minWeight  && unvisitedVertices.contains(graph.find { vertex: Vertex -> vertex.id == neighbor })) {
                 minWeight = distance
                 nextVertex = graph.find { vertex: Vertex -> vertex.id == neighbor }
             }
