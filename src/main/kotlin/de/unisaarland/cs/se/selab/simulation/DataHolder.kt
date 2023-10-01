@@ -24,7 +24,7 @@ class DataHolder(
     val resolvedEmergencies: MutableList<Emergency> = mutableListOf()
     val activeVehicles: MutableList<Vehicle> = mutableListOf()
     val rechargingVehicles: MutableList<Vehicle> = mutableListOf()
-    val unavailableVehicles: MutableList<Vehicle> = mutableListOf()
+    val unavailableVehicles: MutableList<Int> = mutableListOf()
     val requests: MutableList<Request> = mutableListOf()
     var assetsRerouted: Int = 0
 
