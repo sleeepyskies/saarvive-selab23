@@ -2,7 +2,6 @@ package de.unisaarland.cs.se.selab.phases
 
 import de.unisaarland.cs.se.selab.dataClasses.events.Event
 import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 
@@ -37,7 +36,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 }
                 event.duration == 0 -> {
                     if (event is VehicleUnavailable) {
-                        dataHolder.unavailableVehicles.removeIf { id: Int ->  id == event.vehicleID }
+                        dataHolder.unavailableVehicles.removeIf { id: Int -> id == event.vehicleID }
                     }
                     dataHolder.graph.revertGraphEvent(event)
                     Log.displayEventEnded(event.eventID)
@@ -60,5 +59,4 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
         // Remove completed events from the list
         events.removeIf { event -> event.duration == 0 }
     }
-
 }
