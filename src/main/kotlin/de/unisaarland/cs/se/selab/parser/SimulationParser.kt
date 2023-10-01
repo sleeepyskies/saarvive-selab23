@@ -63,7 +63,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     /** Parses the JSON data and returns a list of emergencies, uses private method
      * to parse single emergencies.
      */
-    private fun parseEmergencyCalls() {
+    internal fun parseEmergencyCalls() {
         val emergencyCallsArray = json.getJSONArray("emergencyCalls")
         for (i in 0 until emergencyCallsArray.length()) {
             val jsonEmergency = emergencyCallsArray.getJSONObject(i)
