@@ -20,7 +20,7 @@ import java.io.File
 /**
 * asset parser parses assets
 */
-class AssetParser(private val assetSchemaFile: String, private val assetJsonFile: String) {
+class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
     private val assetSchema: Schema
     private val json: JSONObject
     private var fileName = "" // for logging
