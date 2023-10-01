@@ -42,6 +42,7 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
         if (vehicle.ticksStillUnavailable == 0) {
             dataHolder.rechargingVehicles.remove(vehicle)
             vehicle.vehicleStatus = VehicleStatus.IN_BASE
+            dataHolder.activeVehicles.add(vehicle) // Add it back to active vehicles when finish recharge
         }
     }
 
