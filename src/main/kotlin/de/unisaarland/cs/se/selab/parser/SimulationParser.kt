@@ -92,7 +92,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
             )
             // add emergency to list of emergencies
             parsedEmergencies.add(emergency)
-    }
+        }
     }
 
     /** Parses the JSON data and returns a list of events

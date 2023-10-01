@@ -74,7 +74,10 @@ class GraphHelper {
 
         for ((neighbor, _) in neighbors) {
             val distance = visitedVertices[graph.find { vertex: Vertex -> vertex.id == neighbor }]?.first ?: 0
-            if (distance < minWeight  && unvisitedVertices.contains(graph.find { vertex: Vertex -> vertex.id == neighbor })) {
+            if (distance < minWeight && unvisitedVertices.contains(
+                    graph.find { vertex: Vertex -> vertex.id == neighbor }
+                )
+            ) {
                 minWeight = distance
                 nextVertex = graph.find { vertex: Vertex -> vertex.id == neighbor }
             }
