@@ -12,6 +12,7 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleStatus
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
 import de.unisaarland.cs.se.selab.global.Log
+import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 
 /** Represents the allocation phase of the simulation
@@ -66,6 +67,9 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
             // check if vehicle has the required capacity
             val vehicleCapacity = getVehicleCapacity(asset)
             checkAndAssign(vehicleCapacity, requiredCapacity, asset, emergency)
+            val arrival = assignIfCanArriveOnTime(asset, emergency)
+            Log.displayAssetAllocation(asset.id, emergency.id, arrival / Number.TEN)
+            // needs to be clarified with graph
         }
     }
 
@@ -85,15 +89,12 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
                 emergency.requiredCapacity[vehicleCapacity.first] = -vehicleCapacity.second
                 // add information about assigned vehicle to dataHolder
                 dataHolder.vehicleToEmergency[asset.id] = emergency
-                Log.displayAssetAllocation(asset.id, emergency.id, assignIfCanArriveOnTime(asset, emergency))
             } else {
                 // reroute vehicle -> need to implement
                 val emergencyToBase = dataHolder.emergencyToBase[emergency.id]
                 if (emergencyToBase != null) {
                     val reallocatableVehicles = getReallocatableVehicles(emergencyToBase, emergency)
                     rerouteVehicle(reallocatableVehicles, emergency)
-                    Log.displayAssetReallocation(emergency.id, asset.id)
-                    Log.displayAssetsRerouted(dataHolder.assetsRerouted)
                 } else {
                     // Handle the case when emergencyToBase is null
                     // You can throw an exception, log an error, or take appropriate action here.
@@ -116,10 +117,8 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         // calculate time to arrive at emergency at vertex 2
         val timeToArrive2 =
             dataHolder.graph.calculateShortestPath(vehiclePosition, emergencyPosition.second, vehicle.height)
-        if (timeToArrive1 <= timeToArrive2) {
-            return timeToArrive1
-        }
-        return timeToArrive1
+
+        return if (timeToArrive1 <= timeToArrive2) timeToArrive1 else timeToArrive2
     }
 
     private fun getReallocatableVehicles(base: Base, emergency: Emergency): List<Vehicle> {
@@ -191,6 +190,5 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         val baseIds = basesToVisit.map { it.baseID }
         val request = Request(baseIds, emergency.id, nextRequestId++, requiredVehicles, emergency.requiredCapacity)
         dataHolder.requests.add(request)
-        Log.displayAssetRequest(emergency.id, base.baseID, nextRequestId)
     }
 }

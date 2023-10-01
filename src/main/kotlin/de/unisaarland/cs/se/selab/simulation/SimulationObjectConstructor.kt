@@ -52,6 +52,17 @@ class SimulationObjectConstructor(
         } catch (e: IllegalArgumentException) {
             throw IllegalArgumentException("Asset file is invalid", e)
         }
+        // init vehicles lastVisitedVertex
+        for (vehicle in vehicles) {
+            val base = bases.find { base: Base -> base.baseID == vehicle.assignedBaseID }
+            if (base != null) {
+                graph.graph.find { vertex: Vertex -> vertex.id == base.vertexID }.also {
+                    if (it != null) {
+                        vehicle.lastVisitedVertex = it
+                    }
+                }
+            }
+        }
 
         // parse, validate and create events and emergencies
         var simulationParser: SimulationParser

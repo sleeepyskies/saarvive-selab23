@@ -115,12 +115,18 @@ class CountyParser(private val dotFilePath: String) {
      * Parse and create separate data structures, return the result
      */
     private fun parsedAndValid(dataInScope: String): Boolean {
-        val vPat = Pattern.compile("\\A(\\s*(\\d+)\\s*;\\s*)+").toRegex() // Pattern for vertex
+        val vPat = Pattern.compile("\\A(\\s*\\d+\\s*;)\\s*") // Pattern for vertex
 
-        val vertexMatched = vPat.find(dataInScope)
-        val stringVertices = vertexMatched?.groupValues?.get(0).orEmpty()
-        val startIndex = (vertexMatched?.range?.last ?: 1) + 1
-        val stringEdges = dataInScope.takeIf { startIndex <= it.length }?.substring(startIndex).orEmpty()
+        var stringEdges = dataInScope // will delete first matching lines for vertices
+        var stringVertices = ""
+        while (vPat.matcher(stringEdges).find()) {
+            val vertexFound = vPat.toRegex().find(stringEdges)
+            val startIndex = (vertexFound?.range?.last ?: 1) + 1
+            stringVertices += vertexFound?.groupValues?.get(0).orEmpty()
+            stringEdges =
+                stringEdges.takeIf { startIndex <= it.length }?.substring(startIndex).orEmpty()
+        }
+
         // String for parsing edges part
         if (!stringEdges.isEmpty() || !stringVertices.isEmpty()) {
             val parsedVertices = parseVertices(stringVertices)

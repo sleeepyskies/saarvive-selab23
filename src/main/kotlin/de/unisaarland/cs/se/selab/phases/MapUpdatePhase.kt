@@ -14,9 +14,19 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
     override fun execute() {
         val events = dataHolder.events
         if (events.isNotEmpty()) {
+            triggerEvent(events)
             reduceEventDuration(events)
         }
         currentTick++
+    }
+
+    private fun triggerEvent(events: MutableList<Event>) {
+        for (event in events) {
+            if (event.startTick == currentTick) {
+                dataHolder.graph.applyGraphEvent(event)
+                Log.displayEventStarted(event.eventID)
+            }
+        }
     }
     private fun reduceEventDuration(events: MutableList<Event>) {
         events.forEach { event ->

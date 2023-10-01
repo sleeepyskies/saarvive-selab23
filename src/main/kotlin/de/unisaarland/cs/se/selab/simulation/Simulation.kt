@@ -1,7 +1,5 @@
 package de.unisaarland.cs.se.selab.simulation
 
-import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
-import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.phases.AllocationPhase
 import de.unisaarland.cs.se.selab.phases.EmergencyPhase
@@ -16,7 +14,7 @@ import de.unisaarland.cs.se.selab.phases.VehicleUpdatePhase
  * can run (might be provided from the console)
  */
 class Simulation(private val dataHolder: DataHolder, private val maxTicks: Int?) {
-    private var currentTick = -1
+    private var currentTick = 0
 
     /**
      * "Processor" of the program, works in cycles
@@ -31,15 +29,15 @@ class Simulation(private val dataHolder: DataHolder, private val maxTicks: Int?)
             MapUpdatePhase(this.dataHolder)
         )
         Log.displaySimulationStart()
-        do {
-            currentTick++
+        while (shouldContinue()) {
             Log.displaySimulationTick(this.currentTick)
             phases.forEach { phase: Phase -> phase.execute() }
-        } while (shouldContinue())
+            currentTick++
+        } // end of while loop
         val combinedList =
             this.dataHolder.emergencies + this.dataHolder.ongoingEmergencies +
                 this.dataHolder.resolvedEmergencies
-        Log.displayStatistics(combinedList, this.dataHolder.assetsRerouted)
+        Log.displayStatistics(combinedList, this.dataHolder.assetsRerouted, this.currentTick)
     }
 
     /**
@@ -61,16 +59,6 @@ class Simulation(private val dataHolder: DataHolder, private val maxTicks: Int?)
      * Checks if all emergencies are handled (RESOLVED or FAILED)
      */
     private fun emergenciesHandled(): Boolean {
-        val listOfAllEmergencies = this.dataHolder.emergencies + this.dataHolder.ongoingEmergencies +
-            this.dataHolder.resolvedEmergencies
-
-        listOfAllEmergencies.forEach { emergency: Emergency ->
-            if (emergency.emergencyStatus != EmergencyStatus.FAILED ||
-                emergency.emergencyStatus != EmergencyStatus.RESOLVED
-            ) {
-                return false
-            }
-        }
-        return true
+        return dataHolder.emergencies.isEmpty() && dataHolder.ongoingEmergencies.isEmpty()
     }
 }
