@@ -28,6 +28,12 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
             }
         }
     }
+
+    private fun endEvent(event: Event){
+        if (event.duration == 0) {
+            Log.displayEventEnded(event.eventID)
+        }
+    }
     private fun reduceEventDuration(events: MutableList<Event>) {
         events.forEach { event ->
             when {
@@ -39,11 +45,11 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
                         dataHolder.unavailableVehicles.removeIf { id: Int -> id == event.vehicleID }
                     }
                     dataHolder.graph.revertGraphEvent(event)
-                    Log.displayEventEnded(event.eventID)
+                    endEvent(event)
                 }
                 event.startTick == currentTick -> {
                     dataHolder.graph.applyGraphEvent(event)
-                    Log.displayEventStarted(event.eventID)
+                    // Log.displayEventStarted(event.eventID)
                     dataHolder.activeVehicles.forEach { vehicle ->
                         val vehicleRoute = vehicle.currentRoute
                         val vehiclePosition = vehicle.lastVisitedVertex
