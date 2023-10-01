@@ -24,8 +24,8 @@ class AssetParser(private val assetSchemaFile: String, private val assetJsonFile
     private val assetSchema: Schema
     private val json: JSONObject
     private var fileName = "" // for logging
-    public val parsedVehicles = mutableListOf<Vehicle>()
-    public val parsedBases = mutableListOf<Base>()
+    val parsedVehicles = mutableListOf<Vehicle>()
+    val parsedBases = mutableListOf<Base>()
 
     // for validation of unique IDs
     // private val baseIDSet = mutableSetOf<Int>()
