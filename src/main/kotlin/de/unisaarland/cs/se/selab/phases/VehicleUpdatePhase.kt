@@ -10,6 +10,7 @@ import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 import kotlin.math.ceil
+import kotlin.math.max
 
 /**
  * This phase is responsible for moving all active vehicles,
@@ -52,7 +53,7 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
      */
     private fun updateVehiclePosition(vehicle: Vehicle) {
         // move vehicle 1 tick along road
-        vehicle.roadProgress -= 1
+        vehicle.roadProgress = max(0, vehicle.roadProgress - 1) // ensures no negative road progress
     }
 
     /**
