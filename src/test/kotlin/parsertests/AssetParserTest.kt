@@ -104,6 +104,7 @@ class AssetParserTest {
             assetJsonFile = "src/test/resources/parsertests/assetParser/single_asset.json"
         )
 
+        // validate single base
         val (_, bases) = parser.parse()
         assertEquals(1, bases.size)
 
@@ -121,6 +122,7 @@ class AssetParserTest {
             assetJsonFile = "src/test/resources/parsertests/assetParser/single_asset.json"
         )
 
+        // validate single vehicle
         val (vehicles, _) = parser.parse()
         assertEquals(1, vehicles.size)
 
