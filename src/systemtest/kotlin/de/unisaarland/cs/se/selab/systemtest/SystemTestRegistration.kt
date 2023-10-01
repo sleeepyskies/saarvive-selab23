@@ -3,6 +3,7 @@ package de.unisaarland.cs.se.selab.systemtest
 import de.unisaarland.cs.se.selab.systemtest.basictests.ExampleTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.NonExistentVertexTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.TwoRoadsSameLocationTest
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.TwoRoadsSameNameTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.ZeroHeightTest
 import de.unisaarland.cs.se.selab.systemtest.runner.SystemTestManager
 
@@ -17,7 +18,7 @@ object SystemTestRegistration {
         // manager.registerTest(ReallocationTest())
         // Faulty Tests
         manager.registerTest(TwoRoadsSameLocationTest())
-        // manager.registerTest(TwoRoadsSameNameTest())
+        manager.registerTest(TwoRoadsSameNameTest())
         manager.registerTest(NonExistentVertexTest())
         manager.registerTest(ZeroHeightTest())
     }
