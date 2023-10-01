@@ -23,8 +23,8 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     private val schema: Schema
     private val json: JSONObject
     private var fileName = "" // for Logging
-    public val parsedEmergencies = mutableListOf<Emergency>()
-    public val parsedEvents = mutableListOf<Event>()
+    val parsedEmergencies = mutableListOf<Emergency>()
+    val parsedEvents = mutableListOf<Event>()
 
     // a set of all emergency IDs to make sure they are unique
     private val emergencyIDSet = mutableSetOf<Int>()
