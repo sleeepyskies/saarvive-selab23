@@ -17,12 +17,12 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
             triggerEvent(events)
             reduceEventDuration(events)
         }
-        currentTick++
+        this.currentTick++
     }
 
     private fun triggerEvent(events: MutableList<Event>) {
         for (event in events) {
-            if (event.startTick == currentTick) {
+            if (event.startTick == this.currentTick) {
                 dataHolder.graph.applyGraphEvent(event)
                 Log.displayEventStarted(event.eventID)
             }

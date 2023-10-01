@@ -18,12 +18,12 @@ class RequestTest : SystemTest() {
         assertNextLine("Simulation starts")
         // Tick 0
         assertNextLine("Simulation Tick: 0")
-        assertNextLine("Event Triggered: 0 triggered.")
         // Tick 1
         assertNextLine("Simulation Tick: 1")
-        assertNextLine("Event Ended: 0 ended.")
+        assertNextLine("Event Triggered: 0 triggered.")
         // Tick 2
         assertNextLine("Simulation Tick: 2")
+        assertNextLine("Event Ended: 0 ended.")
         assertNextLine("Emergency Assignment: 0 assigned to 1")
         assertNextLine("Asset Allocation: 1 allocated to 0; 2 ticks to arrive.")
         assertNextLine("Asset Request: 0 sent to 0 for 0.")
