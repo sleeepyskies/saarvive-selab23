@@ -16,7 +16,7 @@ import de.unisaarland.cs.se.selab.phases.VehicleUpdatePhase
  * can run (might be provided from the console)
  */
 class Simulation(private val dataHolder: DataHolder, private val maxTicks: Int?) {
-    private var currentTick = -1
+    private var currentTick = 0
 
     /**
      * "Processor" of the program, works in cycles
@@ -31,11 +31,11 @@ class Simulation(private val dataHolder: DataHolder, private val maxTicks: Int?)
             MapUpdatePhase(this.dataHolder)
         )
         Log.displaySimulationStart()
-        do {
-            currentTick++
+        while (shouldContinue()) {
             Log.displaySimulationTick(this.currentTick)
             phases.forEach { phase: Phase -> phase.execute() }
-        } while (shouldContinue())
+            currentTick++
+        } // end of while loop
         val combinedList =
             this.dataHolder.emergencies + this.dataHolder.ongoingEmergencies +
                 this.dataHolder.resolvedEmergencies
