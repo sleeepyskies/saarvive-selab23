@@ -1,7 +1,5 @@
 package de.unisaarland.cs.se.selab.simulation
 
-import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
-import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.phases.AllocationPhase
 import de.unisaarland.cs.se.selab.phases.EmergencyPhase
