@@ -2,6 +2,7 @@
 build/
 !gradle/wrapper/gradle-wrapper.jar
 libs/selab.jar
+test_tmp
 
 ### IntelliJ IDEA ###
 .idea/
