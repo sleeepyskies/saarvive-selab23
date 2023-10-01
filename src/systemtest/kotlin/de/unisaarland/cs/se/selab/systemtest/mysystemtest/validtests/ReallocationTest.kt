@@ -12,9 +12,9 @@ class ReallocationTest : SystemTest() {
 
     override suspend fun run() {
         // Everything is parsed and validated
-        assertNextLine("Initialization Info: emergencyFailTestMap.dot successfully parsed and validated")
-        assertNextLine("Initialization Info: emergencyFailTestAssets.json successfully parsed and validated")
-        assertNextLine("Initialization Info: emergencyFailTestScenario.json successfully parsed and validated")
+        assertNextLine("Initialization Info: rerouteTestMap.dot successfully parsed and validated")
+        assertNextLine("Initialization Info: rerouteTestAssets.json successfully parsed and validated")
+        assertNextLine("Initialization Info: rerouteTestScenario.json successfully parsed and validated")
         // The Simulation starts with Tick 0
         assertNextLine("Simulation starts")
         // Tick 0
