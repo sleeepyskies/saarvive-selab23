@@ -11,6 +11,8 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleStatus
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
+import de.unisaarland.cs.se.selab.global.Log
+import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 
 /** Represents the allocation phase of the simulation
@@ -65,6 +67,9 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
             // check if vehicle has the required capacity
             val vehicleCapacity = getVehicleCapacity(asset)
             checkAndAssign(vehicleCapacity, requiredCapacity, asset, emergency)
+            val arrival = assignIfCanArriveOnTime(asset, emergency)
+            Log.displayAssetAllocation(asset.id, emergency.id, arrival / Number.TEN)
+            // needs to be clarified with graph
         }
     }
 
@@ -76,7 +81,7 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
     ) {
         if (vehicleCapacity.first in requiredCapacity) {
             if (requiredCapacity[vehicleCapacity.first]?.let { vehicleCapacity.second >= it } == true &&
-                assignIfCanArriveOnTime(asset, emergency)
+                assignIfCanArriveOnTime(asset, emergency) <= emergency.maxDuration - emergency.handleTime
             ) {
                 // assign vehicle to emergency, update vehicle status
                 asset.assignedEmergencyID = emergency.id
@@ -103,7 +108,7 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         }
     }
 
-    private fun assignIfCanArriveOnTime(vehicle: Vehicle, emergency: Emergency): Boolean {
+    private fun assignIfCanArriveOnTime(vehicle: Vehicle, emergency: Emergency): Int {
         val vehiclePosition = vehicle.lastVisitedVertex
         val emergencyPosition = emergency.location
         // calculate time to arrive at emergency at vertex 1
@@ -113,8 +118,7 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         val timeToArrive2 =
             dataHolder.graph.calculateShortestPath(vehiclePosition, emergencyPosition.second, vehicle.height)
 
-        return timeToArrive1 <= emergency.maxDuration - emergency.handleTime ||
-            timeToArrive2 <= emergency.maxDuration - emergency.handleTime
+        return if (timeToArrive1 <= timeToArrive2) timeToArrive1 else timeToArrive2
     }
 
     private fun getReallocatableVehicles(base: Base, emergency: Emergency): List<Vehicle> {
