@@ -3,7 +3,7 @@ package de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests
 import de.unisaarland.cs.se.selab.systemtest.api.SystemTest
 
 class RequestTest : SystemTest() {
-    override val name = "NegativeVertexTest"
+    override val name = "RequestTest"
 
     override val map = "mapFiles/requestTestMap.dot"
     override val assets = "assetsJsons/requestTestAssets.json"

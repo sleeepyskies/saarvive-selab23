@@ -5,7 +5,7 @@ import de.unisaarland.cs.se.selab.systemtest.api.SystemTest
 class TwoRoadsSameNameTest : SystemTest() {
     override val name = "TwoRoadsSameNameTest"
 
-    override val map = "mapFiles/mapFiles/2roadsSameName.dot"
+    override val map = "mapFiles/2roadsSameName.dot"
     override val assets = "assetsJsons/validBaseFileSmall.json"
     override val scenario = "scenarioJsons/validScenarioFileSmall.json"
     override suspend fun run() {
