@@ -61,16 +61,6 @@ class Simulation(private val dataHolder: DataHolder, private val maxTicks: Int?)
      * Checks if all emergencies are handled (RESOLVED or FAILED)
      */
     private fun emergenciesHandled(): Boolean {
-        val listOfAllEmergencies = this.dataHolder.emergencies + this.dataHolder.ongoingEmergencies +
-            this.dataHolder.resolvedEmergencies
-
-        listOfAllEmergencies.forEach { emergency: Emergency ->
-            if (emergency.emergencyStatus != EmergencyStatus.FAILED ||
-                emergency.emergencyStatus != EmergencyStatus.RESOLVED
-            ) {
-                return false
-            }
-        }
-        return true
+        return dataHolder.emergencies.isEmpty() && dataHolder.ongoingEmergencies.isEmpty()
     }
 }
