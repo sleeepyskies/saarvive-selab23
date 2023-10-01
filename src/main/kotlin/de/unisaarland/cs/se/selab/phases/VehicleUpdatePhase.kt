@@ -63,7 +63,9 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
         if (vehicle.roadProgress == 0) {
             // assign new route without first vertex
             vehicle.currentRoute = vehicle.currentRoute.drop(1)
-            vehicle.lastVisitedVertex = vehicle.currentRoute[0]
+            if (vehicle.currentRoute.isNotEmpty()) {
+                vehicle.lastVisitedVertex = vehicle.currentRoute[0]
+            }
         }
     }
 
