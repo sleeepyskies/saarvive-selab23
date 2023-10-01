@@ -119,6 +119,8 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
             dataHolder.graph.calculateShortestPath(vehiclePosition, emergencyPosition.second, vehicle.height)
 
         return if (timeToArrive1 <= timeToArrive2) timeToArrive1 else timeToArrive2
+        // return maxOf(0, if (timeToArrive1 <= timeToArrive2) timeToArrive1 else timeToArrive2)
+        // above code might fix "-214748364 ticks to arrive." issue but need checking
     }
 
     private fun getReallocatableVehicles(base: Base, emergency: Emergency): List<Vehicle> {
