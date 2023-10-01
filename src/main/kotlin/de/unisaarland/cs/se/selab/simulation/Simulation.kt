@@ -39,7 +39,7 @@ class Simulation(private val dataHolder: DataHolder, private val maxTicks: Int?)
         val combinedList =
             this.dataHolder.emergencies + this.dataHolder.ongoingEmergencies +
                 this.dataHolder.resolvedEmergencies
-        Log.displayStatistics(combinedList, this.dataHolder.assetsRerouted)
+        Log.displayStatistics(combinedList, this.dataHolder.assetsRerouted, this.currentTick)
     }
 
     /**

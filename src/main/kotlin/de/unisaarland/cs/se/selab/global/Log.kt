@@ -134,8 +134,8 @@ object Log {
     /**
      * log final statistics at the end of simulation.
      */
-    fun displayStatistics(emergencies: List<Emergency>, assetsRerouted: Int) {
-        val numberReceivedEmergencies = emergencies.size
+    fun displayStatistics(emergencies: List<Emergency>, assetsRerouted: Int, currentTick: Int) {
+        val numberReceivedEmergencies = emergencies.count {it.startTick == currentTick}
         val numberOngoingEmergencies = emergencies.count { it.emergencyStatus == EmergencyStatus.ONGOING }
         val numberFailedEmergencies = emergencies.count { it.emergencyStatus == EmergencyStatus.FAILED }
         val numberResolvedEmergencies = emergencies.count { it.emergencyStatus == EmergencyStatus.RESOLVED }
