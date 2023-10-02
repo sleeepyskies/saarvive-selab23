@@ -35,7 +35,7 @@ class GraphHelper {
     ) {
         for ((neighbor, road) in neighbors) {
             // currentRouteWeight + roadWeight
-            val distance = (visitedVertices[currentVertex]?.first ?: 0) + weightToTicks(road.weight)
+            val distance = (visitedVertices[currentVertex]?.first ?: 0) + road.weight
             // if newWeight < oldWeight
             if (distance < (visitedVertices[graph.find { vertex: Vertex -> vertex.id == neighbor }]?.first ?: 0)) {
                 visitedVertices[
@@ -50,7 +50,7 @@ class GraphHelper {
     /**
      * Returns the weight as ticks need to travel
      */
-    private fun weightToTicks(weight: Int): Int {
+    public fun weightToTicks(weight: Int): Int {
         if (weight < Number.TEN) return 1
         return if (weight % Number.TEN == 0) {
             weight / Number.TEN // number is already a multiple of ten
