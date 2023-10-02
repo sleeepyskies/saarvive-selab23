@@ -109,13 +109,13 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         val roadName = jsonEmergency.getString(keyRoadName)
 
         return validateEmergencyId(id) &&
-                validateEmergencyType(emergencyType) &&
-                validateSeverity(severity) &&
-                validateEmergencyTick(startTick) &&
-                validateHandleTime(handleTime) &&
-                validateMaxDuration(maxDuration, handleTime) &&
-                validateVillageName(villageName) &&
-                validateRoadName(roadName)
+            validateEmergencyType(emergencyType) &&
+            validateSeverity(severity) &&
+            validateEmergencyTick(startTick) &&
+            validateHandleTime(handleTime) &&
+            validateMaxDuration(maxDuration, handleTime) &&
+            validateVillageName(villageName) &&
+            validateRoadName(roadName)
     }
 
     /** Validates the ID of emergencies, check if it is unique.
