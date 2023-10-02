@@ -241,6 +241,6 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
      */
     private fun outputInvalidAndFinish() {
         Log.displayInitializationInfoInvalid(this.fileName)
-        throw java.lang.IllegalArgumentException("Invalid asset")
+        throw IllegalArgumentException("Invalid asset")
     }
 }
