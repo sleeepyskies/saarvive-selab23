@@ -148,11 +148,11 @@ class SimulationObjectConstructor(
      * Helper method for validateEventsBasedOnGraph(). Validates if the roads exist
      */
     private fun validateGraphEvent(event: Event, graph: Graph): Boolean {
-        when (event) {
-            is RushHour -> return true
-            is Construction -> return roadExists(event.sourceID, event.targetID, graph)
-            is RoadClosure -> return roadExists(event.sourceID, event.targetID, graph)
-            is TrafficJam -> return roadExists(event.startVertex, event.endVertex, graph)
+        return when (event) {
+            is RushHour -> true
+            is Construction -> roadExists(event.sourceID, event.targetID, graph)
+            is RoadClosure -> roadExists(event.sourceID, event.targetID, graph)
+            is TrafficJam -> roadExists(event.startVertex, event.endVertex, graph)
             else -> throw IllegalArgumentException("Unsupported event type: ${event::class.simpleName}")
         }
     }
