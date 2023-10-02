@@ -29,7 +29,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
         }
     }
 
-    private fun endEvent(event: Event){
+    private fun endEvent(event: Event) {
         if (event.duration == 0) {
             Log.displayEventEnded(event.eventID)
         }
