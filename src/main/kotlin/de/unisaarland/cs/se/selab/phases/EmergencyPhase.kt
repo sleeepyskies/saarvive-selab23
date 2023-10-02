@@ -43,7 +43,7 @@ class EmergencyPhase(private val dataHolder: DataHolder) : Phase {
     /**
      * Assigns Bases for each [emergencies]
      */
-    private fun assignBasesToEmergencies(emergencies: List<Emergency>) {
+    fun assignBasesToEmergencies(emergencies: List<Emergency>) {
         emergencies.forEach { emergency ->
             assignBaseToEmergency(emergency, findClosestBase(emergency))
         }
@@ -123,7 +123,7 @@ class EmergencyPhase(private val dataHolder: DataHolder) : Phase {
     /**
      * Create log for each ASSIGNED [emergencies] by ID
      */
-    private fun logEmergenciesByID(emergencies: List<Emergency>) {
+    fun logEmergenciesByID(emergencies: List<Emergency>) {
         val sortedByID = emergencies.sortedBy { emergency: Emergency -> emergency.id }
         sortedByID.forEach { sortedEmergency ->
             run {
@@ -139,7 +139,7 @@ class EmergencyPhase(private val dataHolder: DataHolder) : Phase {
     /**
      * Sort ongoing list by severity
      */
-    private fun sortBySeverity() {
-        this.dataHolder.ongoingEmergencies.sortedWith(compareBy<Emergency> { it.severity }.thenBy { it.id })
+    fun sortBySeverity() {
+        this.dataHolder.ongoingEmergencies.sortedWith(compareByDescending<Emergency> { it.severity }.thenBy { it.id })
     }
 }

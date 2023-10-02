@@ -4,6 +4,7 @@ import de.unisaarland.cs.se.selab.dataClasses.bases.FireStation
 import de.unisaarland.cs.se.selab.dataClasses.bases.Hospital
 import de.unisaarland.cs.se.selab.dataClasses.bases.PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
+import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
 import de.unisaarland.cs.se.selab.graph.Graph
 import de.unisaarland.cs.se.selab.graph.PrimaryType
@@ -167,5 +168,41 @@ class EmergencyPhaseLogicTest {
 
         val emergencyList = ep.scheduleEmergencies()
         assert(emergencyList == mutableListOf(emergency4))
+    }
+
+    @Test
+    fun assignBaseToEmergenciesTest() {
+        ep.currentTick = 2
+        val emergencyList = ep.scheduleEmergencies()
+
+        ep.assignBasesToEmergencies(emergencyList)
+        emergency2.location = Pair(v0, v1)
+
+        assert(emergency4.emergencyStatus == EmergencyStatus.ASSIGNED)
+        assert(dataHolder.emergencyToBase[emergency4.id] == fireStation1)
+    }
+
+    @Test
+    fun sortBySeverityTest1() {
+        ep.currentTick = 1
+        ep.scheduleEmergencies()
+        ep.sortBySeverity()
+        assert(dataHolder.ongoingEmergencies == mutableListOf(emergency3, emergency1))
+    }
+
+    @Test
+    fun sortBySeverityTest2() {
+        ep.currentTick = 2
+        ep.scheduleEmergencies()
+        ep.sortBySeverity()
+        assert(dataHolder.ongoingEmergencies == mutableListOf(emergency4))
+    }
+
+    @Test
+    fun sortBySeverityTest3() {
+        ep.currentTick = 3
+        ep.scheduleEmergencies()
+        ep.sortBySeverity()
+        assert(dataHolder.ongoingEmergencies == mutableListOf(emergency6, emergency2, emergency5))
     }
 }
