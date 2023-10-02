@@ -1,7 +1,6 @@
 package de.unisaarland.cs.se.selab
 
 import de.unisaarland.cs.se.selab.global.Number
-import de.unisaarland.cs.se.selab.simulation.Simulation
 import de.unisaarland.cs.se.selab.simulation.SimulationObjectConstructor
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 
