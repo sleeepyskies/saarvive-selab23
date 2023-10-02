@@ -6,6 +6,7 @@ import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
 import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.CapacityType
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
@@ -116,6 +117,7 @@ class AllocationPhaseTest {
         assert(dataHolder.emergencies.isEmpty())
         assert(dataHolder.emergencyToBase[0] == this.bases[0])
         val vehicleList = dataHolder.emergencyToVehicles[0]
+        assert(vehicleList != null)
         if (vehicleList != null) {
             assert(vehicleList.contains(vehicles[0]))
             assert(vehicleList.contains(vehicles[1]))
@@ -124,5 +126,8 @@ class AllocationPhaseTest {
         // assert(dataHolder.vehicleToEmergency[0] == this.emergency)
         assert(dataHolder.vehicleToEmergency[1] == this.emergency)
         assert(dataHolder.vehicleToEmergency[2] != this.emergency)
+
+        assert(emergency.requiredCapacity == mutableMapOf<CapacityType, Int>())
+        assert(emergency.requiredVehicles == mutableMapOf<VehicleType, Int>())
     }
 }
