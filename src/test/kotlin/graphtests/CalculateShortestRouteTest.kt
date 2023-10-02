@@ -12,9 +12,9 @@ class CalculateShortestRouteTest {
     private lateinit var graph: Graph
 
     // Vertices
-    val vertex1 = Vertex(0, mutableMapOf())
-    val vertex2 = Vertex(1, mutableMapOf())
-    val vertex3 = Vertex(2, mutableMapOf())
+    val vertex0 = Vertex(0, mutableMapOf())
+    val vertex1 = Vertex(1, mutableMapOf())
+    val vertex2 = Vertex(2, mutableMapOf())
 
     @BeforeEach
     fun setup() {
@@ -35,19 +35,20 @@ class CalculateShortestRouteTest {
             5
         )
 
-        vertex1.connectingRoads[1] = roadKrabStreet
-        vertex2.connectingRoads[0] = roadKrabStreet
-        vertex2.connectingRoads[2] = roadNotKrabStreet
-        vertex3.connectingRoads[1] = roadNotKrabStreet
+        vertex0.connectingRoads[1] = roadKrabStreet
+        vertex1.connectingRoads[0] = roadKrabStreet
+
+        vertex1.connectingRoads[2] = roadNotKrabStreet
+        vertex2.connectingRoads[1] = roadNotKrabStreet
 
         val roads = listOf(roadKrabStreet, roadNotKrabStreet)
-        val vertices = listOf(vertex1, vertex2, vertex3)
+        val vertices = listOf(vertex0, vertex1, vertex2)
         this.graph = Graph(vertices, roads)
     }
 
     @Test
     fun simplethreeVertexRoute() {
-        var route = graph.calculateShortestRoute(vertex1, vertex3, 2)
-        assert(route == listOf(vertex1, vertex2, vertex3))
+        var route = graph.calculateShortestRoute(vertex0, vertex2, 2)
+        assert(route == listOf(vertex1, vertex2))
     }
 }
