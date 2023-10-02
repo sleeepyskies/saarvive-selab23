@@ -82,8 +82,10 @@ class CountyParser(private val dotFilePath: String) {
             val vertex2Obj = this.idToVertexMapping.getValue(vertex2)
 
             val road = edge.value
+            if (edge.value.sType != SecondaryType.ONE_WAY_STREET) {
+                vertex2Obj.connectingRoads.put(vertex1, road)
+            }
             vertex1Obj.connectingRoads.put(vertex2, road)
-            vertex2Obj.connectingRoads.put(vertex1, road)
         }
     }
 
