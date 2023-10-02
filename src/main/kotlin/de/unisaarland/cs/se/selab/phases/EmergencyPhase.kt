@@ -140,6 +140,12 @@ class EmergencyPhase(private val dataHolder: DataHolder) : Phase {
      * Sort ongoing list by severity
      */
     fun sortBySeverity() {
-        this.dataHolder.ongoingEmergencies.sortedWith(compareByDescending<Emergency> { it.severity }.thenBy { it.id })
+        val emergencies = this.dataHolder.ongoingEmergencies
+        val listOfSorted = emergencies.sortedWith(
+            compareByDescending<Emergency>
+                { it.severity }.thenBy { it.id }
+        )
+        this.dataHolder.ongoingEmergencies.clear()
+        this.dataHolder.ongoingEmergencies.addAll(listOfSorted)
     }
 }

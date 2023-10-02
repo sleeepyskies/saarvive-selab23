@@ -19,7 +19,7 @@ class DataHolder(
     val emergencies: MutableList<Emergency>,
 
 ) {
-    val ongoingEmergencies = mutableListOf<Emergency>()
+    var ongoingEmergencies = mutableListOf<Emergency>()
     val resolvedEmergencies: MutableList<Emergency> = mutableListOf()
     val activeVehicles: MutableList<Vehicle> = mutableListOf()
     val rechargingVehicles: MutableList<Vehicle> = mutableListOf()
