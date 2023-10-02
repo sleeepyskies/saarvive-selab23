@@ -132,7 +132,7 @@ class GraphHelper {
             previousVertex = previousVertices[currentVertex]
         }
         // add the starting vertex to the list (not sure if it should be included)
-        route.add(currentVertex)
+        // route.add(currentVertex) // commenting out because we don't need the start vertex
         // the list of vertices starts with the first vertex in the route
         return route.reversed().toMutableList()
     }

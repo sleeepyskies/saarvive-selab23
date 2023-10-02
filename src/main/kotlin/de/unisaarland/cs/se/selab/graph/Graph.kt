@@ -89,10 +89,12 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
 
         // initializing distances and previous vertices for all vertices in the graph
         for (vertex in graph) {
-            distances[vertex] = if (vertex == vehiclePosition) 0 else Int.MAX_VALUE
+            distances[vertex] = Int.MAX_VALUE - 1
             previousVertices[vertex] = null
             unvisitedVertices.offer(vertex)
         }
+        distances[vehiclePosition] = 0
+        distances[destination] = Int.MAX_VALUE
 
         // dijkstra's algorithm using the above structure
         while (unvisitedVertices.isNotEmpty()) {
@@ -101,13 +103,17 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
              */
             val currentVertex = unvisitedVertices.poll()
 
+            // found the shortest path to the end vertex
             if (currentVertex == destination) {
-                // found the shortest path to the end vertex
+                // build the route
                 route = helper.buildRoute(destination, previousVertices)
+                // add the destination vertex to the route
+                // route.add(destination)
             }
 
             // traverse connected vertices
             helper.exploreNeighbours(currentVertex, distances, previousVertices, vehicleHeight, graph)
+            unvisitedVertices.remove(currentVertex)
         }
         return route.toMutableList()
     }
