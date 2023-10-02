@@ -1,4 +1,5 @@
 package de.unisaarland.cs.se.selab.parser
+
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
 import de.unisaarland.cs.se.selab.getSchema
@@ -22,14 +23,14 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
 
     // a set of all emergency IDs to make sure they are unique
     private val emergencyIDSet = mutableSetOf<Int>()
-    val keyId = "id"
-    val keyTick = "tick"
-    val keyType = "emergencyType"
-    val keySeverity = "severity"
-    val keyHandleTime = "handleTime"
-    val keyMaxDuration = "maxDuration"
-    val keyVillage = "village"
-    val keyRoadName = "roadName"
+    private val keyId = "id"
+    private val keyTick = "tick"
+    private val keyType = "emergencyType"
+    private val keySeverity = "severity"
+    private val keyHandleTime = "handleTime"
+    private val keyMaxDuration = "maxDuration"
+    private val keyVillage = "village"
+    private val keyRoadName = "roadName"
 
     init {
         // Load and parse the JSON schema
