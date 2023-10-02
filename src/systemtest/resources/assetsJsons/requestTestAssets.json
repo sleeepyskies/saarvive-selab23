@@ -17,14 +17,14 @@
             "baseType": "POLICE_STATION",
             "location": 2,
             "staff": 1,
-            "dogs": 0
+            "dogs": 1
         },
         {
             "id": 3,
             "baseType": "HOSPITAL",
             "location": 3,
             "staff": 1,
-            "doctors": 0
+            "doctors": 1
         }
     ],
     "vehicles": [
