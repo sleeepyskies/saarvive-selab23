@@ -17,7 +17,7 @@ class DataHolder(
     val graph: Graph,
     val bases: List<Base>,
     var events: MutableList<Event>,
-    val emergencies: List<Emergency>,
+    val emergencies: MutableList<Emergency>,
 
 ) {
     val ongoingEmergencies = mutableListOf<Emergency>()
@@ -71,10 +71,8 @@ class DataHolder(
      */
     fun updateScheduledEmergencies(emergencies: MutableList<Emergency>) {
         for (emergency in emergencies) {
-            if (emergency.getEmergencyStatus() == EmergencyStatus.ONGOING) {
-                emergencies.remove(emergency)
+                this.emergencies.remove(emergency)
                 ongoingEmergencies.add(emergency)
-            }
         }
     }
 

@@ -9,5 +9,5 @@ data class FireStation(
     override val baseID: Int,
     override val vertexID: Int,
     override var staff: Int,
-    override val vehicles: List<Vehicle>
+    override val vehicles: MutableList<Vehicle>
 ) : Base(baseID, staff, vertexID, vehicles)

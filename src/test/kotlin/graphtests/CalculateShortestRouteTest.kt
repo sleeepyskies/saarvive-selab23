@@ -8,17 +8,16 @@ import de.unisaarland.cs.se.selab.graph.Vertex
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class GraphTest {
-
+class CalculateShortestRouteTest {
     private lateinit var graph: Graph
 
-    @BeforeEach
-    public fun setUp() {
-        // Graph setup
-        val vertex1 = Vertex(0, mutableMapOf())
-        val vertex2 = Vertex(1, mutableMapOf())
-        val vertex3 = Vertex(2, mutableMapOf())
+    // Vertices
+    val vertex1 = Vertex(0, mutableMapOf())
+    val vertex2 = Vertex(1, mutableMapOf())
+    val vertex3 = Vertex(2, mutableMapOf())
 
+    @BeforeEach
+    fun setup() {
         val roadKrabStreet = Road(
             PrimaryType.SIDE_STREET,
             SecondaryType.NONE,
@@ -47,8 +46,8 @@ class GraphTest {
     }
 
     @Test
-    public fun shortestPathTest1() {
-        var ticks = graph.calculateShortestPath(graph.graph[0], graph.graph[1], 2)
-        assert(ticks == 1)
+    fun simplethreeVertexRoute() {
+        var route = graph.calculateShortestRoute(vertex1, vertex3, 2)
+        assert(route == listOf(vertex1, vertex2, vertex3))
     }
 }

@@ -31,8 +31,10 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
     // private val baseIDSet = mutableSetOf<Int>()
     private val vehicleIDSet = mutableSetOf<Int>()
 
-    // TODO: Parse bases first and then vehicles
-    // TODO: Return something when something invalid is parsed
+    // T0D0 DONE Parse bases first and then vehicles, in a way that bases are parsed first
+    //       without adding in vehicles yet, then when parse vehicles, we add in the vehicles
+    //       into the base according to their base ID. this way we can validate in another way too
+    // T0D0 Return something when something invalid is parsed
 
     init {
         // Load the asset schema only
@@ -56,8 +58,8 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
      */
     fun parse(): Pair<MutableList<Vehicle>, MutableList<Base>> {
         try {
-            parseVehiclesInternal()
-            parseBases()
+            parseBases() // Parse bases first
+            parseVehiclesInternal() // Then parse vehicles
             validateVehiclesAtItsCorrectBases(parsedBases, parsedVehicles)
         } catch (_: Exception) {
             outputInvalidAndFinish()
@@ -121,6 +123,9 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
             }
 
             parsedVehicles.add(vehicle)
+
+            val correspondingBase = parsedBases.find { it.baseID == baseID }
+            correspondingBase?.vehicles?.add(vehicle)
         }
     }
 
@@ -139,7 +144,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
             val baseType = validateBaseType(jsonBase.getString("baseType"))
             val location = validateLocation(jsonBase.getInt("location"))
             val staff = validateStaff(jsonBase.getInt("staff"))
-            val vehicles = parsedVehicles.filter { it.assignedBaseID == id }
+            val vehicles = mutableListOf<Vehicle>() // Initialize as an empty mutable list
 
             val base: Base = when (baseType) {
                 "FIRE_STATION" -> FireStation(id, location, staff, vehicles)

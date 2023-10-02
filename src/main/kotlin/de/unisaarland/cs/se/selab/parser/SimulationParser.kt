@@ -65,12 +65,18 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      * to parse single emergencies.
      */
     internal fun parseEmergencyCalls() {
+        val keyId = "id"
         val emergencyCallsArray = json.getJSONArray("emergencyCalls")
         for (i in 0 until emergencyCallsArray.length()) {
             val jsonEmergency = emergencyCallsArray.getJSONObject(i)
 //            schema.validate(jsonEmergency) -> detekt throws error
             // Validation of fields
-            val id = validateEmergencyId(jsonEmergency.getInt("id"))
+            val id =
+                if(validateEmergencyId(jsonEmergency.getInt(keyId))){
+                    jsonEmergency.getInt(keyId)
+                } else {
+                    outputInvalidAndFinish()
+                }
             val emergencyType = validateEmergencyType(jsonEmergency.getString("emergencyType"))
             val severity = validateSeverity(jsonEmergency.getInt("severity"))
             val startTick = validateEmergencyTick(jsonEmergency.getInt("tick"))
@@ -82,14 +88,14 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
 
             // create a single emergency
             val emergency = Emergency(
-                id = id,
-                emergencyType = emergencyType,
-                severity = severity,
-                startTick = startTick,
-                handleTime = handleTime,
-                maxDuration = maxDuration,
-                villageName = villageName,
-                roadName = roadName
+                id = id as Int,
+                emergencyType = emergencyType as EmergencyType,
+                severity = severity as Int,
+                startTick = startTick as Int,
+                handleTime = handleTime as Int,
+                maxDuration = maxDuration as Int,
+                villageName = villageName as String,
+                roadName = roadName as String
             )
             // add emergency to list of emergencies
             parsedEmergencies.add(emergency)
@@ -151,13 +157,15 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
 
     /** Validates the ID of emergencies, check if it is unique.
      */
-    private fun validateEmergencyId(id: Int): Int {
+    private fun validateEmergencyId(id: Int): Boolean {
         if (id < 0) {
             System.err.println("Emergency ID must be positive")
+            return false
         } else if (emergencyIDSet.contains(id)) {
             System.err.println("Emergency ID must be unique")
+            return false
         } else { emergencyIDSet.add(id) }
-        return id
+        return true
     }
 
     private fun validateEventId(id: Int): Int {

@@ -87,17 +87,18 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 emergency.emergencyStatus = EmergencyStatus.RESOLVED
                 // Log emergency resolved
                 Log.displayEmergencyResolved(emergency.id)
+                dataHolder.ongoingEmergencies.remove(emergency)
+                dataHolder.resolvedEmergencies.add(emergency)
+                dataHolder.emergencyToVehicles[emergency.id]?.let { sendVehiclesBack(it) }
             }
             // emergency failed
             if (emergency.maxDuration == 0) {
                 emergency.emergencyStatus = EmergencyStatus.FAILED
                 Log.displayEmergencyFailed(emergency.id)
+                dataHolder.ongoingEmergencies.remove(emergency)
+                dataHolder.resolvedEmergencies.add(emergency)
+                dataHolder.emergencyToVehicles[emergency.id]?.let { sendVehiclesBack(it) }
             }
-            // update mappings
-            dataHolder.ongoingEmergencies.remove(emergency)
-            dataHolder.resolvedEmergencies.add(emergency)
-            // get and send vehicles back
-            dataHolder.emergencyToVehicles[emergency.id]?.let { sendVehiclesBack(it) }
         }
     }
 }

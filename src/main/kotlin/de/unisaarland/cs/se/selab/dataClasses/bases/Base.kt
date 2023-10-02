@@ -9,5 +9,5 @@ open class Base(
     open val baseID: Int,
     open var staff: Int,
     open val vertexID: Int,
-    open val vehicles: List<Vehicle>
+    open val vehicles: MutableList<Vehicle>
 )
