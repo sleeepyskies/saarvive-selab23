@@ -23,6 +23,8 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
 
     // a set of all emergency IDs to make sure they are unique
     private val emergencyIDSet = mutableSetOf<Int>()
+
+    // keys for the JSON data
     private val keyId = "id"
     private val keyTick = "tick"
     private val keyType = "emergencyType"
@@ -56,7 +58,6 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         } catch (_: IllegalArgumentException) {
             outputInvalidAndFinish()
         }
-        Log.displayInitializationInfoValid(this.fileName)
         return parsedEmergencies
     }
 
