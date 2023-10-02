@@ -38,6 +38,9 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         currentTick++
     }
 
+    /**
+     * Returns all vehicles that are in a base that are of the correct vehicle type for an emergency
+     */
     private fun getAssignableAssets(base: Base, emergency: Emergency): List<Vehicle> {
         val requiredVehicles = emergency.requiredVehicles
         val vehicles = base.vehicles
@@ -69,7 +72,7 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
             val vehicleCapacity = getVehicleCapacity(asset)
             checkAndAssign(vehicleCapacity, requiredCapacity, asset, emergency)
             val arrival = assignIfCanArriveOnTime(asset, emergency)
-            Log.displayAssetAllocation(asset.id, emergency.id, arrival / Number.TEN)
+            Log.displayAssetAllocation(asset.id, emergency.id, arrival)
             // needs to be clarified with graph
         }
     }
