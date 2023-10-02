@@ -50,11 +50,14 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
             .filter { it.vehicleType in requiredVehicles }
     }
 
+    /**
+     * Returns the current amount of capacity a vehicle has
+     */
     private fun getVehicleCapacity(vehicle: Vehicle): Pair<CapacityType, Int> {
         return when (vehicle) {
-            is PoliceCar -> Pair(CapacityType.CRIMINAL, vehicle.maxCriminalCapacity)
-            is FireTruckWater -> Pair(CapacityType.WATER, vehicle.maxWaterCapacity)
-            is Ambulance -> Pair(CapacityType.PATIENT, 1)
+            is PoliceCar -> Pair(CapacityType.CRIMINAL, vehicle.currentCriminalCapcity)
+            is FireTruckWater -> Pair(CapacityType.WATER, vehicle.currentWaterCapacity)
+            is Ambulance -> Pair(CapacityType.PATIENT, if (vehicle.hasPatient) 1 else 0)
             is FireTruckWithLadder -> Pair(CapacityType.LADDER_LENGTH, vehicle.ladderLength)
             else -> Pair(CapacityType.NONE, 0)
         }
@@ -73,7 +76,6 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
             checkAndAssign(vehicleCapacity, requiredCapacity, asset, emergency)
             val arrival = assignIfCanArriveOnTime(asset, emergency)
             Log.displayAssetAllocation(asset.id, emergency.id, arrival)
-            // needs to be clarified with graph
         }
     }
 
