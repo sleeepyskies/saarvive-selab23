@@ -165,9 +165,9 @@ class SimulationParserTest {
         parser = SimulationParser(schemaFile, jsonFile, graph)
         // Ensure the parser is initialized without errors
         assertDoesNotThrow { parser.parse() }
-    }*/
+    }
 
-/*   @Test
+    @Test
    fun testParse() {
       // Ensure that parsing returns non-empty lists of emergencies and events
       val schemaFile = "emergency.schema"
