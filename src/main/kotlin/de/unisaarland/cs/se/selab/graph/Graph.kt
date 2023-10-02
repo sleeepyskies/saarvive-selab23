@@ -60,7 +60,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
                 currentVertex = unvisitedVertices.firstOrNull() ?: break
             }
         }
-        return visitedVertices[destination]?.first ?: -1
+        return helper.weightToTicks(visitedVertices[destination]?.first ?: -1)
     }
 
     /**
