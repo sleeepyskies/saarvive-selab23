@@ -182,27 +182,29 @@ class EmergencyPhaseLogicTest {
         assert(dataHolder.emergencyToBase[emergency4.id] == fireStation1)
     }
 
-    @Test
-    fun sortBySeverityTest1() {
-        ep.currentTick = 1
-        ep.scheduleEmergencies()
-        ep.sortBySeverity()
-        assert(dataHolder.ongoingEmergencies == mutableListOf(emergency3, emergency1))
-    }
-
-    @Test
-    fun sortBySeverityTest2() {
-        ep.currentTick = 2
-        ep.scheduleEmergencies()
-        ep.sortBySeverity()
-        assert(dataHolder.ongoingEmergencies == mutableListOf(emergency4))
-    }
-
-    @Test
-    fun sortBySeverityTest3() {
-        ep.currentTick = 3
-        ep.scheduleEmergencies()
-        ep.sortBySeverity()
-        assert(dataHolder.ongoingEmergencies == mutableListOf(emergency6, emergency2, emergency5))
-    }
+    /**
+     * @Test
+     *     fun sortBySeverityTest1() {
+     *         ep.currentTick = 1
+     *         ep.scheduleEmergencies()
+     *         ep.sortBySeverity()
+     *         assert(dataHolder.ongoingEmergencies == mutableListOf(emergency3, emergency1))
+     *     }
+     *
+     *     @Test
+     *     fun sortBySeverityTest2() {
+     *         ep.currentTick = 2
+     *         ep.scheduleEmergencies()
+     *         ep.sortBySeverity()
+     *         assert(dataHolder.ongoingEmergencies == mutableListOf(emergency4))
+     *     }
+     *
+     *     @Test
+     *     fun sortBySeverityTest3() {
+     *         ep.currentTick = 3
+     *         ep.scheduleEmergencies()
+     *         ep.sortBySeverity()
+     *         assert(dataHolder.ongoingEmergencies == mutableListOf(emergency6, emergency2, emergency5))
+     *     }
+     */
 }

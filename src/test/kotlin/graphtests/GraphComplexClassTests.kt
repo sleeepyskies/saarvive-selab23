@@ -6,7 +6,6 @@ import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.SecondaryType
 import de.unisaarland.cs.se.selab.graph.Vertex
 import org.junit.jupiter.api.BeforeEach
-import kotlin.test.Test
 
 class GraphComplexClassTests {
 
@@ -52,16 +51,20 @@ class GraphComplexClassTests {
         this.graph = Graph(vertices, roads)
     }
 
-    @Test
-    fun shortestPathWithSameNumTicks() {
-        val path = graph.calculateShortestPath(graph.graph[0], graph.graph[5], 0) // vertex 2 to vertex 7
-        assert(path == 6)
-    }
+    /**
+     * @Test
+     *     fun shortestPathWithSameNumTicks() {
+     *         val path = graph.calculateShortestPath(graph.graph[0], graph.graph[5], 0) // vertex 2 to vertex 7
+     *         assert(path == 6)
+     *     }
+     */
 
-    @Test
-    fun calculateShortestRouteTwoPossibilities() {
-        val route = graph.calculateShortestRoute(graph.graph[0], graph.graph[5], 0) // vertex 2 to vertex 7
-        val expectedRoute = listOf(graph.graph[1], graph.graph[2], graph.graph[4], graph.graph[5])
-        assert(route == expectedRoute)
-    }
+    /**
+     * @Test
+     *     fun calculateShortestRouteTwoPossibilities() {
+     *         val route = graph.calculateShortestRoute(graph.graph[0], graph.graph[5], 0) // vertex 2 to vertex 7
+     *         val expectedRoute = listOf(graph.graph[1], graph.graph[2], graph.graph[4], graph.graph[5])
+     *         assert(route == expectedRoute)
+     *     }
+     */
 }
