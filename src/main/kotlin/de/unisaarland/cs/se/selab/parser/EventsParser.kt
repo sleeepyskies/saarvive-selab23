@@ -1,6 +1,10 @@
 package de.unisaarland.cs.se.selab.parser
 
-import de.unisaarland.cs.se.selab.dataClasses.events.*
+import de.unisaarland.cs.se.selab.dataClasses.events.Event
+import de.unisaarland.cs.se.selab.dataClasses.events.RoadClosure
+import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
+import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
+import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
 import de.unisaarland.cs.se.selab.getSchema
 import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.graph.PrimaryType
