@@ -1,0 +1,19 @@
+{
+  "bases": [
+    {
+      "id": 1,
+      "baseType": "FIRE_STATION",
+      "location": 1,
+      "staff": 10
+    }
+  ],
+  "vehicles": [
+    {
+      "id": 1,
+      "vehicleType": "POLICE_CAR",
+      "baseID": 1,
+      "vehicleHeight": 2,
+      "staffCapacity": 13
+    }
+  ]
+}
