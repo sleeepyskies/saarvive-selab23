@@ -148,9 +148,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
     }
 
     private fun validateBaseId(id: Int): Int {
-        if (id < 0) {
-            System.err.println("Base ID must be positive")
-        }
+        require(id >= 0) { "Base ID must be positive" }
         return id
     }
 
