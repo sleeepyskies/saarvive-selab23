@@ -57,7 +57,7 @@ class SimulationObjectConstructor(
             simulationParser = SimulationParser("simulation.schema", simulationFile, graph)
             simulationParser.parse()
             emergencies = simulationParser.parsedEmergencies
-            eventsParser = EventsParser("simulation.schema", simulationFile)
+            eventsParser = EventsParser("simulation.schema", simulationFile, vehicles)
             eventsParser.parse()
             events = eventsParser.parsedEvents
         } catch (_: IllegalArgumentException) {

@@ -1,10 +1,12 @@
 package de.unisaarland.cs.se.selab.parser
 
+import de.unisaarland.cs.se.selab.dataClasses.events.Construction
 import de.unisaarland.cs.se.selab.dataClasses.events.Event
 import de.unisaarland.cs.se.selab.dataClasses.events.RoadClosure
 import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
 import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.getSchema
 import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.graph.PrimaryType
@@ -19,7 +21,7 @@ import java.util.logging.Logger
  * @param schemaFile the path to the JSON schema file
  * @param jsonFile the path to the JSON data file
  */
-class EventsParser(private val schemaFile: String, private val jsonFile: String) {
+class EventsParser(private val schemaFile: String, private val jsonFile: String, private val vehicles: List<Vehicle>) {
     private val schema: Schema
     private val json: JSONObject
     private var fileName = "" // for Logging
@@ -38,6 +40,8 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String)
     private val keyTarget = "target"
     private val keyVehicleID = "vehicleID"
     private val keyRoadTypes = "roadTypes"
+    private val keyOneWay = "oneWayStreet"
+    private val roadClosure = "ROAD_CLOSURE"
 
     init {
         // Load and parse the JSON schema
@@ -75,11 +79,7 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String)
             val jsonEvent = eventsArray.getJSONObject(i)
             if (validateEvent(jsonEvent)) {
                 val event = createEvent(jsonEvent)
-                if (event != null) {
-                    parsedEvents.add(event)
-                } else {
-                    outputInvalidAndFinish()
-                }
+                parsedEvents.add(event)
             } else {
                 outputInvalidAndFinish()
             }
@@ -96,14 +96,15 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String)
                 val roadTypesArray = jsonEvent.getJSONArray(keyRoadTypes)
                 return validateRushHourEvent(id, jsonEvent, factor, roadTypesArray)
             }
-            "TRAFFIC_JAM", "ROAD_CLOSURE" -> {
-                val source = jsonEvent.getInt(keySource)
-                val target = jsonEvent.getInt(keyTarget)
-                return validateOtherEvents(id, jsonEvent, source, target)
+            roadClosure, "TRAFFIC_JAM" -> {
+                return validateTogether(eventType, id, jsonEvent)
             }
             "VEHICLE_UNAVAILABLE" -> {
                 val vehicleId = jsonEvent.getInt(keyVehicleID)
                 return validateVehicleUnavailableEvent(id, jsonEvent, vehicleId)
+            }
+            "CONSTRUCTION_SITE" -> {
+                return validateConstructionEvent(id, jsonEvent)
             }
             else -> return false
         }
@@ -114,23 +115,63 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String)
         val tick = jsonEvent.getInt(keyTick)
         val valid1 = validateEventId(id) && validateDuration(duration)
         val valid2 = validateEventTick(tick) && validateEventFactor(factor) && validateRoadTypes(roadTypesArray)
-        return valid1 && valid2
+        val hasExtraAttributes1 = !jsonEvent.has(keyOneWay) && !jsonEvent.has(keySource)
+        val hasExtraAttributes2 = !jsonEvent.has(keyVehicleID) && !jsonEvent.has(keyTarget)
+        return valid1 && valid2 && hasExtraAttributes1 && hasExtraAttributes2
     }
-    private fun validateOtherEvents(id: Int, jsonEvent: JSONObject, source: Int, target: Int): Boolean {
+
+    private fun validateTogether(eventType: String, id: Int, jsonEvent: JSONObject): Boolean {
+        return if (eventType == roadClosure) {
+            val source = jsonEvent.getInt(keySource)
+            val target = jsonEvent.getInt(keyTarget)
+            validateRoadClosureEvents(id, jsonEvent, source, target)
+        } else {
+            val source = jsonEvent.getInt(keySource)
+            val target = jsonEvent.getInt(keyTarget)
+            validateTrafficJamEvent(id, jsonEvent, source, target)
+        }
+    }
+    private fun validateRoadClosureEvents(id: Int, jsonEvent: JSONObject, source: Int, target: Int): Boolean {
         val duration = jsonEvent.getInt(keyMaxDuration)
         val tick = jsonEvent.getInt(keyTick)
         val valid1 = validateEventId(id) && validateDuration(duration)
         val valid2 = validateEventTick(tick) && validateSourceAndTarget(source, target)
-        return valid1 && valid2
+        val hasExtraAttributes1 = !jsonEvent.has(keyOneWay) && !jsonEvent.has(keyFactor)
+        val hasExtraAttributes2 = !jsonEvent.has(keyRoadTypes) && !jsonEvent.has(keyVehicleID)
+        return valid1 && valid2 && hasExtraAttributes1 && hasExtraAttributes2
     }
+    private fun validateTrafficJamEvent(id: Int, jsonEvent: JSONObject, source: Int, target: Int): Boolean {
+        val duration = jsonEvent.getInt(keyMaxDuration)
+        val tick = jsonEvent.getInt(keyTick)
+        val factor = jsonEvent.getInt(keyFactor)
+        val valid1 = validateEventId(id) && validateDuration(duration) && validateEventFactor(factor)
+        val valid2 = validateEventTick(tick) && validateSourceAndTarget(source, target)
+        val hasExtraAttributes1 = !jsonEvent.has(keyOneWay) && !jsonEvent.has(keyRoadTypes)
+        val hasExtraAttributes2 = !jsonEvent.has(keyVehicleID)
+        return valid1 && valid2 && hasExtraAttributes1 && hasExtraAttributes2
+    }
+
     private fun validateVehicleUnavailableEvent(id: Int, jsonEvent: JSONObject, vehicleId: Int): Boolean {
         val duration = jsonEvent.getInt(keyMaxDuration)
         val tick = jsonEvent.getInt(keyTick)
         val valid1 = validateEventId(id) && validateDuration(duration)
         val valid2 = validateEventTick(tick) && validateVehicleId(vehicleId)
-        return valid1 && valid2
+        val hasExtraAttributes1 = !jsonEvent.has(keyOneWay) && !jsonEvent.has(keySource) && !jsonEvent.has(keyRoadTypes)
+        val hasExtraAttributes2 = !jsonEvent.has(keyTarget) && !jsonEvent.has(keyFactor)
+        return valid1 && valid2 && hasExtraAttributes1 && hasExtraAttributes2
     }
-    private fun createEvent(jsonEvent: JSONObject): Event? {
+    private fun validateConstructionEvent(id: Int, jsonEvent: JSONObject): Boolean {
+        val duration = jsonEvent.getInt(keyMaxDuration)
+        val tick = jsonEvent.getInt(keyTick)
+        val source = jsonEvent.getInt(keySource)
+        val target = jsonEvent.getInt(keyTarget)
+        val factor = jsonEvent.getInt(keyFactor)
+        val valid1 = validateEventId(id) && validateDuration(duration) && validateEventFactor(factor)
+        val valid2 = validateEventTick(tick) && validateSourceAndTarget(source, target)
+        val hasExtraAttributes = !jsonEvent.has(keyRoadTypes) && !jsonEvent.has(keyVehicleID)
+        return valid1 && valid2 && hasExtraAttributes
+    }
+    private fun createEvent(jsonEvent: JSONObject): Event {
         val id = jsonEvent.getInt(keyId)
         val eventType = jsonEvent.getString(keyType)
         when (eventType) {
@@ -169,7 +210,15 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String)
 
                 return VehicleUnavailable(id, duration, tick, vehicleID)
             }
-            else -> return null
+            else -> {
+                val duration = jsonEvent.getInt(keyMaxDuration)
+                val tick = jsonEvent.getInt(keyTick)
+                val source = jsonEvent.getInt(keySource)
+                val target = jsonEvent.getInt(keyTarget)
+                val factor = jsonEvent.getInt(keyFactor)
+                val streetClosed = jsonEvent.getBoolean(keyOneWay)
+                return Construction(id, duration, tick, factor, source, target, streetClosed)
+            }
         }
     }
 
@@ -235,6 +284,10 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String)
                 return false
             }
         }
+        if (roadType.length() == 0) {
+            Logger.getLogger("Road type must not be empty")
+            return false
+        }
         return true
     }
 
@@ -252,8 +305,15 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String)
      * Will be changed after Min is done with map
      */
     private fun validateVehicleId(vehicleId: Int): Boolean {
+        val listOfVehicles = mutableListOf<Int>()
+        for (v in vehicles) {
+            listOfVehicles.add(v.id)
+        }
         if (vehicleId < 0) {
             Logger.getLogger("Vehicle ID must be positive")
+            return false
+        } else if (vehicleId !in listOfVehicles) {
+            Logger.getLogger("Invalid vehicle ID")
             return false
         }
         return true
