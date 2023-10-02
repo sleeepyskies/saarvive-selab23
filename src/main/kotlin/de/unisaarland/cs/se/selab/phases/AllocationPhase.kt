@@ -92,7 +92,12 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
                 // assign vehicle to emergency, update vehicle status
                 asset.assignedEmergencyID = emergency.id
                 asset.vehicleStatus = VehicleStatus.ASSIGNED_TO_EMERGENCY
-                emergency.requiredCapacity[vehicleCapacity.first] = -vehicleCapacity.second
+                emergency.requiredCapacity[vehicleCapacity.first] = (
+                    emergency.requiredCapacity?.get(
+                        vehicleCapacity.first
+                    )
+                        ?: 0
+                    ) - vehicleCapacity.second
                 // add information about assigned vehicle to dataHolder
                 dataHolder.vehicleToEmergency[asset.id] = emergency
             } else {
