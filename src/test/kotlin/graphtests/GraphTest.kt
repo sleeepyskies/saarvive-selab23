@@ -1,6 +1,10 @@
 package graphtests
 
-import de.unisaarland.cs.se.selab.graph.*
+import de.unisaarland.cs.se.selab.graph.Graph
+import de.unisaarland.cs.se.selab.graph.PrimaryType
+import de.unisaarland.cs.se.selab.graph.Road
+import de.unisaarland.cs.se.selab.graph.SecondaryType
+import de.unisaarland.cs.se.selab.graph.Vertex
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -21,14 +25,16 @@ class GraphTest {
             "Bikini_Bottom",
             "Krusty_Krab_Street",
             10,
-            3)
+            3
+        )
         val roadNotKrabStreet = Road(
             PrimaryType.MAIN_STREET,
             SecondaryType.NONE,
             "Bikini_Bottom",
             "Not_Krusty_Krab_Street",
             10,
-            5)
+            5
+        )
 
         vertex1.connectingRoads[1] = roadKrabStreet
         vertex2.connectingRoads[0] = roadKrabStreet
