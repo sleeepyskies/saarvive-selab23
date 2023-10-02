@@ -354,7 +354,7 @@ class CountyParser(private val dotFilePath: String) {
      */
     private fun outputInvalidAndFinish() {
         Log.displayInitializationInfoInvalid(this.fileName)
-        throw IllegalArgumentException("Invalid map")
+        throw IllegalArgumentException("Invalid input")
     }
 
     /**
