@@ -9,8 +9,8 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
 import de.unisaarland.cs.se.selab.graph.Graph
-import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.PrimaryType
+import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.SecondaryType
 import de.unisaarland.cs.se.selab.graph.Vertex
 import de.unisaarland.cs.se.selab.phases.AllocationPhase

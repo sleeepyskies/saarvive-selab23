@@ -46,7 +46,7 @@ class SimulationObjectConstructor(
             // parse, validate and create map
             countyParser = CountyParser(countyFile)
             graph = countyParser.parse()
-
+-
             // parse, validate and create assets
             assetParser = AssetParser("assets.schema", assetFile)
             assetParser.parse()
