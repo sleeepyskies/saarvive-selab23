@@ -57,15 +57,11 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
      * parse Vehicles
      */
     fun parse(): Pair<MutableList<Vehicle>, MutableList<Base>> {
-        try {
-            parseBases() // Parse bases first
-            parseVehiclesInternal() // Then parse vehicles
-            validateAtLeastOneBaseOfEachType() // Validate base types
-            validateEachBaseHasAtLeastOneVehicle() // Validate vehicles per base
-            validateVehiclesAtItsCorrectBases(parsedBases, parsedVehicles)
-        } catch (_: Exception) {
-            outputInvalidAndFinish()
-        }
+        parseBases() // Parse bases first
+        parseVehiclesInternal() // Then parse vehicles
+        validateAtLeastOneBaseOfEachType() // Validate base types
+        validateEachBaseHasAtLeastOneVehicle() // Validate vehicles per base
+        validateVehiclesAtItsCorrectBases(parsedBases, parsedVehicles)
         Log.displayInitializationInfoValid(this.fileName)
         return Pair(parsedVehicles, parsedBases)
     }
