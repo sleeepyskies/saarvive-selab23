@@ -20,13 +20,14 @@ class CountyParser(private val dotFilePath: String) {
     private var data: String = "" // Data from the file in String
     private val roads = mutableListOf<Road>() // List of roads on the map (for compatability)
     private val vertices = mutableListOf<Vertex>() // List of roads on the map (for compatability)
-    var digraphName: String = ""
 
     private val listOfVerticesData =
         mutableListOf<Int>() // List of vertices in string (whenever work with Vertices, work with this str)
     private val listOfVerticesToRoads = mutableMapOf<Pair<Int, Int>, Road>() // List of mapping vertices ids to the road
     private val listOfRoadAttributes = mutableListOf(mutableMapOf<String, String>()) // Data in strings for validation
     private val idToVertexMapping = mutableMapOf<Int, Vertex>() // For easies access to the Vertex object
+    private val countiesNames = mutableSetOf<String>() // For checking the condition (13)
+    private val villagesNames = mutableSetOf<String>() // For checking the condition (13)
 
     private val sPat = "[a-zA-Z][a-zA-Z_]*" // Pattern for strings ID
     private val nPat = "\\d+" // Pattern for numbers ID
@@ -237,16 +238,15 @@ class CountyParser(private val dotFilePath: String) {
     private fun villageHasMainStreet(): Boolean {
         val villageToRoadTypeMap = mutableMapOf<String, Boolean>()
         for (singleData in this.listOfRoadAttributes) {
-            if (!villageToRoadTypeMap.contains(singleData.get(StringLiterals.VILLAGE)) &&
-                singleData.get(StringLiterals.VILLAGE) != digraphName
+            if (!villageToRoadTypeMap.contains(singleData.get(StringLiterals.VILLAGE)) && !this.countiesNames.contains(
+                    singleData.get(StringLiterals.VILLAGE)
+                )
             ) {
                 villageToRoadTypeMap[singleData.getOrDefault(StringLiterals.VILLAGE, StringLiterals.ERROR)] =
                     singleData.getOrDefault(StringLiterals.PRIMARY_TYPE, StringLiterals.ERROR) ==
                     StringLiterals.MAIN_STREET
             } else {
-                if (singleData.getValue(StringLiterals.PRIMARY_TYPE) == StringLiterals.MAIN_STREET &&
-                    singleData.get(StringLiterals.VILLAGE) != digraphName
-                ) {
+                if (singleData.getValue(StringLiterals.PRIMARY_TYPE) == StringLiterals.MAIN_STREET) {
                     villageToRoadTypeMap.put(singleData.getValue(StringLiterals.VILLAGE), true)
                 }
             }
@@ -402,10 +402,18 @@ class CountyParser(private val dotFilePath: String) {
      * Checks village name (13. No village name is equal to a county name)
      */
     private fun villageNameIsValid(attributes: MutableMap<String, String>): Boolean {
-        if (attributes.getValue("village") != this.digraphName) {
-            return attributes.getValue("primaryType") != "countyRoad"
+        if (attributes.getValue("primaryType") == "countyRoad") {
+            if (this.villagesNames.contains(attributes.getValue(StringLiterals.VILLAGE))) {
+                return false
+            }
+            this.countiesNames.add(attributes.getValue(StringLiterals.VILLAGE))
+            return true
         }
-        return attributes.getValue("primaryType") == "countyRoad"
+        if (this.countiesNames.contains(attributes.getValue("village"))) {
+            return false
+        }
+        this.villagesNames.add(attributes.getValue("village"))
+        return true
     }
 
     /**
@@ -449,7 +457,6 @@ class CountyParser(private val dotFilePath: String) {
         if (!mapMatcher.find()) {
             outputInvalidAndFinish() // General structure is wrong
         }
-        this.digraphName = mapMatcher.group(1) // Puts the digraph name
         return mapMatcher.group(2) // Returns data in the scope
     }
 }

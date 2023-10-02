@@ -246,7 +246,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
     private fun validateVehiclesAtItsCorrectBases(allBases: List<Base>, allVehicles: List<Vehicle>) {
         allVehicles.forEach { vehicle ->
             val correspondingBase = allBases.find { it.baseID == vehicle.assignedBaseID }
-            require(correspondingBase != null) { "No base found for vehicle with id ${vehicle.id}" }
+            requireNotNull(correspondingBase != null) { "No base found for vehicle with id ${vehicle.id}" }
 
             when (vehicle.vehicleType) {
                 VehicleType.POLICE_CAR, VehicleType.POLICE_MOTORCYCLE, VehicleType.K9_POLICE_CAR -> {
