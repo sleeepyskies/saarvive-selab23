@@ -44,7 +44,5 @@ class GraphTest {
     public fun shortestPathTest1() {
         var ticks = graph.calculateShortestPath(graph.graph[0], graph.graph[1], 2)
         assert(ticks == 1)
-        ticks = graph.calculateShortestPath(graph.graph[0], graph.graph[1], 2)
-        assert(ticks == 1)
     }
 }
