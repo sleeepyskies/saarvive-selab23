@@ -3,7 +3,6 @@ package de.unisaarland.cs.se.selab.parser
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
 import de.unisaarland.cs.se.selab.getSchema
-import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.graph.Graph
 import org.everit.json.schema.Schema
 import org.json.JSONObject
@@ -200,7 +199,6 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     }
 
     private fun outputInvalidAndFinish() {
-        Log.displayInitializationInfoInvalid(this.fileName)
         throw java.lang.IllegalArgumentException("Invalid simulator configuration")
     }
 
