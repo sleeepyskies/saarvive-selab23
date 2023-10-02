@@ -36,7 +36,6 @@ class SimulationObjectConstructor(
 
         val assetParser: AssetParser
         val bases: List<Base>
-
         val vehicles: List<Vehicle>
 
         val simulationParser: SimulationParser
@@ -54,18 +53,6 @@ class SimulationObjectConstructor(
             bases = assetParser.parsedBases
             vehicles = assetParser.parsedVehicles
 
-            // init vehicles lastVisitedVertex
-            for (vehicle in vehicles) {
-                val base = bases.find { base: Base -> base.baseID == vehicle.assignedBaseID }
-                if (base != null) {
-                    graph.graph.find { vertex: Vertex -> vertex.id == base.vertexID }.also {
-                        if (it != null) {
-                            vehicle.lastVisitedVertex = it
-                        }
-                    }
-                }
-            }
-
             // parse, validate and create events and emergencies
             simulationParser = SimulationParser("simulation.schema", simulationFile, graph)
             simulationParser.parse()
@@ -75,6 +62,18 @@ class SimulationObjectConstructor(
             events = eventsParser.parsedEvents
         } catch (_: IllegalArgumentException) {
             return null
+        }
+
+        // init vehicles lastVisitedVertex
+        for (vehicle in vehicles) {
+            val base = bases.find { base: Base -> base.baseID == vehicle.assignedBaseID }
+            if (base != null) {
+                graph.graph.find { vertex: Vertex -> vertex.id == base.vertexID }.also {
+                    if (it != null) {
+                        vehicle.lastVisitedVertex = it
+                    }
+                }
+            }
         }
 
         // cross validation and construction
