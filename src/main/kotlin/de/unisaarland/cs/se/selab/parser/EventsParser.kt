@@ -198,6 +198,6 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String)
      */
     private fun outputInvalidAndFinish() {
         Log.displayInitializationInfoInvalid(this.fileName)
-        throw java.lang.IllegalArgumentException("Invalid simulator configuration")
+        throw IllegalArgumentException("Invalid simulator configuration")
     }
 }

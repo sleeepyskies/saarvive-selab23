@@ -199,7 +199,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     }
 
     private fun outputInvalidAndFinish() {
-        throw java.lang.IllegalArgumentException("Invalid simulator configuration")
+        throw IllegalArgumentException("Invalid simulator configuration")
     }
 
     private fun validateRoadName(road: String): Boolean {

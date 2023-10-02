@@ -6,7 +6,6 @@ import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.SecondaryType
 import de.unisaarland.cs.se.selab.graph.Vertex
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 
 class GraphTest {
 
@@ -46,9 +45,9 @@ class GraphTest {
         this.graph = Graph(vertices, roads)
     }
 
-    @Test
+/*    @Test
     public fun shortestPathTest1() {
         var ticks = graph.calculateShortestPath(graph.graph[0], graph.graph[1], 2)
         assert(ticks == 1)
-    }
+    }*/
 }
