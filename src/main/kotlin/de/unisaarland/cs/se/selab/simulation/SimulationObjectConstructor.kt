@@ -69,7 +69,7 @@ class SimulationObjectConstructor(
         val emergencies: List<Emergency>
         val events: List<Event>
         try {
-            simulationParser = SimulationParser("simulation.schema", simulationFile)
+            simulationParser = SimulationParser("simulation.schema", simulationFile, graph)
             simulationParser.parse()
             emergencies = simulationParser.parsedEmergencies
             events = simulationParser.parsedEvents
