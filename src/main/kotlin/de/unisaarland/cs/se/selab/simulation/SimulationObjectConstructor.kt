@@ -29,10 +29,10 @@ class SimulationObjectConstructor(
     /**
      * Creates and returns a parsed and validated Simulation object
      */
-    public fun createSimulation(): Simulation? {
+    fun createSimulation(): Simulation? {
         // parse, validate and create map
-        var countyParser: CountyParser
-        var graph: Graph
+        val countyParser: CountyParser
+        val graph: Graph
         try {
             countyParser = CountyParser(countyFile)
             graph = countyParser.parse()
@@ -41,9 +41,9 @@ class SimulationObjectConstructor(
         }
 
         // parse, validate and create assets
-        var assetParser: AssetParser
-        var bases: List<Base>
-        var vehicles: List<Vehicle>
+        val assetParser: AssetParser
+        val bases: List<Base>
+        val vehicles: List<Vehicle>
         try {
             assetParser = AssetParser("assets.schema", assetFile)
             assetParser.parse()
@@ -65,11 +65,11 @@ class SimulationObjectConstructor(
         }
 
         // parse, validate and create events and emergencies
-        var simulationParser: SimulationParser
-        var emergencies: List<Emergency>
-        var events: List<Event>
+        val simulationParser: SimulationParser
+        val emergencies: List<Emergency>
+        val events: List<Event>
         try {
-            simulationParser = SimulationParser("simulation.schema", simulationFile)
+            simulationParser = SimulationParser("simulation.schema", simulationFile, graph)
             simulationParser.parse()
             emergencies = simulationParser.parsedEmergencies
             events = simulationParser.parsedEvents
@@ -78,18 +78,18 @@ class SimulationObjectConstructor(
         }
 
         // cross validation and construction
-        if (
+        return if (
             validateAssetsBasedOnGraph(graph, bases) &&
             validateEmergenciesBasedOnGraph(graph, emergencies) &&
             validateEventsBasedOnGraph(graph, events, vehicles)
         ) {
             // If validation succeeds return simulation
             val dataHolder = DataHolder(graph, bases, events.toMutableList(), emergencies)
-            return Simulation(dataHolder, maxTick)
+            Simulation(dataHolder, maxTick)
         } else {
             // If validation fails, throw an exception
             check(false) { "Validation of simulation data failed" }
-            return null
+            null
         }
     }
 
@@ -148,11 +148,11 @@ class SimulationObjectConstructor(
      * Helper method for validateEventsBasedOnGraph(). Validates if the roads exist
      */
     private fun validateGraphEvent(event: Event, graph: Graph): Boolean {
-        when (event) {
-            is RushHour -> return true
-            is Construction -> return roadExists(event.sourceID, event.targetID, graph)
-            is RoadClosure -> return roadExists(event.sourceID, event.targetID, graph)
-            is TrafficJam -> return roadExists(event.startVertex, event.endVertex, graph)
+        return when (event) {
+            is RushHour -> true
+            is Construction -> roadExists(event.sourceID, event.targetID, graph)
+            is RoadClosure -> roadExists(event.sourceID, event.targetID, graph)
+            is TrafficJam -> roadExists(event.startVertex, event.endVertex, graph)
             else -> throw IllegalArgumentException("Unsupported event type: ${event::class.simpleName}")
         }
     }

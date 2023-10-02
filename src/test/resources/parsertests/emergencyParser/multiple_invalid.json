@@ -13,7 +13,7 @@
     {
       "id": 1,
       "tick": 1000,
-      "village": "Saarbruecken",
+      "village": "Village",
       "roadName": "Road",
       "emergencyType": "MEDICAL",
       "severity": 2,
@@ -23,11 +23,21 @@
     {
       "id": 2,
       "tick": 2,
-      "village": "Saarbruecken",
+      "village": "B",
       "roadName": "BB",
       "emergencyType": "ACCIDENT",
       "severity": 3,
       "handleTime": 4,
+      "maxDuration": 8
+    },
+    {
+      "id": 2,
+      "tick": 5,
+      "village": "Dudweiler",
+      "roadName": "Road",
+      "emergencyType": "ACCIDENT",
+      "severity": 1,
+      "handleTime": 3,
       "maxDuration": 8
     }
   ]
