@@ -29,7 +29,7 @@ class SimulationObjectConstructor(
     /**
      * Creates and returns a parsed and validated Simulation object
      */
-    public fun createSimulation(): Simulation? {
+    fun createSimulation(): Simulation? {
         // parse, validate and create map
         val countyParser: CountyParser
         val graph: Graph
