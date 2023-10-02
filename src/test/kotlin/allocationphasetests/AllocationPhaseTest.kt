@@ -39,7 +39,7 @@ class AllocationPhaseTest {
     private lateinit var vehicles: List<Vehicle>
 
     @BeforeEach
-    public fun setUp() {
+    fun setUp() {
         val vertexA = Vertex(0, mutableMapOf())
         val vertexB = Vertex(1, mutableMapOf())
         val vertexC = Vertex(2, mutableMapOf())
@@ -88,7 +88,7 @@ class AllocationPhaseTest {
         )
         val vehicle3 = FireTruckWater(
             VehicleType.FIRE_TRUCK_WATER,
-            1,
+            2,
             1,
             2,
             0,
@@ -106,7 +106,7 @@ class AllocationPhaseTest {
     }
 
     @Test
-    public fun allocationPhaseTest1() {
+    fun allocationPhaseTest1() {
         // more setup
         this.emergency.emergencyStatus = EmergencyStatus.ASSIGNED
         dataHolder.ongoingEmergencies.add(dataHolder.emergencies[0])
