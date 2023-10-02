@@ -141,7 +141,7 @@ class CountyParser(private val dotFilePath: String) {
             if (!villageHasMainStreet() || !sideStreetExists()) {
                 System.err.println(
                     "Village has no main street or side street does not exist. " +
-                            "Called in parsedAndValid()."
+                        "Called in parsedAndValid()."
                 )
                 return false
             }
@@ -246,7 +246,7 @@ class CountyParser(private val dotFilePath: String) {
             ) {
                 villageToRoadTypeMap[singleData.getOrDefault(StringLiterals.VILLAGE, StringLiterals.ERROR)] =
                     singleData.getOrDefault(StringLiterals.PRIMARY_TYPE, StringLiterals.ERROR) ==
-                            StringLiterals.MAIN_STREET
+                    StringLiterals.MAIN_STREET
             } else {
                 if (singleData.getValue(StringLiterals.PRIMARY_TYPE) == StringLiterals.MAIN_STREET) {
                     villageToRoadTypeMap.put(singleData.getValue(StringLiterals.VILLAGE), true)

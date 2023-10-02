@@ -186,7 +186,7 @@ class EmergencyPhaseLogicTest {
     fun sortBySeverityTest1() {
         ep.currentTick = 1
         ep.scheduleEmergencies()
-        ep.sortBySeverity()
+        ep.sortBySeverity(this.dataHolder)
         assert(dataHolder.ongoingEmergencies == mutableListOf(emergency3, emergency1))
     }
 
@@ -194,7 +194,7 @@ class EmergencyPhaseLogicTest {
     fun sortBySeverityTest2() {
         ep.currentTick = 2
         ep.scheduleEmergencies()
-        ep.sortBySeverity()
+        ep.sortBySeverity(this.dataHolder)
         assert(dataHolder.ongoingEmergencies == mutableListOf(emergency4))
     }
 
@@ -202,7 +202,7 @@ class EmergencyPhaseLogicTest {
     fun sortBySeverityTest3() {
         ep.currentTick = 3
         ep.scheduleEmergencies()
-        ep.sortBySeverity()
+        ep.sortBySeverity(this.dataHolder)
         assert(dataHolder.ongoingEmergencies == mutableListOf(emergency6, emergency2, emergency5))
     }
 }

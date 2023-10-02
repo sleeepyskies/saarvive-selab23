@@ -19,7 +19,7 @@ class DataHolder(
     val emergencies: MutableList<Emergency>,
 
 ) {
-    var ongoingEmergencies = mutableListOf<Emergency>()
+    val ongoingEmergencies = mutableListOf<Emergency>()
     val resolvedEmergencies: MutableList<Emergency> = mutableListOf()
     val activeVehicles: MutableList<Vehicle> = mutableListOf()
     val rechargingVehicles: MutableList<Vehicle> = mutableListOf()
@@ -86,7 +86,9 @@ class DataHolder(
             val vertexList = graph.graph
             // find the vertices it is connected to
             val vertices = vertexList.filter { it.connectingRoads.containsValue(road) }
-            val vertexPair = Pair(vertices[0], vertices[1])
+            val vertex2ID =
+                vertexList.first { it.id == vertices[0].connectingRoads.filter { r -> r.value == road }.keys.first() }
+            val vertexPair = Pair(vertices[0], vertex2ID)
             emergency.location = vertexPair
         }
     }
