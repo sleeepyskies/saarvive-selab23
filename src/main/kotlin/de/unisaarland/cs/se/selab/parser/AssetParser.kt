@@ -63,7 +63,6 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
             validateAtLeastOneBaseOfEachType() // Validate base types
             validateEachBaseHasAtLeastOneVehicle() // Validate vehicles per base
             validateVehiclesAtItsCorrectBases(parsedBases, parsedVehicles)
-            validateVehiclesAtItsCorrectBases(parsedBases, parsedVehicles)
         } catch (_: Exception) {
             outputInvalidAndFinish()
         }
