@@ -60,6 +60,9 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
         try {
             parseBases() // Parse bases first
             parseVehiclesInternal() // Then parse vehicles
+            validateAtLeastOneBaseOfEachType() // Validate base types
+            validateEachBaseHasAtLeastOneVehicle() // Validate vehicles per base
+            validateVehiclesAtItsCorrectBases(parsedBases, parsedVehicles)
             validateVehiclesAtItsCorrectBases(parsedBases, parsedVehicles)
         } catch (_: Exception) {
             outputInvalidAndFinish()
@@ -263,6 +266,26 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
             outputInvalidAndFinish()
         }
         return length
+    }
+
+    private fun validateAtLeastOneBaseOfEachType() {
+        val fireStations = parsedBases.filterIsInstance<FireStation>()
+        val hospitals = parsedBases.filterIsInstance<Hospital>()
+        val policeStations = parsedBases.filterIsInstance<PoliceStation>()
+
+        if (fireStations.isEmpty() || hospitals.isEmpty() || policeStations.isEmpty()) {
+            System.err.println("Not all base types are present in the assets.")
+            outputInvalidAndFinish()
+        }
+    }
+
+    private fun validateEachBaseHasAtLeastOneVehicle() {
+        val basesWithoutVehicles = parsedBases.filter { it.vehicles.isEmpty() }
+
+        if (basesWithoutVehicles.isNotEmpty()) {
+            System.err.println("There are bases without any vehicles assigned.")
+            outputInvalidAndFinish()
+        }
     }
 
     private fun validateVehiclesAtItsCorrectBases(allBases: List<Base>, allVehicles: List<Vehicle>) {
