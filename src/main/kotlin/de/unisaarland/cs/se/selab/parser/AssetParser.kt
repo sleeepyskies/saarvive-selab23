@@ -31,6 +31,9 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
     // private val baseIDSet = mutableSetOf<Int>()
     private val vehicleIDSet = mutableSetOf<Int>()
 
+    // TODO: Parse bases first and then vehicles
+    // TODO: Return something when something invalid is parsed
+
     init {
         // Load the asset schema only
         // val assetSchemaJson = JSONObject(File(assetSchemaFile).readText())

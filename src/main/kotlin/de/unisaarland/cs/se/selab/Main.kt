@@ -26,8 +26,11 @@ fun main(args: Array<String>) {
                 arguments.maxTicks
             )
         simulation = simulationObjConstructor.createSimulation()
+        // TODO: Instead of throwing exception do a null check
     } catch (e: IllegalArgumentException) {
+        // TODO: println doesn't work/ should be removed or changed maybe kotlin logger
         System.err.println(e.message)
+        // TODO: CHANGE (something with six letters)
         System.exit(0)
     }
     if (simulation != null) {
