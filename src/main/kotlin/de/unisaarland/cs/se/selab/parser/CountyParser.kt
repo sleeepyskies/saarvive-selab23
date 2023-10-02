@@ -28,7 +28,7 @@ class CountyParser(private val dotFilePath: String) {
     private val listOfRoadAttributes = mutableListOf(mutableMapOf<String, String>()) // Data in strings for validation
     private val idToVertexMapping = mutableMapOf<Int, Vertex>() // For easies access to the Vertex object
 
-    private val sPat = "[a-zA-Z_]+" // Pattern for strings ID
+    private val sPat = "[a-zA-Z][a-zA-Z_]*" // Pattern for strings ID
     private val nPat = "\\d+" // Pattern for numbers ID
 
     /**
