@@ -1,6 +1,7 @@
 package parsertests
 
 import de.unisaarland.cs.se.selab.dataClasses.bases.FireStation
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
 import de.unisaarland.cs.se.selab.parser.AssetParser
 import org.json.JSONException
@@ -43,7 +44,9 @@ class AssetParserTest {
         assert(vehicle1.assignedBaseID == 1)
         assert(vehicle1.height == 2)
         assert(vehicle1.staffCapacity == 5)
-        // assert(vehicle1.maxCriminalCapacity == 2) to be fixed
+        if (vehicle1 is PoliceCar) { // access attributes specific to PoliceCar
+            assert(vehicle1.maxCriminalCapacity == 3)
+        }
     }
 
     @Test
