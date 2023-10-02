@@ -16,7 +16,7 @@ import de.unisaarland.cs.se.selab.simulation.DataHolder
  * assigning bases to them and sorting. [dataHolder] - access to all lists, mappings
  */
 class EmergencyPhase(private val dataHolder: DataHolder) : Phase {
-    private var currentTick = 0
+    var currentTick = 0
 
     /**
      * Main method that keeps track of all processes in EmergencyPhase: choosing the base, assigning, logging, sorting
@@ -32,7 +32,7 @@ class EmergencyPhase(private val dataHolder: DataHolder) : Phase {
     /**
      * Gives the dataHolder list of emergencies that should be removed from emergencies list and added to ongoing list.
      */
-    private fun scheduleEmergencies(): MutableList<Emergency> {
+    fun scheduleEmergencies(): MutableList<Emergency> {
         val listOfScheduledEmergencies =
             dataHolder.emergencies.filter { emergency: Emergency -> emergency.startTick == this.currentTick }
                 .toMutableList()
