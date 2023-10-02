@@ -74,7 +74,7 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
             // check if vehicle has the required capacity
             val vehicleCapacity = getVehicleCapacity(asset)
             checkAndAssign(vehicleCapacity, requiredCapacity, asset, emergency)
-            val arrival = assignIfCanArriveOnTime(asset, emergency)
+            val arrival = getTimeToArrive(asset, emergency)
             Log.displayAssetAllocation(asset.id, emergency.id, arrival)
         }
     }
@@ -85,9 +85,10 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         asset: Vehicle,
         emergency: Emergency
     ) {
+        // check if the vehicles CapacityType is needed
         if (vehicleCapacity.first in requiredCapacity) {
             if (requiredCapacity[vehicleCapacity.first]?.let { vehicleCapacity.second >= it } == true &&
-                assignIfCanArriveOnTime(asset, emergency) <= emergency.maxDuration - emergency.handleTime
+                getTimeToArrive(asset, emergency) <= emergency.maxDuration - emergency.handleTime
             ) {
                 // assign vehicle to emergency, update vehicle status
                 asset.assignedEmergencyID = emergency.id
@@ -114,7 +115,10 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         }
     }
 
-    private fun assignIfCanArriveOnTime(vehicle: Vehicle, emergency: Emergency): Int {
+    /**
+     * Returns the amount of time a vehicle needs to reach an emergency
+     */
+    private fun getTimeToArrive(vehicle: Vehicle, emergency: Emergency): Int {
         val vehiclePosition = vehicle.lastVisitedVertex
         val emergencyPosition = emergency.location
         // calculate time to arrive at emergency at vertex 1
