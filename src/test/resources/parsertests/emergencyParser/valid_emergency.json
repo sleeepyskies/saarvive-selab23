@@ -14,7 +14,7 @@
       "id": 1,
       "tick": 5,
       "village": "Saarbruecken",
-      "roadName": "Bobski Street",
+      "roadName": "Flughafenstrasse",
       "emergencyType": "FIRE",
       "severity": 2,
       "handleTime": 3,

@@ -63,7 +63,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     /** Parses the JSON data and returns a list of emergencies, uses private method
      * to parse single emergencies.
      */
-    private fun parseEmergencyCalls() {
+    fun parseEmergencyCalls() {
         val emergencyCallsArray = json.getJSONArray("emergencyCalls")
 
         for (i in 0 until emergencyCallsArray.length()) {
@@ -87,7 +87,9 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         }
     }
 
-    private fun validateEmergency(jsonEmergency: JSONObject): Boolean {
+    /** Validates the JSON data of a single emergency.
+     */
+    fun validateEmergency(jsonEmergency: JSONObject): Boolean {
         val id = jsonEmergency.getInt(keyId)
         val emergencyType = jsonEmergency.getString(keyType)
         val severity = jsonEmergency.getInt(keySeverity)
@@ -109,7 +111,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
 
     /** Validates the ID of emergencies, check if it is unique.
      */
-    private fun validateEmergencyId(id: Int): Boolean {
+    fun validateEmergencyId(id: Int): Boolean {
         if (id < 0) {
             Logger.getLogger("Emergency ID must be positive")
             return false
@@ -191,7 +193,9 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         return true
     }
 
-    private fun outputInvalidAndFinish() {
+    /** Outputs an error message and terminates the program.
+     */
+    fun outputInvalidAndFinish() {
         throw IllegalArgumentException("Invalid simulator configuration")
     }
 
