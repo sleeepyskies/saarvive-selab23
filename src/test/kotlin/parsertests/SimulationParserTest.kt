@@ -3,24 +3,29 @@ package parsertests
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
+import de.unisaarland.cs.se.selab.parser.CountyParser
 import de.unisaarland.cs.se.selab.parser.SimulationParser
 import org.json.JSONException
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
 import java.io.PrintStream
 
 class SimulationParserTest {
+    private lateinit var parser: SimulationParser
+    private val graph =
+        CountyParser("src/systemtest/resources/mapFiles/example_map.dot").parse()
 
     // Emergency Parsing Tests
     @Test
     fun testValid1() {
-        val parser = SimulationParser(
+        parser = SimulationParser(
             schemaFile = "emergency.schema",
-            jsonFile = "src/test/resources/parsertests/emergencyParser/valid_emergency.json"
+            jsonFile = "src/test/resources/parsertests/emergencyParser/valid_emergency.json",
+            graph
         )
 
         parser.parseEmergencyCalls()
@@ -31,7 +36,7 @@ class SimulationParserTest {
         assert(emergency.emergencyType == EmergencyType.FIRE)
         assert(emergency.handleTime == 3)
         assert(emergency.maxDuration == 10)
-        assert(emergency.villageName == "Bobski")
+        assert(emergency.villageName == "Saarbruecken")
         assert(emergency.roadName == "Bobski Street")
         assert(emergency.getEmergencyStatus() == EmergencyStatus.UNASSIGNED)
         assert(
@@ -46,9 +51,10 @@ class SimulationParserTest {
 
     @Test
     fun testValid2() {
-        val parser = SimulationParser(
+        parser = SimulationParser(
             schemaFile = "emergency.schema",
-            jsonFile = "src/test/resources/parsertests/emergencyParser/valid_aswell_emergency.json"
+            jsonFile = "src/test/resources/parsertests/emergencyParser/valid_aswell_emergency.json",
+            graph
         )
 
         parser.parseEmergencyCalls()
@@ -59,7 +65,7 @@ class SimulationParserTest {
         assert(emergency.emergencyType == EmergencyType.ACCIDENT)
         assert(emergency.handleTime == 2)
         assert(emergency.maxDuration == 5)
-        assert(emergency.villageName == "SPONGEBOOOOOOB")
+        assert(emergency.villageName == "Saarbruecken")
         assert(emergency.roadName == "Street Street")
         assert(emergency.getEmergencyStatus() == EmergencyStatus.UNASSIGNED)
         assert(emergency.requiredVehicles == mutableMapOf(VehicleType.FIRE_TRUCK_TECHNICAL to 1))
@@ -67,9 +73,10 @@ class SimulationParserTest {
 
     @Test
     fun testValid3() {
-        val parser = SimulationParser(
+        parser = SimulationParser(
             schemaFile = "emergency.schema",
-            jsonFile = "src/test/resources/parsertests/emergencyParser/multiple_valid.json"
+            jsonFile = "src/test/resources/parsertests/emergencyParser/multiple_valid.json",
+            graph
         )
 
         parser.parseEmergencyCalls()
@@ -82,7 +89,7 @@ class SimulationParserTest {
         assert(emergency1.emergencyType == EmergencyType.MEDICAL)
         assert(emergency1.handleTime == 5)
         assert(emergency1.maxDuration == 10)
-        assert(emergency1.villageName == "Village")
+        assert(emergency1.villageName == "Saarbruecken")
         assert(emergency1.roadName == "Road")
         assert(emergency1.getEmergencyStatus() == EmergencyStatus.UNASSIGNED)
         assert(
@@ -98,7 +105,7 @@ class SimulationParserTest {
         assert(emergency2.emergencyType == EmergencyType.ACCIDENT)
         assert(emergency2.handleTime == 4)
         assert(emergency2.maxDuration == 8)
-        assert(emergency2.villageName == "B")
+        assert(emergency2.villageName == "Saarbruecken")
         assert(emergency2.roadName == "BB")
         assert(emergency2.getEmergencyStatus() == EmergencyStatus.UNASSIGNED)
         assert(
@@ -114,9 +121,10 @@ class SimulationParserTest {
 
     @Test // checking output instead of checking exception
     fun testInvalid1() {
-        val parser = SimulationParser(
+        parser = SimulationParser(
             schemaFile = "emergency.schema",
-            jsonFile = "src/test/resources/parsertests/emergencyParser/out_of_range_emergency.json"
+            jsonFile = "src/test/resources/parsertests/emergencyParser/out_of_range_emergency.json",
+            graph
         )
 
         val errContent = ByteArrayOutputStream()
@@ -130,9 +138,10 @@ class SimulationParserTest {
 
     @Test
     fun testInvalid2() {
-        val parser = SimulationParser(
+        parser = SimulationParser(
             schemaFile = "emergency.schema",
-            jsonFile = "src/test/resources/parsertests/emergencyParser/missing_attributes_emergency.json"
+            jsonFile = "src/test/resources/parsertests/emergencyParser/missing_attributes_emergency.json",
+            graph
         )
 
         assertThrows<JSONException> {
@@ -141,44 +150,45 @@ class SimulationParserTest {
     }
 
     // null pointer error
-//    @Test
-//    fun testInvalidSchemaFilePath() {
-//        assertThrows<FileNotFoundException> {
-//            SimulationParser(
-//                schemaFile = "what",
-//                jsonFile = "wha?t"
-//            ).parseEmergencyCalls()
-//        }
-//    }
+    @Test
+    fun testInvalidSchemaFilePath() {
+        assertThrows<FileNotFoundException> {
+            SimulationParser(
+                schemaFile = "emergency.schema",
+                jsonFile = "wha?t",
+                graph
+            ).parseEmergencyCalls()
+        }
+    }
 
     @Test
     fun testInvalid4() {
         assertThrows<FileNotFoundException> {
             SimulationParser(
                 schemaFile = "emergency.schema",
-                jsonFile = "wha?t"
+                jsonFile = "wha?t",
+                graph
             ).parseEmergencyCalls()
         }
     }
 
-    // null pointer error
-//    @Test
-//    fun testInvalidJsonFilePath() {
-//        val errContent = ByteArrayOutputStream()
-//        System.setErr(PrintStream(errContent))
-//
-//        val parser = SimulationParser(
-//            schemaFile = "EXCUSE ME?",
-//            jsonFile = "src/test/resources/parser/emergencyParser/missing_attributes_emergency.json"
-//        )
-//        parser.parseEmergencyCalls()
-//
-//        val expectedOutput = "Invalid simulator configuration"
-//        assertTrue(errContent.toString().contains(expectedOutput))
-//    }
+    @Test
+    fun testValidInitialization() {
+        val schemaFile = "emergency.schema"
+        val jsonFile = "src/test/resources/parsertests/emergencyParser/valid_emergency.json"
+        parser = SimulationParser(schemaFile, jsonFile, graph)
+        // Ensure the parser is initialized without errors
+        assertDoesNotThrow { parser.parse() }
+    }
 
-    @AfterEach // for checking output
-    fun restoreStreams() {
-        System.setErr(System.err)
+    @Test
+    fun testParse() {
+        // Ensure that parsing returns non-empty lists of emergencies and events
+        val schemaFile = "emergency.schema"
+        val jsonFile = "src/test/resources/parsertests/emergencyParser/multiple_valid.json"
+        parser = SimulationParser(schemaFile, jsonFile, graph)
+        parser.parse()
+        assertTrue(parser.parsedEmergencies.isNotEmpty())
+        assertTrue(parser.parsedEvents.isNotEmpty())
     }
 }

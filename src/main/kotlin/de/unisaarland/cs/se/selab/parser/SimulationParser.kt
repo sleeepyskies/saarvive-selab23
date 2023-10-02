@@ -8,6 +8,7 @@ import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
 import de.unisaarland.cs.se.selab.getSchema
 import de.unisaarland.cs.se.selab.global.Log
+import de.unisaarland.cs.se.selab.graph.Graph
 import de.unisaarland.cs.se.selab.graph.PrimaryType
 import org.everit.json.schema.Schema
 import org.json.JSONArray
@@ -19,7 +20,7 @@ import java.io.File
  * @param schemaFile the path to the JSON schema file
  * @param jsonFile the path to the JSON data file
  */
-class SimulationParser(private val schemaFile: String, private val jsonFile: String) {
+class SimulationParser(private val schemaFile: String, private val jsonFile: String, private val graph: Graph) {
     private val schema: Schema
     private val json: JSONObject
     private var fileName = "" // for Logging
@@ -241,8 +242,11 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     /** Validates the village name of emergencies --> will be changes after Ira is done with Parsing
      */
     private fun validateVillageName(villageName: String): String {
-        if (villageName.isBlank()) {
-            System.err.println("Village name must not be blank")
+        val listOfVillages = mutableListOf(graph.roads.forEach { it.villageName })
+        if (villageName !in listOfVillages.toString()) {
+            System.err.println("Invalid village name")
+        } else if (villageName == "") {
+            System.err.println("Village name must not be empty")
         }
         return villageName
     }

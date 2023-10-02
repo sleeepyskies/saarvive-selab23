@@ -31,6 +31,9 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
     // private val baseIDSet = mutableSetOf<Int>()
     private val vehicleIDSet = mutableSetOf<Int>()
 
+    // TODO: Parse bases first and then vehicles
+    // TODO: Return something when something invalid is parsed
+
     init {
         // Load the asset schema only
         // val assetSchemaJson = JSONObject(File(assetSchemaFile).readText())
@@ -55,6 +58,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
         try {
             parseVehiclesInternal()
             parseBases()
+            validateVehiclesAtItsCorrectBases(parsedBases, parsedVehicles)
         } catch (_: Exception) {
             outputInvalidAndFinish()
         }
@@ -148,9 +152,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
     }
 
     private fun validateBaseId(id: Int): Int {
-        if (id < 0) {
-            System.err.println("Base ID must be positive")
-        }
+        require(id >= 0) { "Base ID must be positive" }
         return id
     }
 
@@ -236,11 +238,37 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
         return length
     }
 
+    private fun validateVehiclesAtItsCorrectBases(allBases: List<Base>, allVehicles: List<Vehicle>) {
+        allVehicles.forEach { vehicle ->
+            val correspondingBase = allBases.find { it.baseID == vehicle.assignedBaseID }
+            require(correspondingBase != null) { "No base found for vehicle with id ${vehicle.id}" }
+
+            when (vehicle.vehicleType) {
+                VehicleType.POLICE_CAR, VehicleType.POLICE_MOTORCYCLE, VehicleType.K9_POLICE_CAR -> {
+                    require(
+                        correspondingBase is PoliceStation
+                    ) { "Vehicle with id ${vehicle.id} should be at a Police Station" }
+                }
+
+                VehicleType.FIRE_TRUCK_WATER, VehicleType.FIRE_TRUCK_TECHNICAL,
+                VehicleType.FIRE_TRUCK_LADDER, VehicleType.FIREFIGHTER_TRANSPORTER -> {
+                    require(
+                        correspondingBase is FireStation
+                    ) { "Vehicle with id ${vehicle.id} should be at a Fire Station" }
+                }
+
+                VehicleType.AMBULANCE, VehicleType.EMERGENCY_DOCTOR_CAR -> {
+                    require(correspondingBase is Hospital) { "Vehicle with id ${vehicle.id} should be at a Hospital" }
+                }
+            }
+        }
+    }
+
     /**
      * Outputs invalidity log, terminates the program
      */
     private fun outputInvalidAndFinish() {
         Log.displayInitializationInfoInvalid(this.fileName)
-        throw java.lang.IllegalArgumentException("Invalid asset")
+        throw IllegalArgumentException("Invalid asset")
     }
 }

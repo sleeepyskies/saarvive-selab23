@@ -1,7 +1,8 @@
 digraph Frankfurt_am_Main {
 	0;
 	1;
+	2;
 
-	0 -> 1 [village=Frankfurt_am_Main; name=Meadow_Way; heightLimit=4; weight=10; primaryType=mainStreet; secondaryType=tunnel;];
-
+	0 -> 1 [village=Frankfurt_am_Main; name=Meadow_Way; heightLimit=4; weight=10; primaryType=countyRoad; secondaryType=tunnel;];
+	0 -> 2 [village=Frankfurt_am_Main; name=Wowza_Road; heightLimit=4; weight=10; primaryType=mainStreet; secondaryType=tunnel;];
 }
