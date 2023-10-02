@@ -52,7 +52,7 @@ class EmergencyPhase(private val dataHolder: DataHolder) : Phase {
     /**
      * Returns the closest responsible Base for the [emergency]
      */
-    public fun findClosestBase(emergency: Emergency): Base {
+    fun findClosestBase(emergency: Emergency): Base {
         val listOfResponsibleBases = mutableListOf<Base>()
         // Retrieving list of responsible bases
         when (emergency.emergencyType) {
