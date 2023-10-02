@@ -26,8 +26,8 @@ class CountyParser(private val dotFilePath: String) {
     private val listOfVerticesToRoads = mutableMapOf<Pair<Int, Int>, Road>() // List of mapping vertices ids to the road
     private val listOfRoadAttributes = mutableListOf(mutableMapOf<String, String>()) // Data in strings for validation
     private val idToVertexMapping = mutableMapOf<Int, Vertex>() // For easies access to the Vertex object
-    private val countiesNames = setOf<String>() // For checking the condition (13)
-    private val villagesNames = setOf<String>() // For checking the condition (13)
+    private val countiesNames = mutableSetOf<String>() // For checking the condition (13)
+    private val villagesNames = mutableSetOf<String>() // For checking the condition (13)
 
     private val sPat = "[a-zA-Z][a-zA-Z_]*" // Pattern for strings ID
     private val nPat = "\\d+" // Pattern for numbers ID
@@ -406,13 +406,13 @@ class CountyParser(private val dotFilePath: String) {
             if (this.villagesNames.contains(attributes.getValue(StringLiterals.VILLAGE))) {
                 return false
             }
-            this.countiesNames.plus(attributes.getValue(StringLiterals.VILLAGE))
+            this.countiesNames.add(attributes.getValue(StringLiterals.VILLAGE))
             return true
         }
         if (this.countiesNames.contains(attributes.getValue("village"))) {
             return false
         }
-        this.villagesNames.plus(attributes.getValue("village"))
+        this.villagesNames.add(attributes.getValue("village"))
         return true
     }
 
