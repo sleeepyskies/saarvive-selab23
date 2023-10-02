@@ -31,8 +31,8 @@ class SimulationObjectConstructor(
      */
     public fun createSimulation(): Simulation? {
         // parse, validate and create map
-        var countyParser: CountyParser
-        var graph: Graph
+        val countyParser: CountyParser
+        val graph: Graph
         try {
             countyParser = CountyParser(countyFile)
             graph = countyParser.parse()
@@ -41,9 +41,9 @@ class SimulationObjectConstructor(
         }
 
         // parse, validate and create assets
-        var assetParser: AssetParser
-        var bases: List<Base>
-        var vehicles: List<Vehicle>
+        val assetParser: AssetParser
+        val bases: List<Base>
+        val vehicles: List<Vehicle>
         try {
             assetParser = AssetParser("assets.schema", assetFile)
             assetParser.parse()
@@ -65,9 +65,9 @@ class SimulationObjectConstructor(
         }
 
         // parse, validate and create events and emergencies
-        var simulationParser: SimulationParser
-        var emergencies: List<Emergency>
-        var events: List<Event>
+        val simulationParser: SimulationParser
+        val emergencies: List<Emergency>
+        val events: List<Event>
         try {
             simulationParser = SimulationParser("simulation.schema", simulationFile)
             simulationParser.parse()
