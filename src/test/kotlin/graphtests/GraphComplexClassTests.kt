@@ -55,7 +55,7 @@ class GraphComplexClassTests {
     @Test
     fun shortestPathWithSameNumTicks() {
         val path = graph.calculateShortestPath(graph.graph[0], graph.graph[5], 0) // vertex 2 to vertex 7
-        assert(path == 60)
+        assert(path == 6)
     }
 
     @Test

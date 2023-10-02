@@ -199,7 +199,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         val listValidRoads = mutableListOf<String>()
         for (r in graph.roads) {
             listValidRoads.add(r.roadName)
-            }
+        }
         if (road !in listValidRoads.toString()) {
             Logger.getLogger("Invalid road name")
             return false
