@@ -13,18 +13,19 @@ import kotlin.test.Test
 
 class SimulationParserTest {
     private lateinit var emergencyParser: SimulationParser
+
     // private lateinit var eventParser: EventsParser
     private val schema = "emergency.schema"
     private val graph =
         CountyParser("src/systemtest/resources/mapFiles/example_map.dot").parse()
-
 
     // Emergency Parsing Tests
     @Test
     fun testValid1() {
         emergencyParser = SimulationParser(
             schemaFile = schema,
-            jsonFile = "src/test/resources/parsertests/emergencyParser/valid_emergency.json", graph
+            jsonFile = "src/test/resources/parsertests/emergencyParser/valid_emergency.json",
+            graph
         )
 
         emergencyParser.parseEmergencyCalls()
@@ -49,13 +50,13 @@ class SimulationParserTest {
     }
 
     @BeforeEach
-    fun setUp(){
+    fun setUp() {
         val jsonFile = "src/test/resources/parsertests/emergencyParser/valid_emergency.json"
-        emergencyParser = SimulationParser(schema,jsonFile,graph)
+        emergencyParser = SimulationParser(schema, jsonFile, graph)
     }
 
     @Test
-    fun `test emergency id`(){
+    fun `test emergency id`() {
         emergencyParser.parseEmergencyCalls()
         val emergency = emergencyParser.parsedEmergencies[0]
         assert(emergency.id == 1)
@@ -96,7 +97,6 @@ class SimulationParserTest {
         val isValid = emergencyParser.validateEmergency(validJson)
         assert(isValid)
     }
-
 }
 
 //    @Test
@@ -242,4 +242,4 @@ class SimulationParserTest {
 //      assertTrue(parser.parsedEmergencies.isNotEmpty())
 //      assertTrue(parser.parsedEvents.isNotEmpty())
 //  }
-//}
+// }
