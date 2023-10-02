@@ -14,6 +14,7 @@ import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.Vertex
 import de.unisaarland.cs.se.selab.parser.AssetParser
 import de.unisaarland.cs.se.selab.parser.CountyParser
+import de.unisaarland.cs.se.selab.parser.EventsParser
 import de.unisaarland.cs.se.selab.parser.SimulationParser
 
 /**
@@ -39,6 +40,7 @@ class SimulationObjectConstructor(
         val vehicles: List<Vehicle>
 
         val simulationParser: SimulationParser
+        val eventsParser: EventsParser
         val emergencies: List<Emergency>
         val events: List<Event>
         try {
@@ -65,16 +67,18 @@ class SimulationObjectConstructor(
             }
 
             // parse, validate and create events and emergencies
-            simulationParser = SimulationParser("simulation.schema", simulationFile)
+            simulationParser = SimulationParser("simulation.schema", simulationFile, graph)
             simulationParser.parse()
             emergencies = simulationParser.parsedEmergencies
-            events = simulationParser.parsedEvents
+            eventsParser = EventsParser("simulation.schema", simulationFile)
+            eventsParser.parse()
+            events = eventsParser.parsedEvents
         } catch (_: IllegalArgumentException) {
             return null
         }
 
         // cross validation and construction
-         return if (
+        return if (
             validateAssetsBasedOnGraph(graph, bases) &&
             validateEmergenciesBasedOnGraph(graph, emergencies) &&
             validateEventsBasedOnGraph(graph, events, vehicles)
@@ -84,7 +88,7 @@ class SimulationObjectConstructor(
             return Simulation(dataHolder, maxTick)
         } else {
             null
-         }
+        }
     }
 
     /**
