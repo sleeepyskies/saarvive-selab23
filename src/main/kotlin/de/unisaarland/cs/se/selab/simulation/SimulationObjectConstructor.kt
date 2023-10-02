@@ -78,18 +78,18 @@ class SimulationObjectConstructor(
         }
 
         // cross validation and construction
-        if (
+        return if (
             validateAssetsBasedOnGraph(graph, bases) &&
             validateEmergenciesBasedOnGraph(graph, emergencies) &&
             validateEventsBasedOnGraph(graph, events, vehicles)
         ) {
             // If validation succeeds return simulation
             val dataHolder = DataHolder(graph, bases, events.toMutableList(), emergencies)
-            return Simulation(dataHolder, maxTick)
+            Simulation(dataHolder, maxTick)
         } else {
             // If validation fails, throw an exception
             check(false) { "Validation of simulation data failed" }
-            return null
+            null
         }
     }
 
