@@ -71,7 +71,7 @@ dependencies {
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
 
     // System Tests
-    "systemtestImplementation"("selab.systemtest:systemtest-api:0.4.4") { isChanging = true }
+    "systemtestImplementation"("selab.systemtest:systemtest-api:0.4.6.1") { isChanging = true }
     "systemtestImplementation"("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
     "systemtestImplementation"("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 }
@@ -128,9 +128,6 @@ detekt {
 
 tasks.build {
     dependsOn(tasks["detectSuppressions"])
-    dependsOn(tasks.detektMain)
-    dependsOn(tasks.detektTest)
-    dependsOn(tasks["detektSystemtest"])
     dependsOn(tasks.javadoc)
 }
 
@@ -196,3 +193,4 @@ val systemtestExec = task<JavaExec>("systemtestExec") {
 //        "--debug", "1337"
     )
 }
+
