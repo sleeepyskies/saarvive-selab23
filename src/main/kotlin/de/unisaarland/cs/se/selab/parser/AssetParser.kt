@@ -20,16 +20,21 @@ import java.io.File
 /**
 * asset parser parses assets
 */
-class AssetParser(private val assetSchemaFile: String, private val assetJsonFile: String) {
+class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
     private val assetSchema: Schema
     private val json: JSONObject
     private var fileName = "" // for logging
-    public val parsedVehicles = mutableListOf<Vehicle>()
-    public val parsedBases = mutableListOf<Base>()
+    val parsedVehicles = mutableListOf<Vehicle>()
+    val parsedBases = mutableListOf<Base>()
 
     // for validation of unique IDs
     // private val baseIDSet = mutableSetOf<Int>()
     private val vehicleIDSet = mutableSetOf<Int>()
+
+    // T0D0 DONE Parse bases first and then vehicles, in a way that bases are parsed first
+    //       without adding in vehicles yet, then when parse vehicles, we add in the vehicles
+    //       into the base according to their base ID. this way we can validate in another way too
+    // T0D0 Return something when something invalid is parsed
 
     init {
         // Load the asset schema only
@@ -53,8 +58,9 @@ class AssetParser(private val assetSchemaFile: String, private val assetJsonFile
      */
     fun parse(): Pair<MutableList<Vehicle>, MutableList<Base>> {
         try {
-            parseVehiclesInternal()
-            parseBases()
+            parseBases() // Parse bases first
+            parseVehiclesInternal() // Then parse vehicles
+            validateVehiclesAtItsCorrectBases(parsedBases, parsedVehicles)
         } catch (_: Exception) {
             outputInvalidAndFinish()
         }
@@ -117,6 +123,9 @@ class AssetParser(private val assetSchemaFile: String, private val assetJsonFile
             }
 
             parsedVehicles.add(vehicle)
+
+            val correspondingBase = parsedBases.find { it.baseID == baseID }
+            correspondingBase?.vehicles?.add(vehicle)
         }
     }
 
@@ -135,7 +144,7 @@ class AssetParser(private val assetSchemaFile: String, private val assetJsonFile
             val baseType = validateBaseType(jsonBase.getString("baseType"))
             val location = validateLocation(jsonBase.getInt("location"))
             val staff = validateStaff(jsonBase.getInt("staff"))
-            val vehicles = parsedVehicles.filter { it.assignedBaseID == id }
+            val vehicles = mutableListOf<Vehicle>() // Initialize as an empty mutable list
 
             val base: Base = when (baseType) {
                 "FIRE_STATION" -> FireStation(id, location, staff, vehicles)
@@ -148,9 +157,7 @@ class AssetParser(private val assetSchemaFile: String, private val assetJsonFile
     }
 
     private fun validateBaseId(id: Int): Int {
-        if (id < 0) {
-            System.err.println("Base ID must be positive")
-        }
+        require(id >= 0) { "Base ID must be positive" }
         return id
     }
 
@@ -236,11 +243,37 @@ class AssetParser(private val assetSchemaFile: String, private val assetJsonFile
         return length
     }
 
+    private fun validateVehiclesAtItsCorrectBases(allBases: List<Base>, allVehicles: List<Vehicle>) {
+        allVehicles.forEach { vehicle ->
+            val correspondingBase = allBases.find { it.baseID == vehicle.assignedBaseID }
+            requireNotNull(correspondingBase != null) { "No base found for vehicle with id ${vehicle.id}" }
+
+            when (vehicle.vehicleType) {
+                VehicleType.POLICE_CAR, VehicleType.POLICE_MOTORCYCLE, VehicleType.K9_POLICE_CAR -> {
+                    require(
+                        correspondingBase is PoliceStation
+                    ) { "Vehicle with id ${vehicle.id} should be at a Police Station" }
+                }
+
+                VehicleType.FIRE_TRUCK_WATER, VehicleType.FIRE_TRUCK_TECHNICAL,
+                VehicleType.FIRE_TRUCK_LADDER, VehicleType.FIREFIGHTER_TRANSPORTER -> {
+                    require(
+                        correspondingBase is FireStation
+                    ) { "Vehicle with id ${vehicle.id} should be at a Fire Station" }
+                }
+
+                VehicleType.AMBULANCE, VehicleType.EMERGENCY_DOCTOR_CAR -> {
+                    require(correspondingBase is Hospital) { "Vehicle with id ${vehicle.id} should be at a Hospital" }
+                }
+            }
+        }
+    }
+
     /**
      * Outputs invalidity log, terminates the program
      */
     private fun outputInvalidAndFinish() {
         Log.displayInitializationInfoInvalid(this.fileName)
-        throw java.lang.IllegalArgumentException("Invalid asset")
+        throw IllegalArgumentException("Invalid asset")
     }
 }

@@ -2,13 +2,10 @@
     "events": [
         {
             "id": 0,
-            "type": "RUSH_HOUR",
+            "type": "VEHICLE_UNAVAILABLE",
             "tick": 0,
             "duration": 1,
-            "roadTypes": [
-                "SIDE_STREET"
-            ],
-            "factor": 1
+            "vehicleID": 4
         }
     ],
     "emergencyCalls": [

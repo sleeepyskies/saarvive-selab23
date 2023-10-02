@@ -3,6 +3,7 @@ package de.unisaarland.cs.se.selab.phases
 import de.unisaarland.cs.se.selab.dataClasses.Request
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
+import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.CapacityType
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
@@ -26,8 +27,8 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
      * Executes the allocation phase
      */
     override fun execute() {
-        for (emergency in dataHolder.emergencies) {
-            if (emergency.startTick == currentTick) {
+        for (emergency in dataHolder.ongoingEmergencies) {
+            if (emergency.emergencyStatus == EmergencyStatus.ASSIGNED) {
                 val base = dataHolder.emergencyToBase[emergency.id]
                 if (base != null) {
                     assignBasedOnCapacity(getAssignableAssets(base, emergency), emergency)
@@ -119,6 +120,8 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
             dataHolder.graph.calculateShortestPath(vehiclePosition, emergencyPosition.second, vehicle.height)
 
         return if (timeToArrive1 <= timeToArrive2) timeToArrive1 else timeToArrive2
+        // return maxOf(0, if (timeToArrive1 <= timeToArrive2) timeToArrive1 else timeToArrive2)
+        // above code might fix "-214748364 ticks to arrive." issue but need checking
     }
 
     private fun getReallocatableVehicles(base: Base, emergency: Emergency): List<Vehicle> {

@@ -14,6 +14,7 @@ import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.Vertex
 import de.unisaarland.cs.se.selab.parser.AssetParser
 import de.unisaarland.cs.se.selab.parser.CountyParser
+import de.unisaarland.cs.se.selab.parser.EventsParser
 import de.unisaarland.cs.se.selab.parser.SimulationParser
 
 /**
@@ -29,56 +30,55 @@ class SimulationObjectConstructor(
     /**
      * Creates and returns a parsed and validated Simulation object
      */
-    public fun createSimulation(): Simulation? {
-        // parse, validate and create map
-        var countyParser: CountyParser
-        var graph: Graph
+    fun createSimulation(): Simulation? {
+        val countyParser: CountyParser
+        val graph: Graph
+
+        val assetParser: AssetParser
+        val bases: List<Base>
+
+        val vehicles: List<Vehicle>
+
+        val simulationParser: SimulationParser
+        val eventsParser: EventsParser
+        val emergencies: List<Emergency>
+        val events: List<Event>
         try {
+            // parse, validate and create map
             countyParser = CountyParser(countyFile)
             graph = countyParser.parse()
-        } catch (e: IllegalArgumentException) {
-            throw IllegalArgumentException("Map file is invalid", e)
-        }
 
-        // parse, validate and create assets
-        var assetParser: AssetParser
-        var bases: List<Base>
-        var vehicles: List<Vehicle>
-        try {
+            // parse, validate and create assets
             assetParser = AssetParser("assets.schema", assetFile)
             assetParser.parse()
             bases = assetParser.parsedBases
             vehicles = assetParser.parsedVehicles
-        } catch (e: IllegalArgumentException) {
-            throw IllegalArgumentException("Asset file is invalid", e)
-        }
-        // init vehicles lastVisitedVertex
-        for (vehicle in vehicles) {
-            val base = bases.find { base: Base -> base.baseID == vehicle.assignedBaseID }
-            if (base != null) {
-                graph.graph.find { vertex: Vertex -> vertex.id == base.vertexID }.also {
-                    if (it != null) {
-                        vehicle.lastVisitedVertex = it
+
+            // init vehicles lastVisitedVertex
+            for (vehicle in vehicles) {
+                val base = bases.find { base: Base -> base.baseID == vehicle.assignedBaseID }
+                if (base != null) {
+                    graph.graph.find { vertex: Vertex -> vertex.id == base.vertexID }.also {
+                        if (it != null) {
+                            vehicle.lastVisitedVertex = it
+                        }
                     }
                 }
             }
-        }
 
-        // parse, validate and create events and emergencies
-        var simulationParser: SimulationParser
-        var emergencies: List<Emergency>
-        var events: List<Event>
-        try {
-            simulationParser = SimulationParser("simulation.schema", simulationFile)
+            // parse, validate and create events and emergencies
+            simulationParser = SimulationParser("simulation.schema", simulationFile, graph)
             simulationParser.parse()
             emergencies = simulationParser.parsedEmergencies
-            events = simulationParser.parsedEvents
-        } catch (e: IllegalArgumentException) {
-            throw IllegalArgumentException("Simulation file is invalid", e)
+            eventsParser = EventsParser("simulation.schema", simulationFile)
+            eventsParser.parse()
+            events = eventsParser.parsedEvents
+        } catch (_: IllegalArgumentException) {
+            return null
         }
 
         // cross validation and construction
-        if (
+        return if (
             validateAssetsBasedOnGraph(graph, bases) &&
             validateEmergenciesBasedOnGraph(graph, emergencies) &&
             validateEventsBasedOnGraph(graph, events, vehicles)
@@ -87,9 +87,7 @@ class SimulationObjectConstructor(
             val dataHolder = DataHolder(graph, bases, events.toMutableList(), emergencies)
             return Simulation(dataHolder, maxTick)
         } else {
-            // If validation fails, throw an exception
-            check(false) { "Validation of simulation data failed" }
-            return null
+            null
         }
     }
 
@@ -148,11 +146,11 @@ class SimulationObjectConstructor(
      * Helper method for validateEventsBasedOnGraph(). Validates if the roads exist
      */
     private fun validateGraphEvent(event: Event, graph: Graph): Boolean {
-        when (event) {
-            is RushHour -> return true
-            is Construction -> return roadExists(event.sourceID, event.targetID, graph)
-            is RoadClosure -> return roadExists(event.sourceID, event.targetID, graph)
-            is TrafficJam -> return roadExists(event.startVertex, event.endVertex, graph)
+        return when (event) {
+            is RushHour -> true
+            is Construction -> roadExists(event.sourceID, event.targetID, graph)
+            is RoadClosure -> roadExists(event.sourceID, event.targetID, graph)
+            is TrafficJam -> roadExists(event.startVertex, event.endVertex, graph)
             else -> throw IllegalArgumentException("Unsupported event type: ${event::class.simpleName}")
         }
     }

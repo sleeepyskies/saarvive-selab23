@@ -3,7 +3,6 @@ package de.unisaarland.cs.se.selab.simulation
 import de.unisaarland.cs.se.selab.dataClasses.Request
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
-import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 import de.unisaarland.cs.se.selab.dataClasses.events.Event
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.graph.Graph
@@ -17,14 +16,14 @@ class DataHolder(
     val graph: Graph,
     val bases: List<Base>,
     var events: MutableList<Event>,
-    val emergencies: List<Emergency>,
+    val emergencies: MutableList<Emergency>,
 
 ) {
     val ongoingEmergencies = mutableListOf<Emergency>()
     val resolvedEmergencies: MutableList<Emergency> = mutableListOf()
     val activeVehicles: MutableList<Vehicle> = mutableListOf()
     val rechargingVehicles: MutableList<Vehicle> = mutableListOf()
-    val unavailableVehicles: MutableList<Vehicle> = mutableListOf()
+    val unavailableVehicles: MutableList<Int> = mutableListOf()
     val requests: MutableList<Request> = mutableListOf()
     var assetsRerouted: Int = 0
 
@@ -71,10 +70,8 @@ class DataHolder(
      */
     fun updateScheduledEmergencies(emergencies: MutableList<Emergency>) {
         for (emergency in emergencies) {
-            if (emergency.getEmergencyStatus() == EmergencyStatus.ONGOING) {
-                emergencies.remove(emergency)
-                ongoingEmergencies.add(emergency)
-            }
+            this.emergencies.remove(emergency)
+            ongoingEmergencies.add(emergency)
         }
     }
 
