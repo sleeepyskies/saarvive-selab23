@@ -4,7 +4,6 @@ import de.unisaarland.cs.se.selab.dataClasses.bases.FireStation
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
 import de.unisaarland.cs.se.selab.parser.AssetParser
-import org.json.JSONException
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.io.FileNotFoundException
@@ -61,11 +60,11 @@ class AssetParserTest {
 
     @Test
     fun testInvalidAssetsJSONBASE() {
-        assertThrows<JSONException> {
+        assertThrows<IllegalArgumentException> {
             AssetParser(
                 assetSchemaFile = "base.schema",
                 assetJsonFile = "src/test/resources/parsertests/assetParser/invalid_assets.json"
-            ).parseBases()
+            ).parse()
         }
     }
 
