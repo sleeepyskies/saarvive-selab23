@@ -1,7 +1,11 @@
 package de.unisaarland.cs.se.selab.systemtest
 
 import de.unisaarland.cs.se.selab.systemtest.basictests.ExampleTest
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.*
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.NegativeVertexTest
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.NonExistentVertexTest
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.TwoRoadsSameLocationTest
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.TwoRoadsSameNameTest
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.ZeroHeightTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.CorrectSystemTestSmall
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.EmergencyFailTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.ReallocationTest

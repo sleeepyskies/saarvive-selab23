@@ -1,4 +1,4 @@
-package de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests
+package de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map
 
 import de.unisaarland.cs.se.selab.systemtest.api.SystemTest
 
