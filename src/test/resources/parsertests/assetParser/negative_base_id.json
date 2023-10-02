@@ -1,0 +1,11 @@
+{
+  "bases": [
+    {
+      "id": -1,
+      "baseType": "FIRE_STATION",
+      "location": 1,
+      "staff": 10
+    }
+  ],
+  "vehicles": []
+}

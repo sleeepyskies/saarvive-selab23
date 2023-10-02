@@ -81,13 +81,14 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * Checks if emergencies have failed or become resolved and updates accordingly
      */
     private fun updateEmergencies(emergencies: List<Emergency>) {
+        val removeEmergencies: MutableList<Emergency> = mutableListOf()
         for (emergency in emergencies) {
             // emergency resolved
             if (emergency.handleTime == 0) {
                 emergency.emergencyStatus = EmergencyStatus.RESOLVED
                 // Log emergency resolved
                 Log.displayEmergencyResolved(emergency.id)
-                dataHolder.ongoingEmergencies.remove(emergency)
+                removeEmergencies.add(emergency)
                 dataHolder.resolvedEmergencies.add(emergency)
                 dataHolder.emergencyToVehicles[emergency.id]?.let { sendVehiclesBack(it) }
             }
@@ -95,10 +96,11 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
             if (emergency.maxDuration == 0) {
                 emergency.emergencyStatus = EmergencyStatus.FAILED
                 Log.displayEmergencyFailed(emergency.id)
-                dataHolder.ongoingEmergencies.remove(emergency)
+                removeEmergencies.add(emergency)
                 dataHolder.resolvedEmergencies.add(emergency)
                 dataHolder.emergencyToVehicles[emergency.id]?.let { sendVehiclesBack(it) }
             }
         }
+        dataHolder.ongoingEmergencies.removeAll(removeEmergencies)
     }
 }

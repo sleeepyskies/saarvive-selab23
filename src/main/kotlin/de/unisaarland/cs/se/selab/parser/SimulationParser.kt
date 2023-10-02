@@ -63,33 +63,23 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     /** Parses the JSON data and returns a list of emergencies, uses private method
      * to parse single emergencies.
      */
-    internal fun parseEmergencyCalls() {
+    private fun parseEmergencyCalls() {
         val emergencyCallsArray = json.getJSONArray("emergencyCalls")
 
         for (i in 0 until emergencyCallsArray.length()) {
             val jsonEmergency = emergencyCallsArray.getJSONObject(i)
 
             if (validateEmergency(jsonEmergency)) {
-                val id = jsonEmergency.getInt(keyId)
-                val emergencyType = EmergencyType.valueOf(jsonEmergency.getString(keyType))
-                val severity = jsonEmergency.getInt(keySeverity)
-                val startTick = jsonEmergency.getInt(keyTick)
-                val handleTime = jsonEmergency.getInt(keyHandleTime)
-                val maxDuration = jsonEmergency.getInt(keyMaxDuration)
-                val villageName = jsonEmergency.getString(keyVillage)
-                val roadName = jsonEmergency.getString(keyRoadName)
-
                 val emergency = Emergency(
-                    id = id,
-                    emergencyType = emergencyType,
-                    severity = severity,
-                    startTick = startTick,
-                    handleTime = handleTime,
-                    maxDuration = maxDuration,
-                    villageName = villageName,
-                    roadName = roadName
+                    id = jsonEmergency.getInt(keyId),
+                    emergencyType = EmergencyType.valueOf(jsonEmergency.getString(keyType)),
+                    severity = jsonEmergency.getInt(keySeverity),
+                    startTick = jsonEmergency.getInt(keyTick),
+                    handleTime = jsonEmergency.getInt(keyHandleTime),
+                    maxDuration = jsonEmergency.getInt(keyMaxDuration),
+                    villageName = jsonEmergency.getString(keyVillage),
+                    roadName = jsonEmergency.getString(keyRoadName)
                 )
-
                 parsedEmergencies.add(emergency)
             } else {
                 outputInvalidAndFinish()
@@ -187,7 +177,10 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     /** Validates the village name of emergencies --> will be changes after Ira is done with Parsing
      */
     private fun validateVillageName(villageName: String): Boolean {
-        val listOfVillages = mutableListOf(graph.roads.forEach { it.villageName })
+        val listOfVillages = mutableListOf<String>()
+        for (v in graph.roads) {
+            listOfVillages.add(v.villageName)
+        }
         if (villageName !in listOfVillages.toString()) {
             Logger.getLogger("Invalid village name")
             return false
@@ -203,7 +196,10 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     }
 
     private fun validateRoadName(road: String): Boolean {
-        val listValidRoads = mutableListOf(graph.roads.forEach { it.roadName })
+        val listValidRoads = mutableListOf<String>()
+        for (r in graph.roads) {
+            listValidRoads.add(r.roadName)
+        }
         if (road !in listValidRoads.toString()) {
             Logger.getLogger("Invalid road name")
             return false

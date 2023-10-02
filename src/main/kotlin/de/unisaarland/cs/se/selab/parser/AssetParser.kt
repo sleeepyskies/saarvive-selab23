@@ -57,13 +57,11 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
      * parse Vehicles
      */
     fun parse(): Pair<MutableList<Vehicle>, MutableList<Base>> {
-        try {
-            parseBases() // Parse bases first
-            parseVehiclesInternal() // Then parse vehicles
-            validateVehiclesAtItsCorrectBases(parsedBases, parsedVehicles)
-        } catch (_: Exception) {
-            outputInvalidAndFinish()
-        }
+        parseBases() // Parse bases first
+        parseVehiclesInternal() // Then parse vehicles
+        validateAtLeastOneBaseOfEachType() // Validate base types
+        validateEachBaseHasAtLeastOneVehicle() // Validate vehicles per base
+        validateVehiclesAtItsCorrectBases(parsedBases, parsedVehicles)
         Log.displayInitializationInfoValid(this.fileName)
         return Pair(parsedVehicles, parsedBases)
     }
@@ -156,8 +154,19 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
         }
     }
 
+    /**
+     * Outputs invalidity log, terminates the program
+     */
+    private fun outputInvalidAndFinish() {
+        Log.displayInitializationInfoInvalid(this.fileName)
+        throw IllegalArgumentException("Invalid asset")
+    }
+
     private fun validateBaseId(id: Int): Int {
-        require(id >= 0) { "Base ID must be positive" }
+        if (id < 0) {
+            System.err.println("Base ID must be positive")
+            outputInvalidAndFinish()
+        }
         return id
     }
 
@@ -165,6 +174,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
         val validBaseTypes = listOf("FIRE_STATION", "HOSPITAL", "POLICE_STATION")
         if (baseType !in validBaseTypes) {
             System.err.println("Invalid base type")
+            outputInvalidAndFinish()
         }
         return baseType
     }
@@ -172,6 +182,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
     private fun validateLocation(location: Int): Int {
         if (location < 0) {
             System.err.println("Location must be non-negative")
+            outputInvalidAndFinish()
         }
         return location
     }
@@ -179,6 +190,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
     private fun validateStaff(staff: Int): Int {
         if (staff <= 0) {
             System.err.println("Staff must be positive")
+            outputInvalidAndFinish()
         }
         return staff
     }
@@ -186,8 +198,10 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
     private fun validateVehicleId(id: Int): Int {
         if (id < 0) {
             System.err.println("Vehicle ID must be positive")
+            outputInvalidAndFinish()
         } else if (id in vehicleIDSet) {
             System.err.println("Vehicle ID must be unique")
+            outputInvalidAndFinish()
         } else {
             vehicleIDSet.add(id)
         }
@@ -202,6 +216,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
         )
         if (vehicleType !in validVehicleTypes) {
             System.err.println("Invalid vehicle type")
+            outputInvalidAndFinish()
         }
         return vehicleType
     }
@@ -209,6 +224,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
     private fun validateVehicleHeight(height: Int): Int {
         if (height !in 1..Number.FIVE) {
             System.err.println("Vehicle height must be between 1 and 5")
+            outputInvalidAndFinish()
         }
         return height
     }
@@ -216,6 +232,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
     private fun validateStaffCapacity(capacity: Int): Int {
         if (capacity !in 1..Number.TWELVE) {
             System.err.println("Staff capacity must be between 1 and 12")
+            outputInvalidAndFinish()
         }
         return capacity
     }
@@ -223,6 +240,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
     private fun validateCriminalCapacity(capacity: Int): Int {
         if (capacity !in 1..Number.FOUR) {
             System.err.println("Criminal capacity must be between 1 and 4")
+            outputInvalidAndFinish()
         }
         return capacity
     }
@@ -232,6 +250,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
             listOf(Number.SIX_HUNDRED, Number.ONE_THOUSAND_TWO_HUNDRED, Number.TWO_THOUSAND_FOUR_HUNDRED)
         if (capacity !in validWaterCapacities) {
             System.err.println("Water capacity must be one of 600, 1200, 2400")
+            outputInvalidAndFinish()
         }
         return capacity
     }
@@ -239,8 +258,29 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
     private fun validateLadderLength(length: Int): Int {
         if (length !in Number.THIRTY..Number.SEVENTY) {
             System.err.println("Ladder length must be between 30 and 70")
+            outputInvalidAndFinish()
         }
         return length
+    }
+
+    private fun validateAtLeastOneBaseOfEachType() {
+        val fireStations = parsedBases.filterIsInstance<FireStation>()
+        val hospitals = parsedBases.filterIsInstance<Hospital>()
+        val policeStations = parsedBases.filterIsInstance<PoliceStation>()
+
+        if (fireStations.isEmpty() || hospitals.isEmpty() || policeStations.isEmpty()) {
+            System.err.println("Not all base types are present in the assets.")
+            outputInvalidAndFinish()
+        }
+    }
+
+    private fun validateEachBaseHasAtLeastOneVehicle() {
+        val basesWithoutVehicles = parsedBases.filter { it.vehicles.isEmpty() }
+
+        if (basesWithoutVehicles.isNotEmpty()) {
+            System.err.println("There are bases without any vehicles assigned.")
+            outputInvalidAndFinish()
+        }
     }
 
     private fun validateVehiclesAtItsCorrectBases(allBases: List<Base>, allVehicles: List<Vehicle>) {
@@ -267,13 +307,5 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
                 }
             }
         }
-    }
-
-    /**
-     * Outputs invalidity log, terminates the program
-     */
-    private fun outputInvalidAndFinish() {
-        Log.displayInitializationInfoInvalid(this.fileName)
-        throw IllegalArgumentException("Invalid asset")
     }
 }

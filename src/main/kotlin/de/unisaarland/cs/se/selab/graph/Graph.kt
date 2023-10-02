@@ -113,7 +113,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
 
             // traverse connected vertices
             helper.exploreNeighbours(currentVertex, distances, previousVertices, vehicleHeight, graph)
-            unvisitedVertices.remove(currentVertex)
+            // unvisitedVertices.remove(currentVertex)
         }
         return route.toMutableList()
     }

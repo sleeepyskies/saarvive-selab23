@@ -1,0 +1,35 @@
+{
+  "bases": [
+    {
+      "id": 1,
+      "baseType": "FIRE_STATION",
+      "location": 1,
+      "staff": 10
+    },
+    {
+      "id": 2,
+      "baseType": "POLICE_STATION",
+      "location": 2,
+      "staff": 20,
+      "dogs": 1
+    }
+  ],
+  "vehicles": [
+    {
+      "id": 1,
+      "vehicleType": "POLICE_CAR",
+      "baseID": 1,
+      "vehicleHeight": 2,
+      "staffCapacity": 5,
+      "criminalCapacity": 3
+    },
+    {
+      "id": 1,
+      "vehicleType": "POLICE_CAR",
+      "baseID": 2,
+      "vehicleHeight": 2,
+      "staffCapacity": 5,
+      "criminalCapacity": 3
+    }
+  ]
+}

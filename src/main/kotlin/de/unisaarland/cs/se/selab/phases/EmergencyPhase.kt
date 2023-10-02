@@ -16,7 +16,7 @@ import de.unisaarland.cs.se.selab.simulation.DataHolder
  * assigning bases to them and sorting. [dataHolder] - access to all lists, mappings
  */
 class EmergencyPhase(private val dataHolder: DataHolder) : Phase {
-    private var currentTick = 0
+    var currentTick = 0
 
     /**
      * Main method that keeps track of all processes in EmergencyPhase: choosing the base, assigning, logging, sorting
@@ -32,7 +32,7 @@ class EmergencyPhase(private val dataHolder: DataHolder) : Phase {
     /**
      * Gives the dataHolder list of emergencies that should be removed from emergencies list and added to ongoing list.
      */
-    private fun scheduleEmergencies(): MutableList<Emergency> {
+    fun scheduleEmergencies(): MutableList<Emergency> {
         val listOfScheduledEmergencies =
             dataHolder.emergencies.filter { emergency: Emergency -> emergency.startTick == this.currentTick }
                 .toMutableList()
@@ -43,7 +43,7 @@ class EmergencyPhase(private val dataHolder: DataHolder) : Phase {
     /**
      * Assigns Bases for each [emergencies]
      */
-    private fun assignBasesToEmergencies(emergencies: List<Emergency>) {
+    fun assignBasesToEmergencies(emergencies: List<Emergency>) {
         emergencies.forEach { emergency ->
             assignBaseToEmergency(emergency, findClosestBase(emergency))
         }
@@ -52,7 +52,7 @@ class EmergencyPhase(private val dataHolder: DataHolder) : Phase {
     /**
      * Returns the closest responsible Base for the [emergency]
      */
-    private fun findClosestBase(emergency: Emergency): Base {
+    fun findClosestBase(emergency: Emergency): Base {
         val listOfResponsibleBases = mutableListOf<Base>()
         // Retrieving list of responsible bases
         when (emergency.emergencyType) {
@@ -123,7 +123,7 @@ class EmergencyPhase(private val dataHolder: DataHolder) : Phase {
     /**
      * Create log for each ASSIGNED [emergencies] by ID
      */
-    private fun logEmergenciesByID(emergencies: List<Emergency>) {
+    fun logEmergenciesByID(emergencies: List<Emergency>) {
         val sortedByID = emergencies.sortedBy { emergency: Emergency -> emergency.id }
         sortedByID.forEach { sortedEmergency ->
             run {
@@ -139,7 +139,7 @@ class EmergencyPhase(private val dataHolder: DataHolder) : Phase {
     /**
      * Sort ongoing list by severity
      */
-    private fun sortBySeverity() {
-        this.dataHolder.ongoingEmergencies.sortedWith(compareBy<Emergency> { it.severity }.thenBy { it.id })
+    fun sortBySeverity() {
+        this.dataHolder.ongoingEmergencies.sortedWith(compareByDescending<Emergency> { it.severity }.thenBy { it.id })
     }
 }

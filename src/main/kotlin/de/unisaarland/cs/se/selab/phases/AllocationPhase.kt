@@ -13,7 +13,6 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleStatus
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
 import de.unisaarland.cs.se.selab.global.Log
-import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 
 /** Represents the allocation phase of the simulation
@@ -38,6 +37,9 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         currentTick++
     }
 
+    /**
+     * Returns all vehicles that are in a base that are of the correct vehicle type for an emergency
+     */
     private fun getAssignableAssets(base: Base, emergency: Emergency): List<Vehicle> {
         val requiredVehicles = emergency.requiredVehicles
         val vehicles = base.vehicles
@@ -47,11 +49,14 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
             .filter { it.vehicleType in requiredVehicles }
     }
 
+    /**
+     * Returns the current amount of capacity a vehicle has
+     */
     private fun getVehicleCapacity(vehicle: Vehicle): Pair<CapacityType, Int> {
         return when (vehicle) {
-            is PoliceCar -> Pair(CapacityType.CRIMINAL, vehicle.maxCriminalCapacity)
-            is FireTruckWater -> Pair(CapacityType.WATER, vehicle.maxWaterCapacity)
-            is Ambulance -> Pair(CapacityType.PATIENT, 1)
+            is PoliceCar -> Pair(CapacityType.CRIMINAL, vehicle.currentCriminalCapcity)
+            is FireTruckWater -> Pair(CapacityType.WATER, vehicle.currentWaterCapacity)
+            is Ambulance -> Pair(CapacityType.PATIENT, if (vehicle.hasPatient) 1 else 0)
             is FireTruckWithLadder -> Pair(CapacityType.LADDER_LENGTH, vehicle.ladderLength)
             else -> Pair(CapacityType.NONE, 0)
         }
@@ -68,9 +73,8 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
             // check if vehicle has the required capacity
             val vehicleCapacity = getVehicleCapacity(asset)
             checkAndAssign(vehicleCapacity, requiredCapacity, asset, emergency)
-            val arrival = assignIfCanArriveOnTime(asset, emergency)
-            Log.displayAssetAllocation(asset.id, emergency.id, arrival / Number.TEN)
-            // needs to be clarified with graph
+            val arrival = getTimeToArrive(asset, emergency)
+            Log.displayAssetAllocation(asset.id, emergency.id, arrival)
         }
     }
 
@@ -80,14 +84,18 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         asset: Vehicle,
         emergency: Emergency
     ) {
+        // check if the vehicles CapacityType is needed
         if (vehicleCapacity.first in requiredCapacity) {
             if (requiredCapacity[vehicleCapacity.first]?.let { vehicleCapacity.second >= it } == true &&
-                assignIfCanArriveOnTime(asset, emergency) <= emergency.maxDuration - emergency.handleTime
+                getTimeToArrive(asset, emergency) <= emergency.maxDuration - emergency.handleTime
             ) {
                 // assign vehicle to emergency, update vehicle status
                 asset.assignedEmergencyID = emergency.id
                 asset.vehicleStatus = VehicleStatus.ASSIGNED_TO_EMERGENCY
-                emergency.requiredCapacity[vehicleCapacity.first] = -vehicleCapacity.second
+                emergency.requiredCapacity[vehicleCapacity.first] = (
+                    emergency.requiredCapacity[vehicleCapacity.first]
+                        ?: 0
+                    ) - vehicleCapacity.second
                 // add information about assigned vehicle to dataHolder
                 dataHolder.vehicleToEmergency[asset.id] = emergency
             } else {
@@ -109,7 +117,10 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         }
     }
 
-    private fun assignIfCanArriveOnTime(vehicle: Vehicle, emergency: Emergency): Int {
+    /**
+     * Returns the amount of time a vehicle needs to reach an emergency
+     */
+    private fun getTimeToArrive(vehicle: Vehicle, emergency: Emergency): Int {
         val vehiclePosition = vehicle.lastVisitedVertex
         val emergencyPosition = emergency.location
         // calculate time to arrive at emergency at vertex 1

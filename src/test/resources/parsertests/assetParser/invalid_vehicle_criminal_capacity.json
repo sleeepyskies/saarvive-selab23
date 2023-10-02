@@ -1,0 +1,21 @@
+{
+  "bases": [
+    {
+      "id": 1,
+      "baseType": "POLICE_STATION",
+      "location": 1,
+      "staff": 10,
+      "dogs": 3
+    }
+  ],
+  "vehicles": [
+    {
+      "id": 1,
+      "vehicleType": "POLICE_CAR",
+      "baseID": 1,
+      "vehicleHeight": 2,
+      "staffCapacity": 5,
+      "criminalCapacity": 5
+    }
+  ]
+}
