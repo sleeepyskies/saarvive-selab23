@@ -6,13 +6,14 @@ import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.SecondaryType
 import de.unisaarland.cs.se.selab.graph.Vertex
 import org.junit.jupiter.api.BeforeEach
+import kotlin.test.Test
 
 class GraphTest {
 
     private lateinit var graph: Graph
 
     @BeforeEach
-    public fun setUp() {
+    fun setUp() {
         // Graph setup
         val vertex1 = Vertex(0, mutableMapOf())
         val vertex2 = Vertex(1, mutableMapOf())
@@ -45,9 +46,9 @@ class GraphTest {
         this.graph = Graph(vertices, roads)
     }
 
-/*    @Test
-    public fun shortestPathTest1() {
+    @Test
+    fun shortestPathTest1() {
         var ticks = graph.calculateShortestPath(graph.graph[0], graph.graph[1], 2)
         assert(ticks == 1)
-    }*/
+    }
 }
