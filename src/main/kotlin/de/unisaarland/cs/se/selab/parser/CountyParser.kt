@@ -139,7 +139,7 @@ class CountyParser(private val dotFilePath: String) {
             if (!villageHasMainStreet() || !sideStreetExists()) {
                 System.err.println(
                     "Village has no main street or side street does not exist. " +
-                        "Called in parsedAndValid()."
+                            "Called in parsedAndValid()."
                 )
                 return false
             }
@@ -244,7 +244,7 @@ class CountyParser(private val dotFilePath: String) {
             ) {
                 villageToRoadTypeMap[singleData.getOrDefault(StringLiterals.VILLAGE, StringLiterals.ERROR)] =
                     singleData.getOrDefault(StringLiterals.PRIMARY_TYPE, StringLiterals.ERROR) ==
-                    StringLiterals.MAIN_STREET
+                            StringLiterals.MAIN_STREET
             } else {
                 if (singleData.getValue(StringLiterals.PRIMARY_TYPE) == StringLiterals.MAIN_STREET) {
                     villageToRoadTypeMap.put(singleData.getValue(StringLiterals.VILLAGE), true)
@@ -366,13 +366,13 @@ class CountyParser(private val dotFilePath: String) {
         assignmentsArray.forEach { assignment ->
             val keyValue = assignment.split("=") // Retrieve keys
             attributes[keyValue.elementAt(0).trim()] = keyValue.elementAt(1).trim() // Put attributes in mapping
-            when (keyValue.elementAt(0)) {
-                "weight" -> if (keyValue.elementAt(1).toInt() <= 0
+            when (keyValue.elementAt(0).trim()) {
+                "weight" -> if (keyValue.elementAt(1).trim().toInt() <= 0
                 ) {
                     outputInvalidAndFinish() // (10. The weight of the road must be greater than 0)
                 }
 
-                "height" -> if (keyValue.elementAt(1).toInt() < 1) {
+                "height" -> if (keyValue.elementAt(1).trim().toInt() < 1) {
                     outputInvalidAndFinish() // (11. The height of the road is at least 1)
                 }
             }
@@ -389,7 +389,7 @@ class CountyParser(private val dotFilePath: String) {
      */
     private fun tunnelIsValid(attributes: MutableMap<String, String>): Boolean {
         if (attributes.getValue("secondaryType") == "tunnel") { // (12. The height of a tunnel is at most 3)
-            if (attributes.getValue("heightLimit").toInt() <= 3) {
+            if (attributes.getValue("heightLimit").trim().toInt() <= 3) {
                 return true
             }
             System.err.println("Tunnel height is invalid. Called in tunnelIsValid(). Height of a tunnel is at most 3")
@@ -431,6 +431,7 @@ class CountyParser(private val dotFilePath: String) {
             val k = n.toInt()
             intVertices.add(k)
         }
+        if (intVertices.count() < 3) return false // At least 3 vertices
         val distinctVertices = intVertices.distinct() // The number of unique numbers (1. validation)
         if (distinctVertices.count() != intVertices.count()) {
             System.err.println("There are duplicate vertices. Called in parseVertices().")
