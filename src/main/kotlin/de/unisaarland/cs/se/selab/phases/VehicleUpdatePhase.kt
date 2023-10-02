@@ -146,7 +146,7 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
             vehicle.vehicleStatus = VehicleStatus.RECHARGING
             vehicle.currentWaterCapacity = vehicle.maxWaterCapacity
             vehicle.ticksStillUnavailable =
-                // TODO: Remove float
+                // ------------------------------------T0DO Remove float-------------------------------------------
                 ceil((vehicle.maxWaterCapacity - vehicle.currentWaterCapacity) / Number.THREE_HUNDRED_FLOAT).toInt()
         } else if (vehicle is Ambulance && vehicle.hasPatient) {
             dataHolder.rechargingVehicles.add(vehicle)

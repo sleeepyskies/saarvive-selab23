@@ -3,7 +3,6 @@ package de.unisaarland.cs.se.selab.simulation
 import de.unisaarland.cs.se.selab.dataClasses.Request
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
-import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 import de.unisaarland.cs.se.selab.dataClasses.events.Event
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.graph.Graph
@@ -71,8 +70,8 @@ class DataHolder(
      */
     fun updateScheduledEmergencies(emergencies: MutableList<Emergency>) {
         for (emergency in emergencies) {
-                this.emergencies.remove(emergency)
-                ongoingEmergencies.add(emergency)
+            this.emergencies.remove(emergency)
+            ongoingEmergencies.add(emergency)
         }
     }
 

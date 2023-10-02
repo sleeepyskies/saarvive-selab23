@@ -1,7 +1,6 @@
 package de.unisaarland.cs.se.selab
 
 import de.unisaarland.cs.se.selab.global.Number
-import de.unisaarland.cs.se.selab.simulation.Simulation
 import de.unisaarland.cs.se.selab.simulation.SimulationObjectConstructor
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 
@@ -10,32 +9,19 @@ import io.github.oshai.kotlinlogging.KotlinLogging.logger
  */
 fun main(args: Array<String>) {
     val arguments = parseCommandLineArguments(args)
-
     if (arguments.help) {
         printUsage()
     }
-
-    var simulationObjConstructor: SimulationObjectConstructor
-    var simulation: Simulation? = null
-    try {
-        simulationObjConstructor =
-            SimulationObjectConstructor(
-                arguments.mapFile,
-                arguments.assetsFile,
-                arguments.scenarioFile,
-                arguments.maxTicks
-            )
-        simulation = simulationObjConstructor.createSimulation()
-        // TODO: Instead of throwing exception do a null check
-    } catch (e: IllegalArgumentException) {
-        // TODO: println doesn't work/ should be removed or changed maybe kotlin logger
-        System.err.println(e.message)
-        // TODO: CHANGE (something with six letters)
-        System.exit(0)
-    }
-    if (simulation != null) {
-        simulation.start()
-    }
+    val simulationObjConstructor =
+        SimulationObjectConstructor(
+            arguments.mapFile,
+            arguments.assetsFile,
+            arguments.scenarioFile,
+            arguments.maxTicks
+        )
+    val simulation = simulationObjConstructor.createSimulation()
+    simulation?.start()
+    return
 }
 
 /** Data class for command line arguments */
