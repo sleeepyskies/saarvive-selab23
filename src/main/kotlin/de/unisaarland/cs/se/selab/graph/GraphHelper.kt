@@ -53,9 +53,9 @@ class GraphHelper {
     private fun weightToTicks(weight: Int): Int {
         if (weight < Number.TEN) return 1
         return if (weight % Number.TEN == 0) {
-            weight // number is already a multiple of ten
+            weight / Number.TEN // number is already a multiple of ten
         } else {
-            weight + (Number.TEN - weight % Number.TEN) // round up
+            (weight + (Number.TEN - weight % Number.TEN)) / Number.TEN // round up
         }
     }
 
