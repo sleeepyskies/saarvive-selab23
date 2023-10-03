@@ -48,10 +48,26 @@ object SystemTestRegistration {
     }
 
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
+        manager.registerTest(ExampleTest())
+        // Valid Tests
         manager.registerTest(CorrectSystemTestSmall())
         manager.registerTest(EmergencyFailTest())
         manager.registerTest(RequestTest())
         manager.registerTest(ReallocationTest())
+        manager.registerTest(TwoRoadsSameLocationTest())
+        manager.registerTest(TwoRoadsSameNameTest())
+        manager.registerTest(NonExistentVertexTest())
+        manager.registerTest(ZeroHeightTest())
+        manager.registerTest(NegativeVertexTest())
+        manager.registerTest(NoMainStreetTest())
+        manager.registerTest(NonUniqueVertexTest())
+        manager.registerTest(NoSideStreetTest())
+        manager.registerTest(RoadHas2SameVerticesTest())
+        manager.registerTest(SameVertexDifferentVillagesTest())
+        manager.registerTest(VertexWithoutRoadConnectionTest())
+        manager.registerTest(VillageAndCountyNameSameTest())
+        manager.registerTest(WeightIsZeroTest())
+        manager.registerTest(WrongTunnelHeightTest())
     }
 
     fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
