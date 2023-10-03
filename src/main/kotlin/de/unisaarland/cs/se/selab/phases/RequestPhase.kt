@@ -2,6 +2,8 @@ package de.unisaarland.cs.se.selab.phases
 
 import de.unisaarland.cs.se.selab.dataClasses.Request
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
+import de.unisaarland.cs.se.selab.dataClasses.bases.Hospital
+import de.unisaarland.cs.se.selab.dataClasses.bases.PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.CapacityType
@@ -58,7 +60,7 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
      */
     private fun getAssignableAssets(base: Base, requestedVehicles: Map<VehicleType, Int>): List<Vehicle> {
         val requiredVehicle = base.vehicles.filter {
-            it.vehicleStatus == VehicleStatus.IN_BASE && it.vehicleType in requestedVehicles
+            it.vehicleStatus == VehicleStatus.IN_BASE && it.vehicleType in requestedVehicles && it.isAvailable
         }
         return requiredVehicle
     }
@@ -99,10 +101,26 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
      */
     private fun assignWithoutCapacity(vehicles: List<Vehicle>, request: Request) {
         val requiredVehicles = request.requiredVehicles
+
         // only proceed to the next step if the request still needs this vehicle
         for (vehicle in vehicles) if (requiredVehicles.containsKey(vehicle.vehicleType)) {
-            assignVehicle(vehicle, request)
+            if (canAssignVehicle(vehicle)) assignVehicle(vehicle, request)
         }
+    }
+
+    private fun canAssignVehicle(vehicle: Vehicle): Boolean {
+        val assignedBase = dataHolder.vehiclesToBase[vehicle.id] ?: Base(1, 1, 1, mutableListOf())
+
+        if (vehicle.vehicleType == VehicleType.K9_POLICE_CAR ||
+            vehicle.vehicleType == VehicleType.EMERGENCY_DOCTOR_CAR
+        ) {
+            when (assignedBase) {
+                is PoliceStation -> return assignedBase.dogs > 0
+                is Hospital -> return assignedBase.doctors > 0
+            }
+        }
+
+        return true
     }
 
     /**
@@ -114,6 +132,7 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
         val graph = dataHolder.graph
         val requiredVehicles = request.requiredVehicles
         val emergencyVertex = emergency.location.first
+        val base = dataHolder.vehiclesToBase[vehicle.id] ?: Base(1,1,1, mutableListOf())
 
         val shortestPath = graph.calculateShortestPath(vehicle.lastVisitedVertex, emergencyVertex, vehicle.height)
         // check if the car can reach in time
@@ -123,6 +142,7 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
                 requiredVehicles.remove(vehicle.vehicleType)
             } else {
                 updateEmergencyRequirment(vehicle, emergency)
+                updateBase(base, vehicle)
                 // update the vehicle since its assigned an emergency
                 vehicle.assignedEmergencyID = emergency.id
                 vehicle.currentRoute = graph.calculateShortestRoute(
@@ -270,6 +290,13 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
 
         if (requirment == 0) {
             emergency.requiredVehicles.remove(vehicle.vehicleType)
+        }
+    }
+
+    private fun updateBase(base: Base, vehicle: Vehicle) {
+        when (base) {
+            is PoliceStation -> if (vehicle.vehicleType == VehicleType.K9_POLICE_CAR) base.dogs -=1
+            is Hospital -> if (vehicle.vehicleType == VehicleType.EMERGENCY_DOCTOR_CAR) base.doctors -=1
         }
     }
 }
