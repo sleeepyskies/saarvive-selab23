@@ -27,7 +27,9 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
      */
     override fun execute() {
         for (emergency in dataHolder.ongoingEmergencies) {
-            if (emergency.emergencyStatus == EmergencyStatus.ASSIGNED || emergency.emergencyStatus == EmergencyStatus.ONGOING) {
+            if (emergency.emergencyStatus == EmergencyStatus.ASSIGNED ||
+                emergency.emergencyStatus == EmergencyStatus.ONGOING
+            ) {
                 val base = dataHolder.emergencyToBase[emergency.id]
                 if (base != null) {
                     assignBasedOnCapacity(getAssignableAssets(base, emergency), emergency)
