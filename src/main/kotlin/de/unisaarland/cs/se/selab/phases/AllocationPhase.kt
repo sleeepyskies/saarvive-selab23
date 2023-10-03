@@ -54,9 +54,9 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
      */
     private fun getVehicleCapacity(vehicle: Vehicle): Pair<CapacityType, Int> {
         return when (vehicle) {
-            is PoliceCar -> Pair(CapacityType.CRIMINAL, vehicle.currentCriminalCapcity)
-            is FireTruckWater -> Pair(CapacityType.WATER, vehicle.currentWaterCapacity)
-            is Ambulance -> Pair(CapacityType.PATIENT, if (vehicle.hasPatient) 1 else 0)
+            is PoliceCar -> Pair(CapacityType.CRIMINAL, (vehicle.maxCriminalCapacity - vehicle.currentCriminalCapcity))
+            is FireTruckWater -> Pair(CapacityType.WATER, (vehicle.maxWaterCapacity - vehicle.currentWaterCapacity))
+            is Ambulance -> Pair(CapacityType.PATIENT, if (vehicle.hasPatient) 0 else 1)
             is FireTruckWithLadder -> Pair(CapacityType.LADDER_LENGTH, vehicle.ladderLength)
             else -> Pair(CapacityType.NONE, 0)
         }
@@ -79,7 +79,10 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         emergency.emergencyStatus = EmergencyStatus.ONGOING
     }
 
-    private fun checkAndAssign(
+    /**
+     *  check if a vehicle fits the requirements for an emergency and assigns accordingly
+     */
+    fun checkAndAssign(
         vehicleCapacity: Pair<CapacityType, Int>,
         requiredCapacity: MutableMap<CapacityType, Int>,
         asset: Vehicle,
@@ -93,10 +96,7 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
                 // assign vehicle to emergency, update vehicle status
                 asset.assignedEmergencyID = emergency.id
                 asset.vehicleStatus = VehicleStatus.ASSIGNED_TO_EMERGENCY
-                emergency.requiredCapacity[vehicleCapacity.first] = (
-                    emergency.requiredCapacity[vehicleCapacity.first]
-                        ?: 0
-                    ) - vehicleCapacity.second
+                updateEmergencyRequirment(asset, emergency, vehicleCapacity)
                 // add information about assigned vehicle to dataHolder
                 dataHolder.vehicleToEmergency[asset.id] = emergency
             } else {
@@ -115,6 +115,34 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
                 asset.vehicleStatus = VehicleStatus.ASSIGNED_TO_EMERGENCY
                 dataHolder.vehicleToEmergency[asset.id] = emergency
             }
+        }
+    }
+
+    private fun updateEmergencyRequirment(
+        vehicle: Vehicle,
+        emergency: Emergency,
+        vehicleCapacity: Pair<CapacityType, Int>
+    ) {
+        val requirment = emergency.requiredVehicles[vehicle.vehicleType] ?: 0
+        emergency.requiredVehicles[vehicle.vehicleType] = requirment - 1
+
+        when (vehicle) {
+            is PoliceCar -> {
+                val req = emergency.requiredCapacity[CapacityType.CRIMINAL] ?: 0
+                emergency.requiredCapacity[CapacityType.CRIMINAL] = req - vehicleCapacity.second
+            }
+            is FireTruckWater -> {
+                val req = emergency.requiredCapacity[CapacityType.WATER] ?: 0
+                emergency.requiredCapacity[CapacityType.WATER] = req - vehicleCapacity.second
+            }
+            is Ambulance -> {
+                val req = emergency.requiredCapacity[CapacityType.PATIENT] ?: 0
+                emergency.requiredCapacity[CapacityType.PATIENT] = req - vehicleCapacity.second
+            }
+        }
+
+        if (requirment == 0) {
+            emergency.requiredVehicles.remove(vehicle.vehicleType)
         }
     }
 
