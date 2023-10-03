@@ -79,6 +79,7 @@ class LogTest {
         this.vehicleUpdatePhase = VehicleUpdatePhase(dataHolder)
     }
 
+    // Test has no assertions, was made to see why logging wasn't happening
     @Test
     fun testLogging() {
         emergency.emergencyStatus = EmergencyStatus.ONGOING

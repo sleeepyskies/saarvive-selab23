@@ -16,7 +16,6 @@ import de.unisaarland.cs.se.selab.global.Number
 import org.everit.json.schema.Schema
 import org.json.JSONObject
 import java.io.File
-import java.util.logging.Logger
 
 /**
 * asset parser parses assets
@@ -67,7 +66,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
         parseVehiclesInternal() // Then parse vehicles
         validateAtLeastOneBaseOfEachType() // Validate base types
         validateEachBaseHasAtLeastOneVehicle() // Validate vehicles per base
-        validateVehiclesAtItsCorrectBases(parsedBases, parsedVehicles)
+        validateVehiclesAtItsCorrectBases()
         Log.displayInitializationInfoValid(this.fileName)
         return Pair(parsedVehicles, parsedBases)
     }
@@ -78,7 +77,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
     private fun parseVehiclesInternal() {
         val vehiclesArray = json.getJSONArray("vehicles")
         if (vehiclesArray.length() == 0) {
-            Logger.getLogger("No vehicles found")
+            System.err.println("No vehicles found")
             outputInvalidAndFinish()
         }
         // val parsedVehicles = mutableListOf<Vehicle>()
@@ -87,7 +86,11 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
             // assetSchema.validate(jsonVehicle)
 
             val id = validateVehicleId(jsonVehicle.getInt("id"))
-            val baseID = validateBaseId(jsonVehicle.getInt("baseID"))
+            val baseID = jsonVehicle.getInt("baseID")
+            if (baseID !in setBaseId) {
+                System.err.println("Vehicle's baseID must reference a valid Base ID")
+                outputInvalidAndFinish()
+            }
             val vehicleTypeString = jsonVehicle.getString("vehicleType") // just for validation
             val validatedVehicleType = validateVehicleType(vehicleTypeString) // just for validation
             val vehicleType = VehicleType.valueOf(validatedVehicleType)
@@ -137,13 +140,18 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
         }
     }
 
+    companion object {
+        private const val DOGS = "dogs"
+        private const val DOCTORS = "doctors"
+    }
+
     /**
      * parse Bases
      */
     fun parseBases() {
         val basesArray = json.getJSONArray("bases")
         if (basesArray.length() == 0) {
-            Logger.getLogger("No bases found")
+            System.err.println("No bases found")
             outputInvalidAndFinish()
         }
         // val parsedBases = mutableListOf<Base>()
@@ -159,9 +167,29 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
             val vehicles = mutableListOf<Vehicle>() // Initialize as an empty mutable list
 
             val base: Base = when (baseType) {
-                "FIRE_STATION" -> FireStation(id, location, staff, vehicles)
-                "HOSPITAL" -> Hospital(id, location, staff, jsonBase.getInt("doctors"), vehicles)
-                "POLICE_STATION" -> PoliceStation(id, location, staff, jsonBase.getInt("dogs"), vehicles)
+                "FIRE_STATION" -> {
+                    if (jsonBase.has(DOGS) || jsonBase.has(DOCTORS)) {
+                        System.err.println("FIRE STATION should not have $DOGS or $DOCTORS properties")
+                        outputInvalidAndFinish()
+                    }
+                    FireStation(id, location, staff, vehicles)
+                }
+                "HOSPITAL" -> {
+                    if (jsonBase.has(DOGS)) {
+                        System.err.println("HOSPITAL should not have $DOGS property")
+                        outputInvalidAndFinish()
+                    }
+                    val doctors = validateNonNegative(jsonBase.getInt(DOCTORS), DOCTORS)
+                    Hospital(id, location, staff, doctors, vehicles)
+                }
+                "POLICE_STATION" -> {
+                    if (jsonBase.has(DOCTORS)) {
+                        System.err.println("POLICE STATION should not have $DOCTORS property")
+                        outputInvalidAndFinish()
+                    }
+                    val dogs = validateNonNegative(jsonBase.getInt(DOGS), DOGS)
+                    PoliceStation(id, location, staff, dogs, vehicles)
+                }
                 else -> throw IllegalArgumentException("Invalid baseType: $baseType")
             }
             parsedBases.add(base)
@@ -176,12 +204,26 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
         throw IllegalArgumentException("Invalid asset")
     }
 
-    private fun validateBaseId(id: Int): Int {
+    /**
+     * makes sure dogs and doctors are non-negative
+     */
+    fun validateNonNegative(value: Int, propertyName: String): Int {
+        if (value < 0) {
+            System.err.println("$propertyName must be non-negative")
+            outputInvalidAndFinish()
+        }
+        return value
+    }
+
+    /**
+     * Validates base Id
+     */
+    fun validateBaseId(id: Int): Int {
         if (id < 0) {
-            Logger.getLogger("Base ID must be positive")
+            System.err.println("Base ID must be positive")
             outputInvalidAndFinish()
         } else if (id in setBaseId) {
-            Logger.getLogger("Base ID must be unique")
+            System.err.println("Base ID must be unique")
             outputInvalidAndFinish()
         } else {
             setBaseId.add(id)
@@ -189,10 +231,16 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
         return id
     }
 
-    private fun validateBaseType(baseType: String): String {
+    /**
+     * Validates base type
+     */
+    fun validateBaseType(baseType: String): String {
         val validBaseTypes = listOf("FIRE_STATION", "HOSPITAL", "POLICE_STATION")
         if (baseType !in validBaseTypes) {
-            Logger.getLogger("Invalid base type")
+            System.err.println("Invalid base type")
+            outputInvalidAndFinish()
+        } else if (baseType == "") {
+            System.err.println("Base type must not be empty")
             outputInvalidAndFinish()
         }
         return baseType
@@ -213,7 +261,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
 
     private fun validateStaff(staff: Int): Int {
         if (staff <= 0) {
-            Logger.getLogger("Staff must be positive")
+            System.err.println("Staff must be positive")
             outputInvalidAndFinish()
         }
         return staff
@@ -263,7 +311,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
 
     private fun validateCriminalCapacity(capacity: Int): Int {
         if (capacity !in 1..Number.FOUR) {
-            Logger.getLogger("Criminal capacity must be between 1 and 4")
+            System.err.println("Criminal capacity must be between 1 and 4")
             outputInvalidAndFinish()
         }
         return capacity
@@ -273,7 +321,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
         val validWaterCapacities =
             listOf(Number.SIX_HUNDRED, Number.ONE_THOUSAND_TWO_HUNDRED, Number.TWO_THOUSAND_FOUR_HUNDRED)
         if (capacity !in validWaterCapacities) {
-            Logger.getLogger("Water capacity must be one of 600, 1200, 2400")
+            System.err.println("Water capacity must be one of 600, 1200, 2400")
             outputInvalidAndFinish()
         }
         return capacity
@@ -281,7 +329,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
 
     private fun validateLadderLength(length: Int): Int {
         if (length !in Number.THIRTY..Number.SEVENTY) {
-            Logger.getLogger("Ladder length must be between 30 and 70")
+            System.err.println("Ladder length must be between 30 and 70")
             outputInvalidAndFinish()
         }
         return length
@@ -293,7 +341,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
         val policeStations = parsedBases.filterIsInstance<PoliceStation>()
 
         if (fireStations.isEmpty() || hospitals.isEmpty() || policeStations.isEmpty()) {
-            Logger.getLogger("Not all base types are present in the assets.")
+            System.err.println("Not all base types are present in the assets.")
             outputInvalidAndFinish()
         }
     }
@@ -302,32 +350,40 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
         val basesWithoutVehicles = parsedBases.filter { it.vehicles.isEmpty() }
 
         if (basesWithoutVehicles.isNotEmpty()) {
-            Logger.getLogger("There are bases without any vehicles assigned.")
+            System.err.println("There are bases without any vehicles assigned.")
             outputInvalidAndFinish()
         }
     }
 
-    private fun validateVehiclesAtItsCorrectBases(allBases: List<Base>, allVehicles: List<Vehicle>) {
-        allVehicles.forEach { vehicle ->
-            val correspondingBase = allBases.find { it.baseID == vehicle.assignedBaseID }
-            requireNotNull(correspondingBase != null) { "No base found for vehicle with id ${vehicle.id}" }
+    private fun validateVehiclesAtItsCorrectBases() {
+        parsedVehicles.forEach { vehicle ->
+            val correspondingBase = parsedBases.find { it.baseID == vehicle.assignedBaseID }
+            if (correspondingBase == null) {
+                System.err.println("No base found for vehicle with id ${vehicle.id}")
+                outputInvalidAndFinish()
+            }
 
             when (vehicle.vehicleType) {
                 VehicleType.POLICE_CAR, VehicleType.POLICE_MOTORCYCLE, VehicleType.K9_POLICE_CAR -> {
-                    require(
-                        correspondingBase is PoliceStation
-                    ) { "Vehicle with id ${vehicle.id} should be at a Police Station" }
+                    if (correspondingBase !is PoliceStation) {
+                        System.err.println("Vehicle with id ${vehicle.id} should be at a Police Station")
+                        outputInvalidAndFinish()
+                    }
                 }
 
                 VehicleType.FIRE_TRUCK_WATER, VehicleType.FIRE_TRUCK_TECHNICAL,
                 VehicleType.FIRE_TRUCK_LADDER, VehicleType.FIREFIGHTER_TRANSPORTER -> {
-                    require(
-                        correspondingBase is FireStation
-                    ) { "Vehicle with id ${vehicle.id} should be at a Fire Station" }
+                    if (correspondingBase !is FireStation) {
+                        System.err.println("Vehicle with id ${vehicle.id} should be at a Fire Station")
+                        outputInvalidAndFinish()
+                    }
                 }
 
                 VehicleType.AMBULANCE, VehicleType.EMERGENCY_DOCTOR_CAR -> {
-                    require(correspondingBase is Hospital) { "Vehicle with id ${vehicle.id} should be at a Hospital" }
+                    if (correspondingBase !is Hospital) {
+                        System.err.println("Vehicle with id ${vehicle.id} should be at a Hospital")
+                        outputInvalidAndFinish()
+                    }
                 }
             }
         }

@@ -1,6 +1,5 @@
 package allocationphasetests
 
-import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.bases.FireStation
 import de.unisaarland.cs.se.selab.dataClasses.bases.Hospital
 import de.unisaarland.cs.se.selab.dataClasses.bases.PoliceStation
@@ -148,7 +147,7 @@ class GetAssignableAssetsTest {
     val policeStation1 = PoliceStation(2, 8, 3, 5, p1Vehicles)
 
     // Define data holder
-    val dataHolder = DataHolder(graph, listOf<Base>(), mutableListOf(), mutableListOf())
+    val dataHolder = DataHolder(graph, emptyList(), mutableListOf(), mutableListOf())
 
     val ap = AllocationPhase(dataHolder)
 

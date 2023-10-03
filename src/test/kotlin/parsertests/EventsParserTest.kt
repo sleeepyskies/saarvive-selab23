@@ -14,7 +14,7 @@ class EventsParserTest {
         val parser = EventsParser(
             schemaFile = "event.schema",
             jsonFile = "src/systemtest/resources/scenarioJsons/example_scenario.json",
-            vehicles = listOf() // Provide a list of vehicles here
+            vehicles = emptyList() // Provide a list of vehicles here
         )
 
         val events = parser.parse()
@@ -35,7 +35,7 @@ class EventsParserTest {
             EventsParser(
                 schemaFile = "event.schema",
                 jsonFile = "invalid/path/to/json",
-                vehicles = listOf()
+                vehicles = emptyList()
             )
         }
     }
@@ -46,7 +46,7 @@ class EventsParserTest {
             EventsParser(
                 schemaFile = "event.schema",
                 jsonFile = "src/test/resources/parsertests/eventsParser/invalid_events.json",
-                vehicles = listOf()
+                vehicles = emptyList()
             ).parse()
         }
     }
@@ -57,7 +57,7 @@ class EventsParserTest {
             EventsParser(
                 schemaFile = "event.schema",
                 jsonFile = "src/test/resources/parsertests/eventsParser/invalid_event_type.json",
-                vehicles = listOf()
+                vehicles = emptyList()
             ).parse()
         }
     }
@@ -68,7 +68,7 @@ class EventsParserTest {
             EventsParser(
                 schemaFile = "event.schema",
                 jsonFile = "src/test/resources/parsertests/eventsParser/negative_event_id.json",
-                vehicles = listOf()
+                vehicles = emptyList()
             ).parse()
         }
     }
@@ -79,7 +79,7 @@ class EventsParserTest {
             EventsParser(
                 schemaFile = "event.schema",
                 jsonFile = "src/test/resources/parsertests/eventsParser/duplicate_event_id.json",
-                vehicles = listOf()
+                vehicles = emptyList()
             ).parse()
         }
     }
@@ -90,7 +90,7 @@ class EventsParserTest {
             EventsParser(
                 schemaFile = "event.schema",
                 jsonFile = "src/test/resources/parsertests/eventsParser/missing_required_fields.json",
-                vehicles = listOf()
+                vehicles = emptyList()
             ).parse()
         }
     }
@@ -101,7 +101,7 @@ class EventsParserTest {
             EventsParser(
                 schemaFile = "event.schema",
                 jsonFile = "src/test/resources/parsertests/eventsParser/rush_hour_negative_factor.json",
-                vehicles = listOf()
+                vehicles = emptyList()
             ).parse()
         }
     }
@@ -113,7 +113,7 @@ class EventsParserTest {
             EventsParser(
                 schemaFile = "event.schema",
                 jsonFile = "src/test/resources/parsertests/eventsParser/construction_negative_source_target.json",
-                vehicles = listOf()
+                vehicles = emptyList()
             ).parse()
         }
     }
@@ -124,7 +124,7 @@ class EventsParserTest {
             EventsParser(
                 schemaFile = "event.schema",
                 jsonFile = "src/test/resources/parsertests/eventsParser/construction_missing_source_or_target.json",
-                vehicles = listOf()
+                vehicles = emptyList()
             ).parse()
         }
     }
@@ -136,7 +136,7 @@ class EventsParserTest {
             EventsParser(
                 schemaFile = "event.schema",
                 jsonFile = "src/test/resources/parsertests/eventsParser/vehicle_unavailable_negative_id.json",
-                vehicles = listOf()
+                vehicles = emptyList()
             ).parse()
         }
     }
@@ -147,7 +147,7 @@ class EventsParserTest {
             EventsParser(
                 schemaFile = "event.schema",
                 jsonFile = "src/test/resources/parsertests/eventsParser/vehicle_unavailable_non_existent_id.json",
-                vehicles = listOf()
+                vehicles = emptyList()
             ).parse()
         }
     }
@@ -159,7 +159,7 @@ class EventsParserTest {
             EventsParser(
                 schemaFile = "event.schema",
                 jsonFile = "src/test/resources/parsertests/eventsParser/event_negative_duration.json",
-                vehicles = listOf()
+                vehicles = emptyList()
             ).parse()
         }
     }
@@ -171,7 +171,7 @@ class EventsParserTest {
             EventsParser(
                 schemaFile = "event.schema",
                 jsonFile = "src/test/resources/parsertests/eventsParser/event_negative_tick.json",
-                vehicles = listOf()
+                vehicles = emptyList()
             ).parse()
         }
     }
@@ -183,7 +183,7 @@ class EventsParserTest {
             EventsParser(
                 schemaFile = "event.schema",
                 jsonFile = "src/test/resources/parsertests/eventsParser/event_negative_factor.json",
-                vehicles = listOf()
+                vehicles = emptyList()
             ).parse()
         }
     }
@@ -195,7 +195,7 @@ class EventsParserTest {
             EventsParser(
                 schemaFile = "event.schema",
                 jsonFile = "src/test/resources/parsertests/eventsParser/event_invalid_road_types.json",
-                vehicles = listOf()
+                vehicles = emptyList()
             ).parse()
         }
     }
@@ -206,7 +206,7 @@ class EventsParserTest {
             EventsParser(
                 schemaFile = "event.schema",
                 jsonFile = "src/test/resources/parsertests/eventsParser/event_empty_road_types.json",
-                vehicles = listOf()
+                vehicles = emptyList()
             ).parse()
         }
     }
@@ -218,7 +218,7 @@ class EventsParserTest {
             EventsParser(
                 schemaFile = "event.schema",
                 jsonFile = "src/test/resources/parsertests/eventsParser/event_negative_source_or_target.json",
-                vehicles = listOf()
+                vehicles = emptyList()
             ).parse()
         }
     }
@@ -241,7 +241,7 @@ class EventsParserTest {
             EventsParser(
                 schemaFile = "event.schema",
                 jsonFile = "src/test/resources/parsertests/eventsParser/event_negative_vehicle_id.json",
-                vehicles = listOf()
+                vehicles = emptyList()
             ).parse()
         }
     }
