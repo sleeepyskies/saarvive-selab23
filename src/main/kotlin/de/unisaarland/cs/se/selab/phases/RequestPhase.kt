@@ -2,6 +2,7 @@ package de.unisaarland.cs.se.selab.phases
 
 import de.unisaarland.cs.se.selab.dataClasses.Request
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
+import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.CapacityType
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
@@ -121,7 +122,7 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
             if (requiredVehicles[vehicle.vehicleType] == 0) {
                 requiredVehicles.remove(vehicle.vehicleType)
             } else {
-                requiredVehicles[vehicle.vehicleType] = requiredVehicles[vehicle.vehicleType] ?: -1
+                updateEmergencyRequirment(vehicle, emergency)
                 // update the vehicle since its assigned an emergency
                 vehicle.assignedEmergencyID = emergency.id
                 vehicle.currentRoute = graph.calculateShortestRoute(
@@ -160,18 +161,21 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
      */
     private fun assignFireTruckWater(vehicle: FireTruckWater, request: Request) {
         if (request.requiredCapacity.containsKey(CapacityType.WATER)) {
-            val requiredNum = request.requiredVehicles[VehicleType.FIRE_TRUCK_WATER]
-            val requiredGallons = request.requiredCapacity[CapacityType.WATER]
+            val requiredNum = request.requiredVehicles[VehicleType.FIRE_TRUCK_WATER] ?: 0
+            val requiredGallons = request.requiredCapacity[CapacityType.WATER] ?: 0
+            val fireTruckCapacity = vehicle.maxWaterCapacity - vehicle.currentWaterCapacity
 
             // if the vehicles aren't need anymore
-            if ((requiredNum ?: 0) == 0) {
+            if (requiredNum == 0) {
                 request.requiredCapacity.remove(CapacityType.WATER)
                 request.requiredVehicles.remove(VehicleType.FIRE_TRUCK_WATER)
-            } else {
-                // checking if this vehicle has enough capacity
-                if (vehicle.currentWaterCapacity >= (requiredGallons ?: 0)) {
+            } else if (requiredNum == 1) {
+                // if one vehicle is required then it needs to have exact capacity
+                if (fireTruckCapacity >= requiredGallons) {
                     assignVehicle(vehicle, request)
                 }
+            } else {
+                assignVehicle(vehicle, request)
             }
         }
     }
@@ -200,21 +204,24 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
      * implements the logic of assigning a police car
      */
     private fun assignPoliceCar(vehicle: PoliceCar, request: Request) {
-        val requiredNum = request.requiredVehicles[VehicleType.POLICE_CAR]
-        val requiredCriminalNum = request.requiredCapacity[CapacityType.CRIMINAL]
+        val requiredNum = request.requiredVehicles[VehicleType.POLICE_CAR] ?: 0
+        val requiredCriminalNum = request.requiredCapacity[CapacityType.CRIMINAL] ?: 0
+        val currentCriminalCapacity = vehicle.maxCriminalCapacity - vehicle.currentCriminalCapcity
 
-        if (requiredNum == null || requiredCriminalNum == null || requiredNum == 0) {
-            return
-        }
-
-        if (vehicle.currentCriminalCapcity >= requiredCriminalNum) {
+        if (currentCriminalCapacity >= requiredCriminalNum) {
             assignVehicle(vehicle, request)
             request.requiredCapacity[CapacityType.CRIMINAL] = requiredCriminalNum - 1
         }
 
-        if (requiredCriminalNum == 0) {
+        if (requiredNum == 0) {
             request.requiredCapacity.remove(CapacityType.CRIMINAL)
             request.requiredVehicles.remove(VehicleType.POLICE_CAR)
+        } else if (requiredCriminalNum == 1) {
+            if (currentCriminalCapacity >= requiredCriminalNum) {
+                assignVehicle(vehicle, request)
+            }
+        } else {
+            assignVehicle(vehicle, request)
         }
     }
 
@@ -233,9 +240,37 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
                 // only assign the vehicle if it doesn't have a patient
                 if (vehicle.hasPatient.not()) {
                     assignVehicle(vehicle, request)
-                    request.requiredCapacity[CapacityType.PATIENT] = requiredPatientNum ?: -1
                 }
             }
+        }
+    }
+
+    private fun updateEmergencyRequirment(
+        vehicle: Vehicle,
+        emergency: Emergency
+    ) {
+        val requirment = emergency.requiredVehicles[vehicle.vehicleType] ?: 0
+        emergency.requiredVehicles[vehicle.vehicleType] = requirment - 1
+
+        when (vehicle) {
+            is PoliceCar -> {
+                val capacity = vehicle.maxCriminalCapacity - vehicle.currentCriminalCapcity
+                val req = emergency.requiredCapacity[CapacityType.CRIMINAL] ?: 0
+                emergency.requiredCapacity[CapacityType.CRIMINAL] = req - capacity
+            }
+            is FireTruckWater -> {
+                val capacity = vehicle.maxWaterCapacity - vehicle.currentWaterCapacity
+                val req = emergency.requiredCapacity[CapacityType.WATER] ?: 0
+                emergency.requiredCapacity[CapacityType.WATER] = req - capacity
+            }
+            is Ambulance -> {
+                val req = emergency.requiredCapacity[CapacityType.PATIENT] ?: 0
+                emergency.requiredCapacity[CapacityType.PATIENT] = req - 1
+            }
+        }
+
+        if (requirment == 0) {
+            emergency.requiredVehicles.remove(vehicle.vehicleType)
         }
     }
 }
