@@ -54,8 +54,11 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
         // Load and parse the JSON data
         val simulationJsonData = File(jsonFile).readText()
         json = JSONObject(simulationJsonData)
-
-        schema.validate(json)
+        try {
+            schema.validate(json)
+        } catch (_: Exception) {
+            outputInvalidAndFinish()
+        }
     }
 
     /**
