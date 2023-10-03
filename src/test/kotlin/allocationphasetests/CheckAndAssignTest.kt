@@ -78,12 +78,11 @@ class CheckAndAssignTest {
         )
 
         val vehicleCapcity = Pair(CapacityType.CRIMINAL, 5)
-        val requiredCapaity = mutableMapOf(Pair(CapacityType.CRIMINAL, 1))
 
         emergency.location = Pair(v1, v2)
         vehicle.lastVisitedVertex = v0
 
-        ap.checkAndAssign(vehicleCapcity, requiredCapaity, vehicle, emergency)
+        ap.checkAndAssign(vehicleCapcity, vehicle, emergency)
         assert(vehicle.assignedBaseID == 1)
         assert(vehicle.assignedEmergencyID == 1)
         assert(vehicle.vehicleStatus == VehicleStatus.ASSIGNED_TO_EMERGENCY)
