@@ -31,6 +31,7 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
                 val base = dataHolder.emergencyToBase[emergency.id]
                 if (base != null) {
                     assignBasedOnCapacity(getAssignableAssets(base, emergency), emergency)
+                    assignBasedOnCapacity(getAssignableAssets(base, emergency), emergency)
                 }
             }
         }
