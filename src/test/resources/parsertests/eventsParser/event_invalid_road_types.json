@@ -1,0 +1,13 @@
+{
+  "events": [
+    {
+      "id": 1,
+      "type": "RUSH_HOUR",
+      "tick": 3,
+      "duration": 2,
+      "roadTypes": ["INVALID_ROAD_TYPE"],
+      "factor": 2
+    }
+  ]
+}
+

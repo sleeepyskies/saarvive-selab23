@@ -1,0 +1,11 @@
+{
+  "events": [
+    {
+      "id": 1,
+      "type": "VEHICLE_UNAVAILABLE",
+      "tick": 3,
+      "duration": 2,
+      "vehicleID": 9999
+    }
+  ]
+}

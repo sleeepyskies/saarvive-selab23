@@ -1,0 +1,14 @@
+{
+  "events": [
+    {
+      "id": 1,
+      "type": "TRAFFIC_JAM",
+      "tick": 3,
+      "duration": 2,
+      "source": -1,
+      "target": 2,
+      "factor": 2
+    }
+  ]
+}
+
