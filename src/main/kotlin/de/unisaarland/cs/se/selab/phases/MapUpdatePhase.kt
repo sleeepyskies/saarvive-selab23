@@ -36,6 +36,11 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
         if (event is VehicleUnavailable){
             // add vehicle id to unavailable vehicles
             dataHolder.unavailableVehicles.add(event.vehicleID)
+            val vehicleBase = dataHolder.vehiclesToBase[event.vehicleID]
+            val vehicle = vehicleBase?.vehicles?.find { v -> v.id == event.vehicleID }
+            if (vehicle != null) {
+                vehicle.isAvailable = false
+            }
         } else {
             // apply graph event
             dataHolder.graph.applyGraphEvent(event)
@@ -51,13 +56,20 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
         if (event is VehicleUnavailable){
             // remove vehicle id to unavailable vehicles
             dataHolder.unavailableVehicles.remove(event.vehicleID)
+            // get relevant vehicle and set to unavailable
+            val vehicleBase = dataHolder.vehiclesToBase[event.vehicleID]
+            val vehicle = vehicleBase?.vehicles?.find { v -> v.id == event.vehicleID }
+            if (vehicle != null) {
+                vehicle.isAvailable = true
+            }
+
         } else {
             // revert graph event
             dataHolder.graph.revertGraphEvent(event)
             shouldReroute = true
-            dataHolder.events.remove(event)
         }
         Log.displayEventEnded(event.eventID)
+        dataHolder.events.remove(event)
     }
 
     /**
