@@ -35,7 +35,7 @@ class MapUpdatePhaseTest {
     private var construction1: Construction = Construction(0, 1, 0, 2, 0, 1, true)
     private var construction2: Construction = Construction(0, 1, 0, 2, 0, 1, false)
     private var roadClosure: RoadClosure = RoadClosure(1, 1, 0, 0, 1)
-    private var rushHour: RushHour = RushHour(2, 1, 1, listOf(PrimaryType.MAIN_STREET), 2)
+    private var rushHour: RushHour = RushHour(2, 1, 0, listOf(PrimaryType.MAIN_STREET), 2)
     private val trafficJam: TrafficJam = TrafficJam(3, 1, 0, 2, 0, 1)
     private val vehicleUnavailable: VehicleUnavailable = VehicleUnavailable(4, 1, 0, 0)
     private val events: MutableList<Event> = mutableListOf()
