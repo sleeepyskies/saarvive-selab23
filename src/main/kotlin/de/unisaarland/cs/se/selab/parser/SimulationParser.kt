@@ -125,7 +125,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     /** Validates the severity of emergencies
      * Checks whether the specified severity value belongs to the range of valid values.
      */
-    private fun validateSeverity(severity: Int): Boolean {
+    fun validateSeverity(severity: Int): Boolean {
         if (severity !in 1..3) {
             Logger.getLogger("Invalid severity level")
             return false
@@ -135,7 +135,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
 
     /** Validates the tick of emergencies
      */
-    private fun validateEmergencyTick(tick: Int): Boolean {
+    fun validateEmergencyTick(tick: Int): Boolean {
         if (tick <= 0) {
             Logger.getLogger("Emergency tick must be positive")
             return false
@@ -178,7 +178,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
 
     /** Validates the village name of emergencies --> will be changes after Ira is done with Parsing
      */
-    private fun validateVillageName(villageName: String): Boolean {
+    fun validateVillageName(villageName: String): Boolean {
         val listOfVillages = mutableListOf<String>()
         for (v in graph.roads) {
             listOfVillages.add(v.villageName)

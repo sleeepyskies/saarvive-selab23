@@ -97,6 +97,60 @@ class SimulationParserTest {
         val isValid = emergencyParser.validateEmergency(validJson)
         assert(isValid)
     }
+
+    @Test
+    fun `test negative tick`() {
+        val isValid = emergencyParser.validateEmergencyTick(Random().nextInt(-100, -1))
+        val isValid2 = emergencyParser.validateEmergencyTick(0)
+        val isValid3 = emergencyParser.validateEmergencyTick(Random().nextInt(1, 100000))
+        assert(!isValid)
+        assert(!isValid2)
+    }
+
+    @Test
+    fun `test severity validation`() {
+        val isValid = emergencyParser.validateSeverity(1)
+        val isValid2 = emergencyParser.validateSeverity(2)
+        val isValid3 = emergencyParser.validateSeverity(3)
+        val isValid4 = emergencyParser.validateSeverity(Random().nextInt(-100, -1))
+        val isValid5 = emergencyParser.validateSeverity(Random().nextInt(4, 1000))
+        assert(isValid)
+        assert(isValid2)
+        assert(isValid3)
+        assert(!isValid4)
+        assert(!isValid5)
+    }
+
+    @Test
+    fun `test village name validation`(){
+        //valid villages:
+        val isValid = emergencyParser.validateVillageName("Saarbruecken")
+        val isValid4 = emergencyParser.validateVillageName("Saarland")
+        val isValid5 = emergencyParser.validateVillageName("Homburg")
+        val isValid6 = emergencyParser.validateVillageName("Saarlouis")
+        //invalid villages:
+        val isValid2 = emergencyParser.validateVillageName("Saarbrücken")
+        val isValid3 = emergencyParser.validateVillageName("Saarbruecken1")
+        val isValid7 = emergencyParser.validateVillageName("Saarbruecken ")
+        val isValid8 = emergencyParser.validateVillageName("WHAT")
+        val isValid9 = emergencyParser.validateVillageName("BroYouAreInWrongVillage")
+        val isValid10 = emergencyParser.validateVillageName("")
+        val isValid11 = emergencyParser.validateVillageName("811 what's your emergency")
+        val isValid12 = emergencyParser.validateVillageName("     ")
+        assert(isValid)
+        assert(!isValid2)
+        assert(!isValid3)
+        assert(isValid4)
+        assert(isValid5)
+        assert(isValid6)
+        assert(!isValid7)
+        assert(!isValid8)
+        assert(!isValid9)
+        assert(!isValid10)
+        assert(!isValid11)
+        assert(!isValid12)
+    }
+
 }
 
 //    @Test
