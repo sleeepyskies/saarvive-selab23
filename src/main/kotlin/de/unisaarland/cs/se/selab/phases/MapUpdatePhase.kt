@@ -79,6 +79,6 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
             )
             assetsRerouted++
         }
-        Log.displayAssetsRerouted(assetsRerouted)
+        if (assetsRerouted > 0) Log.displayAssetsRerouted(assetsRerouted)
     }
 }
