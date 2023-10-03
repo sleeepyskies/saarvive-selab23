@@ -16,6 +16,7 @@ import de.unisaarland.cs.se.selab.global.Number
 import org.everit.json.schema.Schema
 import org.json.JSONObject
 import java.io.File
+import java.util.logging.Logger
 
 /**
 * asset parser parses assets
@@ -24,8 +25,11 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
     private val assetSchema: Schema
     private val json: JSONObject
     private var fileName = "" // for logging
+    private val setBaseId = mutableSetOf<Int>()
+    private val setBaseLocation = mutableSetOf<Int>()
     val parsedVehicles = mutableListOf<Vehicle>()
     val parsedBases = mutableListOf<Base>()
+
 
     // for validation of unique IDs
     // private val baseIDSet = mutableSetOf<Int>()
@@ -75,7 +79,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
     private fun parseVehiclesInternal() {
         val vehiclesArray = json.getJSONArray("vehicles")
         if (vehiclesArray.length() == 0) {
-            System.err.println("No vehicles found")
+            Logger.getLogger("No vehicles found")
             outputInvalidAndFinish()
         }
         // val parsedVehicles = mutableListOf<Vehicle>()
@@ -140,7 +144,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
     fun parseBases() {
         val basesArray = json.getJSONArray("bases")
         if (basesArray.length() == 0) {
-            System.err.println("No bases found")
+            Logger.getLogger("No bases found")
             outputInvalidAndFinish()
         }
         // val parsedBases = mutableListOf<Base>()
@@ -175,8 +179,13 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
 
     private fun validateBaseId(id: Int): Int {
         if (id < 0) {
-            System.err.println("Base ID must be positive")
+            Logger.getLogger("Base ID must be positive")
             outputInvalidAndFinish()
+        } else if (id in setBaseId) {
+            Logger.getLogger("Base ID must be unique")
+            outputInvalidAndFinish()
+        } else {
+            setBaseId.add(id)
         }
         return id
     }
@@ -184,7 +193,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
     private fun validateBaseType(baseType: String): String {
         val validBaseTypes = listOf("FIRE_STATION", "HOSPITAL", "POLICE_STATION")
         if (baseType !in validBaseTypes) {
-            System.err.println("Invalid base type")
+            Logger.getLogger("Invalid base type")
             outputInvalidAndFinish()
         }
         return baseType
@@ -194,13 +203,18 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
         if (location < 0) {
             System.err.println("Location must be non-negative")
             outputInvalidAndFinish()
+        } else if (location in setBaseLocation) {
+            System.err.println("Location must be unique")
+            outputInvalidAndFinish()
+        } else {
+            setBaseLocation.add(location)
         }
         return location
     }
 
     private fun validateStaff(staff: Int): Int {
         if (staff <= 0) {
-            System.err.println("Staff must be positive")
+            Logger.getLogger("Staff must be positive")
             outputInvalidAndFinish()
         }
         return staff
@@ -250,7 +264,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
 
     private fun validateCriminalCapacity(capacity: Int): Int {
         if (capacity !in 1..Number.FOUR) {
-            System.err.println("Criminal capacity must be between 1 and 4")
+            Logger.getLogger("Criminal capacity must be between 1 and 4")
             outputInvalidAndFinish()
         }
         return capacity
@@ -260,7 +274,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
         val validWaterCapacities =
             listOf(Number.SIX_HUNDRED, Number.ONE_THOUSAND_TWO_HUNDRED, Number.TWO_THOUSAND_FOUR_HUNDRED)
         if (capacity !in validWaterCapacities) {
-            System.err.println("Water capacity must be one of 600, 1200, 2400")
+            Logger.getLogger("Water capacity must be one of 600, 1200, 2400")
             outputInvalidAndFinish()
         }
         return capacity
@@ -268,7 +282,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
 
     private fun validateLadderLength(length: Int): Int {
         if (length !in Number.THIRTY..Number.SEVENTY) {
-            System.err.println("Ladder length must be between 30 and 70")
+            Logger.getLogger("Ladder length must be between 30 and 70")
             outputInvalidAndFinish()
         }
         return length
@@ -280,7 +294,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
         val policeStations = parsedBases.filterIsInstance<PoliceStation>()
 
         if (fireStations.isEmpty() || hospitals.isEmpty() || policeStations.isEmpty()) {
-            System.err.println("Not all base types are present in the assets.")
+            Logger.getLogger("Not all base types are present in the assets.")
             outputInvalidAndFinish()
         }
     }
@@ -289,7 +303,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
         val basesWithoutVehicles = parsedBases.filter { it.vehicles.isEmpty() }
 
         if (basesWithoutVehicles.isNotEmpty()) {
-            System.err.println("There are bases without any vehicles assigned.")
+            Logger.getLogger("There are bases without any vehicles assigned.")
             outputInvalidAndFinish()
         }
     }
