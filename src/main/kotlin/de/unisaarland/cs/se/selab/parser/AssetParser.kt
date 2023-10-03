@@ -49,8 +49,11 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
         // Load the JSON data
         val assetJsonData = File(assetJsonFile).readText()
         json = JSONObject(assetJsonData)
-
-        assetSchema.validate(json)
+        try {
+            assetSchema.validate(json)
+        } catch (_: Exception) {
+            outputInvalidAndFinish()
+        }
     }
 
     /**
@@ -71,6 +74,10 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
      */
     private fun parseVehiclesInternal() {
         val vehiclesArray = json.getJSONArray("vehicles")
+        if (vehiclesArray.length() == 0) {
+            System.err.println("No vehicles found")
+            outputInvalidAndFinish()
+        }
         // val parsedVehicles = mutableListOf<Vehicle>()
         for (i in 0 until vehiclesArray.length()) {
             val jsonVehicle = vehiclesArray.getJSONObject(i)
@@ -132,6 +139,10 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
      */
     fun parseBases() {
         val basesArray = json.getJSONArray("bases")
+        if (basesArray.length() == 0) {
+            System.err.println("No bases found")
+            outputInvalidAndFinish()
+        }
         // val parsedBases = mutableListOf<Base>()
         for (i in 0 until basesArray.length()) {
             val jsonBase = basesArray.getJSONObject(i)
