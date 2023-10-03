@@ -65,11 +65,12 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
      * Parses the events from the JSON file
      */
     fun parse(): List<Event> {
-        try {
-            parseEvents()
-        } catch (_: IllegalArgumentException) {
-            outputInvalidAndFinish()
-        }
+//        try {
+//            parseEvents()
+//        } catch (_: IllegalArgumentException) {
+//            outputInvalidAndFinish()
+//        } => deleted this since it leads to double output in tests
+        parseEvents()
         Log.displayInitializationInfoValid(this.fileName)
         return parsedEvents
     }
