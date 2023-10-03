@@ -18,9 +18,9 @@ class MapUpdatePhaseTest {
     private lateinit var roads: List<Road>
     private lateinit var vertices: List<Vertex>
     private lateinit var bases: List<Base>
-    private var construction: Construction = Construction(0, 1, 0, 2, 0, 1, true)
-    private var roadClosure: RoadClosure = RoadClosure(1, 1, 0, 0, 1)
-    private var rushHour: RushHour = RushHour(2, 1, 1, listOf(PrimaryType.MAIN_STREET), 2)
+    // private var construction: Construction = Construction(0, 1, 0, 2, 0, 1, true)
+    // private var roadClosure: RoadClosure = RoadClosure(1, 1, 0, 0, 1)
+    // private var rushHour: RushHour = RushHour(2, 1, 1, listOf(PrimaryType.MAIN_STREET), 2)
     private var trafficJam: TrafficJam = TrafficJam(3, 1, 0, 2, 0,  1)
     private var vehicleUnavailable: VehicleUnavailable = VehicleUnavailable(4, 1,  0, 0)
     private val events: MutableList<Event> = mutableListOf()

@@ -64,6 +64,39 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
     }
 
     /**
+     * Returns the weight of the shortest route
+     * @param start the start-point of the algorithm
+     * @param destination the end-point of the algorithm
+     * @param carHeight the car's height, set to 0 when ignoring height restrictions
+     */
+    fun weightOfRoute(start: Vertex, destination: Vertex, carHeight: Int): Int {
+        if (start == destination) return 0
+        // Map from a vertex to its distance form start, and previous vertex on path
+        val visitedVertices: MutableMap<Vertex, Pair<Int, Vertex?>> = helper.initVisitedVertices(start, this.graph)
+        val unvisitedVertices: MutableList<Vertex> = graph.toMutableList()
+        var currentVertex = start
+
+        // Algorithm
+        while (unvisitedVertices.isNotEmpty()) {
+            // gets all relevant neighbors based on height restrictions
+            val neighbors = currentVertex.connectingRoads.filter { (_, road) -> carHeight <= road.heightLimit }
+            // updates neighbor distances
+            helper.updateNeighbors(neighbors, visitedVertices, currentVertex, this.graph)
+
+            unvisitedVertices.remove(currentVertex)
+            // update nextVertex
+            val nextVertex = helper.findNextVertex(neighbors, visitedVertices, this.graph, unvisitedVertices)
+            if (nextVertex != null) {
+                currentVertex = nextVertex
+            } else {
+                // there are no direct connections to unvisited vertices from current vertex
+                currentVertex = unvisitedVertices.firstOrNull() ?: break
+            }
+        }
+        return visitedVertices[destination]?.first ?: 0
+    }
+
+    /**
      * Calculates the exact route a vehicle should take from it' current location to the destination.
      * Returns a list of vertices.
      * In case there are multiple shortest routes, the route with lower road ID's is chosen
