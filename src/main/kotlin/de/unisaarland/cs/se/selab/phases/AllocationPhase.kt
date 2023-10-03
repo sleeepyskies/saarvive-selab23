@@ -54,8 +54,8 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
      */
     private fun getVehicleCapacity(vehicle: Vehicle): Pair<CapacityType, Int> {
         return when (vehicle) {
-            is PoliceCar -> Pair(CapacityType.CRIMINAL, (vehicle.maxCriminalCapacity - vehicle.currentCriminalCapcity))
-            is FireTruckWater -> Pair(CapacityType.WATER, (vehicle.maxWaterCapacity - vehicle.currentWaterCapacity))
+            is PoliceCar -> Pair(CapacityType.CRIMINAL, vehicle.maxCriminalCapacity - vehicle.currentCriminalCapcity)
+            is FireTruckWater -> Pair(CapacityType.WATER, vehicle.maxWaterCapacity - vehicle.currentWaterCapacity)
             is Ambulance -> Pair(CapacityType.PATIENT, if (vehicle.hasPatient) 0 else 1)
             is FireTruckWithLadder -> Pair(CapacityType.LADDER_LENGTH, vehicle.ladderLength)
             else -> Pair(CapacityType.NONE, 0)
