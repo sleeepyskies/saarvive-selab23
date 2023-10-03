@@ -52,8 +52,10 @@ class SimulationParserTest {
     @Test
     fun `test parse method with empty JSON`() {
         val emptyfile = "src/test/resources/parsertests/emergencyParser/empty_file.json"
-        val emptyParser = SimulationParser(schema,emptyfile, graph)
-        assertThrows<IllegalArgumentException> { emptyParser.parse()}
+        val emptyParser = SimulationParser(schema, emptyfile, graph)
+        assertThrows<IllegalArgumentException> {
+            emptyParser.parse()
+        }
     }
 
     @Test
@@ -64,14 +66,16 @@ class SimulationParserTest {
     }
 
     @Test
-    fun `test parse empty calls`(){
+    fun `test parse empty calls`() {
         val emptyJsonFile = "src/test/resources/parsertests/emergencyParser/empty_calls.json"
         val emptyParser = SimulationParser(schema, emptyJsonFile, graph)
-        assertThrows<IllegalArgumentException> { emptyParser.parse() }
+        assertThrows<IllegalArgumentException> {
+            emptyParser.parse()
+        }
     }
 
     @Test
-    fun `test parse multiple valid`(){
+    fun `test parse multiple valid`() {
         val validJsonFile = "src/test/resources/parsertests/emergencyParser/multiple_valid.json"
         val validParser = SimulationParser(schema, validJsonFile, graph)
         validParser.parse()
@@ -82,7 +86,7 @@ class SimulationParserTest {
     }
 
     @Test
-    fun `test multiple invalid emergencies` () {
+    fun `test multiple invalid emergencies`() {
         val invalidJsonFile = "src/test/resources/parsertests/emergencyParser/multiple_invalid.json"
         val invalidParser = SimulationParser(schema, invalidJsonFile, graph)
         assertThrows<IllegalArgumentException> { invalidParser.parse() }
@@ -162,13 +166,13 @@ class SimulationParserTest {
     }
 
     @Test
-    fun `test village name validation`(){
-        //valid villages:
+    fun `test village name validation`() {
+        // valid villages:
         val isValid = emergencyParser.validateVillageName("Saarbruecken")
         val isValid4 = emergencyParser.validateVillageName("Saarland")
         val isValid5 = emergencyParser.validateVillageName("Homburg")
         val isValid6 = emergencyParser.validateVillageName("Saarlouis")
-        //invalid villages:
+        // invalid villages:
         val isValid2 = emergencyParser.validateVillageName("Saarbrücken")
         val isValid3 = emergencyParser.validateVillageName("Saarbruecken1")
         val isValid7 = emergencyParser.validateVillageName("Saarbruecken ")
@@ -192,7 +196,7 @@ class SimulationParserTest {
     }
 
     @Test
-    fun `test road name validation`(){
+    fun `test road name validation`() {
         // valid road names:
         val isValid = emergencyParser.validateRoadName("Flughafenstrasse")
         val isValid7 = emergencyParser.validateRoadName("Beethovenstrasse")
@@ -216,7 +220,7 @@ class SimulationParserTest {
     }
 
     @Test
-    fun `test emergency type validation`(){
+    fun `test emergency type validation`() {
         val isValid = emergencyParser.validateEmergencyType("FIRE")
         val isValid2 = emergencyParser.validateEmergencyType("ACCIDENT")
         val isValid3 = emergencyParser.validateEmergencyType("CRIME")
@@ -234,7 +238,7 @@ class SimulationParserTest {
         val isValid15 = emergencyParser.validateEmergencyType("ACCIDENT MEDICAL")
         val isValid16 = emergencyParser.validateEmergencyType("ACCIDENT CRIME")
         val isValid17 = emergencyParser.validateEmergencyType("MEDICAL, CRIME")
-        val isValid18 = emergencyParser.validateEmergencyType("FIRE"+"ACCIDENT")
+        val isValid18 = emergencyParser.validateEmergencyType("FIRE" + "ACCIDENT")
         assert(isValid)
         assert(isValid2)
         assert(isValid3)
@@ -256,7 +260,7 @@ class SimulationParserTest {
     }
 
     @Test
-    fun `test handle time validation`(){
+    fun `test handle time validation`() {
         val isValid = emergencyParser.validateHandleTime(1)
         val isValid2 = emergencyParser.validateHandleTime(2)
         val isValid3 = emergencyParser.validateHandleTime(3)
@@ -272,7 +276,7 @@ class SimulationParserTest {
     }
 
     @Test
-    fun `test maxDuration validation`(){
+    fun `test maxDuration validation`() {
         val isValid = emergencyParser.validateMaxDuration(222, 34)
         val isValid2 = emergencyParser.validateMaxDuration(2, 1)
         val isValid3 = emergencyParser.validateMaxDuration(3, 1)
@@ -289,4 +293,3 @@ class SimulationParserTest {
         assert(!isValid7)
     }
 }
-

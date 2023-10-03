@@ -5,9 +5,19 @@ import de.unisaarland.cs.se.selab.dataClasses.bases.FireStation
 import de.unisaarland.cs.se.selab.dataClasses.bases.Hospital
 import de.unisaarland.cs.se.selab.dataClasses.bases.PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
-import de.unisaarland.cs.se.selab.dataClasses.events.*
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.*
-import de.unisaarland.cs.se.selab.graph.*
+import de.unisaarland.cs.se.selab.dataClasses.events.Event
+import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
+import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
+import de.unisaarland.cs.se.selab.graph.Graph
+import de.unisaarland.cs.se.selab.graph.PrimaryType
+import de.unisaarland.cs.se.selab.graph.Road
+import de.unisaarland.cs.se.selab.graph.SecondaryType
+import de.unisaarland.cs.se.selab.graph.Vertex
 import de.unisaarland.cs.se.selab.phases.MapUpdatePhase
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 import org.junit.jupiter.api.BeforeEach
@@ -18,11 +28,12 @@ class MapUpdatePhaseTest {
     private lateinit var roads: List<Road>
     private lateinit var vertices: List<Vertex>
     private lateinit var bases: List<Base>
+
     // private var construction: Construction = Construction(0, 1, 0, 2, 0, 1, true)
     // private var roadClosure: RoadClosure = RoadClosure(1, 1, 0, 0, 1)
     // private var rushHour: RushHour = RushHour(2, 1, 1, listOf(PrimaryType.MAIN_STREET), 2)
-    private var trafficJam: TrafficJam = TrafficJam(3, 1, 0, 2, 0,  1)
-    private var vehicleUnavailable: VehicleUnavailable = VehicleUnavailable(4, 1,  0, 0)
+    private val trafficJam: TrafficJam = TrafficJam(3, 1, 0, 2, 0, 1)
+    private val vehicleUnavailable: VehicleUnavailable = VehicleUnavailable(4, 1, 0, 0)
     private val events: MutableList<Event> = mutableListOf()
     private val emergencies: MutableList<Emergency> = mutableListOf()
     private lateinit var dataHolder: DataHolder
@@ -49,8 +60,8 @@ class MapUpdatePhaseTest {
         val fireVehicleB = FireTruckWater(VehicleType.FIRE_TRUCK_WATER, 1, 1, 2, 0, 600)
         val fireVehicles: MutableList<Vehicle> = mutableListOf(fireVehicleA, fireVehicleB)
 
-        val policeVehicleA = PoliceCar(VehicleType.POLICE_CAR, 2, 2, 2, 1 ,3)
-        val policeVehicleB = PoliceCar(VehicleType.POLICE_CAR, 3, 2, 2, 1 ,3)
+        val policeVehicleA = PoliceCar(VehicleType.POLICE_CAR, 2, 2, 2, 1, 3)
+        val policeVehicleB = PoliceCar(VehicleType.POLICE_CAR, 3, 2, 2, 1, 3)
         val policeVehicles: MutableList<Vehicle> = mutableListOf(policeVehicleA, policeVehicleB)
 
         val medicalVehicleA = Ambulance(VehicleType.AMBULANCE, 4, 1, 2, 2)
@@ -117,7 +128,6 @@ class MapUpdatePhaseTest {
         assert(vehicleUnavailable.duration == 0)
         assert(events.contains(vehicleUnavailable))
 
-
         mapUpdatePhase.execute()
         assert(mapUpdatePhase.currentTick == 2)
         assert(!mapUpdatePhase.shouldReroute)
@@ -180,6 +190,5 @@ class MapUpdatePhaseTest {
         assert(roads[0].weight == 10)
         assert(trafficJam.duration == 0)
         assert(mapUpdatePhase.currentTick == 2)
-
     }
 }

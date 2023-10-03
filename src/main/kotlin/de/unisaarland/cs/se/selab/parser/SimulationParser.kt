@@ -57,7 +57,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     fun parse(): List<Emergency> {
         try {
             parseEmergencyCalls()
-        } catch (_: Exception){
+        } catch (_: Exception) {
             outputInvalidAndFinish()
         }
         return parsedEmergencies

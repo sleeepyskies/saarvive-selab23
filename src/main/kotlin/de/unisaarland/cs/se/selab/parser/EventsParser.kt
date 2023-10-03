@@ -75,6 +75,10 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
      */
     private fun parseEvents() {
         val eventsArray = json.getJSONArray("events")
+        if (eventsArray.length() == 0) {
+            Logger.getLogger("Events must not be empty")
+            outputInvalidAndFinish()
+        }
         for (i in 0 until eventsArray.length()) {
             val jsonEvent = eventsArray.getJSONObject(i)
             if (validateEvent(jsonEvent)) {
