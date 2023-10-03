@@ -134,7 +134,8 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
         val emergencyVertex = emergency.location.first
         val base = dataHolder.vehiclesToBase[vehicle.id] ?: Base(1, 1, 1, mutableListOf())
 
-        val shortestPath = graph.calculateShortestPath(vehicle.lastVisitedVertex, emergencyVertex, vehicle.height)
+        val shortestPath = getTimeToArrive(vehicle, emergency)
+
         // check if the car can reach in time
         if (shortestPath < emergency.maxDuration) {
             // update the required vehicles for the request
@@ -145,6 +146,7 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
                 updateBase(base, vehicle)
                 // update the vehicle since its assigned an emergency
                 vehicle.assignedEmergencyID = emergency.id
+                vehicle.vehicleStatus = VehicleStatus.ASSIGNED_TO_EMERGENCY
                 vehicle.currentRoute = graph.calculateShortestRoute(
                     vehicle.lastVisitedVertex,
                     emergencyVertex,
@@ -298,5 +300,20 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
             is PoliceStation -> if (vehicle.vehicleType == VehicleType.K9_POLICE_CAR) base.dogs -= 1
             is Hospital -> if (vehicle.vehicleType == VehicleType.EMERGENCY_DOCTOR_CAR) base.doctors -= 1
         }
+    }
+
+    private fun getTimeToArrive(vehicle: Vehicle, emergency: Emergency): Int {
+        val vehiclePosition = vehicle.lastVisitedVertex
+        val emergencyPosition = emergency.location
+        // calculate time to arrive at emergency at vertex 1
+        val timeToArrive1 =
+            dataHolder.graph.calculateShortestPath(vehiclePosition, emergencyPosition.first, vehicle.height)
+        // calculate time to arrive at emergency at vertex 2
+        val timeToArrive2 =
+            dataHolder.graph.calculateShortestPath(vehiclePosition, emergencyPosition.second, vehicle.height)
+
+        return if (timeToArrive1 <= timeToArrive2) timeToArrive1 else timeToArrive2
+        // return maxOf(0, if (timeToArrive1 <= timeToArrive2) timeToArrive1 else timeToArrive2)
+        // above code might fix "-214748364 ticks to arrive." issue but need checking
     }
 }
