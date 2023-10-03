@@ -30,7 +30,6 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
     val parsedVehicles = mutableListOf<Vehicle>()
     val parsedBases = mutableListOf<Base>()
 
-
     // for validation of unique IDs
     // private val baseIDSet = mutableSetOf<Int>()
     private val vehicleIDSet = mutableSetOf<Int>()
@@ -177,7 +176,10 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
         throw IllegalArgumentException("Invalid asset")
     }
 
-    private fun validateBaseId(id: Int): Int {
+    /**
+     * Validates base Id
+     */
+    fun validateBaseId(id: Int): Int {
         if (id < 0) {
             Logger.getLogger("Base ID must be positive")
             outputInvalidAndFinish()
@@ -190,10 +192,16 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
         return id
     }
 
-    private fun validateBaseType(baseType: String): String {
+    /**
+     * Validates base type
+     */
+    fun validateBaseType(baseType: String): String {
         val validBaseTypes = listOf("FIRE_STATION", "HOSPITAL", "POLICE_STATION")
         if (baseType !in validBaseTypes) {
             Logger.getLogger("Invalid base type")
+            outputInvalidAndFinish()
+        } else if (baseType =="") {
+            Logger.getLogger("Base type must not be empty")
             outputInvalidAndFinish()
         }
         return baseType

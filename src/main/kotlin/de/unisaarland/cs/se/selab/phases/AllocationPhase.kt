@@ -40,7 +40,7 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
     /**
      * Returns all vehicles that are in a base that are of the correct vehicle type for an emergency
      */
-    private fun getAssignableAssets(base: Base, emergency: Emergency): List<Vehicle> {
+    fun getAssignableAssets(base: Base, emergency: Emergency): List<Vehicle> {
         val requiredVehicles = emergency.requiredVehicles
         val vehicles = base.vehicles
 
