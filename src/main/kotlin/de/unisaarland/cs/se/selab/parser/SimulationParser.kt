@@ -96,6 +96,17 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     /** Validates the JSON data of a single emergency.
      */
     fun validateEmergency(jsonEmergency: JSONObject): Boolean {
+        val requiredFields =
+            setOf(keyId, keyType, keySeverity, keyTick, keyHandleTime, keyMaxDuration, keyVillage, keyRoadName)
+        val jsonFields = mutableSetOf<String>()
+        for (key in jsonEmergency.keys()) {
+            val keyString = key.toString()
+            jsonFields.add(keyString)
+        }
+        if (!jsonFields.containsAll(requiredFields)) {
+            Logger.getLogger("Missing one or more required fields in the JSON emergency data.")
+            return false
+        }
         val id = jsonEmergency.getInt(keyId)
         val emergencyType = jsonEmergency.getString(keyType)
         val severity = jsonEmergency.getInt(keySeverity)

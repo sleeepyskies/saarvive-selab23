@@ -13,8 +13,6 @@ import kotlin.test.Test
 
 class SimulationParserTest {
     private lateinit var emergencyParser: SimulationParser
-
-    // private lateinit var eventParser: EventsParser
     private val schema = "emergency.schema"
     private val graph =
         CountyParser("src/systemtest/resources/mapFiles/example_map.dot").parse()
