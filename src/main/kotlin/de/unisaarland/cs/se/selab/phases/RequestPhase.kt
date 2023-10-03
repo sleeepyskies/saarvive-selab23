@@ -154,6 +154,7 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
                 ).toMutableList()
                 // add this vehicle to the list of active vehicles
                 dataHolder.activeVehicles.add(vehicle)
+                Log.displayAssetAllocation(vehicle.id, emergency.id, shortestPath)
             }
         }
     }
