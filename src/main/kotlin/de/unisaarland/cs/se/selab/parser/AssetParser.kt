@@ -30,7 +30,6 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
     val parsedVehicles = mutableListOf<Vehicle>()
     val parsedBases = mutableListOf<Base>()
 
-
     // for validation of unique IDs
     // private val baseIDSet = mutableSetOf<Int>()
     private val vehicleIDSet = mutableSetOf<Int>()

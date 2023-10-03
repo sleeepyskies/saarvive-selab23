@@ -9,13 +9,17 @@ import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
 import de.unisaarland.cs.se.selab.dataClasses.events.Event
 import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleStatus
-import de.unisaarland.cs.se.selab.graph.*
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
+import de.unisaarland.cs.se.selab.graph.Graph
+import de.unisaarland.cs.se.selab.graph.PrimaryType
+import de.unisaarland.cs.se.selab.graph.Road
+import de.unisaarland.cs.se.selab.graph.SecondaryType
+import de.unisaarland.cs.se.selab.graph.Vertex
 import de.unisaarland.cs.se.selab.phases.VehicleUpdatePhase
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 import org.junit.jupiter.api.BeforeEach
@@ -76,7 +80,7 @@ class LogTest {
     }
 
     @Test
-    fun testLogging(){
+    fun testLogging() {
         emergency.emergencyStatus = EmergencyStatus.ONGOING
         dataHolder.activeVehicles.add(fireVehicleA)
         fireVehicleA.assignedEmergencyID = 0
