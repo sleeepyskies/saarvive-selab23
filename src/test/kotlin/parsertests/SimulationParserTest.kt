@@ -56,6 +56,38 @@ class SimulationParserTest {
         assertThrows<IllegalArgumentException> { emptyParser.parse()}
     }
 
+    @Test
+    fun `test parse method with JSON containing invalid emergencies`() {
+        val invalidJsonFile = "src/test/resources/parsertests/emergencyParser/invalid_emergency.json"
+        val invalidParser = SimulationParser(schema, invalidJsonFile, graph)
+        assertThrows<IllegalArgumentException> { invalidParser.parse() }
+    }
+
+    @Test
+    fun `test parse empty calls`(){
+        val emptyJsonFile = "src/test/resources/parsertests/emergencyParser/empty_calls.json"
+        val emptyParser = SimulationParser(schema, emptyJsonFile, graph)
+        assertThrows<IllegalArgumentException> { emptyParser.parse() }
+    }
+
+    @Test
+    fun `test parse multiple valid`(){
+        val validJsonFile = "src/test/resources/parsertests/emergencyParser/multiple_valid.json"
+        val validParser = SimulationParser(schema, validJsonFile, graph)
+        validParser.parse()
+        val emergencies = validParser.parsedEmergencies
+        assert(emergencies.size == 2)
+        assert(emergencies[0].id == 1)
+        assert(emergencies[1].id == 2)
+    }
+
+    @Test
+    fun `test multiple invalid emergencies` () {
+        val invalidJsonFile = "src/test/resources/parsertests/emergencyParser/multiple_invalid.json"
+        val invalidParser = SimulationParser(schema, invalidJsonFile, graph)
+        assertThrows<IllegalArgumentException> { invalidParser.parse() }
+    }
+
     @BeforeEach
     fun setUp() {
         val jsonFile = "src/test/resources/parsertests/emergencyParser/valid_emergency.json"

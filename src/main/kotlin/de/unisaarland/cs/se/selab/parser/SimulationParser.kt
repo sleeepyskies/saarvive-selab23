@@ -68,7 +68,10 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     fun parseEmergencyCalls() {
         val emergencyCallsArray = json.getJSONArray("emergencyCalls")
-
+        if (emergencyCallsArray.length() == 0) {
+            Logger.getLogger("No emergencies found")
+            outputInvalidAndFinish()
+        }
         for (i in 0 until emergencyCallsArray.length()) {
             val jsonEmergency = emergencyCallsArray.getJSONObject(i)
 
