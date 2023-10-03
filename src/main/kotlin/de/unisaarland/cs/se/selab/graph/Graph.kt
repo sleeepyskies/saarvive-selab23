@@ -189,16 +189,18 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
      * Filters the given list of bases according to the emergency.
      */
     private fun filterByEmergencyType(bases: MutableList<Base>, emergency: Emergency): MutableList<Base> {
+        val relevantBases = mutableListOf<Base>()
+        relevantBases.addAll(bases)
         for (base in bases) {
             when (Pair(emergency.emergencyType, getStringType(base))) {
                 Pair(EmergencyType.FIRE, StringLiterals.FIRESTATION) -> Unit
                 Pair(EmergencyType.CRIME, StringLiterals.POLICESTATION) -> Unit
                 Pair(EmergencyType.MEDICAL, StringLiterals.HOSPITAL) -> Unit
                 Pair(EmergencyType.ACCIDENT, StringLiterals.FIRESTATION) -> Unit
-                else -> bases.remove(base)
+                else -> relevantBases.remove(base)
             }
         }
-        return bases
+        return relevantBases
     }
 
     /**
