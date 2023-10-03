@@ -1,6 +1,5 @@
 package allocationphasetests
 
-import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.bases.PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
@@ -52,7 +51,7 @@ class CheckAndAssignTest {
 
     val b1 = PoliceStation(1, 0, 12, 1, mutableListOf())
     val graph = Graph(listOf(v0, v1, v2), listOf(r1, r2, r3))
-    val dataHolder = DataHolder(graph, listOf<Base>(), mutableListOf(), mutableListOf())
+    val dataHolder = DataHolder(graph, emptyList(), mutableListOf(), mutableListOf())
     val ap = AllocationPhase(dataHolder)
 
     @Test
@@ -87,7 +86,7 @@ class CheckAndAssignTest {
         assert(vehicle.assignedBaseID == 1)
         assert(vehicle.assignedEmergencyID == 1)
         assert(vehicle.vehicleStatus == VehicleStatus.ASSIGNED_TO_EMERGENCY)
-        print(emergency.requiredCapacity[CapacityType.CRIMINAL])
+        // print(emergency.requiredCapacity[CapacityType.CRIMINAL])
         assert((emergency.requiredCapacity[CapacityType.CRIMINAL] ?: 1) <= 0)
         assert(dataHolder.vehicleToEmergency[vehicle.id] == emergency)
     }
