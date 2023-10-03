@@ -42,7 +42,6 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
         }
     }
 
-
     /**
      * Sends all the vehicles assigned to an emergency back to their
      * respective bases
