@@ -24,6 +24,9 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
         this.currentTick++
     }
 
+    /**
+     * Trigger the provided list of events and applies their effects on the simulation
+     */
     public fun triggerEvent(events: MutableList<Event>) {
         for (event in events) {
             if (event.startTick == this.currentTick) {
@@ -40,6 +43,10 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
         }
         shouldReroute = true
     }
+
+    /**
+     * Reduces the provided list of event durations, as well as applying events/reverting events
+     */
     public fun reduceEventDuration(events: MutableList<Event>) {
         events.forEach { event ->
             when {
