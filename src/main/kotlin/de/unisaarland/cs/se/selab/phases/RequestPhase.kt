@@ -51,7 +51,7 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
     /**
      * check if there are any requests in this tick
      */
-    private fun requestExists(): Boolean {
+    fun requestExists(): Boolean {
         return dataHolder.requests.isNotEmpty()
     }
 
