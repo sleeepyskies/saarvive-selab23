@@ -1,5 +1,6 @@
 package allocationphasetests
 
+import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.bases.FireStation
 import de.unisaarland.cs.se.selab.dataClasses.bases.Hospital
 import de.unisaarland.cs.se.selab.dataClasses.bases.PoliceStation
@@ -11,13 +12,45 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWithLadder
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
+import de.unisaarland.cs.se.selab.graph.Graph
+import de.unisaarland.cs.se.selab.graph.PrimaryType
+import de.unisaarland.cs.se.selab.graph.Road
+import de.unisaarland.cs.se.selab.graph.SecondaryType
+import de.unisaarland.cs.se.selab.graph.Vertex
+import de.unisaarland.cs.se.selab.phases.AllocationPhase
+import de.unisaarland.cs.se.selab.simulation.DataHolder
+import org.junit.jupiter.api.Test
 
 class GetAssignableAssetsTest {
 
-    // define vehicles
+    // make graph
+    val roadAB = Road(
+        PrimaryType.MAIN_STREET,
+        SecondaryType.NONE,
+        "Village",
+        "roadAB",
+        10,
+        5
+    )
 
+    val roadBC = Road(
+        PrimaryType.SIDE_STREET,
+        SecondaryType.NONE,
+        "Village",
+        "roadBC",
+        10,
+        5
+    )
+
+    val vertexA = Vertex(0, mutableMapOf(Pair(1, roadAB)))
+    val vertexB = Vertex(1, mutableMapOf(Pair(0, roadAB), Pair(2, roadBC)))
+    val vertexC = Vertex(2, mutableMapOf(Pair(1, roadBC)))
+
+    val graph = Graph(listOf(vertexA, vertexB, vertexC), listOf(roadAB, roadBC))
+
+    // define vehicles
     // Police Cars
-    val policeCar1 = PoliceCar(
+    val policeCar = PoliceCar(
         vehicleType = VehicleType.POLICE_CAR,
         id = 1,
         staffCapacity = 4,
@@ -26,30 +59,8 @@ class GetAssignableAssetsTest {
         assignedBaseID = 2 // Assign to PoliceStation1
     )
 
-    // policeStation1.
-
-    val policeCar2 = PoliceCar(
-        vehicleType = VehicleType.POLICE_CAR,
-        id = 2,
-        staffCapacity = 4,
-        height = 160,
-        maxCriminalCapacity = 5,
-        assignedBaseID = 2 // Assign to PoliceStation1
-    )
-    // policeStation1.vehicles.add(policeCar2)
-
-    val policeCar3 = PoliceCar(
-        vehicleType = VehicleType.POLICE_CAR,
-        id = 3,
-        staffCapacity = 4,
-        height = 160,
-        maxCriminalCapacity = 5,
-        assignedBaseID = 5 // Assign to PoliceStation2
-    )
-    // policeStation2.vehicles.add(policeCar3)
-
     // Fire Trucks with Ladder
-    val fireTruckWithLadder1 = FireTruckWithLadder(
+    val fireTruckWithLadder = FireTruckWithLadder(
         vehicleType = VehicleType.FIRE_TRUCK_LADDER,
         id = 4,
         staffCapacity = 6,
@@ -57,30 +68,9 @@ class GetAssignableAssetsTest {
         ladderLength = 8,
         assignedBaseID = 0 // Assign to FireStation1
     )
-    // fireStation1.vehicles.add(fireTruckWithLadder1)
-
-    val fireTruckWithLadder2 = FireTruckWithLadder(
-        vehicleType = VehicleType.FIRE_TRUCK_LADDER,
-        id = 5,
-        staffCapacity = 6,
-        height = 200,
-        ladderLength = 8,
-        assignedBaseID = 0 // Assign to FireStation1
-    )
-    // fireStation1.vehicles.add(fireTruckWithLadder2)
-
-    val fireTruckWithLadder3 = FireTruckWithLadder(
-        vehicleType = VehicleType.FIRE_TRUCK_LADDER,
-        id = 6,
-        staffCapacity = 6,
-        height = 200,
-        ladderLength = 8,
-        assignedBaseID = 3 // Assign to FireStation2
-    )
-    // fireStation2.vehicles.add(fireTruckWithLadder3)
 
     // Fire Trucks with Water Capacity
-    val fireTruckWater1 = FireTruckWater(
+    val fireTruckWater = FireTruckWater(
         vehicleType = VehicleType.FIRE_TRUCK_WATER,
         id = 7,
         staffCapacity = 5,
@@ -88,58 +78,18 @@ class GetAssignableAssetsTest {
         maxWaterCapacity = 600,
         assignedBaseID = 0 // Assign to FireStation1
     )
-    // fireStation1.vehicles.add(fireTruckWater1)
-
-    val fireTruckWater2 = FireTruckWater(
-        vehicleType = VehicleType.FIRE_TRUCK_WATER,
-        id = 8,
-        staffCapacity = 5,
-        height = 180,
-        maxWaterCapacity = 600,
-        assignedBaseID = 3 // Assign to FireStation2
-    )
-    // fireStation2.vehicles.add(fireTruckWater2)
-
-    val fireTruckWater3 = FireTruckWater(
-        vehicleType = VehicleType.FIRE_TRUCK_WATER,
-        id = 9,
-        staffCapacity = 5,
-        height = 180,
-        maxWaterCapacity = 600,
-        assignedBaseID = 3 // Assign to FireStation2
-    )
-    // fireStation2.vehicles.add(fireTruckWater3)
 
     // Ambulances
-    val ambulance1 = Ambulance(
+    val ambulance = Ambulance(
         vehicleType = VehicleType.AMBULANCE,
         id = 10,
         staffCapacity = 2,
         height = 170,
         assignedBaseID = 1 // Assign to Hospital1
     )
-    // hospital1.vehicles.add(ambulance1)
-
-    val ambulance2 = Ambulance(
-        vehicleType = VehicleType.AMBULANCE,
-        id = 11,
-        staffCapacity = 2,
-        height = 170,
-        assignedBaseID = 4 // Assign to Hospital2
-    )
-    // hospital2.vehicles.add(ambulance2)
-
-    val ambulance3 = Ambulance(
-        vehicleType = VehicleType.AMBULANCE,
-        id = 12,
-        staffCapacity = 2,
-        height = 170,
-        assignedBaseID = 4 // Assign to Hospital2
-    )
-    // hospital2.vehicles.add(ambulance3)
 
     // General Vehicles
-    val vehicle1 = Vehicle(
+    val fireTransporter = Vehicle(
         vehicleType = VehicleType.FIREFIGHTER_TRANSPORTER,
         id = 13,
         staffCapacity = 3,
@@ -148,7 +98,7 @@ class GetAssignableAssetsTest {
     )
     // fireStation1.vehicles.add(vehicle1)
 
-    val vehicle2 = Vehicle(
+    val doctorCar = Vehicle(
         vehicleType = VehicleType.EMERGENCY_DOCTOR_CAR,
         id = 14,
         staffCapacity = 4,
@@ -157,7 +107,7 @@ class GetAssignableAssetsTest {
     )
     // hospital1.vehicles.add(vehicle2)
 
-    val vehicle3 = Vehicle(
+    val policeMotorCycle = Vehicle(
         vehicleType = VehicleType.POLICE_MOTORCYCLE,
         id = 15,
         staffCapacity = 2,
@@ -166,113 +116,107 @@ class GetAssignableAssetsTest {
     )
     // policeStation1.vehicles.add(vehicle3)
 
-    val vehicle4 = Vehicle(
+    val fireTechnical = Vehicle(
         vehicleType = VehicleType.FIRE_TRUCK_TECHNICAL,
         id = 16,
         staffCapacity = 5,
         height = 180,
         assignedBaseID = 3 // Assign to FireStation2
     )
-    // fireStation2.vehicles.add(vehicle4)
 
-    val vehicle5 = Vehicle(
-        vehicleType = VehicleType.EMERGENCY_DOCTOR_CAR,
-        id = 17,
-        staffCapacity = 3,
-        height = 190,
-        assignedBaseID = 4 // Assign to Hospital2
-    )
-    // hospital2.vehicles.add(vehicle5)
-
-    val vehicle6 = Vehicle(
+    val k9 = Vehicle(
         vehicleType = VehicleType.K9_POLICE_CAR,
         id = 18,
         staffCapacity = 4,
         height = 200,
         assignedBaseID = 5 // Assign to PoliceStation2
     )
-    // policeStation2.vehicles.add(vehicle6)
 
-    val f1Vehicles = mutableListOf(fireTruckWithLadder1, fireTruckWithLadder2, fireTruckWater1, vehicle1)
-    val f2Vehicles = mutableListOf(fireTruckWithLadder3, fireTruckWater2, fireTruckWater3, vehicle4)
-    val p1Vehicles = mutableListOf(policeCar1, policeCar2, vehicle3)
-    val p2Vehicles = mutableListOf(policeCar3, vehicle6)
-    val h1Vehicles = mutableListOf(ambulance1, vehicle2)
-    val h2Vehicles = mutableListOf(ambulance2, ambulance3, vehicle5)
+    val f1Vehicles = mutableListOf(
+        fireTruckWithLadder,
+        fireTruckWithLadder,
+        fireTruckWater,
+        fireTransporter,
+        fireTechnical
+    )
+    val p1Vehicles = mutableListOf(policeCar, policeCar, policeMotorCycle, k9)
+    val h1Vehicles = mutableListOf(ambulance, doctorCar)
 
     // Define the bases
     val fireStation1 = FireStation(0, 0, 1, f1Vehicles)
     val hospital1 = Hospital(1, 2, 2, 3, h1Vehicles)
-    var policeStation1 = PoliceStation(2, 8, 3, 5, p1Vehicles)
-    val fireStation2 = FireStation(3, 3, 4, f2Vehicles)
-    val hospital2 = Hospital(4, 5, 5, 6, h2Vehicles)
-    val policeStation2 = PoliceStation(5, 7, 6, 8, p2Vehicles)
+    val policeStation1 = PoliceStation(2, 8, 3, 5, p1Vehicles)
 
-    // Define emergencies
-    val emergency1 = Emergency(
-        id = 1,
-        emergencyType = EmergencyType.FIRE,
-        severity = 2,
-        startTick = 5,
-        handleTime = 0,
-        maxDuration = 10,
-        villageName = "Village1",
-        roadName = "Road1"
-    )
+    // Define data holder
+    val dataHolder = DataHolder(graph, listOf<Base>(), mutableListOf(), mutableListOf())
 
-    val emergency2 = Emergency(
-        id = 2,
-        emergencyType = EmergencyType.CRIME,
-        severity = 3,
-        startTick = 10,
-        handleTime = 0,
-        maxDuration = 15,
-        villageName = "Village2",
-        roadName = "Road2"
-    )
+    val ap = AllocationPhase(dataHolder)
 
-    val emergency3 = Emergency(
-        id = 3,
-        emergencyType = EmergencyType.MEDICAL,
-        severity = 1,
-        startTick = 7,
-        handleTime = 0,
-        maxDuration = 8,
-        villageName = "Village3",
-        roadName = "Road3"
-    )
+    @Test
+    fun getAssignableAssetsTest1() {
+        val emergency = Emergency(
+            id = 1,
+            emergencyType = EmergencyType.FIRE,
+            severity = 1,
+            startTick = 5,
+            handleTime = 0,
+            maxDuration = 10,
+            villageName = "Village1",
+            roadName = "Road1"
+        )
 
-    val emergency4 = Emergency(
-        id = 4,
-        emergencyType = EmergencyType.ACCIDENT,
-        severity = 2,
-        startTick = 8,
-        handleTime = 0,
-        maxDuration = 12,
-        villageName = "Village4",
-        roadName = "Road4"
-    )
+        val res = ap.getAssignableAssets(fireStation1, emergency)
+        assert(res == listOf(fireTruckWater))
+    }
 
-    val emergency5 = Emergency(
-        id = 5,
-        emergencyType = EmergencyType.FIRE,
-        severity = 3,
-        startTick = 15,
-        handleTime = 0,
-        maxDuration = 20,
-        villageName = "Village5",
-        roadName = "Road5"
-    )
+    @Test
+    fun getAssignableAssetsTest2() {
+        val emergency = Emergency(
+            id = 1,
+            emergencyType = EmergencyType.FIRE,
+            severity = 1,
+            startTick = 5,
+            handleTime = 0,
+            maxDuration = 10,
+            villageName = "Village1",
+            roadName = "Road1"
+        )
 
-    val emergency6 = Emergency(
-        id = 6,
-        emergencyType = EmergencyType.MEDICAL,
-        severity = 2,
-        startTick = 12,
-        handleTime = 0,
-        maxDuration = 18,
-        villageName = "Village6",
-        roadName = "Road6"
-    )
+        val res = ap.getAssignableAssets(fireStation1, emergency)
+        assert(res == listOf(fireTruckWater))
+    }
 
+    @Test
+    fun getAssignableAssetsTest3() {
+        val emergency = Emergency(
+            id = 1,
+            emergencyType = EmergencyType.MEDICAL,
+            severity = 3,
+            startTick = 5,
+            handleTime = 0,
+            maxDuration = 10,
+            villageName = "Village1",
+            roadName = "Road1"
+        )
+
+        val res = ap.getAssignableAssets(hospital1, emergency)
+        assert(res == listOf(ambulance, doctorCar))
+    }
+
+    @Test
+    fun getAssignableAssetsTest4() {
+        val emergency = Emergency(
+            id = 1,
+            emergencyType = EmergencyType.FIRE,
+            severity = 3,
+            startTick = 5,
+            handleTime = 0,
+            maxDuration = 10,
+            villageName = "Village1",
+            roadName = "Road1"
+        )
+
+        val res = ap.getAssignableAssets(hospital1, emergency)
+        assert(res == listOf(ambulance, doctorCar))
+    }
 }
