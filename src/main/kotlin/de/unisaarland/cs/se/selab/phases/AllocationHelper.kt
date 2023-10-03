@@ -12,6 +12,7 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleStatus
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
+import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 
 /**
@@ -63,6 +64,12 @@ class AllocationHelper(val dataHolder: DataHolder) {
                 // add this vehicle to the list of active vehicles if its not there
                 if (dataHolder.activeVehicles.find { it.id == vehicle.id } == null) {
                     dataHolder.activeVehicles.add(vehicle)
+                    Log.displayAssetAllocation(vehicle.id, emergency.id, shortestPath)
+                }
+                // if the vehicle was already in the list it was rerouted
+                else {
+                    dataHolder.assetsRerouted += 1
+                    Log.displayAssetReallocation(emergency.id, vehicle.id)
                 }
             }
         }
