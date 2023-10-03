@@ -271,6 +271,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         event.affectedRoad.weight *= event.factor
         // check and change the road into a one way
         if (event.streetClosed) startVertex.connectingRoads.remove(targetVertex.id)
+        event.affectedRoad.activeEvents.add(event)
     }
     private fun applyTrafficJam(event: TrafficJam) {
         val startVertex = graph.find { it.id == event.startVertex } ?: ver
@@ -316,13 +317,13 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
      */
     private fun revertConstruction(event: Construction) {
         for (road in roads) {
-            // TODO does not account for village name
             if (road == event.affectedRoad) {
                 road.weight /= if (road.activeEvents[0] == event) event.factor else 1
                 if (road.sType != SecondaryType.ONE_WAY_STREET && event.streetClosed) {
                     addRoadToMap(event)
                     break
                 }
+                event.affectedRoad.activeEvents.remove(event)
             }
         }
     }
@@ -352,6 +353,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         // add road back to the map
         targetVertex.connectingRoads[sourceVertex.id] = event.affectedRoad
         sourceVertex.connectingRoads[targetVertex.id] = event.affectedRoad
+        event.affectedRoad.activeEvents.remove(event)
     }
 
     /**

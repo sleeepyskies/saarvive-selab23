@@ -224,7 +224,7 @@ class MapUpdatePhaseTest {
         assert(roads[0].weight == 20)
 
         mapUpdatePhase.execute()
-        assert(dataHolder.events.contains(construction1))
+        assert(!dataHolder.events.contains(construction1))
         assert(dataHolder.events.isEmpty())
         assert(!mapUpdatePhase.shouldReroute)
         assert(construction1.duration == 0)
@@ -255,7 +255,7 @@ class MapUpdatePhaseTest {
         assert(roads[0].weight == 20)
 
         mapUpdatePhase.execute()
-        assert(dataHolder.events.contains(construction2))
+        assert(!dataHolder.events.contains(construction2))
         assert(dataHolder.events.isEmpty())
         assert(!mapUpdatePhase.shouldReroute)
         assert(construction2.duration == 0)
