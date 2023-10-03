@@ -10,9 +10,9 @@ import de.unisaarland.cs.se.selab.simulation.DataHolder
  * It is executed in every tick.
  */
 class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
-    private var currentTick = 0
-    private var shouldReroute = false
-    private val events = dataHolder.events
+    public var currentTick = 0
+    public var shouldReroute = false
+    public val events = dataHolder.events
 
     override fun execute() {
         if (events.isNotEmpty()) {
@@ -68,6 +68,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * Reroutes all active vehicles if an event ends/starts
      */
     private fun rerouteVehicles() {
+        var assetsRerouted = 0
         dataHolder.activeVehicles.forEach { vehicle ->
             val vehicleRoute = vehicle.currentRoute
             val vehiclePosition = vehicle.lastVisitedVertex
@@ -76,6 +77,8 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 vehicleRoute.last(),
                 vehicle.height
             )
+            assetsRerouted++
         }
+        Log.displayAssetsRerouted(assetsRerouted)
     }
 }
