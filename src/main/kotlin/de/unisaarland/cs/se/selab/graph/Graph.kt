@@ -189,16 +189,18 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
      * Filters the given list of bases according to the emergency.
      */
     private fun filterByEmergencyType(bases: MutableList<Base>, emergency: Emergency): MutableList<Base> {
+        val relevantBases = mutableListOf<Base>()
+        relevantBases.addAll(bases)
         for (base in bases) {
             when (Pair(emergency.emergencyType, getStringType(base))) {
                 Pair(EmergencyType.FIRE, StringLiterals.FIRESTATION) -> Unit
                 Pair(EmergencyType.CRIME, StringLiterals.POLICESTATION) -> Unit
                 Pair(EmergencyType.MEDICAL, StringLiterals.HOSPITAL) -> Unit
                 Pair(EmergencyType.ACCIDENT, StringLiterals.FIRESTATION) -> Unit
-                else -> bases.remove(base)
+                else -> relevantBases.remove(base)
             }
         }
-        return bases
+        return relevantBases
     }
 
     /**
@@ -270,7 +272,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         // the factor is applied on the affected road
         event.affectedRoad.weight *= event.factor
         // check and change the road into a one way
-        if (event.streetClosed) startVertex.connectingRoads.remove(targetVertex.id)
+        if (event.oneWayStreet) startVertex.connectingRoads.remove(targetVertex.id)
         event.affectedRoad.activeEvents.add(event)
     }
     private fun applyTrafficJam(event: TrafficJam) {
@@ -319,7 +321,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         for (road in roads) {
             if (road == event.affectedRoad) {
                 road.weight /= if (road.activeEvents[0] == event) event.factor else 1
-                if (road.sType != SecondaryType.ONE_WAY_STREET && event.streetClosed) {
+                if (road.sType != SecondaryType.ONE_WAY_STREET && event.oneWayStreet) {
                     addRoadToMap(event)
                     break
                 }
