@@ -9,6 +9,8 @@ import de.unisaarland.cs.se.selab.dataClasses.events.Event
 import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
 import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
+import de.unisaarland.cs.se.selab.dataClasses.events.RoadClosure
+import de.unisaarland.cs.se.selab.dataClasses.events.Construction
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
@@ -30,8 +32,9 @@ class MapUpdatePhaseTest {
     private lateinit var vertices: List<Vertex>
     private lateinit var bases: List<Base>
 
-    // private var construction: Construction = Construction(0, 1, 0, 2, 0, 1, true)
-    // private var roadClosure: RoadClosure = RoadClosure(1, 1, 0, 0, 1)
+    private var construction1: Construction = Construction(0, 1, 0, 2, 0, 1, true)
+    private var construction2: Construction = Construction(0, 1, 0, 2, 0, 1, false)
+    private var roadClosure: RoadClosure = RoadClosure(1, 1, 0, 0, 1)
     private var rushHour: RushHour = RushHour(2, 1, 1, listOf(PrimaryType.MAIN_STREET), 2)
     private val trafficJam: TrafficJam = TrafficJam(3, 1, 0, 2, 0, 1)
     private val vehicleUnavailable: VehicleUnavailable = VehicleUnavailable(4, 1, 0, 0)
@@ -247,5 +250,95 @@ class MapUpdatePhaseTest {
         assert(roads[0].weight == 10)
         assert(rushHour.duration == 0)
         assert(mapUpdatePhase.currentTick == 2)
+    }
+
+    @Test
+    fun testRoadClosure() {
+        events.add(this.roadClosure)
+        assert(dataHolder.events.contains(roadClosure))
+        assert(dataHolder.events.isNotEmpty())
+        assert(!mapUpdatePhase.shouldReroute)
+        assert(roadClosure.duration == 1)
+        assert(vertices[0].connectingRoads[1] == roads[0])
+        assert(vertices[1].connectingRoads[0] == roads[0])
+
+        // Testing execute
+        mapUpdatePhase.execute()
+        assert(dataHolder.events.contains(roadClosure))
+        assert(dataHolder.events.isNotEmpty())
+        assert(!mapUpdatePhase.shouldReroute)
+        assert(roadClosure.duration == 0)
+        assert(vertices[0].connectingRoads[1] != roads[0])
+        assert(vertices[1].connectingRoads[0] != roads[0])
+
+        mapUpdatePhase.execute()
+        assert(!dataHolder.events.contains(roadClosure))
+        assert(dataHolder.events.isEmpty())
+        assert(!mapUpdatePhase.shouldReroute)
+        assert(roadClosure.duration == 0)
+        assert(vertices[0].connectingRoads[1] == roads[0])
+        assert(vertices[1].connectingRoads[0] == roads[0])
+    }
+
+    @Test
+    fun testConstruction1() {
+        events.add(this.construction1)
+        assert(dataHolder.events.contains(construction1))
+        assert(dataHolder.events.isNotEmpty())
+        assert(!mapUpdatePhase.shouldReroute)
+        assert(construction1.duration == 1)
+        assert(vertices[0].connectingRoads[1] == roads[0])
+        assert(vertices[1].connectingRoads[0] == roads[0])
+        assert(roads[0].weight == 10)
+
+        // Testing execute
+        mapUpdatePhase.execute()
+        assert(dataHolder.events.contains(construction1))
+        assert(dataHolder.events.isNotEmpty())
+        assert(!mapUpdatePhase.shouldReroute)
+        assert(construction1.duration == 0)
+        assert(vertices[0].connectingRoads[1] != roads[0])
+        assert(vertices[1].connectingRoads[0] == roads[0])
+        assert(roads[0].weight == 20)
+
+        mapUpdatePhase.execute()
+        assert(dataHolder.events.contains(construction1))
+        assert(dataHolder.events.isEmpty())
+        assert(!mapUpdatePhase.shouldReroute)
+        assert(construction1.duration == 0)
+        assert(vertices[0].connectingRoads[1] == roads[0])
+        assert(vertices[1].connectingRoads[0] == roads[0])
+        assert(roads[0].weight == 10)
+    }
+
+    @Test
+    fun testConstruction2() {
+        events.add(this.construction2)
+        assert(dataHolder.events.contains(construction2))
+        assert(dataHolder.events.isNotEmpty())
+        assert(!mapUpdatePhase.shouldReroute)
+        assert(construction2.duration == 1)
+        assert(vertices[0].connectingRoads[1] == roads[0])
+        assert(vertices[1].connectingRoads[0] == roads[0])
+        assert(roads[0].weight == 10)
+
+        // Testing execute
+        mapUpdatePhase.execute()
+        assert(dataHolder.events.contains(construction2))
+        assert(dataHolder.events.isNotEmpty())
+        assert(!mapUpdatePhase.shouldReroute)
+        assert(construction2.duration == 0)
+        assert(vertices[0].connectingRoads[1] == roads[0])
+        assert(vertices[1].connectingRoads[0] == roads[0])
+        assert(roads[0].weight == 20)
+
+        mapUpdatePhase.execute()
+        assert(dataHolder.events.contains(construction2))
+        assert(dataHolder.events.isEmpty())
+        assert(!mapUpdatePhase.shouldReroute)
+        assert(construction2.duration == 0)
+        assert(vertices[0].connectingRoads[1] == roads[0])
+        assert(vertices[1].connectingRoads[0] == roads[0])
+        assert(roads[0].weight == 10)
     }
 }
