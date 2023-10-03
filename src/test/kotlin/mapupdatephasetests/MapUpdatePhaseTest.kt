@@ -5,12 +5,12 @@ import de.unisaarland.cs.se.selab.dataClasses.bases.FireStation
 import de.unisaarland.cs.se.selab.dataClasses.bases.Hospital
 import de.unisaarland.cs.se.selab.dataClasses.bases.PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
+import de.unisaarland.cs.se.selab.dataClasses.events.Construction
 import de.unisaarland.cs.se.selab.dataClasses.events.Event
+import de.unisaarland.cs.se.selab.dataClasses.events.RoadClosure
 import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
 import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
-import de.unisaarland.cs.se.selab.dataClasses.events.RoadClosure
-import de.unisaarland.cs.se.selab.dataClasses.events.Construction
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
@@ -32,10 +32,10 @@ class MapUpdatePhaseTest {
     private lateinit var vertices: List<Vertex>
     private lateinit var bases: List<Base>
 
-    private var construction1: Construction = Construction(0, 1, 0, 2, 0, 1, true)
-    private var construction2: Construction = Construction(0, 1, 0, 2, 0, 1, false)
-    private var roadClosure: RoadClosure = RoadClosure(1, 1, 0, 0, 1)
-    private var rushHour: RushHour = RushHour(2, 1, 0, listOf(PrimaryType.MAIN_STREET), 2)
+    private val construction1: Construction = Construction(0, 1, 0, 2, 0, 1, true)
+    private val construction2: Construction = Construction(0, 1, 0, 2, 0, 1, false)
+    private val roadClosure: RoadClosure = RoadClosure(1, 1, 0, 0, 1)
+    private val rushHour: RushHour = RushHour(2, 1, 0, listOf(PrimaryType.MAIN_STREET), 2)
     private val trafficJam: TrafficJam = TrafficJam(3, 1, 0, 2, 0, 1)
     private val vehicleUnavailable: VehicleUnavailable = VehicleUnavailable(4, 1, 0, 0)
     private val events: MutableList<Event> = mutableListOf()
@@ -116,7 +116,6 @@ class MapUpdatePhaseTest {
         assert(!dataHolder.unavailableVehicles.contains(this.bases[0].vehicles[0].id))
         assert(!events.contains(vehicleUnavailable))
     }
-
 
     @Test
     fun testTrafficJam() {

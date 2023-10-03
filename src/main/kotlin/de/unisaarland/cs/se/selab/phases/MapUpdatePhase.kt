@@ -33,7 +33,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * Triggers the passed event
      */
     public fun triggerEvent(event: Event) {
-        if (event is VehicleUnavailable){
+        if (event is VehicleUnavailable) {
             // add vehicle id to unavailable vehicles
             dataHolder.unavailableVehicles.add(event.vehicleID)
             val vehicleBase = dataHolder.vehiclesToBase[event.vehicleID]
@@ -53,7 +53,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * Ends the passed event
      */
     private fun endEvent(event: Event) {
-        if (event is VehicleUnavailable){
+        if (event is VehicleUnavailable) {
             // remove vehicle id to unavailable vehicles
             dataHolder.unavailableVehicles.remove(event.vehicleID)
             // get relevant vehicle and set to unavailable
@@ -62,7 +62,6 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
             if (vehicle != null) {
                 vehicle.isAvailable = true
             }
-
         } else {
             // revert graph event
             dataHolder.graph.revertGraphEvent(event)
@@ -92,31 +91,38 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * Reroutes all active vehicles if an event ends/starts
      */
     private fun rerouteVehicles() {
-        // Should only reroute vehicles if  there is a faster path/current path is no longer viable
-        var assetsRerouted = 0
-        dataHolder.activeVehicles.forEach { vehicle ->
-            if (dataHolder.graph.weightOfRoute(
-                    vehicle.lastVisitedVertex,
-                    vehicle.currentRoute.last(),
-                    vehicle.height
-            ) < vehicle.remainingRouteWeight) {
-                // new route is faster -> reroute
-                vehicle.currentRoute = dataHolder.graph.calculateShortestRoute(
+        val assetsRerouted = dataHolder.activeVehicles.count { vehicle ->
+            val currentRouteWeight = dataHolder.graph.weightOfRoute(
+                vehicle.lastVisitedVertex,
+                vehicle.currentRoute.last(),
+                vehicle.height
+            )
+
+            if (currentRouteWeight < vehicle.remainingRouteWeight) {
+                // New route is faster -> reroute
+                val newRoute = dataHolder.graph.calculateShortestRoute(
                     vehicle.lastVisitedVertex,
                     vehicle.currentRoute.last(),
                     vehicle.height
                 )
+
+                vehicle.currentRoute = newRoute
                 vehicle.remainingRouteWeight = dataHolder.graph.weightOfRoute(
                     vehicle.lastVisitedVertex,
-                    vehicle.currentRoute.last(),
+                    newRoute.last(),
                     vehicle.height
                 )
                 vehicle.currentRouteWeightProgress = 0
-                assetsRerouted++
+                true
+            } else {
+                false
             }
         }
-        // Log number of assets rerouted/
-        if (assetsRerouted > 0) Log.displayAssetsRerouted(assetsRerouted)
+
+        // Log the number of assets rerouted
+        if (assetsRerouted > 0) {
+            Log.displayAssetsRerouted(assetsRerouted)
+        }
         dataHolder.assetsRerouted += assetsRerouted
     }
 }
