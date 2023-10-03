@@ -12,8 +12,9 @@ import de.unisaarland.cs.se.selab.simulation.DataHolder
 class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
     private var currentTick = 0
     private var shouldReroute = false
+    private val events = dataHolder.events
+
     override fun execute() {
-        val events = dataHolder.events
         if (events.isNotEmpty()) {
             triggerEvent(events)
             reduceEventDuration(events)
@@ -63,6 +64,9 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
         events.removeIf { event -> event.duration == 0 }
     }
 
+    /**
+     * Reroutes all active vehicles if an event ends/starts
+     */
     private fun rerouteVehicles() {
         dataHolder.activeVehicles.forEach { vehicle ->
             val vehicleRoute = vehicle.currentRoute
