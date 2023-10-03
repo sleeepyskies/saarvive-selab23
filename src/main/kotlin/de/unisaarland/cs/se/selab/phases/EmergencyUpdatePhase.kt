@@ -5,7 +5,6 @@ import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleStatus
 import de.unisaarland.cs.se.selab.global.Log
-import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 
 /**
