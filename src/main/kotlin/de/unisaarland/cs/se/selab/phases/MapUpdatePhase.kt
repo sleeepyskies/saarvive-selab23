@@ -82,14 +82,25 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
         // Should only reroute vehicles if  there is a faster path/current path is no longer viable
         var assetsRerouted = 0
         dataHolder.activeVehicles.forEach { vehicle ->
-            val vehicleRoute = vehicle.currentRoute
-            val vehiclePosition = vehicle.lastVisitedVertex
-            vehicle.currentRoute = dataHolder.graph.calculateShortestRoute(
-                vehiclePosition,
-                vehicleRoute.last(),
-                vehicle.height
-            )
-            assetsRerouted++
+            if (dataHolder.graph.weightOfRoute(
+                    vehicle.lastVisitedVertex,
+                    vehicle.currentRoute.last(),
+                    vehicle.height
+            ) < vehicle.remainingRouteWeight) {
+                // new route is faster -> reroute
+                vehicle.currentRoute = dataHolder.graph.calculateShortestRoute(
+                    vehicle.lastVisitedVertex,
+                    vehicle.currentRoute.last(),
+                    vehicle.height
+                )
+                vehicle.remainingRouteWeight = dataHolder.graph.weightOfRoute(
+                    vehicle.lastVisitedVertex,
+                    vehicle.currentRoute.last(),
+                    vehicle.height
+                )
+                vehicle.currentRouteWeightProgress = 0
+                assetsRerouted++
+            }
         }
         // Log number of assets rerouted/
         if (assetsRerouted > 0) Log.displayAssetsRerouted(assetsRerouted)
