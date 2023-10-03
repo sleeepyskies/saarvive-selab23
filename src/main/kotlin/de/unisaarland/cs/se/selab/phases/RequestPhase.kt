@@ -132,7 +132,7 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
         val graph = dataHolder.graph
         val requiredVehicles = request.requiredVehicles
         val emergencyVertex = emergency.location.first
-        val base = dataHolder.vehiclesToBase[vehicle.id] ?: Base(1,1,1, mutableListOf())
+        val base = dataHolder.vehiclesToBase[vehicle.id] ?: Base(1, 1, 1, mutableListOf())
 
         val shortestPath = graph.calculateShortestPath(vehicle.lastVisitedVertex, emergencyVertex, vehicle.height)
         // check if the car can reach in time
@@ -295,8 +295,8 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
 
     private fun updateBase(base: Base, vehicle: Vehicle) {
         when (base) {
-            is PoliceStation -> if (vehicle.vehicleType == VehicleType.K9_POLICE_CAR) base.dogs -=1
-            is Hospital -> if (vehicle.vehicleType == VehicleType.EMERGENCY_DOCTOR_CAR) base.doctors -=1
+            is PoliceStation -> if (vehicle.vehicleType == VehicleType.K9_POLICE_CAR) base.dogs -= 1
+            is Hospital -> if (vehicle.vehicleType == VehicleType.EMERGENCY_DOCTOR_CAR) base.doctors -= 1
         }
     }
 }
