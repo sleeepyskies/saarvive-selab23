@@ -25,7 +25,7 @@ class EmergencyPhase(private val dataHolder: DataHolder) : Phase {
         val scheduledEmergencies = scheduleEmergencies()
         assignBasesToEmergencies(scheduledEmergencies)
         logEmergenciesByID(scheduledEmergencies)
-        sortBySeverity()
+        sortBySeverity(this.dataHolder)
         currentTick++
     }
 
@@ -139,7 +139,13 @@ class EmergencyPhase(private val dataHolder: DataHolder) : Phase {
     /**
      * Sort ongoing list by severity
      */
-    fun sortBySeverity() {
-        this.dataHolder.ongoingEmergencies.sortedWith(compareByDescending<Emergency> { it.severity }.thenBy { it.id })
+    fun sortBySeverity(dataHolder: DataHolder) {
+        val emergencies = dataHolder.ongoingEmergencies
+        val listOfSorted = emergencies.sortedWith(
+            compareByDescending<Emergency>
+            { it.severity }.thenBy { it.id }
+        )
+        dataHolder.ongoingEmergencies.clear()
+        dataHolder.ongoingEmergencies.addAll(listOfSorted)
     }
 }
