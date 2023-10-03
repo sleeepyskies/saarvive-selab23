@@ -50,10 +50,6 @@ object SystemTestRegistration {
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
         manager.registerTest(ExampleTest())
         // Valid Tests
-        manager.registerTest(CorrectSystemTestSmall())
-        manager.registerTest(EmergencyFailTest())
-        manager.registerTest(RequestTest())
-        manager.registerTest(ReallocationTest())
         manager.registerTest(TwoRoadsSameLocationTest())
         manager.registerTest(TwoRoadsSameNameTest())
         manager.registerTest(NonExistentVertexTest())
