@@ -125,4 +125,61 @@ class MapUpdatePhaseTest {
         assert(!dataHolder.unavailableVehicles.contains(this.bases[0].vehicles[0].id))
         assert(!events.contains(vehicleUnavailable))
     }
+
+    @Test
+    fun testTrafficJamMethods() {
+        events.add(this.trafficJam)
+        assert(dataHolder.events.contains(trafficJam))
+        assert(dataHolder.events.isNotEmpty())
+        assert(!mapUpdatePhase.shouldReroute)
+        assert(roads[0].weight == 10)
+        assert(trafficJam.duration == 1)
+
+        // Testing triggerEvent
+        mapUpdatePhase.triggerEvent(this.events)
+        assert(roads[0].weight == 20)
+        assert(mapUpdatePhase.shouldReroute)
+
+        // Testing reduceEventDuration
+        mapUpdatePhase.reduceEventDuration(this.events)
+        assert(dataHolder.events.contains(trafficJam))
+        assert(trafficJam.duration == 0)
+        assert(roads[0].weight == 20)
+        assert(mapUpdatePhase.shouldReroute)
+
+        mapUpdatePhase.reduceEventDuration(this.events)
+        assert(!dataHolder.events.contains(trafficJam))
+        assert(trafficJam.duration == 0)
+        assert(roads[0].weight == 10)
+        assert(mapUpdatePhase.shouldReroute)
+    }
+
+    @Test
+    fun testTrafficJam() {
+        events.add(this.trafficJam)
+        assert(dataHolder.events.contains(trafficJam))
+        assert(dataHolder.events.isNotEmpty())
+        assert(!mapUpdatePhase.shouldReroute)
+        assert(roads[0].weight == 10)
+        assert(trafficJam.duration == 1)
+        assert(mapUpdatePhase.currentTick == 0)
+
+        // Testing execute
+        mapUpdatePhase.execute()
+        assert(dataHolder.events.contains(trafficJam))
+        assert(dataHolder.events.isNotEmpty())
+        assert(!mapUpdatePhase.shouldReroute)
+        assert(roads[0].weight == 20)
+        assert(trafficJam.duration == 0)
+        assert(mapUpdatePhase.currentTick == 1)
+
+        mapUpdatePhase.execute()
+        assert(!dataHolder.events.contains(trafficJam))
+        assert(dataHolder.events.isEmpty())
+        assert(!mapUpdatePhase.shouldReroute)
+        assert(roads[0].weight == 10)
+        assert(trafficJam.duration == 0)
+        assert(mapUpdatePhase.currentTick == 2)
+
+    }
 }
