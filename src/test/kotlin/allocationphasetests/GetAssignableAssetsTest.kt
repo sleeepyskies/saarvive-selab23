@@ -12,13 +12,7 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
 
 class GetAssignableAssetsTest {
 
-    // Define the bases
-    val fireStation1 = FireStation(0, 0, 1, mutableListOf())
-    val hospital1 = Hospital(1, 2, 2, 3, mutableListOf())
-    var policeStation1 = PoliceStation(2, 8, 3, 5, mutableListOf())
-    val fireStation2 = FireStation(3, 3, 4, mutableListOf())
-    val hospital2 = Hospital(4, 5, 5, 6, mutableListOf())
-    val policeStation2 = PoliceStation(5, 7, 6, 8, mutableListOf())
+    // define vehicles
 
     // Police Cars
     val policeCar1 = PoliceCar(
@@ -196,4 +190,19 @@ class GetAssignableAssetsTest {
         assignedBaseID = 5 // Assign to PoliceStation2
     )
     // policeStation2.vehicles.add(vehicle6)
+
+    val f1Vehicles = mutableListOf(fireTruckWithLadder1, fireTruckWithLadder2, fireTruckWater1, vehicle1)
+    val f2Vehicles = mutableListOf(fireTruckWithLadder3, fireTruckWater2, fireTruckWater3, vehicle4)
+    val p1Vehicles = mutableListOf(policeCar1, policeCar2, vehicle3)
+    val p2Vehicles = mutableListOf(policeCar3, vehicle6)
+    val h1Vehicles = mutableListOf(ambulance1, vehicle2)
+    val h2Vehicles = mutableListOf(ambulance2, ambulance3, vehicle5)
+
+    // Define the bases
+    val fireStation1 = FireStation(0, 0, 1, f1Vehicles)
+    val hospital1 = Hospital(1, 2, 2, 3, h1Vehicles)
+    var policeStation1 = PoliceStation(2, 8, 3, 5, p1Vehicles)
+    val fireStation2 = FireStation(3, 3, 4, f2Vehicles)
+    val hospital2 = Hospital(4, 5, 5, 6, h2Vehicles)
+    val policeStation2 = PoliceStation(5, 7, 6, 8, p2Vehicles)
 }
