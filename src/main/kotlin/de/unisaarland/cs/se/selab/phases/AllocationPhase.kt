@@ -27,7 +27,7 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
      */
     override fun execute() {
         for (emergency in dataHolder.ongoingEmergencies) {
-            if (emergency.emergencyStatus == EmergencyStatus.ASSIGNED) {
+            if (emergency.emergencyStatus == EmergencyStatus.ASSIGNED || emergency.emergencyStatus == EmergencyStatus.ONGOING) {
                 val base = dataHolder.emergencyToBase[emergency.id]
                 if (base != null) {
                     assignBasedOnCapacity(getAssignableAssets(base, emergency), emergency)
@@ -46,6 +46,7 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
 
         return vehicles
             .filter { it.vehicleStatus == VehicleStatus.IN_BASE }
+            .filter { it.isAvailable }
             .filter { it.vehicleType in requiredVehicles }
     }
 
