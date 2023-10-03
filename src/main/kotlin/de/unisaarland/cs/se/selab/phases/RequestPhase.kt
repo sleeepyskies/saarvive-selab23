@@ -231,7 +231,6 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
     private fun assignAmbulance(vehicle: Ambulance, request: Request) {
         if (request.requiredCapacity.containsKey(CapacityType.PATIENT)) {
             val requiredNum = request.requiredVehicles[VehicleType.AMBULANCE]
-            val requiredPatientNum = request.requiredCapacity[CapacityType.PATIENT]
 
             if ((requiredNum ?: 0) == 0) {
                 request.requiredCapacity.remove(CapacityType.PATIENT)
