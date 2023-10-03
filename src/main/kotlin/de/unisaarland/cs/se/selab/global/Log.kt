@@ -27,6 +27,21 @@ object Log {
     }
 
     /**
+     * log for usage of cmd
+     */
+    fun displayHelp() {
+        logIt(
+            "Usage: Saarvive & Thrive\n" +
+                "--map/-m <mapFile>\n" +
+                "--assets/-a <assetsFile>\n" +
+                "--scenario/-s <scenarioFile>\n" +
+                "--maxTicks/-t <maxTicks>\n" +
+                "--out/-o <outFile>\n" +
+                "--help/-h\n"
+        )
+    }
+
+    /**
      * log successful initialization.
      */
     fun displayInitializationInfoValid(fileName: String) {
@@ -155,10 +170,10 @@ object Log {
         logIt("Assets Rerouted: $assetsRerouted")
     }
 
-    /**
+/*    *//**
      * log the end of simulation if parsed files invalid
-     */
+     *//*
     fun displaySimulationEnd() {
         logIt("Simulation End")
-    }
+    }*/
 }

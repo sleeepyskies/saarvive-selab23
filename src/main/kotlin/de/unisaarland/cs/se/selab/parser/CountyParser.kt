@@ -82,8 +82,10 @@ class CountyParser(private val dotFilePath: String) {
             val vertex2Obj = this.idToVertexMapping.getValue(vertex2)
 
             val road = edge.value
+            if (edge.value.sType != SecondaryType.ONE_WAY_STREET) {
+                vertex2Obj.connectingRoads.put(vertex1, road)
+            }
             vertex1Obj.connectingRoads.put(vertex2, road)
-            vertex2Obj.connectingRoads.put(vertex1, road)
         }
     }
 
@@ -354,7 +356,7 @@ class CountyParser(private val dotFilePath: String) {
      */
     private fun outputInvalidAndFinish() {
         Log.displayInitializationInfoInvalid(this.fileName)
-        throw IllegalArgumentException("Invalid map")
+        throw IllegalArgumentException("Invalid input")
     }
 
     /**
@@ -366,13 +368,13 @@ class CountyParser(private val dotFilePath: String) {
         assignmentsArray.forEach { assignment ->
             val keyValue = assignment.split("=") // Retrieve keys
             attributes[keyValue.elementAt(0).trim()] = keyValue.elementAt(1).trim() // Put attributes in mapping
-            when (keyValue.elementAt(0)) {
-                "weight" -> if (keyValue.elementAt(1).toInt() <= 0
+            when (keyValue.elementAt(0).trim()) {
+                "weight" -> if (keyValue.elementAt(1).trim().toInt() <= 0
                 ) {
                     outputInvalidAndFinish() // (10. The weight of the road must be greater than 0)
                 }
 
-                "height" -> if (keyValue.elementAt(1).toInt() < 1) {
+                "height" -> if (keyValue.elementAt(1).trim().toInt() < 1) {
                     outputInvalidAndFinish() // (11. The height of the road is at least 1)
                 }
             }
@@ -389,7 +391,7 @@ class CountyParser(private val dotFilePath: String) {
      */
     private fun tunnelIsValid(attributes: MutableMap<String, String>): Boolean {
         if (attributes.getValue("secondaryType") == "tunnel") { // (12. The height of a tunnel is at most 3)
-            if (attributes.getValue("heightLimit").toInt() <= 3) {
+            if (attributes.getValue("heightLimit").trim().toInt() <= 3) {
                 return true
             }
             System.err.println("Tunnel height is invalid. Called in tunnelIsValid(). Height of a tunnel is at most 3")
@@ -431,6 +433,7 @@ class CountyParser(private val dotFilePath: String) {
             val k = n.toInt()
             intVertices.add(k)
         }
+        if (intVertices.count() < 3) return false // At least 3 vertices
         val distinctVertices = intVertices.distinct() // The number of unique numbers (1. validation)
         if (distinctVertices.count() != intVertices.count()) {
             System.err.println("There are duplicate vertices. Called in parseVertices().")

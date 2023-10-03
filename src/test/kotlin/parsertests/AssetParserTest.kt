@@ -118,4 +118,114 @@ class AssetParserTest {
             ).parse()
         }
     }
+
+    @Test
+    fun testValidVehiclesNoBases() {
+        assertThrows<IllegalArgumentException> {
+            AssetParser(
+                assetSchemaFile = "vehicle.schema",
+                assetJsonFile = "src/test/resources/parsertests/assetParser/valid_vehicles_no_bases.json"
+            ).parse()
+        }
+    }
+
+    @Test
+    fun testVehiclesAssignedToNonExistentBases() {
+        assertThrows<IllegalArgumentException> {
+            AssetParser(
+                assetSchemaFile = "vehicle.schema",
+                assetJsonFile = "src/test/resources/parsertests/assetParser/vehicles_non_existent_bases.json"
+            ).parse()
+        }
+    }
+
+    @Test
+    fun testDuplicateVehicleIds() {
+        assertThrows<IllegalArgumentException> {
+            AssetParser(
+                assetSchemaFile = "vehicle.schema",
+                assetJsonFile = "src/test/resources/parsertests/assetParser/duplicate_vehicle_ids.json"
+            ).parse()
+        }
+    }
+
+    @Test
+    fun testNegativeBaseId() {
+        assertThrows<IllegalArgumentException> {
+            AssetParser(
+                assetSchemaFile = "base.schema",
+                assetJsonFile = "src/test/resources/parsertests/assetParser/negative_base_id.json"
+            ).parse()
+        }
+    }
+
+    @Test
+    fun testInvalidBaseType() {
+        assertThrows<IllegalArgumentException> {
+            AssetParser(
+                assetSchemaFile = "base.schema",
+                assetJsonFile = "src/test/resources/parsertests/assetParser/invalid_base_type.json"
+            ).parse()
+        }
+    }
+
+    @Test
+    fun testNegativeVehicleHeight() {
+        assertThrows<IllegalArgumentException> {
+            AssetParser(
+                assetSchemaFile = "vehicle.schema",
+                assetJsonFile = "src/test/resources/parsertests/assetParser/negative_vehicle_height.json"
+            ).parse()
+        }
+    }
+
+    @Test
+    fun testSameVehicleMultipleBases() {
+        assertThrows<IllegalArgumentException> {
+            AssetParser(
+                assetSchemaFile = "vehicle.schema",
+                assetJsonFile = "src/test/resources/parsertests/assetParser/vehicle_multiple_bases.json"
+            ).parse()
+        }
+    }
+
+    @Test
+    fun testNegativeBaseStaff() {
+        assertThrows<IllegalArgumentException> {
+            AssetParser(
+                assetSchemaFile = "base.schema",
+                assetJsonFile = "src/test/resources/parsertests/assetParser/negative_base_staff.json"
+            ).parse()
+        }
+    }
+
+    @Test
+    fun testInvalidVehicleType() {
+        assertThrows<IllegalArgumentException> {
+            AssetParser(
+                assetSchemaFile = "vehicle.schema",
+                assetJsonFile = "src/test/resources/parsertests/assetParser/invalid_vehicle_type.json"
+            ).parse()
+        }
+    }
+
+    @Test
+    fun testInvalidVehicleStaffCapacity() {
+        assertThrows<IllegalArgumentException> {
+            AssetParser(
+                assetSchemaFile = "vehicle.schema",
+                assetJsonFile = "src/test/resources/parsertests/assetParser/invalid_vehicle_staff_capacity.json"
+            ).parse()
+        }
+    }
+
+    @Test
+    fun testInvalidVehicleCriminalCapacity() {
+        assertThrows<IllegalArgumentException> {
+            AssetParser(
+                assetSchemaFile = "vehicle.schema",
+                assetJsonFile = "src/test/resources/parsertests/assetParser/invalid_vehicle_criminal_capacity.json"
+            ).parse()
+        }
+    }
 }

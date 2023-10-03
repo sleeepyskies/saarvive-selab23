@@ -44,8 +44,11 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         // Load and parse the JSON data
         val simulationJsonData = File(jsonFile).readText()
         json = JSONObject(simulationJsonData)
-
-        schema.validate(json)
+        try {
+            schema.validate(json)
+        } catch (_: Exception) {
+            outputInvalidAndFinish()
+        }
     }
 
     /**
@@ -54,7 +57,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     fun parse(): List<Emergency> {
         try {
             parseEmergencyCalls()
-        } catch (_: IllegalArgumentException) {
+        } catch (_: Exception) {
             outputInvalidAndFinish()
         }
         return parsedEmergencies
@@ -63,9 +66,12 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     /** Parses the JSON data and returns a list of emergencies, uses private method
      * to parse single emergencies.
      */
-    private fun parseEmergencyCalls() {
+    fun parseEmergencyCalls() {
         val emergencyCallsArray = json.getJSONArray("emergencyCalls")
-
+        if (emergencyCallsArray.length() == 0) {
+            Logger.getLogger("No emergencies found")
+            outputInvalidAndFinish()
+        }
         for (i in 0 until emergencyCallsArray.length()) {
             val jsonEmergency = emergencyCallsArray.getJSONObject(i)
 
@@ -87,7 +93,20 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         }
     }
 
-    private fun validateEmergency(jsonEmergency: JSONObject): Boolean {
+    /** Validates the JSON data of a single emergency.
+     */
+    fun validateEmergency(jsonEmergency: JSONObject): Boolean {
+        val requiredFields =
+            setOf(keyId, keyType, keySeverity, keyTick, keyHandleTime, keyMaxDuration, keyVillage, keyRoadName)
+        val jsonFields = mutableSetOf<String>()
+        for (key in jsonEmergency.keys()) {
+            val keyString = key.toString()
+            jsonFields.add(keyString)
+        }
+        if (!jsonFields.containsAll(requiredFields)) {
+            Logger.getLogger("Missing one or more required fields in the JSON emergency data.")
+            return false
+        }
         val id = jsonEmergency.getInt(keyId)
         val emergencyType = jsonEmergency.getString(keyType)
         val severity = jsonEmergency.getInt(keySeverity)
@@ -109,7 +128,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
 
     /** Validates the ID of emergencies, check if it is unique.
      */
-    private fun validateEmergencyId(id: Int): Boolean {
+    fun validateEmergencyId(id: Int): Boolean {
         if (id < 0) {
             Logger.getLogger("Emergency ID must be positive")
             return false
@@ -123,7 +142,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     /** Validates the severity of emergencies
      * Checks whether the specified severity value belongs to the range of valid values.
      */
-    private fun validateSeverity(severity: Int): Boolean {
+    fun validateSeverity(severity: Int): Boolean {
         if (severity !in 1..3) {
             Logger.getLogger("Invalid severity level")
             return false
@@ -133,7 +152,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
 
     /** Validates the tick of emergencies
      */
-    private fun validateEmergencyTick(tick: Int): Boolean {
+    fun validateEmergencyTick(tick: Int): Boolean {
         if (tick <= 0) {
             Logger.getLogger("Emergency tick must be positive")
             return false
@@ -144,7 +163,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     /** Validates the emergency type of emergencies
      * Checks whether the specified emergency type belongs to EmergencyType.
      */
-    private fun validateEmergencyType(emergencyType: String): Boolean {
+    fun validateEmergencyType(emergencyType: String): Boolean {
         val validTypes = listOf("FIRE", "ACCIDENT", "CRIME", "MEDICAL")
         if (emergencyType !in validTypes) {
             Logger.getLogger("Invalid emergency type")
@@ -155,7 +174,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
 
     /** Validates the handle time of emergencies
      */
-    private fun validateHandleTime(handleTime: Int): Boolean {
+    fun validateHandleTime(handleTime: Int): Boolean {
         if (handleTime < 1) {
             Logger.getLogger("Handle time must be positive")
             return false
@@ -166,8 +185,8 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     /** Validates the maximum duration of emergencies, checks whether the specified maximum duration
      * is greater than the handle time.
      */
-    private fun validateMaxDuration(maxDuration: Int, handleTime: Int): Boolean {
-        if (maxDuration < handleTime) {
+    fun validateMaxDuration(maxDuration: Int, handleTime: Int): Boolean {
+        if (maxDuration <= handleTime || handleTime <= 0) {
             Logger.getLogger("Maximum duration must be greater than handle time")
             return false
         }
@@ -176,7 +195,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
 
     /** Validates the village name of emergencies --> will be changes after Ira is done with Parsing
      */
-    private fun validateVillageName(villageName: String): Boolean {
+    fun validateVillageName(villageName: String): Boolean {
         val listOfVillages = mutableListOf<String>()
         for (v in graph.roads) {
             listOfVillages.add(v.villageName)
@@ -191,11 +210,15 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         return true
     }
 
-    private fun outputInvalidAndFinish() {
+    /** Outputs an error message and terminates the program.
+     */
+    fun outputInvalidAndFinish() {
         throw IllegalArgumentException("Invalid simulator configuration")
     }
 
-    private fun validateRoadName(road: String): Boolean {
+    /** Validates the road name of emergencies
+     */
+    fun validateRoadName(road: String): Boolean {
         val listValidRoads = mutableListOf<String>()
         for (r in graph.roads) {
             listValidRoads.add(r.roadName)
@@ -203,7 +226,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         if (road !in listValidRoads.toString()) {
             Logger.getLogger("Invalid road name")
             return false
-        } else if (road == "") {
+        } else if (road == " ") {
             Logger.getLogger("Road name must not be empty")
             return false
         }

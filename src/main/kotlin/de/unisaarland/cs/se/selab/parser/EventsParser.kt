@@ -54,19 +54,23 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
         // Load and parse the JSON data
         val simulationJsonData = File(jsonFile).readText()
         json = JSONObject(simulationJsonData)
-
-        schema.validate(json)
+        try {
+            schema.validate(json)
+        } catch (_: Exception) {
+            outputInvalidAndFinish()
+        }
     }
 
     /**
      * Parses the events from the JSON file
      */
     fun parse(): List<Event> {
-        try {
-            parseEvents()
-        } catch (_: IllegalArgumentException) {
-            outputInvalidAndFinish()
-        }
+//        try {
+//            parseEvents()
+//        } catch (_: IllegalArgumentException) {
+//            outputInvalidAndFinish()
+//        } => deleted this since it leads to double output in tests
+        parseEvents()
         Log.displayInitializationInfoValid(this.fileName)
         return parsedEvents
     }
@@ -75,6 +79,10 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
      */
     private fun parseEvents() {
         val eventsArray = json.getJSONArray("events")
+        if (eventsArray.length() == 0) {
+            Logger.getLogger("Events must not be empty")
+            outputInvalidAndFinish()
+        }
         for (i in 0 until eventsArray.length()) {
             val jsonEvent = eventsArray.getJSONObject(i)
             if (validateEvent(jsonEvent)) {

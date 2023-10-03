@@ -1,0 +1,11 @@
+{
+  "bases": [
+    {
+      "id": 1,
+      "baseType": "INVALID_TYPE",
+      "location": 1,
+      "staff": 10
+    }
+  ],
+  "vehicles": []
+}

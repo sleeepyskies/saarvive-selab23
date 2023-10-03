@@ -46,4 +46,25 @@ object SystemTestRegistration {
         manager.registerTest(WeightIsZeroTest())
         manager.registerTest(WrongTunnelHeightTest())
     }
+
+    fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
+        manager.registerTest(CorrectSystemTestSmall())
+        manager.registerTest(EmergencyFailTest())
+        manager.registerTest(RequestTest())
+        manager.registerTest(ReallocationTest())
+    }
+
+    fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
+        manager.registerTest(CorrectSystemTestSmall())
+        manager.registerTest(EmergencyFailTest())
+        manager.registerTest(RequestTest())
+        manager.registerTest(ReallocationTest())
+    }
+
+    fun registerSystemTestsMutantSimulation(manager: SystemTestManager) {
+        manager.registerTest(CorrectSystemTestSmall())
+        manager.registerTest(EmergencyFailTest())
+        manager.registerTest(RequestTest())
+        manager.registerTest(ReallocationTest())
+    }
 }

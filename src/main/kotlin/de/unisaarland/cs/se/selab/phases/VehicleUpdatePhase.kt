@@ -25,14 +25,12 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
      */
     override fun execute() {
         // update each recharging vehicle
-        for (vehicle in dataHolder.rechargingVehicles) {
-            updateRecharging(vehicle)
+        if (dataHolder.rechargingVehicles.isNotEmpty()) {
+            dataHolder.rechargingVehicles.forEach { vehicle -> updateRecharging(vehicle) }
         }
         // update each active vehicle position
-        for (vehicle in dataHolder.activeVehicles) {
-            updateVehiclePosition(vehicle)
-            updateRoadEndReached(vehicle)
-            updateRouteEndReached(vehicle)
+        if (dataHolder.activeVehicles.isNotEmpty()) {
+            dataHolder.activeVehicles.forEach { vehicle -> updateVehiclePosition(vehicle) }
         }
     }
 
@@ -44,7 +42,6 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
         if (vehicle.ticksStillUnavailable == 0) {
             dataHolder.rechargingVehicles.remove(vehicle)
             vehicle.vehicleStatus = VehicleStatus.IN_BASE
-            dataHolder.activeVehicles.add(vehicle) // Add it back to active vehicles when finish recharge
         }
     }
 
@@ -53,41 +50,47 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * has reached the end of a road or route.
      */
     private fun updateVehiclePosition(vehicle: Vehicle) {
-        // move vehicle 1 tick along road
-        vehicle.roadProgress = max(0, vehicle.roadProgress - 1) // ensures no negative road progress
-    }
+        // decrease remainingRouteWeight by 10
+        vehicle.remainingRouteWeight =
+            max(0, vehicle.remainingRouteWeight - Number.TEN) // ensures no negative road progress
+        // increase currentRouteProgress by 10
+        vehicle.currentRouteWeightProgress += Number.TEN
 
-    /**
-     * Checks if a vehicle has reached the end of a road and update it accordingly
-     */
-    private fun updateRoadEndReached(vehicle: Vehicle) {
-        if (vehicle.roadProgress == 0) {
-            // assign new route without first vertex
-            vehicle.currentRoute = vehicle.currentRoute.drop(1)
-            if (vehicle.currentRoute.isNotEmpty()) {
-                vehicle.lastVisitedVertex = vehicle.currentRoute[0]
-            }
+        // check if destination has been reached
+        if (vehicle.remainingRouteWeight <= 0) {
+            updateRouteEndReached(vehicle)
+        } // check if a vertex has been crossed
+        else if (
+            vehicle.weightTillLastVisitedVertex +
+            (vehicle.currentRoad?.weight ?: 0) <= vehicle.currentRouteWeightProgress
+        ) {
+            updateRoadEndReached(vehicle)
         }
     }
 
     /**
-     * Checks if a vehicle has reached the end of its route and updates accordingly
+     * Is called if a vehicle has reached/passed a vertex on its route,
+     * updates accordingly
+     */
+    private fun updateRoadEndReached(vehicle: Vehicle) {
+        vehicle.weightTillLastVisitedVertex += vehicle.currentRoad?.weight ?: 0
+        // updates the current road in vehicle
+        vehicle.currentRoad = vehicle.currentRoute[0].connectingRoads[1]
+        vehicle.lastVisitedVertex = vehicle.currentRoute[0]
+        // removes the passed vertex from vehicles route
+        vehicle.currentRoute = vehicle.currentRoute.drop(1)
+    }
+
+    /**
+     * Is called if a vehicle has reached the end of its route,
+     * updates accordingly
      */
     private fun updateRouteEndReached(vehicle: Vehicle) {
-        if (vehicle.currentRoute.isEmpty()) {
-            // check if vehicle is moving to emergency or to base
-            if (vehicle.vehicleStatus == VehicleStatus.MOVING_TO_EMERGENCY) {
-                updateReachedEmergency(vehicle)
-            } else if (vehicle.vehicleStatus == VehicleStatus.MOVING_TO_BASE) {
-                updateReachedBase(vehicle)
-            }
-        } else {
-            // assign new roadProgress if route end not reached
-            vehicle.roadProgress =
-                vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[1].id]
-                    ?.weight
-                    ?.let { weightToTicks(it) }
-                    ?: 0/* Default value or action when null */
+        vehicle.lastVisitedVertex = vehicle.currentRoute.last()
+        if (vehicle.vehicleStatus == VehicleStatus.MOVING_TO_EMERGENCY) {
+            updateReachedEmergency(vehicle)
+        } else if (vehicle.vehicleStatus == VehicleStatus.MOVING_TO_BASE) {
+            updateReachedBase(vehicle)
         }
     }
 
@@ -155,18 +158,6 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
             vehicle.ticksStillUnavailable = 1
         } else {
             vehicle.vehicleStatus = VehicleStatus.IN_BASE
-        }
-    }
-
-    /**
-     * Returns the weight as ticks need to travel
-     */
-    private fun weightToTicks(weight: Int): Int {
-        if (weight < Number.TEN) return 1
-        return if (weight % Number.TEN == 0) {
-            weight // number is already a multiple of ten
-        } else {
-            weight + (Number.TEN - weight % Number.TEN) // round up
         }
     }
 }

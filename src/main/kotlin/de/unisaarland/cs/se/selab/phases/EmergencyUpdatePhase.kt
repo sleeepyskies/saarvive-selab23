@@ -5,7 +5,6 @@ import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleStatus
 import de.unisaarland.cs.se.selab.global.Log
-import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 
 /**
@@ -44,18 +43,6 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
     }
 
     /**
-     * Returns the weight as ticks need to travel
-     */
-    private fun weightToTicks(weight: Int): Int {
-        if (weight < Number.TEN) return 1
-        return if (weight % Number.TEN == 0) {
-            weight // number is already a multiple of ten
-        } else {
-            weight + (Number.TEN - weight % Number.TEN) // round up
-        }
-    }
-
-    /**
      * Sends all the vehicles assigned to an emergency back to their
      * respective bases
      */
@@ -70,10 +57,16 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
                     vehicle.height
                 )
             }
-            vehicle.roadProgress = vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[1].id]
-                ?.weight
-                ?.let { weightToTicks(it) }
-                ?: 0
+            vehicle.remainingRouteWeight =
+                dataHolder.graph.weightOfRoute(
+                    vehicle.currentRoute.first(),
+                    vehicle.currentRoute.last(),
+                    vehicle.height
+                )
+            vehicle.currentRoad = vehicle.currentRoute.first().connectingRoads[vehicle.currentRoute[2].id]
+            vehicle.weightTillLastVisitedVertex = 0
+            vehicle.lastVisitedVertex = vehicle.currentRoute.first()
+            vehicle.currentRouteWeightProgress = 0
         }
     }
 
@@ -81,13 +74,14 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * Checks if emergencies have failed or become resolved and updates accordingly
      */
     private fun updateEmergencies(emergencies: List<Emergency>) {
+        val removeEmergencies: MutableList<Emergency> = mutableListOf()
         for (emergency in emergencies) {
             // emergency resolved
             if (emergency.handleTime == 0) {
                 emergency.emergencyStatus = EmergencyStatus.RESOLVED
                 // Log emergency resolved
                 Log.displayEmergencyResolved(emergency.id)
-                dataHolder.ongoingEmergencies.remove(emergency)
+                removeEmergencies.add(emergency)
                 dataHolder.resolvedEmergencies.add(emergency)
                 dataHolder.emergencyToVehicles[emergency.id]?.let { sendVehiclesBack(it) }
             }
@@ -95,10 +89,11 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
             if (emergency.maxDuration == 0) {
                 emergency.emergencyStatus = EmergencyStatus.FAILED
                 Log.displayEmergencyFailed(emergency.id)
-                dataHolder.ongoingEmergencies.remove(emergency)
+                removeEmergencies.add(emergency)
                 dataHolder.resolvedEmergencies.add(emergency)
                 dataHolder.emergencyToVehicles[emergency.id]?.let { sendVehiclesBack(it) }
             }
         }
+        dataHolder.ongoingEmergencies.removeAll(removeEmergencies)
     }
 }

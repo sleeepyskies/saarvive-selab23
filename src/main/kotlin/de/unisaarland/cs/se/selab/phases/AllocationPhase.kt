@@ -76,6 +76,7 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
             val arrival = getTimeToArrive(asset, emergency)
             Log.displayAssetAllocation(asset.id, emergency.id, arrival)
         }
+        emergency.emergencyStatus = EmergencyStatus.ONGOING
     }
 
     private fun checkAndAssign(

@@ -1,0 +1,14 @@
+{
+  "emergencyCalls": [
+    {
+      "id": -1,
+      "emergencyType": "INVALID_TYPE",
+      "severity": 0,
+      "tick": 0,
+      "handleTime": -1,
+      "maxDuration": -2,
+      "village": "InvalidVillage",
+      "roadName": "InvalidRoad"
+    }
+  ]
+}

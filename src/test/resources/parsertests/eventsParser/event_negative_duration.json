@@ -1,0 +1,12 @@
+{
+  "events": [
+    {
+      "id": 1,
+      "type": "RUSH_HOUR",
+      "tick": 3,
+      "duration": -2,
+      "roadTypes": ["SIDE_STREET"],
+      "factor": 2
+    }
+  ]
+}

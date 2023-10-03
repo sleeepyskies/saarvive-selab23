@@ -1,0 +1,13 @@
+{
+  "events": [
+    {
+      "id": 1,
+      "type": "CONSTRUCTION_SITE",
+      "tick": 3,
+      "duration": 2,
+      "factor": 2,
+      "oneWayStreet": true
+    }
+  ]
+}
+

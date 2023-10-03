@@ -24,7 +24,6 @@ class PoliceCar(
     override var vehicleStatus: VehicleStatus = VehicleStatus.IN_BASE
     override var assignedEmergencyID: Int? = null
     override lateinit var lastVisitedVertex: Vertex
-    override var roadProgress: Int = 0
     override var currentRoute: List<Vertex> = emptyList<Vertex>()
     override var ticksStillUnavailable: Int = 0
     var currentCriminalCapcity: Int = 0
