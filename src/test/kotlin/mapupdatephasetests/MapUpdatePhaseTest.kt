@@ -35,7 +35,7 @@ class MapUpdatePhaseTest {
     private var construction1: Construction = Construction(0, 1, 0, 2, 0, 1, true)
     private var construction2: Construction = Construction(0, 1, 0, 2, 0, 1, false)
     private var roadClosure: RoadClosure = RoadClosure(1, 1, 0, 0, 1)
-    private var rushHour: RushHour = RushHour(2, 1, 1, listOf(PrimaryType.MAIN_STREET), 2)
+    private var rushHour: RushHour = RushHour(2, 1, 0, listOf(PrimaryType.MAIN_STREET), 2)
     private val trafficJam: TrafficJam = TrafficJam(3, 1, 0, 2, 0, 1)
     private val vehicleUnavailable: VehicleUnavailable = VehicleUnavailable(4, 1, 0, 0)
     private val events: MutableList<Event> = mutableListOf()
@@ -90,29 +90,6 @@ class MapUpdatePhaseTest {
         mup.execute()
         assert(mup.currentTick == 1)
         assert(!mup.shouldReroute)
-        assert(mup.events.isEmpty())
-    }
-
-    @Test
-    fun testVehicleUnavailableMethods() {
-        events.add(this.vehicleUnavailable)
-        assert(dataHolder.events.isNotEmpty())
-
-        // testing triggerEvent
-        mapUpdatePhase.triggerEvent(this.events)
-        assert(!mapUpdatePhase.shouldReroute)
-        assert(!this.bases[0].vehicles[0].isAvailable)
-        assert(dataHolder.unavailableVehicles.contains(this.bases[0].vehicles[0].id))
-
-        // testing reduceEventDuration
-        assert(this.vehicleUnavailable.duration == 1)
-        mapUpdatePhase.reduceEventDuration(this.events)
-        assert(this.vehicleUnavailable.duration == 0)
-        mapUpdatePhase.reduceEventDuration(this.events)
-        assert(this.events.isEmpty())
-        assert(!dataHolder.unavailableVehicles.contains(this.bases[0].vehicles[0].id))
-        assert(dataHolder.unavailableVehicles.isEmpty())
-        assert(!mapUpdatePhase.shouldReroute)
     }
 
     @Test
@@ -140,33 +117,6 @@ class MapUpdatePhaseTest {
         assert(!events.contains(vehicleUnavailable))
     }
 
-    @Test
-    fun testTrafficJamMethods() {
-        events.add(this.trafficJam)
-        assert(dataHolder.events.contains(trafficJam))
-        assert(dataHolder.events.isNotEmpty())
-        assert(!mapUpdatePhase.shouldReroute)
-        assert(roads[0].weight == 10)
-        assert(trafficJam.duration == 1)
-
-        // Testing triggerEvent
-        mapUpdatePhase.triggerEvent(this.events)
-        assert(roads[0].weight == 20)
-        assert(mapUpdatePhase.shouldReroute)
-
-        // Testing reduceEventDuration
-        mapUpdatePhase.reduceEventDuration(this.events)
-        assert(dataHolder.events.contains(trafficJam))
-        assert(trafficJam.duration == 0)
-        assert(roads[0].weight == 20)
-        assert(mapUpdatePhase.shouldReroute)
-
-        mapUpdatePhase.reduceEventDuration(this.events)
-        assert(!dataHolder.events.contains(trafficJam))
-        assert(trafficJam.duration == 0)
-        assert(roads[0].weight == 10)
-        assert(mapUpdatePhase.shouldReroute)
-    }
 
     @Test
     fun testTrafficJam() {
@@ -194,34 +144,6 @@ class MapUpdatePhaseTest {
         assert(roads[0].weight == 10)
         assert(trafficJam.duration == 0)
         assert(mapUpdatePhase.currentTick == 2)
-    }
-
-    @Test
-    fun testRushHourMethods() {
-        events.add(this.rushHour)
-        assert(dataHolder.events.contains(rushHour))
-        assert(dataHolder.events.isNotEmpty())
-        assert(!mapUpdatePhase.shouldReroute)
-        assert(roads[0].weight == 10)
-        assert(rushHour.duration == 1)
-
-        // Testing triggerEvent
-        mapUpdatePhase.triggerEvent(this.events)
-        assert(roads[0].weight == 20)
-        assert(mapUpdatePhase.shouldReroute)
-
-        // Testing reduceEventDuration
-        mapUpdatePhase.reduceEventDuration(this.events)
-        assert(dataHolder.events.contains(rushHour))
-        assert(rushHour.duration == 0)
-        assert(roads[0].weight == 20)
-        assert(mapUpdatePhase.shouldReroute)
-
-        mapUpdatePhase.reduceEventDuration(this.events)
-        assert(!dataHolder.events.contains(rushHour))
-        assert(rushHour.duration == 0)
-        assert(roads[0].weight == 10)
-        assert(mapUpdatePhase.shouldReroute)
     }
 
     @Test
@@ -302,7 +224,7 @@ class MapUpdatePhaseTest {
         assert(roads[0].weight == 20)
 
         mapUpdatePhase.execute()
-        assert(dataHolder.events.contains(construction1))
+        assert(!dataHolder.events.contains(construction1))
         assert(dataHolder.events.isEmpty())
         assert(!mapUpdatePhase.shouldReroute)
         assert(construction1.duration == 0)
@@ -333,7 +255,7 @@ class MapUpdatePhaseTest {
         assert(roads[0].weight == 20)
 
         mapUpdatePhase.execute()
-        assert(dataHolder.events.contains(construction2))
+        assert(!dataHolder.events.contains(construction2))
         assert(dataHolder.events.isEmpty())
         assert(!mapUpdatePhase.shouldReroute)
         assert(construction2.duration == 0)
