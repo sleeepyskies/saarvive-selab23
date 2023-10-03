@@ -44,8 +44,11 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         // Load and parse the JSON data
         val simulationJsonData = File(jsonFile).readText()
         json = JSONObject(simulationJsonData)
-
-        schema.validate(json)
+        try {
+            schema.validate(json)
+        } catch (_: Exception) {
+            outputInvalidAndFinish()
+        }
     }
 
     /**
@@ -54,7 +57,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     fun parse(): List<Emergency> {
         try {
             parseEmergencyCalls()
-        } catch (_: IllegalArgumentException) {
+        } catch (_: Exception){
             outputInvalidAndFinish()
         }
         return parsedEmergencies
@@ -146,7 +149,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     /** Validates the emergency type of emergencies
      * Checks whether the specified emergency type belongs to EmergencyType.
      */
-    private fun validateEmergencyType(emergencyType: String): Boolean {
+    fun validateEmergencyType(emergencyType: String): Boolean {
         val validTypes = listOf("FIRE", "ACCIDENT", "CRIME", "MEDICAL")
         if (emergencyType !in validTypes) {
             Logger.getLogger("Invalid emergency type")
@@ -157,7 +160,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
 
     /** Validates the handle time of emergencies
      */
-    private fun validateHandleTime(handleTime: Int): Boolean {
+    fun validateHandleTime(handleTime: Int): Boolean {
         if (handleTime < 1) {
             Logger.getLogger("Handle time must be positive")
             return false
@@ -168,8 +171,8 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     /** Validates the maximum duration of emergencies, checks whether the specified maximum duration
      * is greater than the handle time.
      */
-    private fun validateMaxDuration(maxDuration: Int, handleTime: Int): Boolean {
-        if (maxDuration < handleTime) {
+    fun validateMaxDuration(maxDuration: Int, handleTime: Int): Boolean {
+        if (maxDuration <= handleTime || handleTime <= 0) {
             Logger.getLogger("Maximum duration must be greater than handle time")
             return false
         }
@@ -199,7 +202,9 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         throw IllegalArgumentException("Invalid simulator configuration")
     }
 
-    private fun validateRoadName(road: String): Boolean {
+    /** Validates the road name of emergencies
+     */
+    fun validateRoadName(road: String): Boolean {
         val listValidRoads = mutableListOf<String>()
         for (r in graph.roads) {
             listValidRoads.add(r.roadName)
@@ -207,7 +212,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         if (road !in listValidRoads.toString()) {
             Logger.getLogger("Invalid road name")
             return false
-        } else if (road == "") {
+        } else if (road == " ") {
             Logger.getLogger("Road name must not be empty")
             return false
         }
