@@ -3,6 +3,8 @@ package allocationphasetests
 import de.unisaarland.cs.se.selab.dataClasses.bases.FireStation
 import de.unisaarland.cs.se.selab.dataClasses.bases.Hospital
 import de.unisaarland.cs.se.selab.dataClasses.bases.PoliceStation
+import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
+import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWithLadder
@@ -205,4 +207,72 @@ class GetAssignableAssetsTest {
     val fireStation2 = FireStation(3, 3, 4, f2Vehicles)
     val hospital2 = Hospital(4, 5, 5, 6, h2Vehicles)
     val policeStation2 = PoliceStation(5, 7, 6, 8, p2Vehicles)
+
+    // Define emergencies
+    val emergency1 = Emergency(
+        id = 1,
+        emergencyType = EmergencyType.FIRE,
+        severity = 2,
+        startTick = 5,
+        handleTime = 0,
+        maxDuration = 10,
+        villageName = "Village1",
+        roadName = "Road1"
+    )
+
+    val emergency2 = Emergency(
+        id = 2,
+        emergencyType = EmergencyType.CRIME,
+        severity = 3,
+        startTick = 10,
+        handleTime = 0,
+        maxDuration = 15,
+        villageName = "Village2",
+        roadName = "Road2"
+    )
+
+    val emergency3 = Emergency(
+        id = 3,
+        emergencyType = EmergencyType.MEDICAL,
+        severity = 1,
+        startTick = 7,
+        handleTime = 0,
+        maxDuration = 8,
+        villageName = "Village3",
+        roadName = "Road3"
+    )
+
+    val emergency4 = Emergency(
+        id = 4,
+        emergencyType = EmergencyType.ACCIDENT,
+        severity = 2,
+        startTick = 8,
+        handleTime = 0,
+        maxDuration = 12,
+        villageName = "Village4",
+        roadName = "Road4"
+    )
+
+    val emergency5 = Emergency(
+        id = 5,
+        emergencyType = EmergencyType.FIRE,
+        severity = 3,
+        startTick = 15,
+        handleTime = 0,
+        maxDuration = 20,
+        villageName = "Village5",
+        roadName = "Road5"
+    )
+
+    val emergency6 = Emergency(
+        id = 6,
+        emergencyType = EmergencyType.MEDICAL,
+        severity = 2,
+        startTick = 12,
+        handleTime = 0,
+        maxDuration = 18,
+        villageName = "Village6",
+        roadName = "Road6"
+    )
+
 }
