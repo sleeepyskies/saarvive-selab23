@@ -200,7 +200,7 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
         if (baseType !in validBaseTypes) {
             Logger.getLogger("Invalid base type")
             outputInvalidAndFinish()
-        } else if (baseType =="") {
+        } else if (baseType == "") {
             Logger.getLogger("Base type must not be empty")
             outputInvalidAndFinish()
         }
