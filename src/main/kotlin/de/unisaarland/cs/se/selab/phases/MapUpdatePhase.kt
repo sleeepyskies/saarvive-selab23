@@ -24,7 +24,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
         this.currentTick++
     }
 
-    private fun triggerEvent(events: MutableList<Event>) {
+    public fun triggerEvent(events: MutableList<Event>) {
         for (event in events) {
             if (event.startTick == this.currentTick) {
                 dataHolder.graph.applyGraphEvent(event)
@@ -32,7 +32,6 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 shouldReroute = true
             }
         }
-        shouldReroute = true
     }
 
     private fun endEvent(event: Event) {
@@ -41,7 +40,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
         }
         shouldReroute = true
     }
-    private fun reduceEventDuration(events: MutableList<Event>) {
+    public fun reduceEventDuration(events: MutableList<Event>) {
         events.forEach { event ->
             when {
                 event.duration > 0 -> {
@@ -54,6 +53,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
                     dataHolder.graph.revertGraphEvent(event)
                     endEvent(event)
                 }
+                // is this needed?? We have triggerEvents already
                 event.startTick == currentTick -> {
                     dataHolder.graph.applyGraphEvent(event)
                     // Log.displayEventStarted(event.eventID)
@@ -80,5 +80,6 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
             assetsRerouted++
         }
         if (assetsRerouted > 0) Log.displayAssetsRerouted(assetsRerouted)
+        dataHolder.assetsRerouted += assetsRerouted
     }
 }
