@@ -11,6 +11,7 @@ import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.graph.Graph
 import de.unisaarland.cs.se.selab.graph.Road
+import de.unisaarland.cs.se.selab.graph.SecondaryType
 import de.unisaarland.cs.se.selab.graph.Vertex
 import de.unisaarland.cs.se.selab.parser.AssetParser
 import de.unisaarland.cs.se.selab.parser.CountyParser
@@ -127,10 +128,29 @@ class SimulationObjectConstructor(
         for (event in events) {
             when (event) {
                 is VehicleUnavailable -> if (!validateVehicleEvent(event, vehicles)) return false
+                is Construction -> if (!validateOneWayStreet(event, graph)) return false
                 else -> if (!validateGraphEvent(event, graph)) return false
             }
         }
         return true
+    }
+
+    /** Helper method for validateEventsBasedOnGraph(). Validates if oneWay street street does not exist */
+    private fun validateOneWayStreet(event: Construction, graph: Graph): Boolean {
+        val vertex1 = graph.graph.find { vertex: Vertex -> vertex.id == event.sourceID }
+        val vertex2 = graph.graph.find { vertex: Vertex -> vertex.id == event.targetID }
+        val road = vertex1?.connectingRoads?.get(vertex2?.id)
+        return if (road != null && road.sType == SecondaryType.NONE) {
+            event.affectedRoad = road
+            event.oneWayStreet = true
+            true
+        } else if (road != null && road.sType == SecondaryType.ONE_WAY_STREET) {
+            event.affectedRoad = road
+            event.oneWayStreet = false
+            true
+        } else {
+            false
+        }
     }
 
     /**

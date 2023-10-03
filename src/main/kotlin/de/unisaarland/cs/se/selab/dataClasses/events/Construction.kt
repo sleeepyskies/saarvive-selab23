@@ -15,7 +15,7 @@ class Construction(
     val factor: Int,
     val sourceID: Int, // id of the vertex
     val targetID: Int,
-    val oneWayStreet: Boolean // if true, the road becomes a one-way street
+    var oneWayStreet: Boolean // if true, the road becomes a one-way street
 ) : Event(eventID, duration, startTick) {
     lateinit var affectedRoad: Road
     // oneWayStreet
