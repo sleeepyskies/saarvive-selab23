@@ -43,17 +43,6 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
         }
     }
 
-    /**
-     * Returns the weight as ticks need to travel
-     */
-    private fun weightToTicks(weight: Int): Int {
-        if (weight < Number.TEN) return 1
-        return if (weight % Number.TEN == 0) {
-            weight // number is already a multiple of ten
-        } else {
-            weight + (Number.TEN - weight % Number.TEN) // round up
-        }
-    }
 
     /**
      * Sends all the vehicles assigned to an emergency back to their
