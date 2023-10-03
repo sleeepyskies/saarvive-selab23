@@ -19,7 +19,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
             // apply/revert relevant events
             applyRevertEvents(activeEvents)
             // reduce active event durations
-            activeEvents.forEach { event: Event -> event.duration -= 1 }
+            activeEvents.forEach { event: Event -> if (event.duration > 0) event.duration -= 1 }
             // reroute vehicles if event ended/triggered
             if (shouldReroute) {
                 rerouteVehicles()
@@ -55,6 +55,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
             // revert graph event
             dataHolder.graph.revertGraphEvent(event)
             shouldReroute = true
+            dataHolder.events.remove(event)
         }
         Log.displayEventEnded(event.eventID)
     }
@@ -65,7 +66,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
     public fun applyRevertEvents(events: MutableList<Event>) {
         events.forEach { event ->
             when {
-                event.duration < 0 -> {
+                event.duration == 0 -> {
                     endEvent(event)
                 }
                 event.startTick == currentTick -> {
