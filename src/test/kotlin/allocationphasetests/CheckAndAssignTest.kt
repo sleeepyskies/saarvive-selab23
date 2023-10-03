@@ -17,7 +17,7 @@ import de.unisaarland.cs.se.selab.phases.AllocationPhase
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 import org.junit.jupiter.api.Test
 
-class CheckAndAssignTest() {
+class CheckAndAssignTest {
 
     val r1 = Road(
         PrimaryType.SIDE_STREET,
