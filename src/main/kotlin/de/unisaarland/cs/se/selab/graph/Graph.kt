@@ -56,7 +56,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
             if (nextVertex != null) {
                 currentVertex = nextVertex
             } else {
-                // there are no direct connections to unvisited vertices from current vertex
+                // find a vertex that has been visited before, but has unvisited neighbors
                 currentVertex = unvisitedVertices.firstOrNull() ?: break
             }
         }

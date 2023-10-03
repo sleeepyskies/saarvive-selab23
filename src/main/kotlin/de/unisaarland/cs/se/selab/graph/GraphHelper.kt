@@ -83,7 +83,28 @@ class GraphHelper {
             }
         }
 
+        // only return nextVertex if not null
+        if (nextVertex != null) return nextVertex
+
+        // find visited vertex, that has at least one unvisited vertex neighbor
+        // a list of all visited vertices
+        val visited = graph.filter { vertex -> !unvisitedVertices.contains(vertex) }
+        // a list of all unvisited vertex ids
+        val unvisitedIDs = unvisitedVertices.map { it.id }
+        nextVertex = visited.find { containsOne(it.connectingRoads.keys.toList(), unvisitedIDs) }
         return nextVertex
+    }
+
+    /**
+     * Used in findNextVertex, determines if a list contains at least one element from another list
+     */
+    private fun containsOne(listOne: List<Int>, listTwo: List<Int>): Boolean {
+        for (elem1 in listOne) {
+            for (elem2 in listTwo) {
+                if (elem1 == elem2) return true
+            }
+        }
+        return false
     }
 
     // calculateShortestRoute helper methods
