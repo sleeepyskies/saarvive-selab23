@@ -209,15 +209,43 @@ class MapUpdatePhaseTest {
 
         // Testing reduceEventDuration
         mapUpdatePhase.reduceEventDuration(this.events)
-        assert(dataHolder.events.contains(trafficJam))
-        assert(trafficJam.duration == 0)
+        assert(dataHolder.events.contains(rushHour))
+        assert(rushHour.duration == 0)
         assert(roads[0].weight == 20)
         assert(mapUpdatePhase.shouldReroute)
 
         mapUpdatePhase.reduceEventDuration(this.events)
-        assert(!dataHolder.events.contains(trafficJam))
-        assert(trafficJam.duration == 0)
+        assert(!dataHolder.events.contains(rushHour))
+        assert(rushHour.duration == 0)
         assert(roads[0].weight == 10)
         assert(mapUpdatePhase.shouldReroute)
+    }
+
+    @Test
+    fun testRushHour() {
+        events.add(this.rushHour)
+        assert(dataHolder.events.contains(rushHour))
+        assert(dataHolder.events.isNotEmpty())
+        assert(!mapUpdatePhase.shouldReroute)
+        assert(roads[0].weight == 10)
+        assert(rushHour.duration == 1)
+        assert(mapUpdatePhase.currentTick == 0)
+
+        // Testing execute
+        mapUpdatePhase.execute()
+        assert(dataHolder.events.contains(rushHour))
+        assert(dataHolder.events.isNotEmpty())
+        assert(!mapUpdatePhase.shouldReroute)
+        assert(roads[0].weight == 20)
+        assert(rushHour.duration == 0)
+        assert(mapUpdatePhase.currentTick == 1)
+
+        mapUpdatePhase.execute()
+        assert(!dataHolder.events.contains(rushHour))
+        assert(dataHolder.events.isEmpty())
+        assert(!mapUpdatePhase.shouldReroute)
+        assert(roads[0].weight == 10)
+        assert(rushHour.duration == 0)
+        assert(mapUpdatePhase.currentTick == 2)
     }
 }
