@@ -120,16 +120,24 @@ class GraphHelper {
         vertices: List<Vertex>
     ) {
         for ((neighborVertexID, connectingRoad) in currentVertex.connectingRoads) {
-            // check if the cars height allows it to drive on the road
+            // check if the car's height allows it to drive on the road
             if (vehicleHeight > connectingRoad.heightLimit) {
                 continue
             }
             // get the actual vertex
             val neighborVertex = vertices.first { it.id == neighborVertexID }
-            // calculate the weight of the route up till the neighbouring vertex
+            // calculate the weight of the route up to the neighboring vertex
             val tentativeDistance = (distances[currentVertex] ?: 0) + connectingRoad.weight
-            // check if the route through this neighbour is shorter than the previous found route
-            if (tentativeDistance < (distances[neighborVertex] ?: 0)) {
+            // previous vertex
+            val prev = previousVertices[neighborVertex] ?: Vertex(1, mutableMapOf())
+            // println(distances[currentVertex])
+            // Check if the route through this neighbor is shorter or has a lower ID road
+            if (tentativeDistance < (distances[neighborVertex] ?: Int.MAX_VALUE) ||
+                (
+                    tentativeDistance == (distances[neighborVertex] ?: Int.MAX_VALUE) &&
+                        currentVertex.id < prev.id
+                    )
+            ) {
                 distances[neighborVertex] = tentativeDistance
                 // update for backtracking
                 previousVertices[neighborVertex] = currentVertex
