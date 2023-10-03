@@ -12,69 +12,74 @@ import de.unisaarland.cs.se.selab.simulation.DataHolder
 class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
     public var currentTick = 0
     public var shouldReroute = false
-    public val events = dataHolder.events
 
     override fun execute() {
-        if (events.isNotEmpty()) {
-            triggerEvent(events)
-            reduceEventDuration(events)
-            if (shouldReroute) rerouteVehicles()
-            shouldReroute = false
+        val activeEvents = dataHolder.events.filter { event: Event -> event.startTick <= currentTick }.toMutableList()
+        if (activeEvents.isNotEmpty()) {
+            // apply/revert relevant events
+            applyRevertEvents(activeEvents)
+            // reduce active event durations
+            activeEvents.forEach { event: Event -> event.duration -= 1 }
+            // reroute vehicles if event ended/triggered
+            if (shouldReroute) {
+                rerouteVehicles()
+                shouldReroute = false
+            }
         }
         this.currentTick++
     }
 
     /**
-     * Trigger the provided list of events and applies their effects on the simulation
+     * Triggers the passed event
      */
-    public fun triggerEvent(events: MutableList<Event>) {
-        for (event in events) {
-            if (event.startTick == this.currentTick) {
-                dataHolder.graph.applyGraphEvent(event)
-                Log.displayEventStarted(event.eventID)
-                shouldReroute = true
-            }
+    public fun triggerEvent(event: Event) {
+        if (event is VehicleUnavailable){
+            // add vehicle id to unavailable vehicles
+            dataHolder.unavailableVehicles.add(event.vehicleID)
+        } else {
+            // apply graph event
+            dataHolder.graph.applyGraphEvent(event)
+            shouldReroute = true
         }
-    }
-
-    private fun endEvent(event: Event) {
-        if (event.duration == 0) {
-            Log.displayEventEnded(event.eventID)
-        }
-        shouldReroute = true
+        Log.displayEventStarted(event.eventID)
     }
 
     /**
-     * Reduces the provided list of event durations, as well as applying events/reverting events
+     * Ends the passed event
      */
-    public fun reduceEventDuration(events: MutableList<Event>) {
+    private fun endEvent(event: Event) {
+        if (event is VehicleUnavailable){
+            // remove vehicle id to unavailable vehicles
+            dataHolder.unavailableVehicles.remove(event.vehicleID)
+        } else {
+            // revert graph event
+            dataHolder.graph.revertGraphEvent(event)
+            shouldReroute = true
+        }
+        Log.displayEventEnded(event.eventID)
+    }
+
+    /**
+     * Checks if events should be applied/reverted and does so accordingly
+     */
+    public fun applyRevertEvents(events: MutableList<Event>) {
         events.forEach { event ->
             when {
-                event.duration > 0 -> {
-                    event.duration -= 1
-                }
-                event.duration == 0 -> {
-                    if (event is VehicleUnavailable) {
-                        dataHolder.unavailableVehicles.removeIf { id: Int -> id == event.vehicleID }
-                    }
-                    dataHolder.graph.revertGraphEvent(event)
+                event.duration < 0 -> {
                     endEvent(event)
                 }
-                // is this needed?? We have triggerEvents already
                 event.startTick == currentTick -> {
-                    dataHolder.graph.applyGraphEvent(event)
-                    // Log.displayEventStarted(event.eventID)
+                    triggerEvent(event)
                 }
             }
         }
-        // Remove completed events from the list
-        events.removeIf { event -> event.duration == 0 }
     }
 
     /**
      * Reroutes all active vehicles if an event ends/starts
      */
     private fun rerouteVehicles() {
+        // Should only reroute vehicles if  there is a faster path/current path is no longer viable
         var assetsRerouted = 0
         dataHolder.activeVehicles.forEach { vehicle ->
             val vehicleRoute = vehicle.currentRoute

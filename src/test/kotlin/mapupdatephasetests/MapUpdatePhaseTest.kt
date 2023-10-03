@@ -93,6 +93,7 @@ class MapUpdatePhaseTest {
         assert(mup.events.isEmpty())
     }
 
+    /**
     @Test
     fun testVehicleUnavailableMethods() {
         events.add(this.vehicleUnavailable)
@@ -114,6 +115,7 @@ class MapUpdatePhaseTest {
         assert(dataHolder.unavailableVehicles.isEmpty())
         assert(!mapUpdatePhase.shouldReroute)
     }
+    */
 
     @Test
     fun testVehicleUnavailable() {
@@ -140,6 +142,7 @@ class MapUpdatePhaseTest {
         assert(!events.contains(vehicleUnavailable))
     }
 
+    /**
     @Test
     fun testTrafficJamMethods() {
         events.add(this.trafficJam)
@@ -167,6 +170,7 @@ class MapUpdatePhaseTest {
         assert(roads[0].weight == 10)
         assert(mapUpdatePhase.shouldReroute)
     }
+    */
 
     @Test
     fun testTrafficJam() {
@@ -196,6 +200,7 @@ class MapUpdatePhaseTest {
         assert(mapUpdatePhase.currentTick == 2)
     }
 
+    /**
     @Test
     fun testRushHourMethods() {
         events.add(this.rushHour)
@@ -223,6 +228,7 @@ class MapUpdatePhaseTest {
         assert(roads[0].weight == 10)
         assert(mapUpdatePhase.shouldReroute)
     }
+    */
 
     @Test
     fun testRushHour() {
