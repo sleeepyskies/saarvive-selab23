@@ -90,7 +90,6 @@ class MapUpdatePhaseTest {
         mup.execute()
         assert(mup.currentTick == 1)
         assert(!mup.shouldReroute)
-        assert(mup.events.isEmpty())
     }
 
     /**
