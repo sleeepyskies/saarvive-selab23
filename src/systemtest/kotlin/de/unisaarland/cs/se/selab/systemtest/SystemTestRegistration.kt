@@ -51,6 +51,9 @@ object SystemTestRegistration {
         manager.registerTest(FireDoctorsTest())
         manager.registerTest(SameIDAssetsTest())
         manager.registerTest(SameIDBaseTest())
+        manager.registerTest(NotEnoughWaterTest())
+        manager.registerTest(WrongWaterTest())
+        manager.registerTest(BackseatDriversTest())
 
         // simulation tests
         manager.registerTest(EmptySimulationTest())
@@ -91,6 +94,9 @@ object SystemTestRegistration {
         manager.registerTest(FireDoctorsTest())
         manager.registerTest(SameIDAssetsTest())
         manager.registerTest(SameIDBaseTest())
+        manager.registerTest(NotEnoughWaterTest())
+        manager.registerTest(WrongWaterTest())
+        manager.registerTest(BackseatDriversTest())
 
         // simulation tests
         manager.registerTest(EmptySimulationTest())
@@ -128,6 +134,9 @@ object SystemTestRegistration {
         manager.registerTest(FireDoctorsTest())
         manager.registerTest(SameIDAssetsTest())
         manager.registerTest(SameIDBaseTest())
+        manager.registerTest(NotEnoughWaterTest())
+        manager.registerTest(WrongWaterTest())
+        manager.registerTest(BackseatDriversTest())
 
         // simulation tests
         manager.registerTest(EmptySimulationTest())
