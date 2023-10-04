@@ -10,6 +10,6 @@ class BaseWrongAssetsTest : SystemTest() {
     override val maxTicks = 5
     override suspend fun run() {
         assertNextLine("Initialization Info: example_map.dot successfully parsed and validated")
-        assertNextLine("Initialization Info: baseWrongAsset_asset.json invalid")
+        assertNextLine("Initialization Info: baseWrongAsset_assets.json invalid")
     }
 }
