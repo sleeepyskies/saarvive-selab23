@@ -4,6 +4,6 @@ digraph G {
 	2;
 
 	-1 -> 1 [village=Stuttgart; name=Chestnut_Avenue; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
-	1 -> 2 [village=Stuttgart; name=Königstraße; heightLimit=3; weight=10; primaryType=sideStreet; secondaryType=none;];
+	1 -> 2 [village=Stuttgart; name=Konigsberger; heightLimit=3; weight=10; primaryType=sideStreet; secondaryType=none;];
 
 }

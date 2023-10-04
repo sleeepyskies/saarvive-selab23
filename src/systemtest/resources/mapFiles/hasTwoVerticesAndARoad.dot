@@ -1,0 +1,6 @@
+digraph G {
+	3;
+	1;
+
+	3 -> 1 [village=Bikini_Bottom; name=Krusty_Krab_Street; heightLimit=3; weight=10; primaryType=sideStreet; secondaryType=none;];
+}
