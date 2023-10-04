@@ -28,7 +28,6 @@ class CountyParser(private val dotFilePath: String) {
     private val idToVertexMapping = mutableMapOf<Int, Vertex>() // For easies access to the Vertex object
     private val countiesNames = mutableSetOf<String>() // For checking the condition (13)
     private val villagesNames = mutableSetOf<String>() // For checking the condition (13)
-    private val lowerCaseVillagesNames = mutableSetOf<String>()
 
     private val sPat = "[a-zA-Z][a-zA-Z_]*" // Pattern for strings ID
     private val nPat = "0|[1-9][0-9]*" // Pattern for numbers ID
@@ -174,6 +173,16 @@ class CountyParser(private val dotFilePath: String) {
      * (2. Each vertex is connected to at least one other vertex)
      */
     private fun vertexConnectedToAnother(): Boolean {
+        for (i in this.villagesNames.indices) {
+            for (j in this.villagesNames.indices) {
+                val village1 = this.villagesNames.elementAt(i).lowercase()
+                val village2 = this.villagesNames.elementAt(j).lowercase()
+                if (i != j && village1 == village2) {
+                    System.err.println("Village name is not unique. Called in roadNameIsUnique().")
+                    return false
+                }
+            }
+        }
         this.listOfVerticesData.forEach { vertex ->
             var connects = false
             this.listOfVerticesToRoads.keys.forEach { pair ->
@@ -376,11 +385,6 @@ class CountyParser(private val dotFilePath: String) {
             val keyValue = assignment.split("=") // Retrieve keys
             attributes[keyValue.elementAt(0).trim()] = keyValue.elementAt(1).trim() // Put attributes in mapping
             when (keyValue.elementAt(0).trim()) {
-                StringLiterals.VILLAGE-> if(villagesNames.contains(keyValue.elementAt(1).trim().lowercase())) {
-                    outputInvalidAndFinish()
-                } else {
-                    lowerCaseVillagesNames.add(keyValue.elementAt(1).trim().lowercase())
-                }
                 "weight" -> if (keyValue.elementAt(1).trim().toInt() <= 0
                 ) {
                     outputInvalidAndFinish() // (10. The weight of the road must be greater than 0)
