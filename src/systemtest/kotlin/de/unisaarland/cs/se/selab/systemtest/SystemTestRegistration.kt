@@ -41,6 +41,7 @@ object SystemTestRegistration {
     }
 
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
+        // County Tests
         manager.registerTest(ExampleTest())
         manager.registerTest(TwoRoadsSameLocationTest())
         manager.registerTest(TwoRoadsSameNameTest())
@@ -85,6 +86,10 @@ object SystemTestRegistration {
         manager.registerTest(WrongNumericIDTest())
         manager.registerTest(MissingAttributeTest())
         manager.registerTest(NoDigraphNameTest())
+
+        manager.registerTest(NoVehiclesInBase())
+        manager.registerTest(NotEnoughBases())
+        manager.registerTest(SameBaseLocation())
     }
 
     fun registerSystemTestsMutantSimulation(manager: SystemTestManager) {
