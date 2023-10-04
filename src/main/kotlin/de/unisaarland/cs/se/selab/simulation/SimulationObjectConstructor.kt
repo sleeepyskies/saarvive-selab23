@@ -55,6 +55,7 @@ class SimulationObjectConstructor(
             val (parsedVehiclesList, parsedBasesList) = assetParser.parse()
             bases = parsedBasesList
             vehicles = parsedVehiclesList
+            crossAssets(graph, bases, assetParser)
 
             // parse, validate and create events and emergencies
             simulationParser = SimulationParser("simulation.schema", simulationFile, graph)
@@ -63,6 +64,8 @@ class SimulationObjectConstructor(
             eventsParser = EventsParser("simulation.schema", simulationFile, vehicles)
             eventsParser.parse()
             events = eventsParser.parsedEvents
+            crossSimulation(graph, emergencies, simulationParser)
+            crossEvents(graph, events, vehicles, eventsParser)
         } catch (_: IllegalArgumentException) {
             return null
         }
@@ -78,9 +81,8 @@ class SimulationObjectConstructor(
                 }
             }
         }
-        crossAssets(graph, bases, assetParser)
-        crossSimulation(graph, emergencies, simulationParser)
-        crossEvents(graph, events, vehicles, eventsParser)
+        // crossAssets(graph, bases, assetParser)
+
         return if (validateEmergenciesBasedOnGraph(graph, emergencies) &&
             validateEventsBasedOnGraph(graph, events, vehicles) &&
             validateAssetsBasedOnGraph(graph, bases)
