@@ -45,6 +45,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
 
         // Algorithm
         while (unvisitedVertices.isNotEmpty()) {
+            if (currentVertex == destination) break
             // gets all relevant neighbors based on height restrictions
             val neighbors = currentVertex.connectingRoads.filter { (_, road) -> carHeight <= road.heightLimit }
             // updates neighbor distances
@@ -52,12 +53,16 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
 
             unvisitedVertices.remove(currentVertex)
             // update nextVertex
-            val nextVertex = helper.findNextVertex(neighbors, visitedVertices, this.graph, unvisitedVertices)
+            val nextVertex =
+                helper.findNextVertex(
+                    neighbors,
+                    visitedVertices,
+                    this.graph,
+                    unvisitedVertices,
+                    carHeight
+                )
             if (nextVertex != null) {
                 currentVertex = nextVertex
-            } else {
-                // find a vertex that has been visited before, but has unvisited neighbors
-                currentVertex = unvisitedVertices.firstOrNull() ?: break
             }
         }
         return helper.weightToTicks(visitedVertices[destination]?.first ?: -1)
@@ -78,6 +83,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
 
         // Algorithm
         while (unvisitedVertices.isNotEmpty()) {
+            if (currentVertex == destination) break
             // gets all relevant neighbors based on height restrictions
             val neighbors = currentVertex.connectingRoads.filter { (_, road) -> carHeight <= road.heightLimit }
             // updates neighbor distances
@@ -85,15 +91,19 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
 
             unvisitedVertices.remove(currentVertex)
             // update nextVertex
-            val nextVertex = helper.findNextVertex(neighbors, visitedVertices, this.graph, unvisitedVertices)
+            val nextVertex =
+                helper.findNextVertex(
+                    neighbors,
+                    visitedVertices,
+                    this.graph,
+                    unvisitedVertices,
+                    carHeight
+                )
             if (nextVertex != null) {
                 currentVertex = nextVertex
-            } else {
-                // there are no direct connections to unvisited vertices from current vertex
-                currentVertex = unvisitedVertices.firstOrNull() ?: break
             }
         }
-        return visitedVertices[destination]?.first ?: 0
+        return visitedVertices[destination]?.first ?: -1
     }
 
     /**
