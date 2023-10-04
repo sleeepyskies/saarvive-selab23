@@ -8,6 +8,7 @@ import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.getSchema
+import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.graph.PrimaryType
 import org.everit.json.schema.Schema
 import org.json.JSONArray
@@ -330,7 +331,7 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
      * Outputs invalidity log, terminates the program
      */
     private fun outputInvalidAndFinish() {
-        // Log.displayInitializationInfoInvalid(this.fileName)
+        Log.displayInitializationInfoInvalid(this.fileName)
         throw IllegalArgumentException("Invalid simulator configuration")
     }
 }

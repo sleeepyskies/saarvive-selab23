@@ -13,6 +13,6 @@ class EmptySimulationTest : SystemTest() {
     override suspend fun run() {
         assertNextLine("Initialization Info: example_map.dot successfully parsed and validated")
         assertNextLine("Initialization Info: example_assets.json successfully parsed and validated")
-        assertNextLine("Initialization Info: scenario_empty invalid")
+        assertNextLine("Initialization Info: scenario_empty.json invalid")
     }
 }
