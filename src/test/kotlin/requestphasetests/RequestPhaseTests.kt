@@ -106,7 +106,7 @@ class RequestPhaseTests {
         k9PoliceCar.isAvailable = true
         k9PoliceCar.vehicleStatus = VehicleStatus.IN_BASE
 
-        val dataHolder = mock(DataHolder::class.java)
+        dataHolder = mock(DataHolder::class.java)
         val requestPhase = RequestPhase(dataHolder)
 
         val result = requestPhase.canAssignVehicle(k9PoliceCar)
