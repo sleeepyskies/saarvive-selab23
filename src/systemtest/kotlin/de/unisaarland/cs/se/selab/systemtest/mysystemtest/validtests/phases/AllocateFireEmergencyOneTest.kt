@@ -1,4 +1,4 @@
-package de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests
+package de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases
 
 import de.unisaarland.cs.se.selab.systemtest.api.SystemTest
 
@@ -21,6 +21,5 @@ class AllocateFireEmergencyOneTest : SystemTest() {
 
         // Tick 1
         assertNextLine("Simulation Tick: 0")
-
     }
 }
