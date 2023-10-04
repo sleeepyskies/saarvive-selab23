@@ -30,7 +30,7 @@ class CountyParser(private val dotFilePath: String) {
     private val villagesNames = mutableSetOf<String>() // For checking the condition (13)
 
     private val sPat = "[a-zA-Z][a-zA-Z_]*" // Pattern for strings ID
-    private val nPat = "[1-9][0-9]*" // Pattern for numbers ID
+    private val nPat = "([1-9][0-9]*)|0" // Pattern for numbers ID
 
     /**
      * Save the file and data in string
