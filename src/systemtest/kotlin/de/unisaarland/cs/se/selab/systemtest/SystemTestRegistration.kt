@@ -71,6 +71,11 @@ object SystemTestRegistration {
         manager.registerTest(BackseatDriversTest())
         manager.registerTest(LongLadderTest())
         manager.registerTest(TallCarTest())
+        manager.registerTest(LadderBikeTest())
+        manager.registerTest(NoCriminalsTest())
+        manager.registerTest(TooManyCriminals())
+        manager.registerTest(WrongCarWrongStuffTest())
+        manager.registerTest(TwoBasesTest())
 
         // simulation tests
         manager.registerTest(EmptySimulationTest())
@@ -130,11 +135,22 @@ object SystemTestRegistration {
         manager.registerTest(BackseatDriversTest())
         manager.registerTest(LongLadderTest())
         manager.registerTest(TallCarTest())
+        manager.registerTest(LadderBikeTest())
+        manager.registerTest(NoCriminalsTest())
+        manager.registerTest(TooManyCriminals())
+        manager.registerTest(WrongCarWrongStuffTest())
+        manager.registerTest(TwoBasesTest())
 
         // simulation tests
         manager.registerTest(EmptySimulationTest())
         manager.registerTest(WrongEmergenciesTest())
         manager.registerTest(WrongEventsTest())
+
+        // phase tests valid
+        manager.registerTest(CorrectSystemTestSmall())
+        manager.registerTest(EmergencyFailTest())
+        manager.registerTest(RequestTest())
+        manager.registerTest(ReallocationTest())
     }
 
     fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
@@ -186,6 +202,11 @@ object SystemTestRegistration {
         manager.registerTest(BackseatDriversTest())
         manager.registerTest(LongLadderTest())
         manager.registerTest(TallCarTest())
+        manager.registerTest(LadderBikeTest())
+        manager.registerTest(NoCriminalsTest())
+        manager.registerTest(TooManyCriminals())
+        manager.registerTest(WrongCarWrongStuffTest())
+        manager.registerTest(TwoBasesTest())
 
         // simulation tests
         manager.registerTest(EmptySimulationTest())

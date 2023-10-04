@@ -114,7 +114,7 @@ class BaseParser(private val json: JSONObject, private val fileName: String) {
             System.err.println("Location must be non-negative")
             outputInvalidAndFinish()
         } else if (location in setBaseLocation) {
-            System.err.println("Location must be unique")
+            System.err.println("Location must be unique, no 2 bases shld be on same location")
             outputInvalidAndFinish()
         } else {
             setBaseLocation.add(location)
