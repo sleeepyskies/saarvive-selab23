@@ -61,7 +61,7 @@
     },
     {
       "id": 4,
-      "baseID": 1,
+      "baseID": 3,
       "vehicleType": "POLICE_CAR",
       "vehicleHeight": 1,
       "staffCapacity": 1,
@@ -97,11 +97,10 @@
     },
     {
       "id": 9,
-      "baseID": 3,
-      "vehicleType": "POLICE_CAR",
+      "baseID": 2,
+      "vehicleType": "AMBULANCE",
       "vehicleHeight": 1,
-      "staffCapacity": 1,
-      "criminalCapacity": 1
+      "staffCapacity": 1
     }
   ]
 }

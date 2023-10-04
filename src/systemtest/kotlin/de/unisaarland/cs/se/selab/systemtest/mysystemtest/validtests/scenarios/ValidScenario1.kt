@@ -8,7 +8,7 @@ class ValidScenario1 : SystemTest() {
     override val map = "mapFiles/validScenario1_map.dot"
     override val assets = "assetsJsons/validScenario1_bases.json"
     override val scenario = "scenarioJsons/validScenario_simulation.json"
-    override val maxTicks = 10
+    override val maxTicks = 15
 
     override suspend fun run() {
         assertNextLine("Initialization Info: validScenario1_map.dot successfully parsed and validated")
@@ -22,13 +22,15 @@ class ValidScenario1 : SystemTest() {
         // emergency CRIME, severity 1 starts, id -> 0
         assertNextLine("Emergency Assignment: 0 assigned to 3")
         // needed assets: 1 Police Car, 1 Criminal
-        assertNextLine("Asset Allocation: 9 allocated to 0; 0 ticks to arrive.")
-        assertNextLine("Asset Arrival: 9 arrived at 3.")
+        assertNextLine("Asset Allocation: 4 allocated to 0; 0 ticks to arrive.")
+        assertNextLine("Asset Arrival: 4 arrived at 3.")
         assertNextLine("Emergency Handling Start: 0 handling started")
         assertNextLine("Simulation Tick: 2")
         assertNextLine("Simulation Tick: 3")
         assertNextLine("Emergency Assignment: 1 assigned to 2")
         assertNextLine("Asset Allocation: 7 allocated to 1; 1 ticks to arrive.")
+        assertNextLine("Asset Allocation: 8 allocated to 1; 1 ticks to arrive.")
+        assertNextLine("Asset Allocation: 9 allocated to 1; 1 ticks to arrive.")
         assertNextLine("Emergency Resolved: 0 resolved.")
         assertNextLine("Simulation Tick: 4")
         assertNextLine("Asset Arrival: 7 arrived at 4.")
