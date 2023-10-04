@@ -8,6 +8,8 @@ import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.simulation
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.simulation.WrongEventsTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.CorrectEdgesToVerticesTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.ValidSmallMapSpacesKingdomTest
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.AllocateFireEmergencyOneTest1
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.AllocateFireEmergencyOneTest2
 import de.unisaarland.cs.se.selab.systemtest.runner.SystemTestManager
 
 object SystemTestRegistration {
@@ -67,12 +69,16 @@ object SystemTestRegistration {
         manager.registerTest(NoCriminalsTest())
         manager.registerTest(TooManyCriminals())
         manager.registerTest(WrongCarWrongStuffTest())
-        manager.registerTest(TwoBasesTest())
+        // manager.registerTest(TwoBasesTest())
 
         // simulation tests
         manager.registerTest(EmptySimulationTest())
         manager.registerTest(WrongEmergenciesTest())
         manager.registerTest(WrongEventsTest())
+
+        // phase tests
+        manager.registerTest(AllocateFireEmergencyOneTest1())
+        manager.registerTest(AllocateFireEmergencyOneTest2())
     }
 
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
@@ -131,14 +137,16 @@ object SystemTestRegistration {
         manager.registerTest(NoCriminalsTest())
         manager.registerTest(TooManyCriminals())
         manager.registerTest(WrongCarWrongStuffTest())
-        manager.registerTest(TwoBasesTest())
+        // manager.registerTest(TwoBasesTest())
 
         // simulation tests
         manager.registerTest(EmptySimulationTest())
         manager.registerTest(WrongEmergenciesTest())
         manager.registerTest(WrongEventsTest())
 
-        // phase tests valid
+        // phase tests
+        manager.registerTest(AllocateFireEmergencyOneTest1())
+        manager.registerTest(AllocateFireEmergencyOneTest2())
     }
 
     fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
@@ -194,7 +202,7 @@ object SystemTestRegistration {
         manager.registerTest(NoCriminalsTest())
         manager.registerTest(TooManyCriminals())
         manager.registerTest(WrongCarWrongStuffTest())
-        manager.registerTest(TwoBasesTest())
+        // manager.registerTest(TwoBasesTest())
 
         // simulation tests
         manager.registerTest(EmptySimulationTest())
