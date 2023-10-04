@@ -67,11 +67,13 @@ class GraphHelper {
         neighbors: Map<Int, Road>,
         visitedVertices: Map<Vertex, Pair<Int, Vertex?>>,
         graph: List<Vertex>,
-        unvisitedVertices: List<Vertex>
+        unvisitedVertices: List<Vertex>,
+        carHeight: Int,
     ): Vertex? {
         var nextVertex: Vertex? = null
         var minWeight = Int.MAX_VALUE
 
+        // find the closest direct and unvisited neighbor
         for ((neighbor, _) in neighbors) {
             val distance = visitedVertices[graph.find { vertex: Vertex -> vertex.id == neighbor }]?.first ?: 0
             if (distance < minWeight && unvisitedVertices.contains(
@@ -91,20 +93,26 @@ class GraphHelper {
         val visited = graph.filter { vertex -> !unvisitedVertices.contains(vertex) }
         // a list of all unvisited vertex ids
         val unvisitedIDs = unvisitedVertices.map { it.id }
-        nextVertex = visited.find { containsOne(it.connectingRoads.keys.toList(), unvisitedIDs) }
+        // find a visited vertex that has at least one unvisited neighbor
+        nextVertex = condition(visited, unvisitedIDs, carHeight)
         return nextVertex
     }
 
     /**
-     * Used in findNextVertex, determines if a list contains at least one element from another list
+     * Returns a visited vertex that has at least one reachable and unvisited neighbor
      */
-    private fun containsOne(listOne: List<Int>, listTwo: List<Int>): Boolean {
-        for (elem1 in listOne) {
-            for (elem2 in listTwo) {
-                if (elem1 == elem2) return true
+    private fun condition(vertexList: List<Vertex>, idList: List<Int>, carHeight: Int): Vertex? {
+        for (vertex in vertexList) {
+            for (id in idList) {
+                if (
+                    vertex.connectingRoads.keys.contains(id) &&
+                    carHeight <= (vertex.connectingRoads[id]?.heightLimit ?: 0)
+                ) {
+                    return vertex
+                }
             }
         }
-        return false
+        return null
     }
 
     // calculateShortestRoute helper methods
