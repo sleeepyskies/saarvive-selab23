@@ -7,10 +7,10 @@ import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.simulation
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.simulation.WrongEmergenciesTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.simulation.WrongEventsTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.CorrectEdgesToVerticesTest
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.ValidScenario1
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.ValidSmallMapSpacesKingdomTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.AllocateFireEmergencyOneTest1
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.AllocateFireEmergencyOneTest2
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.ValidScenario1
 import de.unisaarland.cs.se.selab.systemtest.runner.SystemTestManager
 
 object SystemTestRegistration {
@@ -36,7 +36,6 @@ object SystemTestRegistration {
         manager.registerTest(WrongNumericIDTest())
         manager.registerTest(MissingAttributeTest())
         manager.registerTest(NoDigraphNameTest())
-
         // asset parser tests
         manager.registerTest(NoVehiclesInBase())
         manager.registerTest(NotEnoughBases())
@@ -71,23 +70,19 @@ object SystemTestRegistration {
         manager.registerTest(TooManyCriminals())
         manager.registerTest(WrongCarWrongStuffTest())
         // manager.registerTest(TwoBasesTest())
-
         // simulation tests
         manager.registerTest(EmptySimulationTest())
         manager.registerTest(WrongEmergenciesTest())
         manager.registerTest(WrongEventsTest())
-
         // phase tests
         manager.registerTest(AllocateFireEmergencyOneTest1())
         manager.registerTest(AllocateFireEmergencyOneTest2())
-
         // Valid scenarios
         manager.registerTest(ValidScenario1())
     }
 
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
-        // County Tests
-        manager.registerTest(ExampleTest())
+        // manager.registerTest(ExampleTest())
         manager.registerTest(TwoRoadsSameLocationTest())
         manager.registerTest(TwoRoadsSameNameTest())
         manager.registerTest(NonExistentVertexTest())
@@ -223,5 +218,7 @@ object SystemTestRegistration {
 
         // Valid scenarios
         manager.registerTest(ValidScenario1())
+        manager.registerTest(AllocateFireEmergencyOneTest1())
+        manager.registerTest(AllocateFireEmergencyOneTest2())
     }
 }

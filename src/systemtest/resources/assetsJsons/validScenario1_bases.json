@@ -23,7 +23,7 @@
     {
       "id": 3,
       "baseType": "POLICE_STATION",
-      "location": 0,
+      "location": 3,
       "staff": 2,
       "dogs": 1
     }

@@ -1,4 +1,4 @@
-package de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests
+package de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios
 
 import de.unisaarland.cs.se.selab.systemtest.api.SystemTest
 
@@ -51,6 +51,5 @@ class ValidScenario1 : SystemTest() {
         assertNextLine("Simulation Statistics: 2 resolved emergencies.")
         // end of file is reached
         assertEnd()
-
     }
 }
