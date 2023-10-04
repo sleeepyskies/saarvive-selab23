@@ -85,9 +85,9 @@ class SimulationObjectConstructor(
             validateEventsBasedOnGraph(graph, events, vehicles) &&
             validateAssetsBasedOnGraph(graph, bases)
         ) {
-                // If validation succeeds return simulation
-                val dataHolder = DataHolder(graph, bases, events.toMutableList(), emergencies)
-                Simulation(dataHolder, maxTick)
+            // If validation succeeds return simulation
+            val dataHolder = DataHolder(graph, bases, events.toMutableList(), emergencies)
+            Simulation(dataHolder, maxTick)
         } else {
             null
         }
@@ -97,7 +97,6 @@ class SimulationObjectConstructor(
             return
         } else {
             Log.displayInitializationInfoInvalid(simParser.fileName)
-
         }
     }
 
