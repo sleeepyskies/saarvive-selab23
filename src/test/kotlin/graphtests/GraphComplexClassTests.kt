@@ -101,23 +101,28 @@ class GraphComplexClassTests {
         Vertex(7, mutableMapOf(Pair(4, road47), Pair(3, road37), Pair(6, road67)))
 
     // For testing with height restriction
-    //val vertex9 = Vertex(9, mutableMapOf(Pair(7, road79), Pair(0, road90)))
-    //val vertex5 = Vertex(5, mutableMapOf(Pair(7, road75), Pair(0, road50)))
-    //val vertex0 = Vertex(0, mutableMapOf(Pair(9, road90), Pair(5, road50)))
+    // val vertex9 = Vertex(9, mutableMapOf(Pair(7, road79), Pair(0, road90)))
+    // val vertex5 = Vertex(5, mutableMapOf(Pair(7, road75), Pair(0, road50)))
+    // val vertex0 = Vertex(0, mutableMapOf(Pair(9, road90), Pair(5, road50)))
 
     // For testing with OneWayRoads and tunnels
-    //val vertex8 = Vertex(8, mutableMapOf(Pair(4, road84)))
-    //val vertex10 = Vertex(10, mutableMapOf(Pair(11, road1011), Pair(12, road1012)))
-    //val vertex11 = Vertex(11, mutableMapOf(Pair(8, road118), Pair(12, road1211)))
-    //val vertex12 = Vertex(12, mutableMapOf(Pair(10, road1012), Pair(11, road1211)))
+    // val vertex8 = Vertex(8, mutableMapOf(Pair(4, road84)))
+    // val vertex10 = Vertex(10, mutableMapOf(Pair(11, road1011), Pair(12, road1012)))
+    // val vertex11 = Vertex(11, mutableMapOf(Pair(8, road118), Pair(12, road1211)))
+    // val vertex12 = Vertex(12, mutableMapOf(Pair(10, road1012), Pair(11, road1211)))
 
-    //listOf(
+    // listOf(
     //            vertex0, vertex1, vertex2, vertex3, vertex4, vertex5, vertex6, vertex7, vertex8, vertex9, vertex10,
     //            vertex11, vertex12
     //        )
     private val graph = Graph(
         listOf(
-            vertex1, vertex2, vertex3, vertex4, vertex6, vertex7
+            vertex1,
+            vertex2,
+            vertex3,
+            vertex4,
+            vertex6,
+            vertex7
         ),
         listOf(
             road24, road41, road16, road67, road43, road37, road47, road79, road75, road50, road90, road410,

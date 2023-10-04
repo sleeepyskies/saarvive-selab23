@@ -133,7 +133,9 @@ class GraphHelper {
             // check if the car's height allows it to drive on the road
             // only check out this vertex if it hasn't been checked out before / stored
             //
-            if (vehicleHeight > connectingRoad.heightLimit || (previousVertices[currentVertex] != null && previousVertices[currentVertex] == neighborVertex)) {
+            if (vehicleHeight > connectingRoad.heightLimit ||
+                (previousVertices[currentVertex] != null && previousVertices[currentVertex] == neighborVertex)
+            ) {
                 continue
             }
             // calculate the weight of the route up to the neighboring vertex
@@ -143,21 +145,13 @@ class GraphHelper {
             // println(distances[currentVertex])
             // Check if the route through this neighbor is shorter or has a lower ID road
             if (tentativeDistance < (distances[neighborVertex] ?: Int.MAX_VALUE) ||
-                (
-                    tentativeDistance == (distances[neighborVertex] ?: Int.MAX_VALUE) &&
-                        currentVertex.id < prev.id
-                    )
-            ) {
-
-
-                    distances[neighborVertex] = tentativeDistance
-                    // update for backtracking
-                    previousVertices[neighborVertex] = currentVertex
-
+                (tentativeDistance == (distances[neighborVertex] ?: Int.MAX_VALUE) && currentVertex.id < prev.id)) {
+                distances[neighborVertex] = tentativeDistance
+                // update for backtracking
+                previousVertices[neighborVertex] = currentVertex
             }
         }
     }
-
     /**
      * used within the calculateShortestRoute method to create the route
      * @param previousVertices contains backtracking of each vertex to its previous one in the optimal route
