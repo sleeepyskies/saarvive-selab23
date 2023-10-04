@@ -9,6 +9,7 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
 import de.unisaarland.cs.se.selab.getSchema
 import de.unisaarland.cs.se.selab.global.Log
 import org.everit.json.schema.Schema
+import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 
@@ -26,6 +27,7 @@ class AssetParser(private val assetSchemaFile: String, private val assetJsonFile
         try {
             this.fileName = File(assetJsonFile).name
         } catch (_: Exception) {
+            System.err.println("trying 'this.fileName = File(assetJsonFile).name' fails")
             outputInvalidAndFinish()
         }
         assetSchema = getSchema(this.javaClass, assetSchemaFile) ?: throw IllegalArgumentException("Schema not found")
@@ -36,6 +38,7 @@ class AssetParser(private val assetSchemaFile: String, private val assetJsonFile
         try {
             assetSchema.validate(json)
         } catch (_: Exception) {
+            System.err.println("json validation fails")
             outputInvalidAndFinish()
         }
     }
@@ -45,11 +48,21 @@ class AssetParser(private val assetSchemaFile: String, private val assetJsonFile
      */
     fun parse(): Pair<MutableList<Vehicle>, MutableList<Base>> {
         val baseParser = BaseParser(json, this.fileName)
-        baseParser.parseBases()
+        try {
+            baseParser.parseBases()
+        } catch (_: JSONException) {
+            System.err.println("JSONException thrown in parseBases()")
+            outputInvalidAndFinish()
+        }
         val parsedBases = baseParser.parsedBases
 
         val vehicleParser = VehicleParser(json, this.fileName, baseParser.setBaseId, baseParser.parsedBases)
-        vehicleParser.parseVehicles()
+        try {
+            vehicleParser.parseVehicles()
+        } catch (_: JSONException) {
+            System.err.println("JSONException thrown in parseVehicles()")
+            outputInvalidAndFinish()
+        }
         val parsedVehicles = vehicleParser.parsedVehicles
 
         validateAtLeastOneBaseOfEachType(parsedBases)
