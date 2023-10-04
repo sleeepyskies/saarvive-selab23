@@ -1,0 +1,15 @@
+digraph G {
+	0;
+	1;
+	2;
+	3;
+	4;
+
+	0 -> 1 [village=Munich; name=Riverside_Street; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
+	0 -> 2 [village=Munich; name=Village_Square; heightLimit=2; weight=14; primaryType=sideStreet; secondaryType=none;];
+	0 -> 0 [village=Munich; name=Mill_Lane; heightLimit=3; weight=10; primaryType=sideStreet; secondaryType=none;];
+	1 -> 3 [village=Munich; name=Main_Street; heightLimit=3; weight=7; primaryType=mainStreet; secondaryType=none;];
+	2 -> 4 [village=Munich; name=Market_Street; heightLimit=3; weight=5; primaryType=mainStreet; secondaryType=none;];
+	4 -> 3 [village=Munich; name=By_the_Pond; heightLimit=3; weight=1; primaryType=mainStreet; secondaryType=none;];
+
+}

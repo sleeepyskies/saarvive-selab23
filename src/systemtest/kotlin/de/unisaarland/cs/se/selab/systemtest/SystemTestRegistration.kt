@@ -7,6 +7,7 @@ import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.simulation
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.simulation.WrongEmergenciesTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.simulation.WrongEventsTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.CorrectEdgesToVerticesTest
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.ValidScenario1
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.ValidSmallMapSpacesKingdomTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.AllocateFireEmergencyOneTest1
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.AllocateFireEmergencyOneTest2
@@ -79,6 +80,9 @@ object SystemTestRegistration {
         // phase tests
         manager.registerTest(AllocateFireEmergencyOneTest1())
         manager.registerTest(AllocateFireEmergencyOneTest2())
+
+        // Valid scenarios
+        manager.registerTest(ValidScenario1())
     }
 
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
@@ -147,6 +151,9 @@ object SystemTestRegistration {
         // phase tests
         manager.registerTest(AllocateFireEmergencyOneTest1())
         manager.registerTest(AllocateFireEmergencyOneTest2())
+
+        // Valid scenarios
+        manager.registerTest(ValidScenario1())
     }
 
     fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
@@ -213,5 +220,8 @@ object SystemTestRegistration {
     fun registerSystemTestsMutantSimulation(manager: SystemTestManager) {
         manager.registerTest(VertexWithoutRoadConnectionTest())
         manager.registerTest(VillageAndCountyNameSameTest())
+
+        // Valid scenarios
+        manager.registerTest(ValidScenario1())
     }
 }
