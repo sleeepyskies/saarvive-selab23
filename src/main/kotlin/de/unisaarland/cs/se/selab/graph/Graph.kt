@@ -153,7 +153,6 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         // a list to store temporarily polled vertices
         val polledVertices = mutableListOf<Vertex>()
 
-
         // dijkstra's algorithm using the above structure
         while (unvisitedVertices.isNotEmpty()) {
             /**
@@ -162,7 +161,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
             val currentVertex = unvisitedVertices.poll()
 
             // Check if the current vertex is one of the connecting roads of the previous polled vertex
-            if ((previousPolledVertex != null) && (currentVertex.id !in previousPolledVertex.connectingRoads.keys)) {
+            if (previousPolledVertex != null && currentVertex.id !in previousPolledVertex.connectingRoads.keys) {
                 // Add the current vertex to the temporary list
                 polledVertices.add(currentVertex)
                 continue
