@@ -100,11 +100,11 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * Reduces the time a vehicle is unavailable
      */
     private fun reduceTimeForVehicleUnavailable(event: VehicleUnavailable) {
-        val vehicle = dataHolder.unavailableVehicles.find { v -> v == event.vehicleID }
-        if (vehicle != null) {
-            val vehicleBase = dataHolder.vehiclesToBase[vehicle]
+        val vehicle1 = dataHolder.unavailableVehicles.find { v -> v == event.vehicleID }
+        if (vehicle1 != null) {
+            val vehicleBase = dataHolder.vehiclesToBase[vehicle1]
             if (vehicleBase != null) {
-                val vehicle = vehicleBase.vehicles.find { v -> v.id == vehicle }
+                val vehicle = vehicleBase.vehicles.find { v -> v.id == vehicle1 }
                 if (vehicle != null) {
                     vehicle.ticksStillUnavailable -= 1
                 }
@@ -116,7 +116,8 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * Reroutes all active vehicles if an event ends/starts
      */
     private fun rerouteVehicles() {
-        val assetsRerouted = dataHolder.activeVehicles.filter { it.currentRoute.isNotEmpty() }.count { vehicle ->
+        val assets = dataHolder.activeVehicles.filter { it.currentRoute.isNotEmpty() }
+        val assetsRerouted = assets.count { vehicle ->
             val currentRouteWeight = dataHolder.graph.weightOfRoute(
                 vehicle.lastVisitedVertex,
                 vehicle.currentRoute.last(),

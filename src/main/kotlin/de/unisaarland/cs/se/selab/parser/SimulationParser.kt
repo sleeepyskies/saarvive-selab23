@@ -17,7 +17,7 @@ import java.util.logging.Logger
 class SimulationParser(private val schemaFile: String, private val jsonFile: String, private val graph: Graph) {
     private val schema: Schema
     private val json: JSONObject
-    private var fileName = "" // for Logging
+    var fileName = "" // for Logging
     val parsedEmergencies = mutableListOf<Emergency>()
 
     // a set of all emergency IDs to make sure they are unique

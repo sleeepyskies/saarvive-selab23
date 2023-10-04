@@ -114,7 +114,6 @@ class CalculateShortestRouteTest {
         this.graph = Graph(vertices, roads)
 
         val route = graph.calculateShortestRoute(vertex0, vertex2, 2)
-        print(route)
         assert(route == listOf(vertex2))
     }
 
@@ -165,6 +164,7 @@ class CalculateShortestRouteTest {
         this.graph = Graph(vertices, roads)
 
         val route = graph.calculateShortestRoute(vertex0, vertex5, 3)
+        print(route)
         assert(route == listOf(vertex1, vertex2, vertex4, vertex5))
     }
 }

@@ -102,17 +102,15 @@ class RequestPhaseTests {
 
     @Test
     fun `test can assign vehicle for K_9 car`() {
-        val k9PoliceCar = Vehicle(VehicleType.K9_POLICE_CAR,1,2,2,1)
+        val k9PoliceCar = Vehicle(VehicleType.K9_POLICE_CAR, 1, 2, 2, 1)
         k9PoliceCar.isAvailable = true
         k9PoliceCar.vehicleStatus = VehicleStatus.IN_BASE
 
-        val dataHolder = mock(DataHolder::class.java)
+        dataHolder = mock(DataHolder::class.java)
         val requestPhase = RequestPhase(dataHolder)
 
         val result = requestPhase.canAssignVehicle(k9PoliceCar)
 
         assertTrue(result)
     }
-
-
 }
