@@ -111,7 +111,10 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
         }
     }
 
-    private fun canAssignVehicle(vehicle: Vehicle): Boolean {
+    /**
+     * checks if the vehicle can be assigned to the emergency
+     */
+    fun canAssignVehicle(vehicle: Vehicle): Boolean {
         val assignedBase = dataHolder.vehiclesToBase[vehicle.id] ?: Base(1, 1, 1, mutableListOf())
 
         if (vehicle.vehicleType == VehicleType.K9_POLICE_CAR ||
