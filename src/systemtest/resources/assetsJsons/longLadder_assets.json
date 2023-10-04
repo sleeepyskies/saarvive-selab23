@@ -1,0 +1,48 @@
+{
+  "bases": [
+    {
+      "id": 0,
+      "baseType": "FIRE_STATION",
+      "location": 1,
+      "staff": 1
+    },
+    {
+      "id": 1,
+      "baseType": "POLICE_STATION",
+      "location": 2,
+      "staff": 1,
+      "dogs": 1
+    },
+    {
+      "id": 2,
+      "baseType": "HOSPITAL",
+      "location": 3,
+      "staff": 1,
+      "doctors": 2
+    }
+  ],
+  "vehicles": [
+    {
+      "id": 0,
+      "baseID": 0,
+      "vehicleType": "FIRE_TRUCK_LADDER",
+      "vehicleHeight": 1,
+      "staffCapacity": 1,
+      "ladderLength": 900
+    },
+    {
+      "id": 1,
+      "baseID": 1,
+      "vehicleType": "K9_POLICE_CAR",
+      "vehicleHeight": 1,
+      "staffCapacity": 1
+    },
+    {
+      "id": 2,
+      "baseID": 2,
+      "vehicleType": "EMERGENCY_DOCTOR_CAR",
+      "vehicleHeight": 1,
+      "staffCapacity": 1
+    }
+  ]
+}
