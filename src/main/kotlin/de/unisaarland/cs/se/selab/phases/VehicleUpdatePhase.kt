@@ -86,11 +86,13 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * updates accordingly
      */
     private fun updateRouteEndReached(vehicle: Vehicle) {
-        vehicle.lastVisitedVertex = vehicle.currentRoute.last()
-        if (vehicle.vehicleStatus == VehicleStatus.MOVING_TO_EMERGENCY) {
-            updateReachedEmergency(vehicle)
-        } else if (vehicle.vehicleStatus == VehicleStatus.MOVING_TO_BASE) {
-            updateReachedBase(vehicle)
+        // vehicle.lastVisitedVertex = vehicle.currentRoute.last()
+        if (vehicle.currentRoute.size == 1) {
+            if (vehicle.vehicleStatus == VehicleStatus.MOVING_TO_EMERGENCY) {
+                updateReachedEmergency(vehicle)
+            } else if (vehicle.vehicleStatus == VehicleStatus.MOVING_TO_BASE) {
+                updateReachedBase(vehicle)
+            }
         }
     }
 
