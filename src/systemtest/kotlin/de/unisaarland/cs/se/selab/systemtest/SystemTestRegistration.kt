@@ -35,12 +35,14 @@ object SystemTestRegistration {
         manager.registerTest(VillageAndCountyNameSameTest())
         manager.registerTest(WeightIsZeroTest())
         manager.registerTest(WrongTunnelHeightTest())
-        manager.registerTest(NoVerticesTest())
+        manager.registerTest(WrongNumericIDTest())
+        manager.registerTest(MissingAttributeTest())
+        manager.registerTest(NoDigraphNameTest())
     }
 
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
+        // County Tests
         manager.registerTest(ExampleTest())
-
         manager.registerTest(TwoRoadsSameLocationTest())
         manager.registerTest(TwoRoadsSameNameTest())
         manager.registerTest(NonExistentVertexTest())
@@ -55,6 +57,9 @@ object SystemTestRegistration {
         manager.registerTest(VillageAndCountyNameSameTest())
         manager.registerTest(WeightIsZeroTest())
         manager.registerTest(WrongTunnelHeightTest())
+        manager.registerTest(WrongNumericIDTest())
+        manager.registerTest(MissingAttributeTest())
+        manager.registerTest(NoDigraphNameTest())
         manager.registerTest(NoVerticesTest())
 
         // assets
@@ -78,9 +83,10 @@ object SystemTestRegistration {
         manager.registerTest(VillageAndCountyNameSameTest())
         manager.registerTest(WeightIsZeroTest())
         manager.registerTest(WrongTunnelHeightTest())
-        manager.registerTest(NoVerticesTest())
+        manager.registerTest(WrongNumericIDTest())
+        manager.registerTest(MissingAttributeTest())
+        manager.registerTest(NoDigraphNameTest())
 
-        // assets
         manager.registerTest(NoVehiclesInBase())
         manager.registerTest(NotEnoughBases())
         manager.registerTest(SameBaseLocation())
