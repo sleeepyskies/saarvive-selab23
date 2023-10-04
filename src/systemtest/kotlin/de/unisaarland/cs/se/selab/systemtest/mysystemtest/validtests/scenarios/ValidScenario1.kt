@@ -51,6 +51,5 @@ class ValidScenario1 : SystemTest() {
         assertNextLine("Simulation Statistics: 2 resolved emergencies.")
         // end of file is reached
         assertEnd()
-
     }
 }
