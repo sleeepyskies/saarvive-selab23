@@ -134,8 +134,6 @@ class CountyParser(private val dotFilePath: String) {
         if (!stringEdges.isEmpty() || !stringVertices.isEmpty()) {
             val parsedVertices = parseVertices(stringVertices)
             val parsedEdges = parseEdges(stringEdges)
-            val rod = roadNameIsUnique()
-            val v = commonVertex()
             if (!roadNameIsUnique() || !commonVertex()) {
                 System.err.println("Road name is not unique or vertex is not common. Called in parsedAndValid().")
                 return false
@@ -316,6 +314,9 @@ class CountyParser(private val dotFilePath: String) {
         return mappingVertexToEdges.all { (_, edges) ->
             val filteredWithoutCountyRoad = edges.filter {
                 it[StringLiterals.PRIMARY_TYPE] != StringLiterals.COUNTY_ROAD
+            }
+            if (filteredWithoutCountyRoad.isEmpty()) {
+                return@all true
             }
             val uniqueVillageCount = filteredWithoutCountyRoad.map { it[StringLiterals.VILLAGE] }.distinct().size
             uniqueVillageCount == 1
