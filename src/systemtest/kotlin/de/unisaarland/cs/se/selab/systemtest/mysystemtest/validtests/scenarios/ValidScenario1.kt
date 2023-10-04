@@ -15,7 +15,7 @@ class ValidScenario1 : SystemTest() {
         assertNextLine("Initialization Info: validScenario1_bases.json successfully parsed and validated")
         assertNextLine("Initialization Info: validScenario_simulation.json successfully parsed and validated")
         // start of simulation
-        assertNextLine("Simulation started")
+        assertNextLine("Simulation starts")
         assertNextLine("Simulation Tick: 0")
         assertNextLine("Event Triggered: 0 triggered.") // should affect the road calculations
         assertNextLine("Simulation Tick: 1")
