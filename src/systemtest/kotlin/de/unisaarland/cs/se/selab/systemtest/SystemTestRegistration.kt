@@ -1,6 +1,8 @@
 package de.unisaarland.cs.se.selab.systemtest
 
 import de.unisaarland.cs.se.selab.systemtest.basictests.ExampleTest
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.assets.NoVehiclesInBase
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.assets.NotEnoughBases
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.*
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.CorrectSystemTestSmall
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.EmergencyFailTest
@@ -53,7 +55,10 @@ object SystemTestRegistration {
         manager.registerTest(WeightIsZeroTest())
         manager.registerTest(WrongTunnelHeightTest())
         manager.registerTest(NoVerticesTest())
+
+        // assets
         manager.registerTest(NoVehiclesInBase())
+        manager.registerTest(NotEnoughBases())
     }
 
     fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
@@ -71,9 +76,11 @@ object SystemTestRegistration {
         manager.registerTest(VillageAndCountyNameSameTest())
         manager.registerTest(WeightIsZeroTest())
         manager.registerTest(WrongTunnelHeightTest())
-
         manager.registerTest(NoVerticesTest())
+
+        // assets
         manager.registerTest(NoVehiclesInBase())
+        manager.registerTest(NotEnoughBases())
     }
 
     fun registerSystemTestsMutantSimulation(manager: SystemTestManager) {
