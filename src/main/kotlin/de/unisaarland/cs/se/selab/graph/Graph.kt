@@ -132,7 +132,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
 
         // initializing distances and previous vertices for all vertices in the graph
         for (vertex in graph) {
-            distances[vertex] = Int.MAX_VALUE
+            distances[vertex] = Int.MAX_VALUE - 1
             previousVertices[vertex] = null
             unvisitedVertices.offer(vertex)
         }
