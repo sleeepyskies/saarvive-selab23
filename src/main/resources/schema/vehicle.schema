@@ -5,11 +5,13 @@
       "properties": {
         "id": {
           "type": "integer",
-          "minimum": 0
+          "minimum": 0,
+          "maximum": 2147483647
         },
         "baseID": {
           "type": "integer",
-          "minimum": 0
+          "minimum": 0,
+          "maximum": 2147483647
         },
         "vehicleType": {
           "enum": [
@@ -41,7 +43,7 @@
         },
         "waterCapacity": {
           "type": "integer",
-          "enum": [600, 1200, 2400]
+         "enum": [600, 1200, 2400]
         },
         "ladderLength": {
           "type": "integer",
@@ -52,7 +54,7 @@
       "anyOf": [
         {
           "properties": {
-            "type": {
+            "vehicleType": {
               "const": "POLICE_CAR"
             }
           },
@@ -66,7 +68,7 @@
         },
         {
           "properties": {
-            "type": {
+            "vehicleType": {
               "const": "K9_POLICE_CAR"
             }
           },
@@ -79,7 +81,7 @@
         },
         {
           "properties": {
-            "type": {
+            "vehicleType": {
               "const": "POLICE_MOTORCYCLE"
             }
           },
@@ -92,7 +94,7 @@
         },
         {
           "properties": {
-            "type": {
+            "vehicleType": {
               "const": "FIRE_TRUCK_WATER"
             }
           },
@@ -106,7 +108,7 @@
         },
         {
           "properties": {
-            "type": {
+            "vehicleType": {
               "const": "FIRE_TRUCK_TECHNICAL"
             }
           },
@@ -119,7 +121,7 @@
         },
         {
           "properties": {
-            "type": {
+            "vehicleType": {
               "const": "FIRE_TRUCK_LADDER"
             }
           },
@@ -133,7 +135,7 @@
         },
         {
           "properties": {
-            "type": {
+            "vehicleType": {
               "const": "FIREFIGHTER_TRANSPORTER"
             }
           },
@@ -146,7 +148,7 @@
         },
         {
           "properties": {
-            "type": {
+            "vehicleType": {
               "const": "AMBULANCE"
             }
           },
@@ -159,7 +161,7 @@
         },
         {
           "properties": {
-            "type": {
+            "vehicleType": {
               "const": "EMERGENCY_DOCTOR_CAR"
             }
           },
