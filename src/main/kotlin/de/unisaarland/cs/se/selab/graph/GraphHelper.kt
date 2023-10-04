@@ -50,7 +50,7 @@ class GraphHelper {
     /**
      * Returns the weight as ticks need to travel
      */
-    public fun weightToTicks(weight: Int): Int {
+    fun weightToTicks(weight: Int): Int {
         if (weight < Number.TEN) return 1
         return if (weight % Number.TEN == 0) {
             weight / Number.TEN // number is already a multiple of ten

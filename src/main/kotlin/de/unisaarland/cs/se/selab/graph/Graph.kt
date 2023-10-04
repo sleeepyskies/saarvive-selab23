@@ -13,7 +13,6 @@ import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
 import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import de.unisaarland.cs.se.selab.global.StringLiterals
 import java.lang.Integer.min
-import java.util.*
 
 /**
  * Holds the data for the simulation graph consisting of vertices and roads.
@@ -55,9 +54,9 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
      * Calculates the exact route a vehicle should take from it' current location to the destination.
      * Returns a list of vertices.
      * In case there are multiple shortest routes, the route with lower road ID's is chosen
-     * @param vehiclePosition The last visited vertex of the vehicle
+     * @param start The last visited vertex of the vehicle
      * @param destination The destination vertex to drive to
-     * @param vehicleHeight The height of the vehicle driving
+     * @param carHeight The height of the vehicle driving
      */
 
     fun calculateShortestRoute(start: Vertex, destination: Vertex, carHeight: Int): List<Vertex> {
