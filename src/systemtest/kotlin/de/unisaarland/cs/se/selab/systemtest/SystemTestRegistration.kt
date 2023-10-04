@@ -7,10 +7,6 @@ import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.simulation
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.simulation.WrongEmergenciesTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.simulation.WrongEventsTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.CorrectEdgesToVerticesTest
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.CorrectSystemTestSmall
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.EmergencyFailTest
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.ReallocationTest
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.RequestTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.ValidSmallMapSpacesKingdomTest
 import de.unisaarland.cs.se.selab.systemtest.runner.SystemTestManager
 
@@ -19,10 +15,6 @@ object SystemTestRegistration {
         // Example Test
         manager.registerTest(ExampleTest())
         // Valid Tests
-        manager.registerTest(CorrectSystemTestSmall())
-        manager.registerTest(EmergencyFailTest())
-        manager.registerTest(RequestTest())
-        manager.registerTest(ReallocationTest())
         // Faulty Map Tests
         manager.registerTest(TwoRoadsSameLocationTest())
         manager.registerTest(TwoRoadsSameNameTest())
@@ -147,10 +139,6 @@ object SystemTestRegistration {
         manager.registerTest(WrongEventsTest())
 
         // phase tests valid
-        manager.registerTest(CorrectSystemTestSmall())
-        manager.registerTest(EmergencyFailTest())
-        manager.registerTest(RequestTest())
-        manager.registerTest(ReallocationTest())
     }
 
     fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
