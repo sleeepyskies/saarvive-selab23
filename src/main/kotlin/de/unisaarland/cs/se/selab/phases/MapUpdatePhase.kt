@@ -19,7 +19,15 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
             // apply/revert relevant events
             applyRevertEvents(activeEvents)
             // reduce active event durations
-            activeEvents.forEach { event: Event -> if (event.duration > 0) event.duration -= 1 }
+            activeEvents.forEach { event: Event ->
+                if (event.duration > 0 && event !is VehicleUnavailable) {
+                    event.duration -= 1
+                } else if (event is VehicleUnavailable && event.duration > 0) {
+                    // if the event is a vehicle unavailable event, reduce the duration and the ticks still unavailable
+                    event.duration -= 1
+                    reduceTimeForVehicleUnavailable(event)
+                }
+            }
             // reroute vehicles if event ended/triggered
             if (shouldReroute) {
                 rerouteVehicles()
@@ -40,6 +48,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
             val vehicle = vehicleBase?.vehicles?.find { v -> v.id == event.vehicleID }
             if (vehicle != null) {
                 vehicle.isAvailable = false
+                vehicle.ticksStillUnavailable = event.duration
             }
         } else {
             // apply graph event
@@ -82,6 +91,22 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 }
                 event.startTick == currentTick -> {
                     triggerEvent(event)
+                }
+            }
+        }
+    }
+
+    /**
+     * Reduces the time a vehicle is unavailable
+     */
+    private fun reduceTimeForVehicleUnavailable(event: VehicleUnavailable) {
+        val vehicle = dataHolder.unavailableVehicles.find { v -> v == event.vehicleID }
+        if (vehicle != null) {
+            val vehicleBase = dataHolder.vehiclesToBase[vehicle]
+            if (vehicleBase != null) {
+                val vehicle = vehicleBase.vehicles.find { v -> v.id == vehicle }
+                if (vehicle != null) {
+                    vehicle.ticksStillUnavailable -= 1
                 }
             }
         }
