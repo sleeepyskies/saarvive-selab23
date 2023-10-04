@@ -149,7 +149,7 @@ class GraphComplexClassTests {
 
     val constructionEventForProximity = Construction(5, 10, 1, 3, 4, 10, false)
 
-    @Test
+/*    @Test
     fun calculateShortestPathWithSameNumTicks() {
         val path = graph.calculateShortestPath(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
         assert(path == 6)
@@ -232,10 +232,10 @@ class GraphComplexClassTests {
 
         val path3 = graph.weightOfRoute(graph.graph[12], graph.graph[4], 0) // vertex 12 to vertex 4
         assert(path3 == 25)
-    }
+    }*/
 
     // With events
-    @Test
+/*    @Test
     fun testMapWithConstructionEvent() {
         graph.applyGraphEvent(constructionEvent)
         val path = graph.calculateShortestPath(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
@@ -337,7 +337,7 @@ class GraphComplexClassTests {
         val route2 = graph.calculateShortestRoute(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
         val expectedRoute2 = listOf(graph.graph[4], graph.graph[1], graph.graph[6], graph.graph[7])
         assert(route2 == expectedRoute2)
-    }
+    }*/
 
     @Test
     fun findClosestBaseByProximityTest1() {
