@@ -11,7 +11,7 @@ import org.json.JSONObject
 /**
  *
  */
-class BaseParser(private val json: JSONObject) {
+class BaseParser(private val json: JSONObject, private val fileName: String) {
 
     val setBaseId = mutableSetOf<Int>()
     private val setBaseLocation = mutableSetOf<Int>()
@@ -74,7 +74,7 @@ class BaseParser(private val json: JSONObject) {
      * Outputs invalidity log, terminates the program
      */
     private fun outputInvalidAndFinish() {
-        Log.displayInitializationInfoInvalid("BaseParser")
+        Log.displayInitializationInfoInvalid(this.fileName)
         throw IllegalArgumentException("Invalid asset")
     }
 

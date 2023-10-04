@@ -7,6 +7,7 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWithLadder
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
+import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.global.Number
 import org.json.JSONObject
 
@@ -15,12 +16,22 @@ import org.json.JSONObject
  */
 class VehicleParser(
     private val json: JSONObject,
+    private val fileName: String,
     private val setBaseId: Set<Int>,
     private val parsedBases: MutableList<Base>
 ) {
 
     private val vehicleIDSet = mutableSetOf<Int>()
     val parsedVehicles = mutableListOf<Vehicle>()
+
+    companion object {
+        const val WATER_CAPACITY = "waterCapacity"
+        const val LADDER_LENGTH = "ladderLength"
+        const val CRIMINAL_CAPACITY = "criminalCapacity"
+        const val POLICE_CAR_ERROR = "Police Car should not have water capacity or ladder length properties"
+        const val FIRE_TRUCK_WATER_ERROR = "Fire Truck Water should not have ladder length or criminal cap properties"
+        const val FIRE_TRUCK_LADDER_ERROR = "Fire Truck Ladder should not have water capacity or criminal cap property"
+    }
 
     /**
      *
@@ -33,64 +44,139 @@ class VehicleParser(
         }
         for (i in 0 until vehiclesArray.length()) {
             val jsonVehicle = vehiclesArray.getJSONObject(i)
-
-            val id = validateVehicleId(jsonVehicle.getInt("id"))
-            val baseID = jsonVehicle.getInt("baseID")
-            if (baseID !in setBaseId) {
-                System.err.println("Vehicle's baseID must reference a valid Base ID")
-                outputInvalidAndFinish()
-            }
-            val vehicleTypeString = jsonVehicle.getString("vehicleType") // just for validation
-            val validatedVehicleType = validateVehicleType(vehicleTypeString) // just for validation
-            val vehicleType = VehicleType.valueOf(validatedVehicleType)
-            val vehicleHeight = validateVehicleHeight(jsonVehicle.getInt("vehicleHeight"))
-            val staffCapacity = validateStaffCapacity(jsonVehicle.getInt("staffCapacity"))
-
-            val vehicle: Vehicle = when (vehicleType) {
-                VehicleType.POLICE_CAR -> PoliceCar(
-                    vehicleType,
-                    id,
-                    staffCapacity,
-                    vehicleHeight,
-                    baseID,
-                    maxCriminalCapacity = validateCriminalCapacity(jsonVehicle.getInt("criminalCapacity"))
-                )
-
-                VehicleType.K9_POLICE_CAR -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
-                VehicleType.POLICE_MOTORCYCLE -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
-                VehicleType.FIRE_TRUCK_WATER -> FireTruckWater(
-                    vehicleType,
-                    id,
-                    staffCapacity,
-                    vehicleHeight,
-                    baseID,
-                    maxWaterCapacity = validateWaterCapacity(jsonVehicle.getInt("waterCapacity"))
-                )
-
-                VehicleType.FIRE_TRUCK_TECHNICAL -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
-                VehicleType.FIRE_TRUCK_LADDER -> FireTruckWithLadder(
-                    vehicleType,
-                    id,
-                    staffCapacity,
-                    vehicleHeight,
-                    baseID,
-                    ladderLength = validateLadderLength(jsonVehicle.getInt("ladderLength"))
-                )
-
-                VehicleType.FIREFIGHTER_TRANSPORTER -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
-                VehicleType.AMBULANCE -> Ambulance(vehicleType, id, staffCapacity, vehicleHeight, baseID)
-                VehicleType.EMERGENCY_DOCTOR_CAR -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
-            }
-
+            val vehicle = createVehicleFromJson(jsonVehicle)
             parsedVehicles.add(vehicle)
-
-            val correspondingBase = parsedBases.find { it.baseID == baseID }
+            val correspondingBase = parsedBases.find { it.baseID == vehicle.assignedBaseID }
             correspondingBase?.vehicles?.add(vehicle)
         }
     }
 
+    private fun createVehicleFromJson(jsonVehicle: JSONObject): Vehicle {
+        val id = validateVehicleId(jsonVehicle.getInt("id"))
+        val baseID = jsonVehicle.getInt("baseID")
+        if (baseID !in setBaseId) {
+            System.err.println("Vehicle's baseID must reference a valid Base ID")
+            outputInvalidAndFinish()
+        }
+        val vehicleTypeString = validateVehicleType(jsonVehicle.getString("vehicleType"))
+        val vehicleType = VehicleType.valueOf(vehicleTypeString)
+        val vehicleHeight = validateVehicleHeight(jsonVehicle.getInt("vehicleHeight"))
+        val staffCapacity = validateStaffCapacity(jsonVehicle.getInt("staffCapacity"))
+
+        return when (vehicleType) {
+            VehicleType.POLICE_CAR -> createPoliceCar(
+                jsonVehicle,
+                vehicleType,
+                id,
+                staffCapacity,
+                vehicleHeight,
+                baseID
+            )
+            VehicleType.FIRE_TRUCK_WATER -> createFireTruckWater(
+                jsonVehicle,
+                vehicleType,
+                id,
+                staffCapacity,
+                vehicleHeight,
+                baseID
+            )
+            VehicleType.FIRE_TRUCK_LADDER -> createFireTruckLadder(
+                jsonVehicle,
+                vehicleType,
+                id,
+                staffCapacity,
+                vehicleHeight,
+                baseID
+            )
+            VehicleType.K9_POLICE_CAR -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
+            VehicleType.POLICE_MOTORCYCLE -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
+            VehicleType.FIRE_TRUCK_TECHNICAL -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
+            VehicleType.FIREFIGHTER_TRANSPORTER -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
+            VehicleType.AMBULANCE -> Ambulance(vehicleType, id, staffCapacity, vehicleHeight, baseID)
+            VehicleType.EMERGENCY_DOCTOR_CAR -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
+        }
+    }
+
+    private fun createPoliceCar(
+        jsonVehicle: JSONObject,
+        vehicleType: VehicleType,
+        id: Int,
+        staffCapacity: Int,
+        vehicleHeight: Int,
+        baseID: Int
+    ): PoliceCar {
+        validatePoliceCarProperties(jsonVehicle)
+        return PoliceCar(
+            vehicleType,
+            id,
+            staffCapacity,
+            vehicleHeight,
+            baseID,
+            maxCriminalCapacity = validateCriminalCapacity(jsonVehicle.getInt("criminalCapacity"))
+        )
+    }
+
+    private fun validatePoliceCarProperties(jsonVehicle: JSONObject) {
+        if (jsonVehicle.has(WATER_CAPACITY) || jsonVehicle.has(LADDER_LENGTH)) {
+            System.err.println(POLICE_CAR_ERROR)
+            outputInvalidAndFinish()
+        }
+    }
+
+    private fun createFireTruckWater(
+        jsonVehicle: JSONObject,
+        vehicleType: VehicleType,
+        id: Int,
+        staffCapacity: Int,
+        vehicleHeight: Int,
+        baseID: Int
+    ): FireTruckWater {
+        validateFireTruckWaterProperties(jsonVehicle)
+        return FireTruckWater(
+            vehicleType,
+            id,
+            staffCapacity,
+            vehicleHeight,
+            baseID,
+            maxWaterCapacity = validateWaterCapacity(jsonVehicle.getInt(WATER_CAPACITY))
+        )
+    }
+
+    private fun validateFireTruckWaterProperties(jsonVehicle: JSONObject) {
+        if (jsonVehicle.has(LADDER_LENGTH) || jsonVehicle.has(CRIMINAL_CAPACITY)) {
+            System.err.println(FIRE_TRUCK_WATER_ERROR)
+            outputInvalidAndFinish()
+        }
+    }
+
+    private fun createFireTruckLadder(
+        jsonVehicle: JSONObject,
+        vehicleType: VehicleType,
+        id: Int,
+        staffCapacity: Int,
+        vehicleHeight: Int,
+        baseID: Int
+    ): FireTruckWithLadder {
+        validateFireTruckLadderProperties(jsonVehicle)
+        return FireTruckWithLadder(
+            vehicleType,
+            id,
+            staffCapacity,
+            vehicleHeight,
+            baseID,
+            ladderLength = validateLadderLength(jsonVehicle.getInt(LADDER_LENGTH))
+        )
+    }
+
+    private fun validateFireTruckLadderProperties(jsonVehicle: JSONObject) {
+        if (jsonVehicle.has(WATER_CAPACITY) || jsonVehicle.has(CRIMINAL_CAPACITY)) {
+            System.err.println(FIRE_TRUCK_LADDER_ERROR)
+            outputInvalidAndFinish()
+        }
+    }
+
     private fun outputInvalidAndFinish() {
-        // Log.displayInitializationInfoInvalid("VehicleParser")
+        Log.displayInitializationInfoInvalid(this.fileName)
         throw IllegalArgumentException("Invalid asset")
     }
 
