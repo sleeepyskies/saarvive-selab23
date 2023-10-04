@@ -343,7 +343,7 @@ class CountyParser(private val dotFilePath: String) {
         val wPat = Pattern.compile("\\s*weight\\s*=\\s*($nPat)\\s*;") // Pattern for weight
         val pTPat = Pattern.compile("\\s*primaryType\\s*=\\s*(mainStreet|sideStreet|countyRoad)\\s*;")
         // Pattern for primaryType
-        val sTPat = Pattern.compile("\\s*secondaryType\\s*=\\s*(oneWayStreet|tunnel|none)\\s*;")
+        val sTPat = Pattern.compile("\\s*secondaryType\\s*=\\s*(oneWayStreet|tunnel|none)\\s*;\\s*")
         // Pattern for secondaryType
         val atPat = Pattern.compile("\\A$vilPat$namPat$hPat$wPat$pTPat$sTPat\\Z") // Pattern for attributes
 
@@ -365,7 +365,10 @@ class CountyParser(private val dotFilePath: String) {
     private fun parseAttributes(matchedEdge: String): MutableMap<String, String> {
         val attributes = mutableMapOf<String, String>()
         val assignmentsArray = matchedEdge.split(";").filter { it.isNotEmpty() }
-        assignmentsArray.forEach { assignment ->
+        for (assignment in assignmentsArray) {
+            if (assignment.trim().isEmpty()) {
+                continue
+            }
             val keyValue = assignment.split("=") // Retrieve keys
             attributes[keyValue.elementAt(0).trim()] = keyValue.elementAt(1).trim() // Put attributes in mapping
             when (keyValue.elementAt(0).trim()) {
