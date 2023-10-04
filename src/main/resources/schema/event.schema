@@ -149,34 +149,6 @@
             "vehicleID",
             "duration"
           ]
-        },
-        {
-          "properties": {
-            "type": {
-              "const": "SICKNESS"
-            }
-          },
-          "required": [
-            "id",
-            "type",
-            "tick",
-            "duration",
-            "minTicks"
-          ]
-        },
-        {
-          "properties": {
-            "type": {
-              "const": "VACATION"
-            }
-          },
-          "required": [
-            "id",
-            "type",
-            "tick",
-            "duration",
-            "staffID"
-          ]
         }
       ],
       "type": "object"
