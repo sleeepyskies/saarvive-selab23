@@ -7,7 +7,6 @@ import de.unisaarland.cs.se.selab.dataClasses.bases.PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
 import de.unisaarland.cs.se.selab.getSchema
-import de.unisaarland.cs.se.selab.global.Log
 import org.everit.json.schema.Schema
 import org.json.JSONObject
 import java.io.File
@@ -15,10 +14,10 @@ import java.io.File
 /**
 * asset parser parses assets
 */
-class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
+class AssetParser(private val assetSchemaFile: String, private val assetJsonFile: String) {
     private val assetSchema: Schema
     val json: JSONObject
-    private var fileName = "" // for logging
+    var fileName = "" // for logging
 
     init {
         // Load the asset schema only
@@ -56,11 +55,11 @@ class AssetParser(assetSchemaFile: String, assetJsonFile: String) {
         validateEachBaseHasAtLeastOneVehicle(parsedBases)
         validateVehiclesAtItsCorrectBases(parsedVehicles, parsedBases)
 
-        Log.displayInitializationInfoValid(this.fileName)
+        // Log.displayInitializationInfoValid(this.fileName)
         return Pair(parsedVehicles, parsedBases)
     }
     private fun outputInvalidAndFinish() {
-        Log.displayInitializationInfoInvalid(this.fileName)
+        //Log.displayInitializationInfoInvalid(this.fileName)
         throw IllegalArgumentException("Invalid asset")
     }
 

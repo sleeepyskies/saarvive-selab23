@@ -9,6 +9,7 @@ import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
 import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
+import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.graph.Graph
 import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.SecondaryType
@@ -77,18 +78,42 @@ class SimulationObjectConstructor(
                 }
             }
         }
-
-        // cross validation and construction
-        return if (
-            validateAssetsBasedOnGraph(graph, bases) &&
-            validateEmergenciesBasedOnGraph(graph, emergencies) &&
-            validateEventsBasedOnGraph(graph, events, vehicles)
+        crossAssets(graph, bases, assetParser)
+        crossSimulation(graph, emergencies, simulationParser)
+        crossEvents(graph, events, vehicles, eventsParser)
+        return if (validateEmergenciesBasedOnGraph(graph, emergencies) &&
+            validateEventsBasedOnGraph(graph, events, vehicles) &&
+            validateAssetsBasedOnGraph(graph, bases)
         ) {
-            // If validation succeeds return simulation
-            val dataHolder = DataHolder(graph, bases, events.toMutableList(), emergencies)
-            return Simulation(dataHolder, maxTick)
+                // If validation succeeds return simulation
+                val dataHolder = DataHolder(graph, bases, events.toMutableList(), emergencies)
+                Simulation(dataHolder, maxTick)
         } else {
             null
+        }
+    }
+    private fun crossSimulation(graph: Graph, emgs: List<Emergency>, simParser: SimulationParser) {
+        return if (validateEmergenciesBasedOnGraph(graph, emgs)) {
+            return
+        } else {
+            Log.displayInitializationInfoInvalid(simParser.fileName)
+
+        }
+    }
+
+    private fun crossEvents(graph: Graph, events: List<Event>, vhcls: List<Vehicle>, evParser: EventsParser) {
+        return if (validateEventsBasedOnGraph(graph, events, vhcls)) {
+            Log.displayInitializationInfoValid(evParser.fileName)
+        } else {
+            Log.displayInitializationInfoInvalid(evParser.fileName)
+        }
+    }
+
+    private fun crossAssets(graph: Graph, bases: List<Base>, assetParser: AssetParser) {
+        return if (validateAssetsBasedOnGraph(graph, bases)) {
+            Log.displayInitializationInfoValid(assetParser.fileName)
+        } else {
+            Log.displayInitializationInfoInvalid(assetParser.fileName)
         }
     }
 

@@ -7,7 +7,6 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWithLadder
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
-import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.global.Number
 import org.json.JSONObject
 
@@ -91,7 +90,7 @@ class VehicleParser(
     }
 
     private fun outputInvalidAndFinish() {
-        Log.displayInitializationInfoInvalid("VehicleParser")
+        // Log.displayInitializationInfoInvalid("VehicleParser")
         throw IllegalArgumentException("Invalid asset")
     }
 

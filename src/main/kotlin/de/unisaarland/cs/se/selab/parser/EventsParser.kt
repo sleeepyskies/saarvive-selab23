@@ -8,7 +8,6 @@ import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.getSchema
-import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.graph.PrimaryType
 import org.everit.json.schema.Schema
 import org.json.JSONArray
@@ -24,7 +23,7 @@ import java.util.logging.Logger
 class EventsParser(private val schemaFile: String, private val jsonFile: String, private val vehicles: List<Vehicle>) {
     private val schema: Schema
     private val json: JSONObject
-    private var fileName = "" // for Logging
+    var fileName = "" // for Logging
     val parsedEvents = mutableListOf<Event>()
 
     // a set of all emergency IDs to make sure they are unique
@@ -71,7 +70,7 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
 //            outputInvalidAndFinish()
 //        } => deleted this since it leads to double output in tests
         parseEvents()
-        Log.displayInitializationInfoValid(this.fileName)
+        // Log.displayInitializationInfoValid(this.fileName)
         return parsedEvents
     }
 
@@ -331,7 +330,7 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
      * Outputs invalidity log, terminates the program
      */
     private fun outputInvalidAndFinish() {
-        Log.displayInitializationInfoInvalid(this.fileName)
+        // Log.displayInitializationInfoInvalid(this.fileName)
         throw IllegalArgumentException("Invalid simulator configuration")
     }
 }
