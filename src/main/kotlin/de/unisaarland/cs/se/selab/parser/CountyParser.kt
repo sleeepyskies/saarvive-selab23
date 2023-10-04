@@ -173,6 +173,16 @@ class CountyParser(private val dotFilePath: String) {
      * (2. Each vertex is connected to at least one other vertex)
      */
     private fun vertexConnectedToAnother(): Boolean {
+        for (i in this.villagesNames.indices) {
+            for (j in this.villagesNames.indices) {
+                val village1 = this.villagesNames.elementAt(i).lowercase()
+                val village2 = this.villagesNames.elementAt(j).lowercase()
+                if (i != j && village1 == village2) {
+                    System.err.println("Village name is not unique. Called in roadNameIsUnique().")
+                    return false
+                }
+            }
+        }
         this.listOfVerticesData.forEach { vertex ->
             var connects = false
             this.listOfVerticesToRoads.keys.forEach { pair ->
@@ -261,17 +271,6 @@ class CountyParser(private val dotFilePath: String) {
      * Checks if the road name is unique within a village. (3)
      */
     private fun roadNameIsUnique(): Boolean {
-        val lowerCaseNames = mutableListOf<String>()
-        villagesNames.forEach { name -> lowerCaseNames.add(name.lowercase()) }
-        countiesNames.forEach { name -> lowerCaseNames.add(name.lowercase()) }
-        lowerCaseNames.forEach { name ->
-            lowerCaseNames.forEach { name2 ->
-                if (name == name2) {
-                    System.err.println("Names are not creative. Called in roadNameIsUnique().")
-                    return false
-                }
-            }
-        }
         val mapping = mutableMapOf<String, MutableList<String>>()
         // String - village name, MutableList<String> - names of the roads in the village
         this.listOfRoadAttributes.forEach { dataPiece ->
