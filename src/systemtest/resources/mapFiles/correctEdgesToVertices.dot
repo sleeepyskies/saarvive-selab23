@@ -1,0 +1,16 @@
+digraph G {
+	1;
+	2;
+	3;
+	4;
+	5;
+	6;
+
+	1 -> 2 [village=Munich; name=Old_Village_Street; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
+	2 -> 3 [village=County; name=Corner_Alley; heightLimit=3; weight=10; primaryType=countyRoad; secondaryType=none;];
+	2 -> 4 [village=CountyTwo; name=New_Village_Street; heightLimit=3; weight=10; primaryType=countyRoad; secondaryType=none;];
+	4 -> 3 [village=CountyTwo; name=New_Village_StreetTwo; heightLimit=3; weight=10; primaryType=countyRoad; secondaryType=none;];
+	4 -> 5 [village=Barcelona; name=New_Village_Street; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
+	5 -> 6 [village=Barcelona; name=Old_Village_Street; heightLimit=3; weight=10; primaryType=sideStreet; secondaryType=none;];
+	4 -> 6 [village=Barcelona; name=New_Village_StreetTwo; heightLimit=3; weight=10; primaryType=sideStreet; secondaryType=none;];
+}

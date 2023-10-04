@@ -4,6 +4,6 @@ digraph G {
 	3;
 
 	2 -> 1 [village=Hamburg; name=Rose_Way; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
-	2 -> 3 [village=Hamburg; name=Rose_Way; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
+	2 -> 3 [village=Hamburg; name=Rose_WayTwo; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
 
 }

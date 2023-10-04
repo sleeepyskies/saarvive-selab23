@@ -16,7 +16,7 @@ import de.unisaarland.cs.se.selab.graph.PrimaryType
 import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.SecondaryType
 import de.unisaarland.cs.se.selab.graph.Vertex
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 class GraphComplexClassTests {
 
@@ -92,13 +92,13 @@ class GraphComplexClassTests {
     val vertex4 =
         Vertex(
             4,
-            mutableMapOf(Pair(2, road24), Pair(1, road41), Pair(3, road43), Pair(7, road47))
+            mutableMapOf(Pair(2, road24), Pair(1, road41), Pair(3, road43), Pair(7, road47), Pair(10, road410))
         )
     val vertex1 = Vertex(1, mutableMapOf(Pair(4, road41), Pair(6, road16)))
     val vertex3 = Vertex(3, mutableMapOf(Pair(4, road43), Pair(7, road37)))
     val vertex6 = Vertex(6, mutableMapOf(Pair(1, road16), Pair(7, road67)))
     val vertex7 =
-        Vertex(7, mutableMapOf(Pair(4, road47), Pair(3, road37), Pair(6, road67)))
+        Vertex(7, mutableMapOf(Pair(4, road47), Pair(3, road37), Pair(6, road67), Pair(9, road79), Pair(5, road75)))
 
     // For testing with height restriction
     val vertex9 = Vertex(9, mutableMapOf(Pair(7, road79), Pair(0, road90)))
@@ -111,7 +111,7 @@ class GraphComplexClassTests {
     val vertex11 = Vertex(11, mutableMapOf(Pair(8, road118), Pair(12, road1211)))
     val vertex12 = Vertex(12, mutableMapOf(Pair(10, road1012), Pair(11, road1211)))
 
-    val graph = Graph(
+    private val graph = Graph(
         listOf(
             vertex0, vertex1, vertex2, vertex3, vertex4, vertex5, vertex6, vertex7, vertex8, vertex9, vertex10,
             vertex11, vertex12
@@ -158,17 +158,17 @@ class GraphComplexClassTests {
     @Test
     fun calculateShortestRouteTwoPossibilities() {
         val route = graph.calculateShortestRoute(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
-        val expectedRoute = listOf(graph.graph[4], graph.graph[1], graph.graph[6], graph.graph[7])
+        val expectedRoute = listOf(graph.graph[2], graph.graph[1], graph.graph[6], graph.graph[7])
         assert(route == expectedRoute)
     }
 
     @Test
     fun calculateShortestPathWithHeightRestriction() {
         val path1 = graph.calculateShortestPath(graph.graph[7], graph.graph[0], 5) // vertex 7 to vertex 0
-        assert(path1 == 9)
+        assert(path1 == 3)
 
         val path2 = graph.calculateShortestPath(graph.graph[7], graph.graph[0], 3) // vertex 7 to vertex 0
-        assert(path2 == 8)
+        assert(path2 == 2)
     }
 
     @Test
