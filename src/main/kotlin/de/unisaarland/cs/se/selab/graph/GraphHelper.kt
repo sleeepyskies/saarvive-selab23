@@ -145,13 +145,15 @@ class GraphHelper {
             // println(distances[currentVertex])
             // Check if the route through this neighbor is shorter or has a lower ID road
             if (tentativeDistance < (distances[neighborVertex] ?: Int.MAX_VALUE) ||
-                (tentativeDistance == (distances[neighborVertex] ?: Int.MAX_VALUE) && currentVertex.id < prev.id)) {
+                (tentativeDistance == (distances[neighborVertex] ?: Int.MAX_VALUE) && currentVertex.id < prev.id)
+            ) {
                 distances[neighborVertex] = tentativeDistance
                 // update for backtracking
                 previousVertices[neighborVertex] = currentVertex
             }
         }
     }
+
     /**
      * used within the calculateShortestRoute method to create the route
      * @param previousVertices contains backtracking of each vertex to its previous one in the optimal route
