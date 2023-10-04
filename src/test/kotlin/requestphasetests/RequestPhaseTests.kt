@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mock
+import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 
@@ -20,14 +21,11 @@ class RequestPhaseTests {
     @Mock
     private lateinit var dataHolder: DataHolder
 
-    @Mock
-    // private lateinit var log: Log
-
     private lateinit var requestPhase: RequestPhase
 
     @BeforeEach
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
+        MockitoAnnotations.openMocks(this)
         requestPhase = RequestPhase(dataHolder)
     }
 
@@ -101,4 +99,20 @@ class RequestPhaseTests {
         assertEquals(2, specialVehicles.size)
         assertTrue(specialVehicles.all { it.vehicleType != VehicleType.FIRE_TRUCK_TECHNICAL })
     }
+
+    @Test
+    fun `test can assign vehicle for K_9 car`() {
+        val k9PoliceCar = Vehicle(VehicleType.K9_POLICE_CAR,1,2,2,1)
+        k9PoliceCar.isAvailable = true
+        k9PoliceCar.vehicleStatus = VehicleStatus.IN_BASE
+
+        val dataHolder = mock(DataHolder::class.java)
+        val requestPhase = RequestPhase(dataHolder)
+
+        val result = requestPhase.canAssignVehicle(k9PoliceCar)
+
+        assertTrue(result)
+    }
+
+
 }
