@@ -53,6 +53,7 @@ object SystemTestRegistration {
         manager.registerTest(WeightIsZeroTest())
         manager.registerTest(WrongTunnelHeightTest())
         manager.registerTest(NoVerticesTest())
+        manager.registerTest(NoVehiclesInBase())
     }
 
     fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
@@ -72,6 +73,7 @@ object SystemTestRegistration {
         manager.registerTest(WrongTunnelHeightTest())
 
         manager.registerTest(NoVerticesTest())
+        manager.registerTest(NoVehiclesInBase())
     }
 
     fun registerSystemTestsMutantSimulation(manager: SystemTestManager) {
