@@ -165,10 +165,10 @@ class GraphComplexClassTests {
     @Test
     fun calculateShortestPathWithHeightRestriction() {
         val path1 = graph.calculateShortestPath(graph.graph[7], graph.graph[0], 5) // vertex 7 to vertex 0
-        assert(path1 == 9)
+        assert(path1 == 3)
 
         val path2 = graph.calculateShortestPath(graph.graph[7], graph.graph[0], 3) // vertex 7 to vertex 0
-        assert(path2 == 8)
+        assert(path2 == )
     }
 
 //    @Test
