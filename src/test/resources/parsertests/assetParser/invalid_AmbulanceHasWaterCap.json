@@ -1,7 +1,7 @@
 {
   "bases": [
     {
-      "id": "Jason Derulo",
+      "id": 1,
       "baseType": "FIRE_STATION",
       "location": 1,
       "staff": 10
@@ -43,7 +43,8 @@
       "vehicleType": "AMBULANCE",
       "baseID": 2,
       "vehicleHeight": 2,
-      "staffCapacity": 4
+      "staffCapacity": 4,
+      "waterCapacity": 1200
     }
   ]
 }

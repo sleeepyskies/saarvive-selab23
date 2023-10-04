@@ -15,4 +15,5 @@ object StringLiterals {
     const val COUNTY_ROAD = "countyRoad"
     const val SIDE_STREET = "sideStreet"
     const val ERROR = "ERROR"
+    const val HEIGHT_LIMIT = "heightLimit"
 }

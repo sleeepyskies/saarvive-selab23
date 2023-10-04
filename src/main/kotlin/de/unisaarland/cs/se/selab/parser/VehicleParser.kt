@@ -1,7 +1,6 @@
 package de.unisaarland.cs.se.selab.parser
 
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
-import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWithLadder
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
@@ -88,12 +87,15 @@ class VehicleParser(
                 vehicleHeight,
                 baseID
             )
-            VehicleType.K9_POLICE_CAR -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
-            VehicleType.POLICE_MOTORCYCLE -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
-            VehicleType.FIRE_TRUCK_TECHNICAL -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
-            VehicleType.FIREFIGHTER_TRANSPORTER -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
-            VehicleType.AMBULANCE -> Ambulance(vehicleType, id, staffCapacity, vehicleHeight, baseID)
-            VehicleType.EMERGENCY_DOCTOR_CAR -> Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
+            VehicleType.K9_POLICE_CAR,
+            VehicleType.POLICE_MOTORCYCLE,
+            VehicleType.FIRE_TRUCK_TECHNICAL,
+            VehicleType.FIREFIGHTER_TRANSPORTER,
+            VehicleType.EMERGENCY_DOCTOR_CAR,
+            VehicleType.AMBULANCE -> {
+                validateNormalVehicleProperties(jsonVehicle, vehicleType)
+                Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
+            }
         }
     }
 
@@ -172,6 +174,16 @@ class VehicleParser(
         if (jsonVehicle.has(WATER_CAPACITY) || jsonVehicle.has(CRIMINAL_CAPACITY)) {
             System.err.println(FIRE_TRUCK_LADDER_ERROR)
             outputInvalidAndFinish()
+        }
+    }
+
+    private fun validateNormalVehicleProperties(jsonVehicle: JSONObject, vehicleType: VehicleType) {
+        val invalidAttributes = listOf(WATER_CAPACITY, LADDER_LENGTH, CRIMINAL_CAPACITY)
+        for (attribute in invalidAttributes) {
+            if (jsonVehicle.has(attribute)) {
+                System.err.println("$vehicleType should not have $attribute property")
+                outputInvalidAndFinish()
+            }
         }
     }
 

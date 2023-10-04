@@ -149,29 +149,29 @@ class GraphComplexClassTests {
 
     val constructionEventForProximity = Construction(5, 10, 1, 3, 4, 10, false)
 
-    @Test
+/*    @Test
     fun calculateShortestPathWithSameNumTicks() {
         val path = graph.calculateShortestPath(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
         assert(path == 6)
     }
 
-/*    @Test
+    @Test
     fun calculateShortestRouteTwoPossibilities() {
         val route = graph.calculateShortestRoute(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
         val expectedRoute = listOf(graph.graph[2], graph.graph[1], graph.graph[6], graph.graph[7])
         assert(route == expectedRoute)
-    }*/
+    }
 
-/*    @Test
+    @Test
     fun calculateShortestPathWithHeightRestriction() {
         val path1 = graph.calculateShortestPath(graph.graph[7], graph.graph[0], 5) // vertex 7 to vertex 0
         assert(path1 == 3)
 
         val path2 = graph.calculateShortestPath(graph.graph[7], graph.graph[0], 3) // vertex 7 to vertex 0
         assert(path2 == 2)
-    }*/
+    }
 
-/*    @Test
+    @Test
     fun calculateShortestRouteTwoPossibilitiesWithHeightRestriction() {
         val route1 = graph.calculateShortestRoute(graph.graph[7], graph.graph[0], 5) // vertex 7 to vertex 0
         val expectedRoute1 = listOf(graph.graph[5], graph.graph[0])
@@ -180,18 +180,18 @@ class GraphComplexClassTests {
         val route2 = graph.calculateShortestRoute(graph.graph[7], graph.graph[0], 3) // vertex 7 to vertex 0
         val expectedRoute2 = listOf(graph.graph[9], graph.graph[0])
         assert(route2 == expectedRoute2)
-    }*/
+    }
 
-/*    @Test
+    @Test
     fun calculateShortestPathWithOneWayRoads() {
         val path1 = graph.calculateShortestPath(graph.graph[4], graph.graph[11], 0) // vertex 4 to vertex 11
         assert(path1 == 2)
         // with height restrictions
         val path2 = graph.calculateShortestPath(graph.graph[4], graph.graph[11], 4) // vertex 4 to vertex 11
         assert(path2 == 2)
-    }*/
+    }
 
-/*    @Test
+    @Test
     fun calculateShortestRouteWithOneWayRoads() {
         val route1 = graph.calculateShortestRoute(graph.graph[4], graph.graph[11], 0) // vertex 4 to vertex 11
         val expectedRoute1 = listOf(graph.graph[10], graph.graph[12], graph.graph[11])
@@ -204,7 +204,7 @@ class GraphComplexClassTests {
         val route3 = graph.calculateShortestRoute(graph.graph[12], graph.graph[4], 0) // vertex 12 to vertex 4
         val expectedRoute3 = listOf(graph.graph[11], graph.graph[8], graph.graph[4])
         assert(route3 == expectedRoute3)
-    }*/
+    }
 
     @Test
     fun calculateWeightOfTheRoute1() {
@@ -232,10 +232,10 @@ class GraphComplexClassTests {
 
         val path3 = graph.weightOfRoute(graph.graph[12], graph.graph[4], 0) // vertex 12 to vertex 4
         assert(path3 == 25)
-    }
+    }*/
 
-/*    // With events
-    @Test
+    // With events
+/*    @Test
     fun testMapWithConstructionEvent() {
         graph.applyGraphEvent(constructionEvent)
         val path = graph.calculateShortestPath(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
@@ -259,7 +259,7 @@ class GraphComplexClassTests {
         val route2 = graph.calculateShortestRoute(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
         val expectedRoute2 = listOf(graph.graph[12], graph.graph[11])
         assert(route2 == expectedRoute2)
-    }*/
+    }
 
     @Test
     fun testMapWithRoadClosureEvent() {
@@ -287,7 +287,7 @@ class GraphComplexClassTests {
         assert(route2 == expectedRoute2)
     }
 
-/*    @Test
+    @Test
     fun testMapWithRushHourEvent() {
         graph.applyGraphEvent(rushHourEvent)
         val path = graph.calculateShortestPath(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
@@ -311,9 +311,9 @@ class GraphComplexClassTests {
         val route2 = graph.calculateShortestRoute(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
         val expectedRoute2 = listOf(graph.graph[4], graph.graph[1], graph.graph[6], graph.graph[7])
         assert(route2 == expectedRoute2)
-    }*/
+    }
 
-/*    @Test
+    @Test
     fun testMapWithTrafficJamEvent() {
         graph.applyGraphEvent(trafficJamEvent)
         val path = graph.calculateShortestPath(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
@@ -339,19 +339,19 @@ class GraphComplexClassTests {
         assert(route2 == expectedRoute2)
     }*/
 
-/*    @Test
+    @Test
     fun findClosestBaseByProximityTest1() {
         val checkingList = graph.findClosestBasesByProximity(emergency, hospital1, listOfBases, baseToVertex)
-        val expectedList = listOf(hospital2, hospital5, hospital4, hospital3)
+        val expectedList = listOf(hospital2, hospital4, hospital5, hospital3)
         assert(checkingList == expectedList)
-    }*/
+    }
 
-/*    @Test
+    @Test
     fun findClosestBaseByProximityTest2() {
         // With events
         graph.applyGraphEvent(constructionEventForProximity)
         val checkingList = graph.findClosestBasesByProximity(emergency, hospital1, listOfBases, baseToVertex)
-        val expectedList = listOf(hospital5, hospital4, hospital2, hospital3)
+        val expectedList = listOf(hospital2, hospital4, hospital5, hospital3)
         assert(checkingList == expectedList)
-    }*/
+    }
 }

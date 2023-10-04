@@ -1,7 +1,7 @@
 {
   "bases": [
     {
-      "id": "Jason Derulo",
+      "id": 1,
       "baseType": "FIRE_STATION",
       "location": 1,
       "staff": 10
@@ -11,7 +11,8 @@
       "baseType": "HOSPITAL",
       "location": 2,
       "staff": 10,
-      "doctors": 5
+      "doctors": 5,
+      "dogs": 1
     },
     {
       "id": 3,
