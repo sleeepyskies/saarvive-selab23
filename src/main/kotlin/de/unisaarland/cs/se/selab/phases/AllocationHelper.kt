@@ -62,7 +62,7 @@ class AllocationHelper(val dataHolder: DataHolder) {
                 ).toMutableList()
                 dataHolder.vehicleToEmergency[vehicle.id] = emergency
                 // add this vehicle to the list of active vehicles if its not there
-                if (dataHolder.activeVehicles.find { it.id == vehicle.id } == null) {
+                if (dataHolder.activeVehicles.none { it.id == vehicle.id }) {
                     dataHolder.activeVehicles.add(vehicle)
                     Log.displayAssetAllocation(vehicle.id, emergency.id, shortestPath)
                 }

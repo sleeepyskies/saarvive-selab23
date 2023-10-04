@@ -68,7 +68,7 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
     /**
      * creates a list of vehicles that does not have a special capacity type
      */
-    private fun getNormalVehicles(vehicles: List<Vehicle>): List<Vehicle> {
+    fun getNormalVehicles(vehicles: List<Vehicle>): List<Vehicle> {
         val requiredVehicle = vehicles.filter { vehicle ->
             vehicle.vehicleType in setOf(
                 VehicleType.POLICE_MOTORCYCLE,
@@ -84,7 +84,7 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
     /**
      * gets a list of vehicles on which special capacity type is applicable
      */
-    private fun getSpecialVehicles(vehicles: List<Vehicle>): List<Vehicle> {
+    fun getSpecialVehicles(vehicles: List<Vehicle>): List<Vehicle> {
         val requiredVehicle = vehicles.filter { vehicle ->
             vehicle.vehicleType in setOf(
                 VehicleType.POLICE_CAR,
