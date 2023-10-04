@@ -50,7 +50,7 @@ class GraphHelper {
     /**
      * Returns the weight as ticks need to travel
      */
-    public fun weightToTicks(weight: Int): Int {
+    fun weightToTicks(weight: Int): Int {
         if (weight < Number.TEN) return 1
         return if (weight % Number.TEN == 0) {
             weight / Number.TEN // number is already a multiple of ten
@@ -112,65 +112,5 @@ class GraphHelper {
             }
         }
         return null
-    }
-
-    // calculateShortestRoute helper methods
-    /**
-     * used within the calculateShortestRoute method to explore all the connected vertices
-     * and update the mappings when shortest vertex is found
-     */
-    fun exploreNeighbours(
-        currentVertex: Vertex,
-        distances: MutableMap<Vertex, Int>,
-        previousVertices: MutableMap<Vertex, Vertex?>,
-        vehicleHeight: Int,
-        vertices: List<Vertex>
-    ) {
-        for ((neighborVertexID, connectingRoad) in currentVertex.connectingRoads) {
-            // get the actual vertex
-            val neighborVertex = vertices.first { it.id == neighborVertexID }
-            // check if the car's height allows it to drive on the road
-            // only check out this vertex if it hasn't been checked out before / stored
-            //
-            if (vehicleHeight > connectingRoad.heightLimit ||
-                (previousVertices[currentVertex] != null && previousVertices[currentVertex] == neighborVertex)
-            ) {
-                continue
-            }
-            // calculate the weight of the route up to the neighboring vertex
-            val tentativeDistance = (distances[currentVertex] ?: 0) + connectingRoad.weight
-            // previous vertex
-            val prev = previousVertices[neighborVertex] ?: Vertex(Int.MAX_VALUE, mutableMapOf())
-            // println(distances[currentVertex])
-            // Check if the route through this neighbor is shorter or has a lower ID road
-            if (tentativeDistance < (distances[neighborVertex] ?: Int.MAX_VALUE) ||
-                (tentativeDistance == (distances[neighborVertex] ?: Int.MAX_VALUE) && currentVertex.id < prev.id)
-            ) {
-                distances[neighborVertex] = tentativeDistance
-                // update for backtracking
-                previousVertices[neighborVertex] = currentVertex
-            }
-        }
-    }
-
-    /**
-     * used within the calculateShortestRoute method to create the route
-     * @param previousVertices contains backtracking of each vertex to its previous one in the optimal route
-     * the functions parses through the backtracking
-     */
-    fun buildRoute(endVertex: Vertex, previousVertices: Map<Vertex, Vertex?>): MutableList<Vertex> {
-        val route = mutableListOf<Vertex>()
-        var currentVertex = endVertex
-        var previousVertex = previousVertices[endVertex]
-        // check if the start vertex is reached
-        while (previousVertex != null) {
-            route.add(currentVertex)
-            currentVertex = previousVertex
-            previousVertex = previousVertices[currentVertex]
-        }
-        // add the starting vertex to the list (not sure if it should be included)
-        // route.add(currentVertex) // commenting out because we don't need the start vertex
-        // the list of vertices starts with the first vertex in the route
-        return route.reversed().toMutableList()
     }
 }

@@ -6,9 +6,7 @@ import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.SecondaryType
 import de.unisaarland.cs.se.selab.graph.Vertex
 import org.junit.jupiter.api.BeforeEach
-// import de.unisaarland.cs.se.selab.phases.EmergencyPhase
-// import de.unisaarland.cs.se.selab.simulation.DataHolder
-// import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Test
 
 class FindClosestBaseTest {
 
@@ -48,24 +46,24 @@ class FindClosestBaseTest {
         this.graph = Graph(vertices, roads)
     }
 
-/*    @Test
+    @Test
     public fun findClosestBaseTest1() {
-        val base1 = FireStation(0, 0, 1, mutableListOf())
-        val base2 = FireStation(1, 1, 1, mutableListOf())
-        val emergency = Emergency(
-            0,
-            EmergencyType.FIRE,
-            1,
-            0,
-            0,
-            0,
-            "Bikini_Bottom",
-            "Not_Krusty_Krab_Street"
-        )
-
-        val dataHolder = DataHolder(this.graph, listOf(base1, base2), mutableListOf(), mutableListOf(emergency))
-        val emergencyPhase = EmergencyPhase(dataHolder)
-        val resBase = emergencyPhase.findClosestBase(emergency)
-        assert(resBase == base2)
-    }*/
+//        val base1 = FireStation(0, 0, 1, mutableListOf())
+//        val base2 = FireStation(1, 1, 1, mutableListOf())
+//        val emergency = Emergency(
+//            0,
+//            EmergencyType.FIRE,
+//            1,
+//            0,
+//            0,
+//            0,
+//            "Bikini_Bottom",
+//            "Not_Krusty_Krab_Street"
+//        )
+//
+//        val dataHolder = DataHolder(this.graph, listOf(base1, base2), mutableListOf(), mutableListOf(emergency))
+//        val emergencyPhase = EmergencyPhase(dataHolder)
+//        val resBase = emergencyPhase.findClosestBase(emergency)
+//        assert(resBase == base2)
+    }
 }
