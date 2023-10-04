@@ -237,4 +237,21 @@ class AssetParserTest {
             ).parse()
         }
     }
+
+    @Test
+    fun `valid scenario file`(){
+        val parser = AssetParser(
+            assetSchemaFile = "assets.schema",
+            assetJsonFile = "src/systemtest/resources/assetsJsons/validScenario1_bases.json"
+        )
+
+        val (vehicles, bases) = parser.parse()
+
+        // Validate the first base
+        val base1 = bases[0]
+        assert(base1 is FireStation)
+        assert(base1.baseID == 0)
+        assert(base1.vertexID == 0)
+        assert(base1.staff == 1)
+    }
 }
