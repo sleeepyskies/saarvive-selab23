@@ -4,7 +4,6 @@ import de.unisaarland.cs.se.selab.dataClasses.bases.FireStation
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
 import de.unisaarland.cs.se.selab.parser.AssetParser
-import org.json.JSONException
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.io.FileNotFoundException
@@ -12,13 +11,13 @@ import java.io.FileNotFoundException
 class AssetParserTest {
 
     @Test
-    fun testValidAssetBASE() {
+    fun testValidAsset() {
         val parser = AssetParser(
-            assetSchemaFile = "base.schema",
+            assetSchemaFile = "assets.schema",
             assetJsonFile = "src/systemtest/resources/assetsJsons/example_assets.json"
         )
 
-        val (_, bases) = parser.parse()
+        val (vehicles, bases) = parser.parse()
 
         // Validate the first base
         val base1 = bases[0]
@@ -26,16 +25,6 @@ class AssetParserTest {
         assert(base1.baseID == 0)
         assert(base1.vertexID == 2)
         assert(base1.staff == 62)
-    }
-
-    @Test
-    fun testValidAssetVEHICLE() {
-        val parser = AssetParser(
-            assetSchemaFile = "vehicle.schema",
-            assetJsonFile = "src/systemtest/resources/assetsJsons/example_assets.json"
-        )
-
-        val (vehicles, _) = parser.parse()
 
         // Validate the first vehicle
         val vehicle1 = vehicles[0]
@@ -53,7 +42,7 @@ class AssetParserTest {
     fun testInvalidPathToJSON() {
         assertThrows<FileNotFoundException> {
             AssetParser(
-                assetSchemaFile = "base.schema",
+                assetSchemaFile = "assets.schema",
                 assetJsonFile = "invalid/path/to/json"
             )
         }
@@ -61,9 +50,9 @@ class AssetParserTest {
 
     @Test
     fun testInvalidAssetsJSONBASE() {
-        assertThrows<JSONException> {
+        assertThrows<IllegalArgumentException> {
             AssetParser(
-                assetSchemaFile = "base.schema",
+                assetSchemaFile = "assets.schema",
                 assetJsonFile = "src/test/resources/parsertests/assetParser/invalid_assets.json"
             ).parse()
         }
@@ -71,9 +60,9 @@ class AssetParserTest {
 
     @Test
     fun testInvalidAssetsJSONVEHICLE() {
-        assertThrows<JSONException> {
+        assertThrows<IllegalArgumentException> {
             AssetParser(
-                assetSchemaFile = "vehicle.schema",
+                assetSchemaFile = "assets.schema",
                 assetJsonFile = "src/test/resources/parsertests/assetParser/invalid_assets.json"
             ).parse()
         }
@@ -83,7 +72,7 @@ class AssetParserTest {
     fun testEmptyAssetListBASE() {
         assertThrows<IllegalArgumentException> {
             AssetParser(
-                assetSchemaFile = "base.schema",
+                assetSchemaFile = "assets.schema",
                 assetJsonFile = "src/test/resources/parsertests/assetParser/empty_assets.json"
             ).parse()
         }
@@ -93,7 +82,7 @@ class AssetParserTest {
     fun testEmptyAssetListVEHICLE() {
         assertThrows<IllegalArgumentException> {
             AssetParser(
-                assetSchemaFile = "vehicle.schema",
+                assetSchemaFile = "assets.schema",
                 assetJsonFile = "src/test/resources/parsertests/assetParser/empty_assets.json"
             ).parse()
         }
@@ -103,7 +92,7 @@ class AssetParserTest {
     fun testSingleAssetVEHICLE() {
         assertThrows<IllegalArgumentException> {
             AssetParser(
-                assetSchemaFile = "vehicle.schema",
+                assetSchemaFile = "assets.schema",
                 assetJsonFile = "src/test/resources/parsertests/assetParser/single_asset.json"
             ).parse()
         }
@@ -113,7 +102,7 @@ class AssetParserTest {
     fun testValidBasesNoVehicles() {
         assertThrows<IllegalArgumentException> {
             AssetParser(
-                assetSchemaFile = "base.schema",
+                assetSchemaFile = "assets.schema",
                 assetJsonFile = "src/test/resources/parsertests/assetParser/valid_bases_no_vehicles.json"
             ).parse()
         }
@@ -123,7 +112,7 @@ class AssetParserTest {
     fun testValidVehiclesNoBases() {
         assertThrows<IllegalArgumentException> {
             AssetParser(
-                assetSchemaFile = "vehicle.schema",
+                assetSchemaFile = "assets.schema",
                 assetJsonFile = "src/test/resources/parsertests/assetParser/valid_vehicles_no_bases.json"
             ).parse()
         }
@@ -133,7 +122,7 @@ class AssetParserTest {
     fun testVehiclesAssignedToNonExistentBases() {
         assertThrows<IllegalArgumentException> {
             AssetParser(
-                assetSchemaFile = "vehicle.schema",
+                assetSchemaFile = "assets.schema",
                 assetJsonFile = "src/test/resources/parsertests/assetParser/vehicles_non_existent_bases.json"
             ).parse()
         }
@@ -143,7 +132,7 @@ class AssetParserTest {
     fun testDuplicateVehicleIds() {
         assertThrows<IllegalArgumentException> {
             AssetParser(
-                assetSchemaFile = "vehicle.schema",
+                assetSchemaFile = "assets.schema",
                 assetJsonFile = "src/test/resources/parsertests/assetParser/duplicate_vehicle_ids.json"
             ).parse()
         }
@@ -153,7 +142,7 @@ class AssetParserTest {
     fun testNegativeBaseId() {
         assertThrows<IllegalArgumentException> {
             AssetParser(
-                assetSchemaFile = "base.schema",
+                assetSchemaFile = "assets.schema",
                 assetJsonFile = "src/test/resources/parsertests/assetParser/negative_base_id.json"
             ).parse()
         }
@@ -163,7 +152,7 @@ class AssetParserTest {
     fun testInvalidBaseType() {
         assertThrows<IllegalArgumentException> {
             AssetParser(
-                assetSchemaFile = "base.schema",
+                assetSchemaFile = "assets.schema",
                 assetJsonFile = "src/test/resources/parsertests/assetParser/invalid_base_type.json"
             ).parse()
         }
@@ -173,7 +162,7 @@ class AssetParserTest {
     fun testNegativeVehicleHeight() {
         assertThrows<IllegalArgumentException> {
             AssetParser(
-                assetSchemaFile = "vehicle.schema",
+                assetSchemaFile = "assets.schema",
                 assetJsonFile = "src/test/resources/parsertests/assetParser/negative_vehicle_height.json"
             ).parse()
         }
@@ -183,7 +172,7 @@ class AssetParserTest {
     fun testSameVehicleMultipleBases() {
         assertThrows<IllegalArgumentException> {
             AssetParser(
-                assetSchemaFile = "vehicle.schema",
+                assetSchemaFile = "assets.schema",
                 assetJsonFile = "src/test/resources/parsertests/assetParser/vehicle_multiple_bases.json"
             ).parse()
         }
@@ -193,7 +182,7 @@ class AssetParserTest {
     fun testNegativeBaseStaff() {
         assertThrows<IllegalArgumentException> {
             AssetParser(
-                assetSchemaFile = "base.schema",
+                assetSchemaFile = "assets.schema",
                 assetJsonFile = "src/test/resources/parsertests/assetParser/negative_base_staff.json"
             ).parse()
         }
@@ -203,7 +192,7 @@ class AssetParserTest {
     fun testInvalidVehicleType() {
         assertThrows<IllegalArgumentException> {
             AssetParser(
-                assetSchemaFile = "vehicle.schema",
+                assetSchemaFile = "assets.schema",
                 assetJsonFile = "src/test/resources/parsertests/assetParser/invalid_vehicle_type.json"
             ).parse()
         }
@@ -213,7 +202,7 @@ class AssetParserTest {
     fun testInvalidVehicleStaffCapacity() {
         assertThrows<IllegalArgumentException> {
             AssetParser(
-                assetSchemaFile = "vehicle.schema",
+                assetSchemaFile = "assets.schema",
                 assetJsonFile = "src/test/resources/parsertests/assetParser/invalid_vehicle_staff_capacity.json"
             ).parse()
         }
@@ -223,7 +212,7 @@ class AssetParserTest {
     fun testInvalidVehicleCriminalCapacity() {
         assertThrows<IllegalArgumentException> {
             AssetParser(
-                assetSchemaFile = "vehicle.schema",
+                assetSchemaFile = "assets.schema",
                 assetJsonFile = "src/test/resources/parsertests/assetParser/invalid_vehicle_criminal_capacity.json"
             ).parse()
         }

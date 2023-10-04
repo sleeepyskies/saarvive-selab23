@@ -27,7 +27,7 @@ class SimulationObjectConstructor(
     private val countyFile: String,
     private val assetFile: String,
     private val simulationFile: String,
-    private val maxTick: Int?
+    private val maxTick: Int?,
 ) {
     /**
      * Creates and returns a parsed and validated Simulation object
@@ -51,9 +51,9 @@ class SimulationObjectConstructor(
 
             // parse, validate and create assets
             assetParser = AssetParser("assets.schema", assetFile)
-            assetParser.parse()
-            bases = assetParser.parsedBases
-            vehicles = assetParser.parsedVehicles
+            val (parsedVehiclesList, parsedBasesList) = assetParser.parse()
+            bases = parsedBasesList
+            vehicles = parsedVehiclesList
 
             // parse, validate and create events and emergencies
             simulationParser = SimulationParser("simulation.schema", simulationFile, graph)
