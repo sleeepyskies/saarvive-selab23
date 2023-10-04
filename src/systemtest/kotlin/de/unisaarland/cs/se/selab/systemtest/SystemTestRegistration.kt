@@ -1,10 +1,7 @@
 package de.unisaarland.cs.se.selab.systemtest
 
 import de.unisaarland.cs.se.selab.systemtest.basictests.ExampleTest
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.assets.BaseOnNothing
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.assets.NoVehiclesInBase
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.assets.NotEnoughBases
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.assets.SameBaseLocation
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.assets.*
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.*
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.CorrectSystemTestSmall
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.EmergencyFailTest
@@ -39,6 +36,13 @@ object SystemTestRegistration {
         manager.registerTest(WrongNumericIDTest())
         manager.registerTest(MissingAttributeTest())
         manager.registerTest(NoDigraphNameTest())
+
+        // asset parser tests
+        manager.registerTest(NoVehiclesInBase())
+        manager.registerTest(NotEnoughBases())
+        manager.registerTest(SameBaseLocation())
+        manager.registerTest(BaseOnNothing())
+        manager.registerTest(WhatBaseTest())
     }
 
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
@@ -63,11 +67,12 @@ object SystemTestRegistration {
         manager.registerTest(NoDigraphNameTest())
         manager.registerTest(NoVerticesTest())
 
-        // assets
+        // asset parser tests
         manager.registerTest(NoVehiclesInBase())
         manager.registerTest(NotEnoughBases())
         manager.registerTest(SameBaseLocation())
         manager.registerTest(BaseOnNothing())
+        manager.registerTest(WhatBaseTest())
     }
 
     fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
@@ -89,22 +94,16 @@ object SystemTestRegistration {
         manager.registerTest(MissingAttributeTest())
         manager.registerTest(NoDigraphNameTest())
 
+        // asset parser tests
         manager.registerTest(NoVehiclesInBase())
         manager.registerTest(NotEnoughBases())
         manager.registerTest(SameBaseLocation())
         manager.registerTest(BaseOnNothing())
+        manager.registerTest(WhatBaseTest())
     }
 
     fun registerSystemTestsMutantSimulation(manager: SystemTestManager) {
         manager.registerTest(VertexWithoutRoadConnectionTest())
         manager.registerTest(VillageAndCountyNameSameTest())
-
-        manager.registerTest(NoVerticesTest())
-
-        // assets
-        manager.registerTest(NoVehiclesInBase())
-        manager.registerTest(NotEnoughBases())
-        manager.registerTest(SameBaseLocation())
-        manager.registerTest(BaseOnNothing())
     }
 }
