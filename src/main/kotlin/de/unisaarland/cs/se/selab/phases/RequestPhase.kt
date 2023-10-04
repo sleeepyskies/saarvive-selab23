@@ -58,7 +58,7 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
     /**
      * find all the vehicles that are in the base
      */
-    private fun getAssignableAssets(base: Base, requestedVehicles: Map<VehicleType, Int>): List<Vehicle> {
+    fun getAssignableAssets(base: Base, requestedVehicles: Map<VehicleType, Int>): List<Vehicle> {
         val requiredVehicle = base.vehicles.filter {
             it.vehicleStatus == VehicleStatus.IN_BASE && it.vehicleType in requestedVehicles && it.isAvailable
         }
