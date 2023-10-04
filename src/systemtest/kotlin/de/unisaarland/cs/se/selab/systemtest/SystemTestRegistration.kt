@@ -1,20 +1,7 @@
 package de.unisaarland.cs.se.selab.systemtest
 
 import de.unisaarland.cs.se.selab.systemtest.basictests.ExampleTest
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.NegativeVertexTest
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.NoMainStreetTest
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.NoSideStreetTest
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.NonExistentVertexTest
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.NonUniqueVertexTest
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.RoadHas2SameVerticesTest
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.SameVertexDifferentVillagesTest
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.TwoRoadsSameLocationTest
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.TwoRoadsSameNameTest
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.VertexWithoutRoadConnectionTest
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.VillageAndCountyNameSameTest
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.WeightIsZeroTest
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.WrongTunnelHeightTest
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.ZeroHeightTest
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.*
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.CorrectSystemTestSmall
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.EmergencyFailTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.ReallocationTest
@@ -49,7 +36,7 @@ object SystemTestRegistration {
 
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
         manager.registerTest(ExampleTest())
-        // Valid Tests
+
         manager.registerTest(TwoRoadsSameLocationTest())
         manager.registerTest(TwoRoadsSameNameTest())
         manager.registerTest(NonExistentVertexTest())
@@ -81,6 +68,7 @@ object SystemTestRegistration {
         manager.registerTest(VillageAndCountyNameSameTest())
         manager.registerTest(WeightIsZeroTest())
         manager.registerTest(WrongTunnelHeightTest())
+        manager.registerTest(NoVerticesTest())
     }
 
     fun registerSystemTestsMutantSimulation(manager: SystemTestManager) {
