@@ -96,7 +96,7 @@ class SimulationObjectConstructor(
      * Cross validates the assets based on the graph
      */
     private fun validateAssetsBasedOnGraph(graph: Graph, bases: List<Base>): Boolean {
-        // Init map
+        // Init map of each vertex to a list of bases located on it
         val mapping: MutableMap<Vertex, MutableList<Base>> = mutableMapOf()
         for (vertex in graph.graph) {
             mapping[vertex] = mutableListOf()
