@@ -3,7 +3,6 @@ package de.unisaarland.cs.se.selab.systemtest
 import de.unisaarland.cs.se.selab.systemtest.basictests.ExampleTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.assets.*
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.*
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.simulation.EmptySimulationTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.CorrectSystemTestSmall
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.EmergencyFailTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.ReallocationTest
@@ -51,9 +50,9 @@ object SystemTestRegistration {
         manager.registerTest(FireDoctorsTest())
         manager.registerTest(SameIDAssetsTest())
         manager.registerTest(SameIDBaseTest())
-
-        // simulation tests
-        manager.registerTest(EmptySimulationTest())
+        manager.registerTest(WrongWaterTest())
+        manager.registerTest(NotEnoughWaterTest())
+        manager.registerTest(BackseatDriversTest())
     }
 
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
@@ -91,9 +90,9 @@ object SystemTestRegistration {
         manager.registerTest(FireDoctorsTest())
         manager.registerTest(SameIDAssetsTest())
         manager.registerTest(SameIDBaseTest())
-
-        // simulation tests
-        manager.registerTest(EmptySimulationTest())
+        manager.registerTest(WrongWaterTest())
+        manager.registerTest(NotEnoughWaterTest())
+        manager.registerTest(BackseatDriversTest())
     }
 
     fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
@@ -128,9 +127,9 @@ object SystemTestRegistration {
         manager.registerTest(FireDoctorsTest())
         manager.registerTest(SameIDAssetsTest())
         manager.registerTest(SameIDBaseTest())
-
-        // simulation tests
-        manager.registerTest(EmptySimulationTest())
+        manager.registerTest(WrongWaterTest())
+        manager.registerTest(NotEnoughWaterTest())
+        manager.registerTest(BackseatDriversTest())
     }
 
     fun registerSystemTestsMutantSimulation(manager: SystemTestManager) {
