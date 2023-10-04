@@ -218,5 +218,8 @@ object SystemTestRegistration {
 
         // Valid scenarios
         manager.registerTest(ValidScenario1())
+        manager.registerTest(AllocateFireEmergencyOneTest1())
+        manager.registerTest(AllocateFireEmergencyOneTest2())
+
     }
 }
