@@ -116,7 +116,8 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * Reroutes all active vehicles if an event ends/starts
      */
     private fun rerouteVehicles() {
-        val assetsRerouted = dataHolder.activeVehicles.filter { it.currentRoute.isNotEmpty() }.count { vehicle ->
+        val assets = dataHolder.activeVehicles.filter { it.currentRoute.isNotEmpty() }
+        val assetsRerouted = assets.count { vehicle ->
             val currentRouteWeight = dataHolder.graph.weightOfRoute(
                 vehicle.lastVisitedVertex,
                 vehicle.currentRoute.last(),

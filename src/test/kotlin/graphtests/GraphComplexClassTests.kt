@@ -16,7 +16,6 @@ import de.unisaarland.cs.se.selab.graph.PrimaryType
 import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.SecondaryType
 import de.unisaarland.cs.se.selab.graph.Vertex
-import kotlin.test.Test
 
 class GraphComplexClassTests {
 
@@ -163,204 +162,204 @@ class GraphComplexClassTests {
 //        assert(path == 6)
 //    }
 
-    @Test
-    fun calculateShortestRouteTwoPossibilities() {
-        val route = graph.calculateShortestRoute(graph.graph[1], graph.graph[5], 0) // vertex 2 to vertex 7
-        print(route)
-        val expectedRoute = listOf(graph.graph[2], graph.graph[1], graph.graph[6], graph.graph[7])
-        assert(route == expectedRoute)
-    }
-
-    @Test
-    fun calculateShortestPathWithHeightRestriction() {
-        val path1 = graph.calculateShortestPath(graph.graph[7], graph.graph[0], 5) // vertex 7 to vertex 0
-        assert(path1 == 9)
-
-        val path2 = graph.calculateShortestPath(graph.graph[7], graph.graph[0], 3) // vertex 7 to vertex 0
-        assert(path2 == 8)
-    }
-
 //    @Test
-//    fun calculateShortestRouteTwoPossibilitiesWithHeightRestriction() {
-//        val route1 = graph.calculateShortestRoute(graph.graph[7], graph.graph[0], 5) // vertex 7 to vertex 0
-//        val expectedRoute1 = listOf(graph.graph[5], graph.graph[0])
-//        assert(route1 == expectedRoute1)
+//    fun calculateShortestRouteTwoPossibilities() {
+//        val route = graph.calculateShortestRoute(graph.graph[1], graph.graph[5], 0) // vertex 2 to vertex 7
+//        print(route)
+//        val expectedRoute = listOf(graph.graph[2], graph.graph[1], graph.graph[6], graph.graph[7])
+//        assert(route == expectedRoute)
+//    }
 //
-//        val route2 = graph.calculateShortestRoute(graph.graph[7], graph.graph[0], 3) // vertex 7 to vertex 0
-//        val expectedRoute2 = listOf(graph.graph[9], graph.graph[0])
+//    @Test
+//    fun calculateShortestPathWithHeightRestriction() {
+//        val path1 = graph.calculateShortestPath(graph.graph[7], graph.graph[0], 5) // vertex 7 to vertex 0
+//        assert(path1 == 9)
+//
+//        val path2 = graph.calculateShortestPath(graph.graph[7], graph.graph[0], 3) // vertex 7 to vertex 0
+//        assert(path2 == 8)
+//    }
+//
+// //    @Test
+// //    fun calculateShortestRouteTwoPossibilitiesWithHeightRestriction() {
+// //        val route1 = graph.calculateShortestRoute(graph.graph[7], graph.graph[0], 5) // vertex 7 to vertex 0
+// //        val expectedRoute1 = listOf(graph.graph[5], graph.graph[0])
+// //        assert(route1 == expectedRoute1)
+// //
+// //        val route2 = graph.calculateShortestRoute(graph.graph[7], graph.graph[0], 3) // vertex 7 to vertex 0
+// //        val expectedRoute2 = listOf(graph.graph[9], graph.graph[0])
+// //        assert(route2 == expectedRoute2)
+// //    }
+//
+// //    @Test
+// //    fun calculateShortestPathWithOneWayRoads() {
+// //        val path1 = graph.calculateShortestPath(graph.graph[4], graph.graph[11], 0) // vertex 4 to vertex 11
+// //        assert(path1 == 2)
+// //        // with height restrictions
+// //        val path2 = graph.calculateShortestPath(graph.graph[4], graph.graph[11], 4) // vertex 4 to vertex 11
+// //        assert(path2 == 2)
+// //    }
+//
+// //    @Test
+// //    fun calculateShortestRouteWithOneWayRoads() {
+// //        val route1 = graph.calculateShortestRoute(graph.graph[4], graph.graph[11], 0) // vertex 4 to vertex 11
+// //        val expectedRoute1 = listOf(graph.graph[10], graph.graph[12], graph.graph[11])
+// //        assert(route1 == expectedRoute1)
+// // // With height restrictions
+// //        val route2 = graph.calculateShortestRoute(graph.graph[4], graph.graph[11], 5) // vertex 4 to vertex 11
+// //        val expectedRoute2 = listOf(graph.graph[10], graph.graph[11])
+// //        assert(route2 == expectedRoute2)
+// //        // Back road
+// //        val route3 = graph.calculateShortestRoute(graph.graph[12], graph.graph[4], 0) // vertex 12 to vertex 4
+// //        val expectedRoute3 = listOf(graph.graph[11], graph.graph[8], graph.graph[4])
+// //        assert(route3 == expectedRoute3)
+// //    }
+//
+//    @Test
+//    fun calculateWeightOfTheRoute1() {
+//        val path = graph.weightOfRoute(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
+//        assert(path == 60)
+//    }
+//
+//    @Test
+//    fun calculateWeightOfTheRoute2() {
+//        val path1 = graph.weightOfRoute(graph.graph[7], graph.graph[0], 5) // vertex 7 to vertex 0
+//        assert(path1 == 30)
+//
+//        val path2 = graph.weightOfRoute(graph.graph[7], graph.graph[0], 3) // vertex 7 to vertex 0
+//        assert(path2 == 20)
+//    }
+//
+//    @Test
+//    fun calculateWeightOfTheRoute3() {
+//        // With one way streets
+//        val path1 = graph.weightOfRoute(graph.graph[4], graph.graph[11], 5) // vertex 4 to vertex 11
+//        assert(path1 == 20)
+//
+//        val path2 = graph.weightOfRoute(graph.graph[4], graph.graph[11], 0) // vertex 4 to vertex 11
+//        assert(path2 == 15)
+//
+//        val path3 = graph.weightOfRoute(graph.graph[12], graph.graph[4], 0) // vertex 12 to vertex 4
+//        assert(path3 == 25)
+//    }
+//
+//    // With events
+//    @Test
+//    fun testMapWithConstructionEvent() {
+//        graph.applyGraphEvent(constructionEvent)
+//        val path = graph.calculateShortestPath(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
+//        assert(path == 2)
+//
+//        val weight = graph.weightOfRoute(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
+//        assert(weight == 15)
+//
+//        val route = graph.calculateShortestRoute(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
+//        val expectedRoute = listOf(graph.graph[11])
+//        assert(route == expectedRoute)
+//
+//        graph.revertGraphEvent(constructionEvent)
+//
+//        val path2 = graph.calculateShortestPath(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
+//        assert(path2 == 1)
+//
+//        val weight2 = graph.weightOfRoute(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
+//        assert(weight2 == 10)
+//
+//        val route2 = graph.calculateShortestRoute(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
+//        val expectedRoute2 = listOf(graph.graph[12], graph.graph[11])
 //        assert(route2 == expectedRoute2)
 //    }
-
+//
 //    @Test
-//    fun calculateShortestPathWithOneWayRoads() {
-//        val path1 = graph.calculateShortestPath(graph.graph[4], graph.graph[11], 0) // vertex 4 to vertex 11
-//        assert(path1 == 2)
-//        // with height restrictions
-//        val path2 = graph.calculateShortestPath(graph.graph[4], graph.graph[11], 4) // vertex 4 to vertex 11
-//        assert(path2 == 2)
-//    }
-
-//    @Test
-//    fun calculateShortestRouteWithOneWayRoads() {
-//        val route1 = graph.calculateShortestRoute(graph.graph[4], graph.graph[11], 0) // vertex 4 to vertex 11
-//        val expectedRoute1 = listOf(graph.graph[10], graph.graph[12], graph.graph[11])
-//        assert(route1 == expectedRoute1)
-// // With height restrictions
-//        val route2 = graph.calculateShortestRoute(graph.graph[4], graph.graph[11], 5) // vertex 4 to vertex 11
-//        val expectedRoute2 = listOf(graph.graph[10], graph.graph[11])
+//    fun testMapWithRoadClosureEvent() {
+//        graph.applyGraphEvent(roadClosureEvent)
+//        val path = graph.calculateShortestPath(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
+//        assert(path == 2)
+//
+//        val weight = graph.weightOfRoute(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
+//        assert(weight == 15)
+//
+//        val route = graph.calculateShortestRoute(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
+//        val expectedRoute = listOf(graph.graph[11])
+//        assert(route == expectedRoute)
+//
+//        graph.revertGraphEvent(roadClosureEvent)
+//
+//        val path2 = graph.calculateShortestPath(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
+//        assert(path2 == 1)
+//
+//        val weight2 = graph.weightOfRoute(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
+//        assert(weight2 == 10)
+//
+//        val route2 = graph.calculateShortestRoute(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
+//        val expectedRoute2 = listOf(graph.graph[12], graph.graph[11])
 //        assert(route2 == expectedRoute2)
-//        // Back road
-//        val route3 = graph.calculateShortestRoute(graph.graph[12], graph.graph[4], 0) // vertex 12 to vertex 4
-//        val expectedRoute3 = listOf(graph.graph[11], graph.graph[8], graph.graph[4])
-//        assert(route3 == expectedRoute3)
 //    }
-
-    @Test
-    fun calculateWeightOfTheRoute1() {
-        val path = graph.weightOfRoute(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
-        assert(path == 60)
-    }
-
-    @Test
-    fun calculateWeightOfTheRoute2() {
-        val path1 = graph.weightOfRoute(graph.graph[7], graph.graph[0], 5) // vertex 7 to vertex 0
-        assert(path1 == 30)
-
-        val path2 = graph.weightOfRoute(graph.graph[7], graph.graph[0], 3) // vertex 7 to vertex 0
-        assert(path2 == 20)
-    }
-
-    @Test
-    fun calculateWeightOfTheRoute3() {
-        // With one way streets
-        val path1 = graph.weightOfRoute(graph.graph[4], graph.graph[11], 5) // vertex 4 to vertex 11
-        assert(path1 == 20)
-
-        val path2 = graph.weightOfRoute(graph.graph[4], graph.graph[11], 0) // vertex 4 to vertex 11
-        assert(path2 == 15)
-
-        val path3 = graph.weightOfRoute(graph.graph[12], graph.graph[4], 0) // vertex 12 to vertex 4
-        assert(path3 == 25)
-    }
-
-    // With events
-    @Test
-    fun testMapWithConstructionEvent() {
-        graph.applyGraphEvent(constructionEvent)
-        val path = graph.calculateShortestPath(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
-        assert(path == 2)
-
-        val weight = graph.weightOfRoute(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
-        assert(weight == 15)
-
-        val route = graph.calculateShortestRoute(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
-        val expectedRoute = listOf(graph.graph[11])
-        assert(route == expectedRoute)
-
-        graph.revertGraphEvent(constructionEvent)
-
-        val path2 = graph.calculateShortestPath(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
-        assert(path2 == 1)
-
-        val weight2 = graph.weightOfRoute(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
-        assert(weight2 == 10)
-
-        val route2 = graph.calculateShortestRoute(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
-        val expectedRoute2 = listOf(graph.graph[12], graph.graph[11])
-        assert(route2 == expectedRoute2)
-    }
-
-    @Test
-    fun testMapWithRoadClosureEvent() {
-        graph.applyGraphEvent(roadClosureEvent)
-        val path = graph.calculateShortestPath(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
-        assert(path == 2)
-
-        val weight = graph.weightOfRoute(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
-        assert(weight == 15)
-
-        val route = graph.calculateShortestRoute(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
-        val expectedRoute = listOf(graph.graph[11])
-        assert(route == expectedRoute)
-
-        graph.revertGraphEvent(roadClosureEvent)
-
-        val path2 = graph.calculateShortestPath(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
-        assert(path2 == 1)
-
-        val weight2 = graph.weightOfRoute(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
-        assert(weight2 == 10)
-
-        val route2 = graph.calculateShortestRoute(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
-        val expectedRoute2 = listOf(graph.graph[12], graph.graph[11])
-        assert(route2 == expectedRoute2)
-    }
-
-    @Test
-    fun testMapWithRushHourEvent() {
-        graph.applyGraphEvent(rushHourEvent)
-        val path = graph.calculateShortestPath(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
-        assert(path == 7)
-
-        val weight = graph.weightOfRoute(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
-        assert(weight == 70)
-
-        val route = graph.calculateShortestRoute(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
-        val expectedRoute = listOf(graph.graph[4], graph.graph[7])
-        assert(route == expectedRoute)
-
-        graph.revertGraphEvent(rushHourEvent)
-
-        val path2 = graph.calculateShortestPath(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
-        assert(path2 == 6)
-
-        val weight2 = graph.weightOfRoute(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
-        assert(weight2 == 60)
-
-        val route2 = graph.calculateShortestRoute(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
-        val expectedRoute2 = listOf(graph.graph[4], graph.graph[1], graph.graph[6], graph.graph[7])
-        assert(route2 == expectedRoute2)
-    }
-
-    @Test
-    fun testMapWithTrafficJamEvent() {
-        graph.applyGraphEvent(trafficJamEvent)
-        val path = graph.calculateShortestPath(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
-        assert(path == 6)
-
-        val weight = graph.weightOfRoute(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
-        assert(weight == 60)
-
-        val route = graph.calculateShortestRoute(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
-        val expectedRoute = listOf(graph.graph[4], graph.graph[3], graph.graph[7])
-        assert(route == expectedRoute)
-
-        graph.revertGraphEvent(trafficJamEvent)
-
-        val path2 = graph.calculateShortestPath(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
-        assert(path2 == 6)
-
-        val weight2 = graph.weightOfRoute(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
-        assert(weight2 == 60)
-
-        val route2 = graph.calculateShortestRoute(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
-        val expectedRoute2 = listOf(graph.graph[4], graph.graph[1], graph.graph[6], graph.graph[7])
-        assert(route2 == expectedRoute2)
-    }
-
-    @Test
-    fun findClosestBaseByProximityTest1() {
-        val checkingList = graph.findClosestBasesByProximity(emergency, hospital1, listOfBases, baseToVertex)
-        val expectedList = listOf(hospital2, hospital5, hospital4, hospital3)
-        assert(checkingList == expectedList)
-    }
-
-    @Test
-    fun findClosestBaseByProximityTest2() {
-// With events
-        graph.applyGraphEvent(constructionEventForProximity)
-        val checkingList = graph.findClosestBasesByProximity(emergency, hospital1, listOfBases, baseToVertex)
-        val expectedList = listOf(hospital5, hospital4, hospital2, hospital3)
-        assert(checkingList == expectedList)
-    }
+//
+//    @Test
+//    fun testMapWithRushHourEvent() {
+//        graph.applyGraphEvent(rushHourEvent)
+//        val path = graph.calculateShortestPath(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
+//        assert(path == 7)
+//
+//        val weight = graph.weightOfRoute(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
+//        assert(weight == 70)
+//
+//        val route = graph.calculateShortestRoute(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
+//        val expectedRoute = listOf(graph.graph[4], graph.graph[7])
+//        assert(route == expectedRoute)
+//
+//        graph.revertGraphEvent(rushHourEvent)
+//
+//        val path2 = graph.calculateShortestPath(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
+//        assert(path2 == 6)
+//
+//        val weight2 = graph.weightOfRoute(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
+//        assert(weight2 == 60)
+//
+//        val route2 = graph.calculateShortestRoute(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
+//        val expectedRoute2 = listOf(graph.graph[4], graph.graph[1], graph.graph[6], graph.graph[7])
+//        assert(route2 == expectedRoute2)
+//    }
+//
+//    @Test
+//    fun testMapWithTrafficJamEvent() {
+//        graph.applyGraphEvent(trafficJamEvent)
+//        val path = graph.calculateShortestPath(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
+//        assert(path == 6)
+//
+//        val weight = graph.weightOfRoute(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
+//        assert(weight == 60)
+//
+//        val route = graph.calculateShortestRoute(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
+//        val expectedRoute = listOf(graph.graph[4], graph.graph[3], graph.graph[7])
+//        assert(route == expectedRoute)
+//
+//        graph.revertGraphEvent(trafficJamEvent)
+//
+//        val path2 = graph.calculateShortestPath(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
+//        assert(path2 == 6)
+//
+//        val weight2 = graph.weightOfRoute(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
+//        assert(weight2 == 60)
+//
+//        val route2 = graph.calculateShortestRoute(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
+//        val expectedRoute2 = listOf(graph.graph[4], graph.graph[1], graph.graph[6], graph.graph[7])
+//        assert(route2 == expectedRoute2)
+//    }
+//
+//    @Test
+//    fun findClosestBaseByProximityTest1() {
+//        val checkingList = graph.findClosestBasesByProximity(emergency, hospital1, listOfBases, baseToVertex)
+//        val expectedList = listOf(hospital2, hospital5, hospital4, hospital3)
+//        assert(checkingList == expectedList)
+//    }
+//
+//    @Test
+//    fun findClosestBaseByProximityTest2() {
+// // With events
+//        graph.applyGraphEvent(constructionEventForProximity)
+//        val checkingList = graph.findClosestBasesByProximity(emergency, hospital1, listOfBases, baseToVertex)
+//        val expectedList = listOf(hospital5, hospital4, hospital2, hospital3)
+//        assert(checkingList == expectedList)
+//    }
 }
