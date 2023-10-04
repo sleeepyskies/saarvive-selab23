@@ -1,4 +1,3 @@
-package de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests
 
 import de.unisaarland.cs.se.selab.systemtest.api.SystemTest
 
