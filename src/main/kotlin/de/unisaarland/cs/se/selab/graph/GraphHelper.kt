@@ -141,7 +141,7 @@ class GraphHelper {
             // calculate the weight of the route up to the neighboring vertex
             val tentativeDistance = (distances[currentVertex] ?: 0) + connectingRoad.weight
             // previous vertex
-            val prev = previousVertices[neighborVertex] ?: Vertex(1, mutableMapOf())
+            val prev = previousVertices[neighborVertex] ?: Vertex(Int.MAX_VALUE, mutableMapOf())
             // println(distances[currentVertex])
             // Check if the route through this neighbor is shorter or has a lower ID road
             if (tentativeDistance < (distances[neighborVertex] ?: Int.MAX_VALUE) ||
