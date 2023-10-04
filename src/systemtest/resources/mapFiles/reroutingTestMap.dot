@@ -1,5 +1,5 @@
 digraph G {
-	0;
+	7;
 	1;
 	2;
 	3;
@@ -7,10 +7,10 @@ digraph G {
 	5;
 	6;
 
-	0 -> 1 [village=BikiniBottom; name=Main_Street; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
+	7 -> 1 [village=BikiniBottom; name=Main_Street; heightLimit=3; weight=10; primaryType=sideStreet; secondaryType=none;];
 	1 -> 2 [village=BikiniBottom; name=Friedrich_Street; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
 	2 -> 3 [village=BikiniBottom; name=Rose_Way; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
-	2 -> 4 [village=BikiniBottom; name=Railway_Station_Road; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
+	2 -> 4 [village=BikiniBottom; name=Railway_Station_Road2; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
 	3 -> 5 [village=BikiniBottom; name=Oak_Street; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
 	4 -> 5 [village=BikiniBottom; name=Railway_Station_Road; heightLimit=3; weight=20; primaryType=mainStreet; secondaryType=none;];
 	5 -> 6 [village=BikiniBottom; name=Mill_Lane; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];

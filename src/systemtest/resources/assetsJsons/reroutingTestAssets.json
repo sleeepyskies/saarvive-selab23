@@ -3,7 +3,7 @@
         {
             "id": 0,
             "baseType": "FIRE_STATION",
-            "location": 0,
+            "location": 7,
             "staff": 5
         }
     ],

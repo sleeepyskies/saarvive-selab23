@@ -26,7 +26,7 @@ class RequestTest : SystemTest() {
         assertNextLine("Event Ended: 0 ended.")
         assertNextLine("Emergency Assignment: 0 assigned to 1")
         assertNextLine("Asset Allocation: 1 allocated to 0; 2 ticks to arrive.")
-        assertNextLine("Asset Request: 0 sent to 0 for 0.")
+        assertNextLine("Asset Request: 0 sent to 5 for 0.")
         assertNextLine("Asset Allocation: 0 allocated to 0; 3 ticks to arrive.")
         // Tick 3
         assertNextLine("Simulation Tick: 3")
