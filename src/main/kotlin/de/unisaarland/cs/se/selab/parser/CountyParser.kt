@@ -30,7 +30,7 @@ class CountyParser(private val dotFilePath: String) {
     private val villagesNames = mutableSetOf<String>() // For checking the condition (13)
 
     private val sPat = "[a-zA-Z][a-zA-Z_]*" // Pattern for strings ID
-    private val nPat = "([1-9][0-9]*)|0" // Pattern for numbers ID
+    private val nPat = "0|[1-9][0-9]*" // Pattern for numbers ID
 
     /**
      * Save the file and data in string
@@ -96,7 +96,7 @@ class CountyParser(private val dotFilePath: String) {
         val villageName = edge[StringLiterals.VILLAGE] ?: "Saarbrucken"
         val roadName = edge[StringLiterals.NAME] ?: "Dudweiler-Straße"
         val weight = edge["weight"]?.toInt() ?: 2
-        val heightLimit = edge["heightLimit"]?.toInt() ?: 2
+        val heightLimit = edge[StringLiterals.HEIGHT_LIMIT]?.toInt() ?: 2
         val pType = when (edge[StringLiterals.PRIMARY_TYPE] ?: "StringLiterals.PRIMARY_TYPE") {
             "mainStreet" -> PrimaryType.MAIN_STREET
             StringLiterals.SIDE_STREET -> PrimaryType.SIDE_STREET
@@ -118,20 +118,20 @@ class CountyParser(private val dotFilePath: String) {
      * Parse and create separate data structures, return the result
      */
     private fun parsedAndValid(dataInScope: String): Boolean {
-        val vPat = Pattern.compile("\\A(\\s*$nPat\\s*;)\\s*") // Pattern for vertex
+        val vPat = Pattern.compile("\\A(\\s*($nPat)\\s*;)\\s*") // Pattern for vertex
 
         var stringEdges = dataInScope // will delete first matching lines for vertices
         var stringVertices = ""
         while (vPat.matcher(stringEdges).find()) {
             val vertexFound = vPat.toRegex().find(stringEdges)
             val startIndex = (vertexFound?.range?.last ?: 1) + 1
-            stringVertices += vertexFound?.groupValues?.get(0).orEmpty()
+            stringVertices += vertexFound?.groupValues?.get(1).orEmpty()
             stringEdges =
                 stringEdges.takeIf { startIndex <= it.length }?.substring(startIndex).orEmpty()
         }
 
         // String for parsing edges part
-        if (!stringEdges.isEmpty() || !stringVertices.isEmpty()) {
+        if (!stringEdges.isEmpty() && !stringVertices.isEmpty()) {
             val parsedVertices = parseVertices(stringVertices)
             val parsedEdges = parseEdges(stringEdges)
             if (!roadNameIsUnique() || !commonVertex()) {
@@ -380,7 +380,7 @@ class CountyParser(private val dotFilePath: String) {
                     outputInvalidAndFinish() // (10. The weight of the road must be greater than 0)
                 }
 
-                "height" -> if (keyValue.elementAt(1).trim().toInt() < 1) {
+                "heightLimit" -> if (keyValue.elementAt(1).trim().toInt() < 1) {
                     outputInvalidAndFinish() // (11. The height of the road is at least 1)
                 }
             }
