@@ -130,14 +130,29 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
          */
         val unvisitedVertices = PriorityQueue<Vertex> { v1, v2 -> (distances[v1] ?: 0) - (distances[v2] ?: 0) }
 
+        // val unvisitedVertices = PriorityQueue<Vertex>(compareBy { distances[it] })
+
+        // Ensure the start vertex is at the front of the queue
+//        unvisitedVertices.remove(vehiclePosition)
+//        unvisitedVertices.add(vehiclePosition)
         // initializing distances and previous vertices for all vertices in the graph
         for (vertex in graph) {
-            distances[vertex] = Int.MAX_VALUE - 1
+            distances[vertex] = Int.MAX_VALUE.minus(1)
             previousVertices[vertex] = null
-            unvisitedVertices.offer(vertex)
+            // unvisitedVertices.offer(vertex)
         }
         distances[vehiclePosition] = 0
         distances[destination] = Int.MAX_VALUE
+
+        // Add all vertices to the priority queue
+        unvisitedVertices.addAll(graph)
+
+        // keep track of the vertex polled in the last iteration of the while loop
+        var previousPolledVertex: Vertex? = null
+
+        // a list to store temporarily polled vertices
+        val polledVertices = mutableListOf<Vertex>()
+
 
         // dijkstra's algorithm using the above structure
         while (unvisitedVertices.isNotEmpty()) {
@@ -145,6 +160,13 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
              * .poll() finds the next vertex in the queue in the order of the lambda expression
              */
             val currentVertex = unvisitedVertices.poll()
+
+            // Check if the current vertex is one of the connecting roads of the previous polled vertex
+            if ((previousPolledVertex != null) && (currentVertex.id !in previousPolledVertex.connectingRoads.keys)) {
+                // Add the current vertex to the temporary list
+                polledVertices.add(currentVertex)
+                continue
+            }
 
             // found the shortest path to the end vertex
             if (currentVertex == destination) {
@@ -157,6 +179,15 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
             // traverse connected vertices
             helper.exploreNeighbours(currentVertex, distances, previousVertices, vehicleHeight, graph)
             // unvisitedVertices.remove(currentVertex)
+
+            // Update the previousPolledVertex
+            previousPolledVertex = currentVertex
+
+            // If there are any polled vertices, add them back to the queue
+            if (polledVertices.isNotEmpty()) {
+                unvisitedVertices.addAll(polledVertices)
+                polledVertices.clear()
+            }
         }
         return route.toMutableList()
     }
