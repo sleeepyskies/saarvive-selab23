@@ -282,7 +282,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         // the factor is applied on the affected road
         event.affectedRoad.weight *= event.factor
         // check and change the road into a one way
-        if (event.oneWayStreet) startVertex.connectingRoads.remove(targetVertex.id)
+        if (event.oneWayStreet) targetVertex.connectingRoads.remove(startVertex.id)
         event.affectedRoad.activeEvents.add(event)
     }
     private fun applyTrafficJam(event: TrafficJam) {
@@ -350,7 +350,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         val targetVertex = graph.find { vertex: Vertex -> vertex.id == event.targetID } ?: ver
 
         // add road back to the map
-        sourceVertex.connectingRoads[targetVertex.id] = event.affectedRoad
+        targetVertex.connectingRoads[sourceVertex.id] = event.affectedRoad
     }
 
     /**
