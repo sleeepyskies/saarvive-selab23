@@ -217,4 +217,24 @@ class AssetParserTest {
             ).parse()
         }
     }
+
+    @Test
+    fun testInvalidAmbulanceHasWaterCap() {
+        assertThrows<IllegalArgumentException> {
+            AssetParser(
+                assetSchemaFile = "assets.schema",
+                assetJsonFile = "src/test/resources/parsertests/assetParser/invalid_AmbulanceHasWaterCap.json"
+            ).parse()
+        }
+    }
+
+    @Test
+    fun testInvalidHospitalHasADog() {
+        assertThrows<IllegalArgumentException> {
+            AssetParser(
+                assetSchemaFile = "assets.schema",
+                assetJsonFile = "src/test/resources/parsertests/assetParser/invalid_HospitalHasADog.json"
+            ).parse()
+        }
+    }
 }
