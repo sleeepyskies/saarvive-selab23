@@ -43,6 +43,7 @@ object SystemTestRegistration {
         manager.registerTest(SameBaseLocation())
         manager.registerTest(BaseOnNothing())
         manager.registerTest(WhatBaseTest())
+        manager.registerTest(BaseWrongAssetsTest())
     }
 
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
@@ -73,6 +74,7 @@ object SystemTestRegistration {
         manager.registerTest(SameBaseLocation())
         manager.registerTest(BaseOnNothing())
         manager.registerTest(WhatBaseTest())
+        manager.registerTest(BaseWrongAssetsTest())
     }
 
     fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
@@ -100,6 +102,7 @@ object SystemTestRegistration {
         manager.registerTest(SameBaseLocation())
         manager.registerTest(BaseOnNothing())
         manager.registerTest(WhatBaseTest())
+        manager.registerTest(BaseWrongAssetsTest())
     }
 
     fun registerSystemTestsMutantSimulation(manager: SystemTestManager) {
