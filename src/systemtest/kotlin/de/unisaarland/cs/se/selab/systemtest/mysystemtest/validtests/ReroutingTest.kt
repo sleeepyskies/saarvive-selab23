@@ -19,7 +19,7 @@ class ReroutingTest : SystemTest() {
         assertNextLine("Simulation starts")
         // Tick 0
         assertNextLine("Simulation Tick: 0")
-        assertNextLine("Emergency Assignment: 0 assigned to 0")
+        assertNextLine("Emergency Assignment: 0 assigned to 7")
         assertNextLine("Asset Allocation: 0 allocated to 0; 4 ticks to arrive. ")
         assertNextLine("Asset Allocation: 1 allocated to 0; 4 ticks to arrive. ")
         assertNextLine("Event Triggered: 0 triggered.")

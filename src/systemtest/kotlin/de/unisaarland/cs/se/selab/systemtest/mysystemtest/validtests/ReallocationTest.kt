@@ -25,12 +25,12 @@ class ReallocationTest : SystemTest() {
         assertNextLine("Event Ended: 0 ended.")
         // Tick 2
         assertNextLine("Simulation Tick: 2")
-        assertNextLine("Emergency Assignment: 0 assigned to 0")
+        assertNextLine("Emergency Assignment: 0 assigned to 5")
         assertNextLine("Asset Allocation: 0 allocated to 0; 3 ticks to arrive.")
         assertNextLine("Asset Allocation: 1 allocated to 0; 3 ticks to arrive.")
         // Tick 3
         assertNextLine("Simulation Tick: 3")
-        assertNextLine("Emergency Assignment: 1 assigned to 0")
+        assertNextLine("Emergency Assignment: 1 assigned to 5")
         assertNextLine("Asset Allocation: 2 allocated to 1; 0 ticks to arrive.")
         assertNextLine("Asset Allocation: 3 allocated to 1; 0 ticks to arrive.")
         assertNextLine("Asset Allocation: 4 allocated to 1; 0 ticks to arrive.")

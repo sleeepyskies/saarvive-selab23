@@ -45,7 +45,14 @@ class Simulation(private val dataHolder: DataHolder, private val maxTicks: Int?)
      * Compares the current tick and the max tick if provided
      */
     private fun shouldContinue(): Boolean {
-        return if (this.maxTicks == null) !emergenciesHandled() else !emergenciesHandled() && !isLastTick()
+        var sc: Boolean
+        if (maxTicks == null) {
+            // if all emergencies are handled it should be false
+            sc = !emergenciesHandled()
+        } else {
+            if (isLastTick()) sc = false else sc = !emergenciesHandled()
+        }
+        return sc
     }
 
     /**

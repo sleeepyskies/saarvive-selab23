@@ -1,6 +1,9 @@
 digraph G {
-	0;
+	1;
+	2;
+	3;
 
-	0 -> 0 [village=Berlin; name=Harbor_Street; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
+	1 -> 1 [village=Berlin; name=Harbor_Street; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
+	2 -> 3 [village=Berlin; name=Harbor_Street2; heightLimit=3; weight=10; primaryType=sideStreet; secondaryType=none;];
 
 }

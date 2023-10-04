@@ -30,7 +30,7 @@ class CountyParser(private val dotFilePath: String) {
     private val villagesNames = mutableSetOf<String>() // For checking the condition (13)
 
     private val sPat = "[a-zA-Z][a-zA-Z_]*" // Pattern for strings ID
-    private val nPat = "\\d+" // Pattern for numbers ID
+    private val nPat = "[1-9][0-9]*" // Pattern for numbers ID
 
     /**
      * Save the file and data in string
@@ -118,7 +118,7 @@ class CountyParser(private val dotFilePath: String) {
      * Parse and create separate data structures, return the result
      */
     private fun parsedAndValid(dataInScope: String): Boolean {
-        val vPat = Pattern.compile("\\A(\\s*\\d+\\s*;)\\s*") // Pattern for vertex
+        val vPat = Pattern.compile("\\A(\\s*$nPat\\s*;)\\s*") // Pattern for vertex
 
         var stringEdges = dataInScope // will delete first matching lines for vertices
         var stringVertices = ""

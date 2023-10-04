@@ -1,11 +1,11 @@
 digraph G {
-	0;
+	5;
 	1;
 	2;
 	3;
 	4;
 
-	0 -> 1 [village=BikiniBottom; name=Fir_Way; heightLimit=3; weight=10; primaryType=sideStreet; secondaryType=none;];
+	5 -> 1 [village=BikiniBottom; name=Fir_Way; heightLimit=3; weight=10; primaryType=sideStreet; secondaryType=none;];
 	1 -> 2 [village=BikiniBottom; name=Valley_Road; heightLimit=3; weight=10; primaryType=sideStreet; secondaryType=none;];
 	2 -> 3 [village=BikiniBottom; name=Field_Lane; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
 	3 -> 4 [village=BikiniBottom; name=Linden_Avenue; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];

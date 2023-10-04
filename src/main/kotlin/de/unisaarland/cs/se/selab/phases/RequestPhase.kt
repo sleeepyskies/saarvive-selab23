@@ -26,7 +26,8 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
 
     override fun execute() {
         if (requestExists()) {
-            for (request in dataHolder.requests) {
+            while (requestExists()) {
+                val request = dataHolder.requests.first()
                 // only go through the list of bases if more vehicles need to be requested
                 for (baseID in request.baseIDsToVisit) if (request.requiredVehicles.isNotEmpty()) {
                     val base = dataHolder.bases.first { it.baseID == baseID }
@@ -44,6 +45,8 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
                 if (request.requiredVehicles.isNotEmpty()) {
                     Log.displayRequestFailed(request.emergencyID)
                 }
+
+                dataHolder.requests.remove(request)
             }
         }
     }
@@ -128,7 +131,7 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
      */
 
     private fun assignVehicle(vehicle: Vehicle, request: Request) {
-        val emergency = dataHolder.emergencies.first { it.id == request.emergencyID }
+        val emergency = dataHolder.ongoingEmergencies.first { it.id == request.emergencyID }
         val graph = dataHolder.graph
         val requiredVehicles = request.requiredVehicles
         val emergencyVertex = emergency.location.first

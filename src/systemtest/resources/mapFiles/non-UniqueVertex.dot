@@ -1,8 +1,9 @@
 digraph G {
-	0;
-	0;
+	3;
 	1;
+	1;
+	4;
 
-	0 -> 1 [village=Muelheim_an_der_Ruhr; name=Bridge_Street; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
-
+	3 -> 1 [village=Muelheim_an_der_Ruhr; name=Bridge_Street; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
+	3 -> 4 [village=Muelheim_an_der_Ruhr; name=Umama_Street; heightLimit=3; weight=10; primaryType=sideStreet; secondaryType=none;];
 }
