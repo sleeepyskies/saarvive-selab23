@@ -47,7 +47,37 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
      * @param carHeight the car's height, set to 0 when ignoring height restrictions
      */
     fun weightOfRoute(start: Vertex, destination: Vertex, carHeight: Int): Int {
-        if (start == destination) return 0
+        val visitedVertices = dijkstra(start, destination, carHeight)
+        return visitedVertices[destination]?.first ?: -1
+    }
+
+    /**
+     * Calculates the exact route a vehicle should take from it' current location to the destination.
+     * Returns a list of vertices.
+     * In case there are multiple shortest routes, the route with lower road ID's is chosen
+     * @param vehiclePosition The last visited vertex of the vehicle
+     * @param destination The destination vertex to drive to
+     * @param vehicleHeight The height of the vehicle driving
+     */
+
+    fun calculateShortestRoute(start: Vertex, destination: Vertex, carHeight: Int): List<Vertex> {
+        val visitedVertices = dijkstra(start, destination, carHeight)
+
+        val route = mutableListOf<Vertex>()
+        var currentVertex1 = destination
+        var previousVertex = visitedVertices[destination]?.second
+        // check if the start vertex is reached
+        while (previousVertex != null) {
+            route.add(currentVertex1)
+            currentVertex1 = previousVertex
+            previousVertex = visitedVertices[currentVertex1]?.second
+        }
+
+        return route.reversed().toMutableList()
+    }
+
+    private fun dijkstra(start: Vertex, destination: Vertex, carHeight: Int): MutableMap<Vertex, Pair<Int, Vertex?>> {
+        if (start == destination) return mutableMapOf()
         // Map from a vertex to its distance form start, and previous vertex on path
         val visitedVertices: MutableMap<Vertex, Pair<Int, Vertex?>> = helper.initVisitedVertices(start, this.graph)
         val unvisitedVertices: MutableList<Vertex> = graph.toMutableList()
@@ -75,92 +105,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
                 currentVertex = nextVertex
             }
         }
-        return visitedVertices[destination]?.first ?: -1
-    }
-
-    /**
-     * Calculates the exact route a vehicle should take from it' current location to the destination.
-     * Returns a list of vertices.
-     * In case there are multiple shortest routes, the route with lower road ID's is chosen
-     * @param vehiclePosition The last visited vertex of the vehicle
-     * @param destination The destination vertex to drive to
-     * @param vehicleHeight The height of the vehicle driving
-     */
-    fun calculateShortestRoute(vehiclePosition: Vertex, destination: Vertex, vehicleHeight: Int): MutableList<Vertex> {
-        var route = emptyList<Vertex>()
-        // maps how far all the vertices are from the current vertex
-        val distances = mutableMapOf<Vertex, Int>()
-        // allows a chain of previous vertices to be created that can be backtracked
-        val previousVertices = mutableMapOf<Vertex, Vertex?>()
-
-        /**
-         * end of the queue init is a lambda expression that specifies how to compare two vertices (v1 and v2)
-         * based on their distances from the start vertex (in distances)
-         * ensures that vertices with smaller distances are dequeued from the priority queue first
-         * !! double bang operator
-         * used when certain that the object won't be null and want to access it without null safety checks
-         */
-        val unvisitedVertices = PriorityQueue<Vertex> { v1, v2 -> (distances[v1] ?: 0) - (distances[v2] ?: 0) }
-
-        // val unvisitedVertices = PriorityQueue<Vertex>(compareBy { distances[it] })
-
-        // Ensure the start vertex is at the front of the queue
-//        unvisitedVertices.remove(vehiclePosition)
-//        unvisitedVertices.add(vehiclePosition)
-        // initializing distances and previous vertices for all vertices in the graph
-        for (vertex in graph) {
-            distances[vertex] = Int.MAX_VALUE.minus(1)
-            previousVertices[vertex] = null
-            // unvisitedVertices.offer(vertex)
-        }
-        distances[vehiclePosition] = 0
-        distances[destination] = Int.MAX_VALUE
-
-        // Add all vertices to the priority queue
-        unvisitedVertices.addAll(graph)
-
-        // keep track of the vertex polled in the last iteration of the while loop
-        var previousPolledVertex: Vertex? = null
-
-        // a list to store temporarily polled vertices
-        val polledVertices = mutableListOf<Vertex>()
-
-        // dijkstra's algorithm using the above structure
-        while (unvisitedVertices.isNotEmpty()) {
-            /**
-             * .poll() finds the next vertex in the queue in the order of the lambda expression
-             */
-            val currentVertex = unvisitedVertices.poll()
-
-            // Check if the current vertex is one of the connecting roads of the previous polled vertex
-            if (previousPolledVertex != null && currentVertex.id !in previousPolledVertex.connectingRoads.keys) {
-                // Add the current vertex to the temporary list
-                polledVertices.add(currentVertex)
-                continue
-            }
-
-            // found the shortest path to the end vertex
-            if (currentVertex == destination) {
-                // build the route
-                route = helper.buildRoute(destination, previousVertices)
-                // add the destination vertex to the route
-                // route.add(destination)
-            }
-
-            // traverse connected vertices
-            helper.exploreNeighbours(currentVertex, distances, previousVertices, vehicleHeight, graph)
-            // unvisitedVertices.remove(currentVertex)
-
-            // Update the previousPolledVertex
-            previousPolledVertex = currentVertex
-
-            // If there are any polled vertices, add them back to the queue
-            if (polledVertices.isNotEmpty()) {
-                unvisitedVertices.addAll(polledVertices)
-                polledVertices.clear()
-            }
-        }
-        return route.toMutableList()
+        return visitedVertices
     }
 
     /**
