@@ -32,6 +32,7 @@ object SystemTestRegistration {
         manager.registerTest(VillageAndCountyNameSameTest())
         manager.registerTest(WeightIsZeroTest())
         manager.registerTest(WrongTunnelHeightTest())
+        manager.registerTest(NoVerticesTest())
     }
 
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
@@ -51,6 +52,7 @@ object SystemTestRegistration {
         manager.registerTest(VillageAndCountyNameSameTest())
         manager.registerTest(WeightIsZeroTest())
         manager.registerTest(WrongTunnelHeightTest())
+        manager.registerTest(NoVerticesTest())
     }
 
     fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
@@ -68,11 +70,14 @@ object SystemTestRegistration {
         manager.registerTest(VillageAndCountyNameSameTest())
         manager.registerTest(WeightIsZeroTest())
         manager.registerTest(WrongTunnelHeightTest())
+
         manager.registerTest(NoVerticesTest())
     }
 
     fun registerSystemTestsMutantSimulation(manager: SystemTestManager) {
         manager.registerTest(VertexWithoutRoadConnectionTest())
         manager.registerTest(VillageAndCountyNameSameTest())
+
+        manager.registerTest(NoVerticesTest())
     }
 }
