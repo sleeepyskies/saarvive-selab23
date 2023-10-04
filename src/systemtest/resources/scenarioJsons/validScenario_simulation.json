@@ -1,0 +1,35 @@
+{
+  "events": [
+    {
+      "id": 0,
+      "type": "TRAFFIC_JAM",
+      "tick": 0,
+      "duration": 5,
+      "factor": 3,
+      "source": 1,
+      "target": 3
+    }
+  ],
+  "emergencyCalls": [
+    {
+      "id": 0,
+      "tick": 1,
+      "village": "Munich",
+      "roadName": "Mill_Lane",
+      "emergencyType": "CRIME",
+      "severity": 1,
+      "handleTime": 2,
+      "maxDuration": 3
+    },
+    {
+      "id": 1,
+      "tick": 3,
+      "village": "Munich",
+      "roadName": "By_the_Pond",
+      "emergencyType": "MEDICAL",
+      "severity": 2,
+      "handleTime": 3,
+      "maxDuration": 4
+    }
+  ]
+}
