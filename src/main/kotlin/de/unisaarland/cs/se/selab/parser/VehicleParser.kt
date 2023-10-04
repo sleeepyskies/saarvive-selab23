@@ -193,7 +193,7 @@ class VehicleParser(
     }
 
     private fun validateVehicleId(id: Int): Int {
-        if (id < 0) {
+        if (id < 0 || id > Number.TOO_BIG) {
             System.err.println("Vehicle ID must be positive")
             outputInvalidAndFinish()
         } else if (id in vehicleIDSet) {

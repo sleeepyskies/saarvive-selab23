@@ -9,6 +9,7 @@ import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.getSchema
 import de.unisaarland.cs.se.selab.global.Log
+import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.graph.PrimaryType
 import org.everit.json.schema.Schema
 import org.json.JSONArray
@@ -69,7 +70,7 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
 //            parseEvents()
 //        } catch (_: IllegalArgumentException) {
 //            outputInvalidAndFinish()
-//        } => deleted this since it leads to double output in tests
+//        }
         parseEvents()
         // Log.displayInitializationInfoValid(this.fileName)
         return parsedEvents
@@ -234,7 +235,7 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
      * Checks whether the specified duration value belongs to the range of valid values.
      */
     private fun validateEventId(id: Int): Boolean {
-        if (id < 0) {
+        if (id < 0 || id > Number.TOO_BIG) {
             Logger.getLogger("Event ID must be non-negative")
             return false
         } else if (eventIDSet.contains(id)) {
@@ -250,7 +251,7 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
      * Checks whether the specified tick value belongs to the range of valid values.
      */
     private fun validateEventTick(tick: Int): Boolean {
-        if (tick < 0) {
+        if (tick < 0 || tick > Number.TOO_BIG) {
             Logger.getLogger("Event tick must be non-negative")
             return false
         }
@@ -260,7 +261,7 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
     /** Validates duration of events
      */
     private fun validateDuration(duration: Int): Boolean {
-        if (duration < 1) {
+        if (duration < 1 || duration > Number.TOO_BIG) {
             Logger.getLogger("Duration must be positive")
             return false
         }
@@ -270,7 +271,7 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
     /** Validates the factor of events
      */
     private fun validateEventFactor(factor: Int): Boolean {
-        if (factor < 1) {
+        if (factor < 1 || factor > Number.TOO_BIG) {
             Logger.getLogger("Factor must be positive")
             return false
         }
@@ -302,7 +303,9 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
     /** Validates the source ID and target ID of events
      */
     private fun validateSourceAndTarget(sourceId: Int, targetId: Int): Boolean {
-        if (sourceId < 0 || targetId < 0) {
+        val condition1 = sourceId < 0 || targetId < 0
+        val condition2 = sourceId > Number.TOO_BIG || targetId > Number.TOO_BIG
+        if (condition1 || condition2) {
             Logger.getLogger("Source and Target IDs must be positive")
             return false
         }
@@ -317,7 +320,7 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
         for (v in vehicles) {
             listOfVehicles.add(v.id)
         }
-        if (vehicleId < 0) {
+        if (vehicleId < 0 || vehicleId > Number.TOO_BIG) {
             Logger.getLogger("Vehicle ID must be positive")
             return false
         } else if (vehicleId !in listOfVehicles) {

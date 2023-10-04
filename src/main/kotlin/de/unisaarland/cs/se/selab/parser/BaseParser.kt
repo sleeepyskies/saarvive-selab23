@@ -6,6 +6,7 @@ import de.unisaarland.cs.se.selab.dataClasses.bases.Hospital
 import de.unisaarland.cs.se.selab.dataClasses.bases.PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.global.Log
+import de.unisaarland.cs.se.selab.global.Number
 import org.json.JSONObject
 
 /**
@@ -82,7 +83,7 @@ class BaseParser(private val json: JSONObject, private val fileName: String) {
      * Validates base Id
      */
     fun validateBaseId(id: Int): Int {
-        if (id < 0) {
+        if (id < 0 || id > Number.TOO_BIG) {
             System.err.println("Base ID must be positive")
             outputInvalidAndFinish()
         } else if (id in setBaseId) {

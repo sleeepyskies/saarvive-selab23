@@ -239,7 +239,7 @@ class AssetParserTest {
     }
 
     @Test
-    fun `valid scenario file`(){
+    fun `valid scenario file`() {
         val parser = AssetParser(
             assetSchemaFile = "assets.schema",
             assetJsonFile = "src/systemtest/resources/assetsJsons/validScenario1_bases.json"

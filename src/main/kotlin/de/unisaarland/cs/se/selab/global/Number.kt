@@ -20,4 +20,5 @@ object Number {
     const val TWO_THOUSAND_FOUR_HUNDRED = 2400
     const val THREE_THOUSAND = 3000
     const val SIX_THOUSAND = 6000
+    const val TOO_BIG = 2147483647
 }

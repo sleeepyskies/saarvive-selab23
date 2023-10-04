@@ -4,6 +4,7 @@ import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
 import de.unisaarland.cs.se.selab.getSchema
 import de.unisaarland.cs.se.selab.global.Log
+import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.graph.Graph
 import org.everit.json.schema.Schema
 import org.json.JSONObject
@@ -154,7 +155,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     /** Validates the tick of emergencies
      */
     fun validateEmergencyTick(tick: Int): Boolean {
-        if (tick <= 0) {
+        if (tick <= 0 || tick > Number.TOO_BIG) {
             Logger.getLogger("Emergency tick must be positive")
             return false
         }
@@ -176,7 +177,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     /** Validates the handle time of emergencies
      */
     fun validateHandleTime(handleTime: Int): Boolean {
-        if (handleTime < 1) {
+        if (handleTime < 1 || handleTime > Number.TOO_BIG) {
             Logger.getLogger("Handle time must be positive")
             return false
         }
@@ -187,7 +188,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      * is greater than the handle time.
      */
     fun validateMaxDuration(maxDuration: Int, handleTime: Int): Boolean {
-        if (maxDuration <= handleTime || handleTime <= 0) {
+        if (maxDuration <= handleTime || maxDuration < 2 || maxDuration > Number.TOO_BIG) {
             Logger.getLogger("Maximum duration must be greater than handle time")
             return false
         }
