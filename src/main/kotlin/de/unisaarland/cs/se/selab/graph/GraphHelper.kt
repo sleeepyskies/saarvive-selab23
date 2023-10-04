@@ -84,7 +84,6 @@ class GraphHelper {
                 nextVertex = graph.find { vertex: Vertex -> vertex.id == neighbor }
             }
         }
-
         // only return nextVertex if not null
         if (nextVertex != null) return nextVertex
 
