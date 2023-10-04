@@ -10,6 +10,6 @@ class SameIDBaseTest : SystemTest() {
     override val maxTicks = 5
     override suspend fun run() {
         assertNextLine("Initialization Info: example_map.dot successfully parsed and validated")
-        assertNextLine("Initialization Info: baseOnNothing_assets.json invalid")
+        assertNextLine("Initialization Info: sameIDBase_assets.json invalid")
     }
 }

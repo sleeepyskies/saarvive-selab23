@@ -52,6 +52,7 @@ object SystemTestRegistration {
         manager.registerTest(SameIDBaseTest())
         manager.registerTest(WrongWaterTest())
         manager.registerTest(NotEnoughWaterTest())
+        manager.registerTest(BackseatDriversTest())
     }
 
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
@@ -91,6 +92,7 @@ object SystemTestRegistration {
         manager.registerTest(SameIDBaseTest())
         manager.registerTest(WrongWaterTest())
         manager.registerTest(NotEnoughWaterTest())
+        manager.registerTest(BackseatDriversTest())
     }
 
     fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
@@ -127,6 +129,7 @@ object SystemTestRegistration {
         manager.registerTest(SameIDBaseTest())
         manager.registerTest(WrongWaterTest())
         manager.registerTest(NotEnoughWaterTest())
+        manager.registerTest(BackseatDriversTest())
     }
 
     fun registerSystemTestsMutantSimulation(manager: SystemTestManager) {
