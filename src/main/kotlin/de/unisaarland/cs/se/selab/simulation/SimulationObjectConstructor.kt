@@ -17,6 +17,7 @@ import de.unisaarland.cs.se.selab.parser.AssetParser
 import de.unisaarland.cs.se.selab.parser.CountyParser
 import de.unisaarland.cs.se.selab.parser.EventsParser
 import de.unisaarland.cs.se.selab.parser.SimulationParser
+import java.util.*
 
 /**
  * Is responsible for calling the parsers, cross
@@ -178,22 +179,37 @@ class SimulationObjectConstructor(
      * Checks if the vertices and road exists, as well as checking the vertices are connected via the edge
      */
     private fun roadExists(sourceID: Int, targetID: Int, graph: Graph): Boolean {
-        // find the two event vertices
-        val sourceVertex = graph.graph.find { vertex: Vertex -> vertex.id == sourceID }
-        val targetVertex = graph.graph.find { vertex: Vertex -> vertex.id == targetID }
+        // Find the source and target vertices
+        val sourceVertex = graph.graph.find { vertex -> vertex.id == sourceID }
+        val targetVertex = graph.graph.find { vertex -> vertex.id == targetID }
 
-        // check they exist
+        // Check if source and target vertices exist
         if (sourceVertex == null || targetVertex == null) return false
 
-        // check they are connected via an edge
-        if (
-            sourceVertex.connectingRoads[targetVertex.id] == null &&
-            targetVertex.connectingRoads[sourceVertex.id] == null
-        ) {
-            return false
+        // Use Breadth First Search to check for connectivity
+        val visited = mutableSetOf<Int>()
+        val queue = LinkedList<Int>()
+
+        queue.add(sourceID)
+        visited.add(sourceID)
+
+        while (queue.isNotEmpty()) {
+            val currentVertexID = queue.poll()
+            val currentVertex = graph.graph.find { vertex -> vertex.id == currentVertexID }
+
+            // Check if the current vertex is the target vertex
+            if (currentVertexID == targetID) return true
+
+            // Explore neighbors (vertices connected by roads)
+            currentVertex?.connectingRoads?.keys?.forEach { neighborID ->
+                if (neighborID !in visited) {
+                    queue.add(neighborID)
+                    visited.add(neighborID)
+                }
+            }
         }
 
-        return true
+        return false
     }
 
     /**
