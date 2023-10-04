@@ -16,6 +16,7 @@ import de.unisaarland.cs.se.selab.graph.PrimaryType
 import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.SecondaryType
 import de.unisaarland.cs.se.selab.graph.Vertex
+import org.junit.jupiter.api.Test
 
 class GraphComplexClassTests {
 
@@ -156,11 +157,11 @@ class GraphComplexClassTests {
 
     val constructionEventForProximity = Construction(5, 10, 1, 3, 4, 10, false)
 
-//    @Test
-//    fun calculateShortestPathWithSameNumTicks() {
-//        val path = graph.calculateShortestPath(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
-//        assert(path == 6)
-//    }
+    @Test
+    fun calculateShortestPathWithSameNumTicks() {
+        val path = graph.calculateShortestPath(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
+        assert(path == 6)
+    }
 
 //    @Test
 //    fun calculateShortestRouteTwoPossibilities() {
