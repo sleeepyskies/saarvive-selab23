@@ -44,6 +44,8 @@ object SystemTestRegistration {
         manager.registerTest(BaseOnNothing())
         manager.registerTest(WhatBaseTest())
         manager.registerTest(BaseWrongAssetsTest())
+        manager.registerTest(PuppyHeavenTest())
+        manager.registerTest(AnAppleADayTest())
     }
 
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
@@ -75,6 +77,8 @@ object SystemTestRegistration {
         manager.registerTest(BaseOnNothing())
         manager.registerTest(WhatBaseTest())
         manager.registerTest(BaseWrongAssetsTest())
+        manager.registerTest(PuppyHeavenTest())
+        manager.registerTest(AnAppleADayTest())
     }
 
     fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
@@ -103,6 +107,8 @@ object SystemTestRegistration {
         manager.registerTest(BaseOnNothing())
         manager.registerTest(WhatBaseTest())
         manager.registerTest(BaseWrongAssetsTest())
+        manager.registerTest(PuppyHeavenTest())
+        manager.registerTest(AnAppleADayTest())
     }
 
     fun registerSystemTestsMutantSimulation(manager: SystemTestManager) {
