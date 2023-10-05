@@ -10,6 +10,7 @@ import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.ValidSmallM
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.AllocateFireEmergencyOneTest1
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.AllocateFireEmergencyOneTest2
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.AllocateFireEmergencyOneTest3
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.TravelMultipleVerticesTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.BROvalidScenario
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.ValidScenario1
 import de.unisaarland.cs.se.selab.systemtest.runner.SystemTestManager
@@ -148,6 +149,7 @@ object SystemTestRegistration {
         manager.registerTest(AllocateFireEmergencyOneTest1())
         manager.registerTest(AllocateFireEmergencyOneTest2())
         manager.registerTest(AllocateFireEmergencyOneTest3())
+        manager.registerTest(TravelMultipleVerticesTest())
         // Valid scenarios
         manager.registerTest(ValidScenario1())
         // manager.registerTest(ComplexScenario1Test())
@@ -214,10 +216,12 @@ object SystemTestRegistration {
         manager.registerTest(WrongEmergenciesTest())
         manager.registerTest(WrongEventsTest())
         // manager.registerTest(BROvalidScenario())
+        manager.registerTest(TravelMultipleVerticesTest())
     }
 
     fun registerSystemTestsMutantSimulation(manager: SystemTestManager) {
         // Valid scenarios
         manager.registerTest(AllocateFireEmergencyOneTest1())
+        manager.registerTest(TravelMultipleVerticesTest())
     }
 }
