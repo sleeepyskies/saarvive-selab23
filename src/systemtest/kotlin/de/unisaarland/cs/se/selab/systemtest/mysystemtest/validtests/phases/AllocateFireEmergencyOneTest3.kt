@@ -10,9 +10,6 @@ class AllocateFireEmergencyOneTest3 : SystemTest() {
     override val scenario = "scenarioJsons/oneFireEmergency_scenario.json"
     override val maxTicks = 5
 
-    private val requestString = "Asset Request: 0 sent to 1 for 0."
-    private val requestFail = "Request Failed: 0 failed."
-
     override suspend fun run() {
         // Parsing + Validation + Construction
         assertNextLine("Initialization Info: decentGraphSimTests.dot successfully parsed and validated")
@@ -29,19 +26,19 @@ class AllocateFireEmergencyOneTest3 : SystemTest() {
         assertNextLine("Simulation Tick: 1")
         assertNextLine("Emergency Assignment: 0 assigned to 0")
         assertNextLine("Asset Allocation: 0 allocated to 0; 1 ticks to arrive.")
-        assertNextLine(requestString)
-        assertNextLine(requestFail)
+        assertNextLine("Asset Request: 0 sent to 1 for 0.")
+        assertNextLine("Request Failed: 0 failed.")
 
         // Tick 2
         assertNextLine("Simulation Tick: 2")
-        assertNextLine(requestString)
-        assertNextLine(requestFail)
+        assertNextLine("Asset Request: 1 sent to 1 for 0.")
+        assertNextLine("Request Failed: 1 failed.")
         assertNextLine("Asset Arrival: 0 arrived at 1.")
 
         // Tick 3
         assertNextLine("Simulation Tick: 2")
-        assertNextLine(requestString)
-        assertNextLine(requestFail)
+        assertNextLine("Asset Request: 2 sent to 1 for 0.")
+        assertNextLine("Request Failed: 2 failed.")
         assertNextLine("Emergency Failed: 0 failed.")
 
         // Simulation End
