@@ -25,7 +25,7 @@ class AllocateFireEmergencyOneTest3 : SystemTest() {
         // Tick 1
         assertNextLine("Simulation Tick: 1")
         assertNextLine("Emergency Assignment: 0 assigned to 0")
-        assertNextLine("Asset Allocation: 0 allocated to 0; 1 ticks to arrive")
+        assertNextLine("Asset Allocation: 0 allocated to 0; 1 ticks to arrive.")
         assertNextLine("Asset Request: 0 sent to 1 for 0.")
         assertNextLine("Request Failed: 0 failed.")
 
