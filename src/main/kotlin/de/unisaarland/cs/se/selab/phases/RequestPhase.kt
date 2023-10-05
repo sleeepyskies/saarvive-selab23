@@ -14,30 +14,28 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
     val allocationHelper = AllocationHelper(dataHolder)
 
     override fun execute() {
-        if (requestExists()) {
-            while (requestExists()) {
-                val request = dataHolder.requests.first()
-                val emergency = dataHolder.ongoingEmergencies.first { it.id == request.emergencyID }
-                // only go through the list of bases if more vehicles need to be requested
-                for (baseID in request.baseIDsToVisit) if (request.requiredVehicles.isNotEmpty()) {
-                    val base = dataHolder.bases.first { it.baseID == baseID }
-                    val assignableVehicles = allocationHelper.getAssignableAssets(base, emergency)
-                    val normalVehicles = allocationHelper.getNormalVehicles(assignableVehicles)
-                    val specialVehicles = allocationHelper.getSpecialVehicles(assignableVehicles)
+        while (requestExists()) {
+            val request = dataHolder.requests.first()
+            val emergency = dataHolder.ongoingEmergencies.first { it.id == request.emergencyID }
+            // only go through the list of bases if more vehicles need to be requested
+            for (baseID in request.baseIDsToVisit) if (request.requiredVehicles.isNotEmpty()) {
+                val base = dataHolder.bases.first { it.baseID == baseID }
+                val assignableVehicles = allocationHelper.getAssignableAssets(base, emergency)
+                val normalVehicles = allocationHelper.getNormalVehicles(assignableVehicles)
+                val specialVehicles = allocationHelper.getSpecialVehicles(assignableVehicles)
 
-                    allocationHelper.assignWithoutCapacity(normalVehicles, emergency)
-                    allocationHelper.assignBasedOnCapacity(specialVehicles, emergency)
-                } else {
-                    break
-                }
-
-                // log request failing
-                if (request.requiredVehicles.isNotEmpty()) {
-                    Log.displayRequestFailed(request.emergencyID)
-                }
-
-                dataHolder.requests.remove(request)
+                allocationHelper.assignWithoutCapacity(normalVehicles, emergency)
+                allocationHelper.assignBasedOnCapacity(specialVehicles, emergency)
+            } else {
+                break
             }
+
+            // log request failing
+            if (request.requiredVehicles.isNotEmpty()) {
+                Log.displayRequestFailed(request.emergencyID)
+            }
+
+            dataHolder.requests.remove(request)
         }
     }
 
