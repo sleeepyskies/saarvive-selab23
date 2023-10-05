@@ -1,0 +1,44 @@
+{
+  "events": [
+    {
+      "id": 0,
+      "type": "RUSH_HOUR",
+      "tick": 3,
+      "duration": 5,
+      "factor": 3,
+      "roadTypes": [
+        "SIDE_STREET"
+      ]
+    },
+    {
+      "id": 1,
+      "type": "ROAD_CLOSURE",
+      "tick": 4,
+      "duration": 2,
+      "source": 5,
+      "target": 0
+    }
+  ],
+  "emergencyCalls": [
+    {
+      "id": 0,
+      "tick": 3,
+      "village": "VillageA",
+      "roadName": "Jupiter_Street",
+      "emergencyType": "FIRE",
+      "severity": 3,
+      "handleTime": 10,
+      "maxDuration": 20
+    },
+    {
+      "id": 1,
+      "tick": 1,
+      "village": "VillageA",
+      "roadName": "Magnolia_Lane",
+      "emergencyType": "MEDICAL",
+      "severity": 1,
+      "handleTime": 5,
+      "maxDuration": 15
+    }
+  ]
+}
