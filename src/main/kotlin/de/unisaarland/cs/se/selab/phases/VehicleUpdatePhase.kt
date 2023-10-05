@@ -66,14 +66,15 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
         vehicle.currentRouteWeightProgress += Number.TEN
 
         // check if destination has been reached
-        if (vehicle.remainingRouteWeight <= 0) {
+        if (vehicle.remainingRouteWeight <= 0 && vehicle.currentRoute.isNotEmpty()) {
             updateRouteEndReached(vehicle)
         } // check if a vertex has been crossed
         else if (
             vehicle.weightTillLastVisitedVertex +
             (vehicle.currentRoad?.weight ?: 0) <= vehicle.currentRouteWeightProgress
         ) {
-            updateRoadEndReached(vehicle)
+            // quick fix: doing this to avoid checking empty list, pls check sky
+            if (vehicle.currentRoute.isNotEmpty()) updateRoadEndReached(vehicle)
         }
     }
 
