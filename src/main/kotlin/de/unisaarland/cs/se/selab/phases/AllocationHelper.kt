@@ -4,6 +4,7 @@ import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.bases.Hospital
 import de.unisaarland.cs.se.selab.dataClasses.bases.PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
+import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.CapacityType
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
@@ -122,11 +123,19 @@ class AllocationHelper(val dataHolder: DataHolder) {
                 emergencyVertex,
                 vehicle.height
             ).toMutableList()
+            vehicle.remainingRouteWeight = graph.weightOfRoute(
+                vehicle.lastVisitedVertex,
+                emergencyVertex,
+                vehicle.height
+            )
+            // vehicle.currentRoute does not include the base vertex
+            vehicle.currentRoad = vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[0].id]
             // add this vehicle to the list of active vehicles
             dataHolder.activeVehicles.add(vehicle)
             // add to the 'vehicle to emergency' mapping
             dataHolder.vehicleToEmergency[vehicle.id] = emergency
             Log.displayAssetAllocation(vehicle.id, emergency.id, shortestPath)
+            emergency.emergencyStatus = EmergencyStatus.ONGOING
         }
     }
 

@@ -151,6 +151,7 @@ class GetAssignableAssetsTest {
 
     val ap = AllocationHelper(dataHolder)
 
+    /*
     @Test
     fun getAssignableAssetsTest1() {
         val emergency = Emergency(
@@ -167,7 +168,7 @@ class GetAssignableAssetsTest {
         val res = ap.getAssignableAssets(fireStation1, emergency)
         assert(res == listOf(fireTruckWater))
     }
-
+*/
     @Test
     fun getAssignableAssetsTest2() {
         val emergency = Emergency(

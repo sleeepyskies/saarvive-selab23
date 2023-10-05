@@ -34,40 +34,51 @@ class BaseParser(private val json: JSONObject, private val fileName: String) {
         }
         for (i in 0 until basesArray.length()) {
             val jsonBase = basesArray.getJSONObject(i)
-
-            val id = validateBaseId(jsonBase.getInt("id"))
-            val baseType = validateBaseType(jsonBase.getString("baseType"))
-            val location = validateLocation(jsonBase.getInt("location"))
-            val staff = validateStaff(jsonBase.getInt("staff"))
-            val vehicles = mutableListOf<Vehicle>() // Initialize as an empty mutable list
-
-            val base: Base = when (baseType) {
-                "FIRE_STATION" -> {
-                    if (jsonBase.has(DOGS) || jsonBase.has(DOCTORS)) {
-                        System.err.println("FIRE STATION should not have $DOGS or $DOCTORS properties")
-                        outputInvalidAndFinish()
-                    }
-                    FireStation(id, location, staff, vehicles)
-                }
-                "HOSPITAL" -> {
-                    if (jsonBase.has(DOGS)) {
-                        System.err.println("HOSPITAL should not have $DOGS property")
-                        outputInvalidAndFinish()
-                    }
-                    val doctors = validateNonNegative(jsonBase.getInt(DOCTORS), DOCTORS)
-                    Hospital(id, location, staff, doctors, vehicles)
-                }
-                "POLICE_STATION" -> {
-                    if (jsonBase.has(DOCTORS)) {
-                        System.err.println("POLICE STATION should not have $DOCTORS property")
-                        outputInvalidAndFinish()
-                    }
-                    val dogs = validateNonNegative(jsonBase.getInt(DOGS), DOGS)
-                    PoliceStation(id, location, staff, dogs, vehicles)
-                }
-                else -> throw IllegalArgumentException("Invalid baseType: $baseType")
-            }
+            val base = parseSingleBase(jsonBase)
             parsedBases.add(base)
+        }
+    }
+
+    private fun parseSingleBase(jsonBase: JSONObject): Base {
+        val id = validateBaseId(jsonBase.getInt("id"))
+        val baseType = validateBaseType(jsonBase.getString("baseType"))
+        val location = validateLocation(jsonBase.getInt("location"))
+        val staff = validateStaff(jsonBase.getInt("staff"))
+        val vehicles = mutableListOf<Vehicle>() // Initialize as an empty mutable list
+
+        return when (baseType) {
+            "FIRE_STATION" -> {
+                if (jsonBase.has(DOGS) || jsonBase.has(DOCTORS)) {
+                    System.err.println("FIRE STATION should not have $DOGS or $DOCTORS properties")
+                    outputInvalidAndFinish()
+                }
+                FireStation(id, location, staff, vehicles)
+            }
+            "HOSPITAL" -> {
+                if (!jsonBase.has(DOCTORS)) { // Check if doctors attribute is missing
+                    System.err.println("HOSPITAL must have $DOCTORS property")
+                    outputInvalidAndFinish()
+                }
+                if (jsonBase.has(DOGS)) {
+                    System.err.println("HOSPITAL should not have $DOGS property")
+                    outputInvalidAndFinish()
+                }
+                val doctors = validateNonNegative(jsonBase.getInt(DOCTORS), DOCTORS)
+                Hospital(id, location, staff, doctors, vehicles)
+            }
+            "POLICE_STATION" -> {
+                if (!jsonBase.has(DOGS)) { // Check if dogs attribute is missing
+                    System.err.println("POLICE STATION must have $DOGS property")
+                    outputInvalidAndFinish()
+                }
+                if (jsonBase.has(DOCTORS)) {
+                    System.err.println("POLICE STATION should not have $DOCTORS property")
+                    outputInvalidAndFinish()
+                }
+                val dogs = validateNonNegative(jsonBase.getInt(DOGS), DOGS)
+                PoliceStation(id, location, staff, dogs, vehicles)
+            }
+            else -> throw IllegalArgumentException("Invalid baseType: $baseType")
         }
     }
 
