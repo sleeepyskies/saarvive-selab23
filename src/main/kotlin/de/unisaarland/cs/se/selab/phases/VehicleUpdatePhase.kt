@@ -12,6 +12,7 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleStatus
 import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.global.Number
+import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 import kotlin.math.ceil
 import kotlin.math.max
@@ -33,7 +34,7 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
         }
         // update each active vehicle position
         if (dataHolder.activeVehicles.isNotEmpty()) {
-            // update all moving vehicles, exclude only assigned ones
+            // update only moving vehicles
             val movingVehicles =
                 dataHolder.activeVehicles.filter {
                     it.vehicleStatus == VehicleStatus.MOVING_TO_BASE ||
@@ -91,7 +92,7 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * Updates vehicle weightTillDestination if an event has occurred on its current road
      */
     private fun updateIfEventOccured(vehicle: Vehicle) {
-        var vehicleEvent: Event? = null
+        var vehicleEvent: Event?
 
         if (vehicle.currentRoad?.activeEvents?.isNotEmpty() == true) {
             vehicleEvent = vehicle.currentRoad?.activeEvents?.get(0)
@@ -100,7 +101,7 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
 
             val weightAlongRoad = vehicle.currentRouteWeightProgress - vehicle.weightTillLastVisitedVertex
             val weightTillNextVertex = (vehicle.currentRoad?.baseWeight ?: 0) - weightAlongRoad
-            var factor = 1
+            var factor: Int
 
             when (vehicleEvent) {
                 is Construction -> factor = vehicleEvent.factor
@@ -120,12 +121,55 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * updates accordingly
      */
     private fun updateRoadEndReached(vehicle: Vehicle) {
-        vehicle.weightTillLastVisitedVertex += vehicle.currentRoad?.weight ?: 0
-        // updates the current road in vehicle
-        vehicle.currentRoad = vehicle.currentRoute[0].connectingRoads[1]
-        vehicle.lastVisitedVertex = vehicle.currentRoute[0]
-        // removes the passed vertex from vehicles route
-        vehicle.currentRoute = vehicle.currentRoute.drop(1)
+        // we know that we will not cross our emergency vertex since we check first for this
+        // -> we may assume that we will always have enough vertices on our rout
+        // we also know that we will cross at least one vertex
+
+        // update vehicle position for exact movement
+        vehicle.remainingRouteWeight = vehicle.remainingRouteWeight + Number.TEN
+        // increase currentRouteProgress by 10
+        vehicle.currentRouteWeightProgress -= Number.TEN
+
+        // find the amount of vertices we have crossed
+        var nextRoad: Road? = vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[1].id]
+        var totalRoadWeight = 0
+        var verticesCrossed = 0
+
+        // while the sum of traveled roads(in this tick) is less than 10
+        // unsure if < or <=
+        while (totalRoadWeight < Number.TEN) {
+            // add the weight until next vertex
+            totalRoadWeight += weightTillNextVertex(vehicle)
+            // if we have crossed the weight move limit(10), break the loop
+            if (totalRoadWeight > Number.TEN) {
+                break
+            }
+            // increase vertices crossed
+            verticesCrossed++
+            // remove vertex from route
+            vehicle.currentRoute = vehicle.currentRoute.drop(1)
+            // update our last visited vertex
+            vehicle.lastVisitedVertex = vehicle.currentRoute[0]
+            // set current road
+            vehicle.currentRoad = nextRoad
+            // update next road
+            nextRoad = vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[1].id]
+        }
+
+        // update the vehicle position
+        // decrease remainingRouteWeight by 10
+        vehicle.remainingRouteWeight =
+            max(0, vehicle.remainingRouteWeight - Number.TEN) // ensures no negative road progress
+        // increase currentRouteProgress by 10
+        vehicle.currentRouteWeightProgress += Number.TEN
+    }
+
+    /**
+     * Returns the weight still needed to travel to reach the end of the road
+     */
+    private fun weightTillNextVertex(vehicle: Vehicle): Int {
+        val currentRoadWeight = vehicle.currentRouteWeightProgress - vehicle.weightTillLastVisitedVertex
+        return (vehicle.currentRoad?.weight ?: 0) - currentRoadWeight
     }
 
     /**
@@ -133,8 +177,9 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * updates accordingly
      */
     private fun updateRouteEndReached(vehicle: Vehicle) {
+        // set last vertex to emergency vertex and currentRoute to only contain emergency vertex
         if (vehicle.currentRoute.size > 1) {
-            vehicle.currentRoute = vehicle.currentRoute.drop(1)
+            vehicle.currentRoute = listOf(vehicle.currentRoute.last())
         }
         vehicle.lastVisitedVertex = vehicle.currentRoute[0]
         if (vehicle.currentRoute.size == 1) {
