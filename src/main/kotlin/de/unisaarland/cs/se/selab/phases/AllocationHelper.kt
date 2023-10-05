@@ -121,7 +121,7 @@ class AllocationHelper(val dataHolder: DataHolder) {
                 vehicle.lastVisitedVertex,
                 emergencyVertex,
                 vehicle.height
-            ).toMutableList()
+            ).toMutableList().drop(1)
             vehicle.remainingRouteWeight = graph.weightOfRoute(
                 vehicle.lastVisitedVertex,
                 emergencyVertex,
