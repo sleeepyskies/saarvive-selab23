@@ -141,7 +141,7 @@ class CountyParser(private val dotFilePath: String) {
             if (!villageHasMainStreet() || !sideStreetExists()) {
                 System.err.println(
                     "Village has no main street or side street does not exist. " +
-                        "Called in parsedAndValid()."
+                            "Called in parsedAndValid()."
                 )
                 return false
             }
@@ -173,16 +173,6 @@ class CountyParser(private val dotFilePath: String) {
      * (2. Each vertex is connected to at least one other vertex)
      */
     private fun vertexConnectedToAnother(): Boolean {
-        for (i in this.villagesNames.indices) {
-            for (j in this.villagesNames.indices) {
-                val village1 = this.villagesNames.elementAt(i).lowercase()
-                val village2 = this.villagesNames.elementAt(j).lowercase()
-                if (i != j && village1 == village2) {
-                    System.err.println("Village name is not unique. Called in roadNameIsUnique().")
-                    return false
-                }
-            }
-        }
         this.listOfVerticesData.forEach { vertex ->
             var connects = false
             this.listOfVerticesToRoads.keys.forEach { pair ->
@@ -256,7 +246,7 @@ class CountyParser(private val dotFilePath: String) {
             ) {
                 villageToRoadTypeMap[singleData.getOrDefault(StringLiterals.VILLAGE, StringLiterals.ERROR)] =
                     singleData.getOrDefault(StringLiterals.PRIMARY_TYPE, StringLiterals.ERROR) ==
-                    StringLiterals.MAIN_STREET
+                            StringLiterals.MAIN_STREET
             } else {
                 if (singleData.getValue(StringLiterals.PRIMARY_TYPE) == StringLiterals.MAIN_STREET) {
                     villageToRoadTypeMap.put(singleData.getValue(StringLiterals.VILLAGE), true)
