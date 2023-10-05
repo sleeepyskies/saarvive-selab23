@@ -9,6 +9,8 @@ class ValidScenario2 : SystemTest() {
     override val scenario = "scenarioJsons/validScenario2_simulation.json"
     override val maxTicks = 50
 
+    private val requestfailed0 = "Request Failed: 0 failed."
+
     override suspend fun run() {
         assertNextLine("Initialization Info: validScenario2_map.dot successfully parsed and validated")
         assertNextLine("Initialization Info: validScenario2_bases.json successfully parsed and validated")
@@ -48,18 +50,18 @@ class ValidScenario2 : SystemTest() {
         assertNextLine("Asset Request: 1 sent to 0 for 0.")
         assertNextLine("Asset Allocation: 1 allocated to 0; 1 ticks to arrive.")
         assertNextLine("Asset Allocation: 18 allocated to 0; 1 ticks to arrive.")
-        assertNextLine("Request Failed: 0 failed.")
+        assertNextLine(requestfailed0)
         assertNextLine("Event Triggered: 0 triggered.") // rush hour affects the ambulance 0 for event 1
         assertNextLine("Assets Rerouted: 1")
         assertNextLine("Simulation Tick: 4")
 
         assertNextLine("Event Triggered: 1 triggered.")
-        assertNextLine("Assets Rerouted: 1") // more are rerouted
+        assertNextLine("Assets Rerouted: 11") // more are rerouted
         assertNextLine("Simulation Tick: 5")
         assertNextLine("Asset Arrival: 1 arrived at 8.")
         assertNextLine("Asset Arrival: 18 arrived at 8.")
         assertNextLine("Simulation Tick: 6")
-        assertNextLine("Event Ended: 1 ended.") //road closure event
+        assertNextLine("Event Ended: 1 ended.") // road closure event
         // vehicles arrive at tick 6
         assertNextLine("Simulation Tick: 7")
         assertNextLine("Simulation Tick: 8")
@@ -74,7 +76,5 @@ class ValidScenario2 : SystemTest() {
         assertNextLine("Simulation Tick: 15")
         assertNextLine("Simulation Tick: 16")
         // emergency 1 ends
-
-
     }
 }
