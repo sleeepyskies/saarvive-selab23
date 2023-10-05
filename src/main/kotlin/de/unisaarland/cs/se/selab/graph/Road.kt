@@ -14,4 +14,5 @@ class Road(
     internal val heightLimit: Int,
 ) {
     val activeEvents: MutableList<Event> = mutableListOf()
+    val baseWeight: Int = weight
 }

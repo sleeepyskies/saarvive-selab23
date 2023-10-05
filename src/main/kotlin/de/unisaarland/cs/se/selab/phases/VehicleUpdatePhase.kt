@@ -1,6 +1,10 @@
 package de.unisaarland.cs.se.selab.phases
 
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
+import de.unisaarland.cs.se.selab.dataClasses.events.Construction
+import de.unisaarland.cs.se.selab.dataClasses.events.Event
+import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
+import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
@@ -59,6 +63,11 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * has reached the end of a road or route.
      */
     private fun updateVehiclePosition(vehicle: Vehicle) {
+        // check if an event has affected the current road
+        if ((vehicle.currentRoad?.baseWeight ?: 0) != (vehicle.currentRoad?.weight ?: 0)) {
+            updateIfEventOccured(vehicle)
+        }
+
         // decrease remainingRouteWeight by 10
         vehicle.remainingRouteWeight =
             max(0, vehicle.remainingRouteWeight - Number.TEN) // ensures no negative road progress
@@ -75,6 +84,34 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
         ) {
             // quick fix: doing this to avoid checking empty list, pls check sky
             if (vehicle.currentRoute.isNotEmpty()) updateRoadEndReached(vehicle)
+        }
+    }
+
+    /**
+     * Updates vehicle weightTillDestination if an event has occurred on its current road
+     */
+    private fun updateIfEventOccured(vehicle: Vehicle) {
+        var vehicleEvent: Event? = null
+
+        if (vehicle.currentRoad?.activeEvents?.isNotEmpty() == true) {
+            vehicleEvent = vehicle.currentRoad?.activeEvents?.get(0)
+
+            if (vehicleEvent == null) return
+
+            val weightAlongRoad = vehicle.currentRouteWeightProgress - vehicle.weightTillLastVisitedVertex
+            val weightTillNextVertex = (vehicle.currentRoad?.baseWeight ?: 0) - weightAlongRoad
+            var factor = 1
+
+            when (vehicleEvent) {
+                is Construction -> factor = vehicleEvent.factor
+                is TrafficJam -> factor = vehicleEvent.factor
+                is RushHour -> factor = vehicleEvent.factor
+                else -> return
+            }
+
+            val increasedWeightTillNextVertex = weightTillNextVertex * factor
+            val weightToAdd = increasedWeightTillNextVertex - weightTillNextVertex
+            vehicle.remainingRouteWeight += weightToAdd
         }
     }
 
