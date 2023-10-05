@@ -1,26 +1,25 @@
 digraph G {
-	1;
-	2;
-	3;
-	4;
-	5;
-	6;
-	7;
-	8;
-	9;
-	10;
+    1;
+    2;
+    3;
+    4;
+    5;
+    6;
+    7;
+    8;
+    9;
+    10;
 
-	1 -> 2 [village=VillageA; name=road_1_2; heightLimit=5; weight=20; primaryType=sideStreet; secondaryType=none;];
-	1 -> 3 [village=VillageA; name=road_1_3; heightLimit=2; weight=5; primaryType=sideStreet; secondaryType=tunnel;];
-	1 -> 4 [village=VillageA; name=road_1_4; heightLimit=5; weight=10; primaryType=mainStreet; secondaryType=none;];
-	3 -> 2 [village=VillageA; name=road_3_2; heightLimit=2; weight=5; primaryType=sideStreet; secondaryType=oneWayStreet;];
-	4 -> 6 [village=VillageA; name=road_4_6; heightLimit=5; weight=25; primaryType=sideStreet; secondaryType=none;];
-	5 -> 4 [village=VillageA; name=road_5_4; heightLimit=2; weight=5; primaryType=sideStreet; secondaryType=oneWayStreet;];
-	7 -> 6 [village=VillageA; name=road_7_6; heightLimit=3; weight=15; primaryType=sideStreet; secondaryType=none;];
-	7 -> 10 [village=VillageA; name=road_7_10; heightLimit=5; weight=10; primaryType=sideStreet; secondaryType=none;];
-	8 -> 6 [village=VillageA; name=road_8_6; heightLimit=5; weight=5; primaryType=sideStreet; secondaryType=none;];
-	8 -> 5 [village=VillageA; name=road_8_5; heightLimit=5; weight=5; primaryType=sideStreet; secondaryType=none;];
-	9 -> 5 [village=VillageA; name=road_9_5; heightLimit=5; weight=30; primaryType=sideStreet; secondaryType=none;];
-	10 -> 9 [village=VillageA; name=road_10_9; heightLimit=5; weight=40; primaryType=sideStreet; secondaryType=none;];
-
+    1 -> 2 [village=VillageA; name=Elmwood_Avenue; heightLimit=5; weight=20; primaryType=sideStreet; secondaryType=none;];
+    1 -> 3 [village=VillageA; name=Pinehurst_Drive; heightLimit=2; weight=5; primaryType=sideStreet; secondaryType=tunnel;];
+    1 -> 4 [village=VillageA; name=Maplewood_Lane; heightLimit=5; weight=10; primaryType=mainStreet; secondaryType=none;];
+    3 -> 2 [village=VillageA; name=Willow_Street; heightLimit=2; weight=5; primaryType=sideStreet; secondaryType=oneWayStreet;];
+    4 -> 6 [village=VillageA; name=Cedar_Avenue; heightLimit=5; weight=25; primaryType=sideStreet; secondaryType=none;];
+    5 -> 4 [village=VillageA; name=Oak_Lane; heightLimit=2; weight=5; primaryType=sideStreet; secondaryType=oneWayStreet;];
+    7 -> 6 [village=VillageA; name=Birchwood_Drive; heightLimit=3; weight=15; primaryType=sideStreet; secondaryType=none;];
+    7 -> 10 [village=VillageA; name=Laurel_Lane; heightLimit=5; weight=10; primaryType=sideStreet; secondaryType=none;];
+    8 -> 6 [village=VillageA; name=Juniper_Street; heightLimit=5; weight=5; primaryType=sideStreet; secondaryType=none;];
+    8 -> 5 [village=VillageA; name=Sycamore_Street; heightLimit=5; weight=5; primaryType=sideStreet; secondaryType=none;];
+    9 -> 5 [village=VillageA; name=Rosewood_Drive; heightLimit=5; weight=30; primaryType=sideStreet; secondaryType=none;];
+    10 -> 9 [village=VillageA; name=Magnolia_Lane; heightLimit=5; weight=40; primaryType=sideStreet; secondaryType=none;];
 }
