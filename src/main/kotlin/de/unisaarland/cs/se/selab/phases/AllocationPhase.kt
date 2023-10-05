@@ -37,7 +37,7 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
                 }
 
                 if (emergency.requiredVehicles.isNotEmpty()) {
-                    sortForRequests(emergency, base)
+                    sortAndAssignRequests(emergency, base)
                 }
             }
         }
@@ -79,7 +79,8 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         emergency: Emergency,
         base: Base,
         requiredEmergencyType: EmergencyType,
-        requiredVehicles: Map<VehicleType, Int>
+        requiredVehicles: Map<VehicleType, Int>,
+        requestList: MutableList<Request>
     ) {
         val basesToVisit = getBasesByProximity(requiredEmergencyType, base)
         val baseIds = basesToVisit.map { it.baseID }
@@ -90,19 +91,18 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         val request = Request(
             baseIds,
             emergency.id,
-            dataHolder.requestID,
+            null,
             requiredVehicles.toMutableMap(),
             emergency.requiredCapacity
         )
-        dataHolder.requests.add(request)
-        Log.displayAssetRequest(emergency.id, request.baseIDsToVisit.first(), dataHolder.requestID)
-        dataHolder.requestID++
+        requestList.add(request)
     }
 
     /**
      * checks which types of bases the request needs to be sent to
      */
-    private fun sortForRequests(emergency: Emergency, base: Base) {
+    private fun sortAndAssignRequests(emergency: Emergency, base: Base) {
+        val requestList: MutableList<Request> = mutableListOf()
         val policeStationVehicles = emergency.requiredVehicles.filter {
             it.key == VehicleType.K9_POLICE_CAR ||
                 it.key == VehicleType.POLICE_MOTORCYCLE || it.key == VehicleType.POLICE_CAR
@@ -122,10 +122,34 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
                 emergency,
                 base,
                 EmergencyType.CRIME,
-                policeStationVehicles
+                policeStationVehicles,
+                requestList
             )
         }
-        if (hospitalVehicles.isNotEmpty()) createRequest(emergency, base, EmergencyType.MEDICAL, fireStationVehicles)
-        if (fireStationVehicles.isNotEmpty()) createRequest(emergency, base, EmergencyType.FIRE, hospitalVehicles)
+        if (hospitalVehicles.isNotEmpty()) {
+            createRequest(
+                emergency,
+                base,
+                EmergencyType.MEDICAL,
+                fireStationVehicles,
+                requestList
+            )
+        }
+        if (fireStationVehicles.isNotEmpty()) {
+            createRequest(
+                emergency,
+                base,
+                EmergencyType.FIRE,
+                hospitalVehicles,
+                requestList
+            )
+        }
+
+        requestList.sortedBy { it.baseIDsToVisit.first() }
+        for (request in requestList) {
+            Log.displayAssetRequest(emergency.id, request.baseIDsToVisit.first(), dataHolder.requestID)
+            dataHolder.requests.add(request)
+            dataHolder.requestID++
+        }
     }
 }
