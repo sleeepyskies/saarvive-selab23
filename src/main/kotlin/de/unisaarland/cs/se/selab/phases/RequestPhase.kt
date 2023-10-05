@@ -35,7 +35,8 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
             // filters the vehicles for this request that are still in the emergency
             val leftOverVehicles = emergency.requiredVehicles.filter { it.key in request.requiredVehicles.keys }
             // creates a new request to the next base in the list
-            if (leftOverVehicles.isNotEmpty() && request.baseIDsToVisit.size > 1) {
+            // quick fix changed 1 to 0
+            if (leftOverVehicles.isNotEmpty() && request.baseIDsToVisit.size > 0) {
                 // the original list of bases minus the first one
                 val newBaseIDsToVisit = request.baseIDsToVisit.drop(1)
                 createRequest(emergency, newBaseIDsToVisit, leftOverVehicles)
