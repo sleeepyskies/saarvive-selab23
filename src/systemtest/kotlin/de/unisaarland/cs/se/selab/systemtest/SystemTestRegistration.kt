@@ -75,7 +75,7 @@ object SystemTestRegistration {
         manager.registerTest(WrongEmergenciesTest())
         manager.registerTest(WrongEventsTest())*/
         // phase tests
-        manager.registerTest(AllocateFireEmergencyOneTest1())
+        // manager.registerTest(AllocateFireEmergencyOneTest1())
         manager.registerTest(AllocateFireEmergencyOneTest2())
         manager.registerTest(AllocateFireEmergencyOneTest3())
         // Valid scenarios
@@ -142,7 +142,7 @@ object SystemTestRegistration {
         manager.registerTest(WrongEmergenciesTest())
         manager.registerTest(WrongEventsTest())*/
         // phase tests
-        manager.registerTest(AllocateFireEmergencyOneTest1())
+        // manager.registerTest(AllocateFireEmergencyOneTest1())
         manager.registerTest(AllocateFireEmergencyOneTest2())
         manager.registerTest(AllocateFireEmergencyOneTest3())
         // Valid scenarios
@@ -215,5 +215,6 @@ object SystemTestRegistration {
         manager.registerTest(ValidScenario1())
         manager.registerTest(AllocateFireEmergencyOneTest1())
         manager.registerTest(AllocateFireEmergencyOneTest2())
+        manager.registerTest(AllocateFireEmergencyOneTest3())
     }
 }

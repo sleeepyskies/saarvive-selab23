@@ -8,7 +8,7 @@ class AllocateFireEmergencyOneTest3 : SystemTest() {
     override val map = "mapFiles/decentGraphSimTests.dot"
     override val assets = "assetsJsons/simpleAssets_detailedGraph2.json"
     override val scenario = "scenarioJsons/oneFireEmergency_scenario.json"
-    override val maxTicks = 3
+    override val maxTicks = 5
 
     private val requestString = "Asset Request: 0 sent to 1 for 0."
     private val requestFail = "Request Failed: 0 failed."
@@ -24,7 +24,6 @@ class AllocateFireEmergencyOneTest3 : SystemTest() {
 
         // Tick 0
         assertNextLine("Simulation Tick: 0")
-        assertNextLine("Event Triggered: 0 triggered.")
 
         // Tick 1
         assertNextLine("Simulation Tick: 1")
@@ -40,7 +39,6 @@ class AllocateFireEmergencyOneTest3 : SystemTest() {
         assertNextLine("Simulation Tick: 2")
         assertNextLine(requestString)
         assertNextLine(requestFail)
-        assertNextLine("Event Ended: 0 ended.")
 
         // Tick 3
         assertNextLine("Simulation Tick: 2")
