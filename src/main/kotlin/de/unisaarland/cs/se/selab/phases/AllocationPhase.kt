@@ -44,11 +44,12 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
     }
 
     private fun sortAndAssign(vehicles: List<Vehicle>, emergency: Emergency) {
-        val normalVehicles = allocationHelper.getNormalVehicles(vehicles).sortedBy { it.id }
-        val specialVehicles = allocationHelper.getSpecialVehicles(vehicles).sortedBy { it.id }
-
-        allocationHelper.assignWithoutCapacity(normalVehicles, emergency)
-        allocationHelper.assignBasedOnCapacity(specialVehicles, emergency)
+        vehicles.sortedBy { it.id }
+        for (vehicle in vehicles) {
+            if (allocationHelper.isNormalVehicle(vehicle)) {
+                allocationHelper.assignWithoutCapacity(vehicle, emergency)
+            } else { allocationHelper.assignBasedOnCapacity(vehicle, emergency) }
+        }
     }
 
     private fun getReallocatableVehicles(base: Base, emergency: Emergency): List<Vehicle> {
