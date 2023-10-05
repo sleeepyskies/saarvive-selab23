@@ -95,26 +95,27 @@ class SimulationObjectConstructor(
         }
     }
     private fun crossSimulation(graph: Graph, emgs: List<Emergency>, simParser: SimulationParser) {
-        return if (validateEmergenciesBasedOnGraph(graph, emgs)) {
-            return
-        } else {
+        if (!validateEmergenciesBasedOnGraph(graph, emgs)) {
             Log.displayInitializationInfoInvalid(simParser.fileName)
+            throw IllegalArgumentException("Invalid emergencies")
         }
     }
 
     private fun crossEvents(graph: Graph, events: List<Event>, vhcls: List<Vehicle>, evParser: EventsParser) {
-        return if (validateEventsBasedOnGraph(graph, events, vhcls)) {
+        if (validateEventsBasedOnGraph(graph, events, vhcls)) {
             Log.displayInitializationInfoValid(evParser.fileName)
         } else {
             Log.displayInitializationInfoInvalid(evParser.fileName)
+            throw IllegalArgumentException("Invalid events")
         }
     }
 
     private fun crossAssets(graph: Graph, bases: List<Base>, assetParser: AssetParser) {
-        return if (validateAssetsBasedOnGraph(graph, bases)) {
+        if (validateAssetsBasedOnGraph(graph, bases)) {
             Log.displayInitializationInfoValid(assetParser.fileName)
         } else {
             Log.displayInitializationInfoInvalid(assetParser.fileName)
+            throw IllegalArgumentException("Invalid assets")
         }
     }
 

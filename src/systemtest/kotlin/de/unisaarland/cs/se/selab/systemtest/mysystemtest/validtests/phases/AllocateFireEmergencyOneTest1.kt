@@ -8,7 +8,7 @@ class AllocateFireEmergencyOneTest1 : SystemTest() {
     override val map = "mapFiles/decentGraphSimTests.dot"
     override val assets = "assetsJsons/simpleAssets_detailedGraph.json"
     override val scenario = "scenarioJsons/oneFireEmergency_scenario.json"
-    override val maxTicks = 2
+    override val maxTicks = 3
 
     override suspend fun run() {
         // Parsing + Validation + Construction
@@ -21,15 +21,15 @@ class AllocateFireEmergencyOneTest1 : SystemTest() {
 
         // Tick 0
         assertNextLine("Simulation Tick: 0")
-        assertNextLine("Event Triggered: 0 triggered.")
 
         // Tick 1
         assertNextLine("Simulation Tick: 1")
         assertNextLine("Emergency Assignment: 0 assigned to 0")
-        assertNextLine("Asset Allocation: 0 allocated to 0; 1 ticks to arrive")
-        assertNextLine("Asset Allocation: 1 allocated to 0; 1 ticks to arrive")
-        // can assets arrive at an emergency the same tick they are allocated? for 1 tick arrival time
-        // or do they move, then arrive next tick
+        assertNextLine("Asset Allocation: 0 allocated to 0; 1 ticks to arrive.")
+        assertNextLine("Asset Allocation: 1 allocated to 0; 1 ticks to arrive.")
+
+        // Tick 2
+        assertNextLine("Simulation Tick: 2")
         assertNextLine("Asset Arrival: 0 arrived at 1.")
         assertNextLine("Asset Arrival: 1 arrived at 1.")
         assertNextLine("Emergency Handling Start: 0 handling started.")
