@@ -65,19 +65,20 @@ class AssetParser(private val assetSchemaFile: String, private val assetJsonFile
         }
         val parsedVehicles = vehicleParser.parsedVehicles
 
-        validateAtLeastOneBaseOfEachType(parsedBases)
+        validateAtLeastOneBaseOfEachType(parsedBases, parsedVehicles)
         validateEachBaseHasAtLeastOneVehicle(parsedBases)
         validateVehiclesAtItsCorrectBases(parsedVehicles, parsedBases)
 
         // Log.displayInitializationInfoValid(this.fileName)
         return Pair(parsedVehicles, parsedBases)
     }
+
     private fun outputInvalidAndFinish() {
         Log.displayInitializationInfoInvalid(this.fileName)
         throw IllegalArgumentException("Invalid asset")
     }
 
-    private fun validateAtLeastOneBaseOfEachType(parsedBases: MutableList<Base>) {
+    private fun validateAtLeastOneBaseOfEachType(parsedBases: MutableList<Base>, parsedVehicles: MutableList<Vehicle>) {
         val fireStations = parsedBases.filterIsInstance<FireStation>()
         val hospitals = parsedBases.filterIsInstance<Hospital>()
         val policeStations = parsedBases.filterIsInstance<PoliceStation>()
@@ -88,6 +89,30 @@ class AssetParser(private val assetSchemaFile: String, private val assetJsonFile
             System.err.println("Number of Hospitals: ${hospitals.size}")
             System.err.println("Number of PoliceStations: ${policeStations.size}")
             outputInvalidAndFinish()
+        }
+
+        policeStations.forEach { station ->
+            if (station.dogs > 0) {
+                val k9CarsAtBase = parsedVehicles.filter {
+                    it.assignedBaseID == station.baseID && it.vehicleType == VehicleType.K9_POLICE_CAR
+                }
+                if (k9CarsAtBase.isEmpty()) {
+                    System.err.println("PoliceStation with id ${station.baseID} has dogs but no K9_POLICE_CAR.")
+                    outputInvalidAndFinish()
+                }
+            }
+        }
+
+        hospitals.forEach { hospital ->
+            if (hospital.doctors > 0) {
+                val edCarsAtBase = parsedVehicles.filter {
+                    it.assignedBaseID == hospital.baseID && it.vehicleType == VehicleType.EMERGENCY_DOCTOR_CAR
+                }
+                if (edCarsAtBase.isEmpty()) {
+                    System.err.println("Hospital with id ${hospital.baseID} has doctors but no EMERGENCY_DOCTOR_CAR.")
+                    outputInvalidAndFinish()
+                }
+            }
         }
     }
 
@@ -112,28 +137,64 @@ class AssetParser(private val assetSchemaFile: String, private val assetJsonFile
             }
 
             when (vehicle.vehicleType) {
-                VehicleType.POLICE_CAR, VehicleType.POLICE_MOTORCYCLE, VehicleType.K9_POLICE_CAR -> {
-                    if (correspondingBase !is PoliceStation) {
-                        System.err.println("Vehicle with id ${vehicle.id} should be at a Police Station")
-                        outputInvalidAndFinish()
-                    }
+                VehicleType.POLICE_CAR, VehicleType.POLICE_MOTORCYCLE -> correspondingBase?.let {
+                    validatePoliceVehicle(
+                        vehicle,
+                        it
+                    )
                 }
 
+                VehicleType.K9_POLICE_CAR -> correspondingBase?.let { validateK9PoliceCar(vehicle, it) }
                 VehicleType.FIRE_TRUCK_WATER, VehicleType.FIRE_TRUCK_TECHNICAL,
-                VehicleType.FIRE_TRUCK_LADDER, VehicleType.FIREFIGHTER_TRANSPORTER -> {
-                    if (correspondingBase !is FireStation) {
-                        System.err.println("Vehicle with id ${vehicle.id} should be at a Fire Station")
-                        outputInvalidAndFinish()
-                    }
+                VehicleType.FIRE_TRUCK_LADDER, VehicleType.FIREFIGHTER_TRANSPORTER -> correspondingBase?.let {
+                    validateFireVehicle(
+                        vehicle,
+                        it
+                    )
                 }
 
-                VehicleType.AMBULANCE, VehicleType.EMERGENCY_DOCTOR_CAR -> {
-                    if (correspondingBase !is Hospital) {
-                        System.err.println("Vehicle with id ${vehicle.id} should be at a Hospital")
-                        outputInvalidAndFinish()
-                    }
-                }
+                VehicleType.AMBULANCE -> correspondingBase?.let { validateAmbulance(vehicle, it) }
+                VehicleType.EMERGENCY_DOCTOR_CAR -> correspondingBase?.let { validateEmergencyDoctorCar(vehicle, it) }
             }
+        }
+    }
+
+    private fun validatePoliceVehicle(vehicle: Vehicle, base: Base) {
+        if (base !is PoliceStation) {
+            System.err.println("Vehicle with id ${vehicle.id} should be at a Police Station")
+            outputInvalidAndFinish()
+        }
+    }
+
+    private fun validateK9PoliceCar(vehicle: Vehicle, base: Base) {
+        if (base !is PoliceStation || base.dogs <= 0) {
+            System.err.println(
+                "Vehicle with id ${vehicle.id} is a K9 PC, but the associated Police Station has 0 dogs."
+            )
+            outputInvalidAndFinish()
+        }
+    }
+
+    private fun validateFireVehicle(vehicle: Vehicle, base: Base) {
+        if (base !is FireStation) {
+            System.err.println("Vehicle with id ${vehicle.id} should be at a Fire Station")
+            outputInvalidAndFinish()
+        }
+    }
+
+    private fun validateAmbulance(vehicle: Vehicle, base: Base) {
+        if (base !is Hospital) {
+            System.err.println("Vehicle with id ${vehicle.id} should be at a Hospital")
+            outputInvalidAndFinish()
+        }
+    }
+
+    private fun validateEmergencyDoctorCar(vehicle: Vehicle, base: Base) {
+        if (base !is Hospital || base.doctors <= 0) {
+            System.err.println(
+                "Vehicle with id ${vehicle.id} is an EDC, but the associated Hospital has 0 doctors."
+            )
+            outputInvalidAndFinish()
         }
     }
 }
