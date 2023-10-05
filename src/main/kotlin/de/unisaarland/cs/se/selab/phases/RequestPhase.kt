@@ -2,6 +2,7 @@ package de.unisaarland.cs.se.selab.phases
 
 import de.unisaarland.cs.se.selab.dataClasses.Request
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
 import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 
@@ -30,11 +31,14 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
                     allocationHelper.assignWithoutCapacity(vehicle, emergency)
                 } else { allocationHelper.assignBasedOnCapacity(vehicle, emergency) }
             }
+
+            // filters the vehicles for this request that are still in the emergency
+            val leftOverVehicles = emergency.requiredVehicles.filter { it.key in request.requiredVehicles.keys }
             // creates a new request to the next base in the list
-            if (request.requiredVehicles.isNotEmpty() && request.baseIDsToVisit.size > 1) {
+            if (leftOverVehicles.isNotEmpty() && request.baseIDsToVisit.size > 1) {
                 // the original list of bases minus the first one
                 val newBaseIDsToVisit = request.baseIDsToVisit.drop(1)
-                createRequest(emergency, newBaseIDsToVisit)
+                createRequest(emergency, newBaseIDsToVisit, leftOverVehicles)
             } else {
                 Log.displayRequestFailed(request.emergencyID)
             }
@@ -50,12 +54,12 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
         return dataHolder.requests.isNotEmpty()
     }
 
-    private fun createRequest(emergency: Emergency, baseList: List<Int>) {
+    private fun createRequest(emergency: Emergency, baseList: List<Int>, requiredVehicles: Map<VehicleType, Int>) {
         val request = Request(
             baseList,
             emergency.id,
             dataHolder.requestID,
-            emergency.requiredVehicles,
+            requiredVehicles.toMutableMap(),
             emergency.requiredCapacity
         )
         Log.displayAssetRequest(emergency.id, baseList.first(), dataHolder.requestID)

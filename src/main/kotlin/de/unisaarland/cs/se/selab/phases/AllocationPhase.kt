@@ -75,13 +75,25 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         return dataHolder.graph.findClosestBasesByProximity(requiredEmergencyType, base, allBases, baseVertex)
     }
 
-    private fun createRequest(emergency: Emergency, base: Base, requiredEmergencyType: EmergencyType) {
+    private fun createRequest(
+        emergency: Emergency,
+        base: Base,
+        requiredEmergencyType: EmergencyType,
+        requiredVehicles: Map<VehicleType, Int>
+    ) {
         val basesToVisit = getBasesByProximity(requiredEmergencyType, base)
         val baseIds = basesToVisit.map { it.baseID }
-        val requiredVehicles = emergency.requiredVehicles
+        // use the one provided by sort for request
+        // val requiredVehicles = emergency.requiredVehicles
         // if there are no bases on the map that we can visit we can't create the request
         if (baseIds.isEmpty()) return
-        val request = Request(baseIds, emergency.id, dataHolder.requestID, requiredVehicles, emergency.requiredCapacity)
+        val request = Request(
+            baseIds,
+            emergency.id,
+            dataHolder.requestID,
+            requiredVehicles.toMutableMap(),
+            emergency.requiredCapacity
+        )
         dataHolder.requests.add(request)
         Log.displayAssetRequest(emergency.id, request.baseIDsToVisit.first(), dataHolder.requestID)
         dataHolder.requestID++
@@ -105,8 +117,15 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
                 it.key == VehicleType.FIRE_TRUCK_WATER
         }
 
-        if (policeStationVehicles.isNotEmpty()) createRequest(emergency, base, EmergencyType.CRIME)
-        if (hospitalVehicles.isNotEmpty()) createRequest(emergency, base, EmergencyType.MEDICAL)
-        if (fireStationVehicles.isNotEmpty()) createRequest(emergency, base, EmergencyType.FIRE)
+        if (policeStationVehicles.isNotEmpty()) {
+            createRequest(
+                emergency,
+                base,
+                EmergencyType.CRIME,
+                policeStationVehicles
+            )
+        }
+        if (hospitalVehicles.isNotEmpty()) createRequest(emergency, base, EmergencyType.MEDICAL, fireStationVehicles)
+        if (fireStationVehicles.isNotEmpty()) createRequest(emergency, base, EmergencyType.FIRE, hospitalVehicles)
     }
 }
