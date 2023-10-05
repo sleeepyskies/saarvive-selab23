@@ -47,7 +47,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
      */
     fun weightOfRoute(start: Vertex, destination: Vertex, carHeight: Int): Int {
         val visitedVertices = dijkstra(start, destination, carHeight)
-        return visitedVertices[destination]?.first ?: -1
+        return visitedVertices[destination]?.first ?: 0
     }
 
     /**

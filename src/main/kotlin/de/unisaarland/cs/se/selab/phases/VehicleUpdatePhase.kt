@@ -1,6 +1,5 @@
 package de.unisaarland.cs.se.selab.phases
 
-import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
@@ -32,7 +31,10 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
         if (dataHolder.activeVehicles.isNotEmpty()) {
             // update all moving vehicles, exclude only assigned ones
             val movingVehicles =
-                dataHolder.activeVehicles.filter { it.vehicleStatus != VehicleStatus.ASSIGNED_TO_EMERGENCY }
+                dataHolder.activeVehicles.filter {
+                    it.vehicleStatus == VehicleStatus.MOVING_TO_BASE ||
+                        it.vehicleStatus == VehicleStatus.MOVING_TO_EMERGENCY
+                }
             movingVehicles.forEach { vehicle -> updateVehiclePosition(vehicle) }
             // convert assigned to emergency vehicles to moving to emergency vehicles
             val stagedVehicles =
@@ -93,6 +95,7 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * updates accordingly
      */
     private fun updateRouteEndReached(vehicle: Vehicle) {
+        vehicle.currentRoute = vehicle.currentRoute.drop(1)
         vehicle.lastVisitedVertex = vehicle.currentRoute[0]
         if (vehicle.currentRoute.size == 1) {
             if (vehicle.vehicleStatus == VehicleStatus.MOVING_TO_EMERGENCY) {
@@ -114,13 +117,14 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
         Log.displayAssetArrival(vehicle.id, vehicle.lastVisitedVertex.id)
         dataHolder.emergencyToVehicles[vehicle.assignedEmergencyID]?.add(vehicle)
 
-        updateRequiredVehicles(vehicle, emergency)
+        /* updateRequiredVehicles(vehicle, emergency)
 
         if (emergency.requiredCapacity.isEmpty()) {
             handleAllVehiclesReached(emergency)
-        }
+        } */
     }
 
+    /*
     private fun updateRequiredVehicles(vehicle: Vehicle, emergency: Emergency) {
         val requiredVehicles = emergency.requiredVehicles
         val vehicleTypeCount = requiredVehicles[vehicle.vehicleType] ?: return
@@ -140,6 +144,7 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
             it.vehicleStatus = VehicleStatus.HANDLING
         }
     }
+    */
 
     /**
      * Updates the vehicle if it has reached the base.
