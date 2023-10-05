@@ -1,0 +1,35 @@
+{
+  "events": [
+    {
+      "id": 0,
+      "type": "TRAFFIC_JAM",
+      "tick": 0,
+      "duration": 4,
+      "factor": 2,
+      "source": 1,
+      "target": 2
+    }
+  ],
+  "emergencyCalls": [
+    {
+      "id": 0,
+      "tick": 1,
+      "village": "Berlin",
+      "roadName": "Park_Lane",
+      "emergencyType": "CRIME",
+      "severity": 1,
+      "handleTime": 2,
+      "maxDuration": 6
+    },
+    {
+      "id": 1,
+      "tick": 3,
+      "village": "Berlin",
+      "roadName": "Market_Place",
+      "emergencyType": "MEDICAL",
+      "severity": 2,
+      "handleTime": 3,
+      "maxDuration": 7
+    }
+  ]
+}
