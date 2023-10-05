@@ -16,7 +16,7 @@ import de.unisaarland.cs.se.selab.graph.PrimaryType
 import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.SecondaryType
 import de.unisaarland.cs.se.selab.graph.Vertex
-import de.unisaarland.cs.se.selab.phases.AllocationPhase
+import de.unisaarland.cs.se.selab.phases.AllocationHelper
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 import org.junit.jupiter.api.Test
 
@@ -149,7 +149,7 @@ class GetAssignableAssetsTest {
     // Define data holder
     val dataHolder = DataHolder(graph, emptyList(), mutableListOf(), mutableListOf())
 
-    val ap = AllocationPhase(dataHolder)
+    val ap = AllocationHelper(dataHolder)
 
     @Test
     fun getAssignableAssetsTest1() {
