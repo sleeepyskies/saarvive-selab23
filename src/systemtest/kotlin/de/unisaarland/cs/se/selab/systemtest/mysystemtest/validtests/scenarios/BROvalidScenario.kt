@@ -26,19 +26,19 @@ class BROvalidScenario : SystemTest() { // for push 2.0
         assertNextLine("Simulation Tick: 2")
 
         assertNextLine("Simulation Tick: 3")
-        assertNextLine("Asset Arrival: 4 arrived at 3.") // policeC id reach vertex 3 crime
-        assertNextLine("Emergency Handling Start: 0 handling started.") // crime handling starts (needs 2 ticks)
-        // crime above, medical below
         assertNextLine("Emergency Assignment: 1 assigned to 2") // medical assigned to hospital
         assertNextLine("Asset Allocation: 7 allocated to 1; 1 ticks to arrive.") // Ambulance 1
         assertNextLine("Asset Allocation: 8 allocated to 1; 1 ticks to arrive.") // Ambulance 2
         assertNextLine("Asset Allocation: 9 allocated to 1; 1 ticks to arrive.") // Doctor car
+        assertNextLine("Asset Arrival: 4 arrived at 3.") // policeC id reach vertex 3 crime
+        assertNextLine("Emergency Handling Start: 0 handling started.") // crime handling starts (needs 2 ticks)
 
         assertNextLine("Simulation Tick: 4")
         assertNextLine("Asset Arrival: 7 arrived at 2.") // Ambulance 1 arrival
         assertNextLine("Asset Arrival: 8 arrived at 2.") // Ambulance 2 arrival
         assertNextLine("Asset Arrival: 9 arrived at 2.") // Doctor car arrival
         assertNextLine("Emergency Handling Start: 1 handling started.") // medical handling starts (needs 3 ticks)
+        assertNextLine("Event Ended: 0 ended") // Doctor car arrival
 
         assertNextLine("Simulation Tick: 5")
         assertNextLine("Emergency Resolved: 0 resolved.") // crime resolved after 2 ticks from tick 3
@@ -48,12 +48,8 @@ class BROvalidScenario : SystemTest() { // for push 2.0
         assertNextLine("Simulation Tick: 7")
         assertNextLine("Emergency Resolved: 1 resolved.") // medical resolved after 3 ticks from tick 4
 
-        assertNextLine("Simulation Tick: 8")
-        assertNextLine("Simulation Tick: 9")
-        assertNextLine("Simulation Tick: 10")
         // end of simulation
         assertNextLine("Simulation End")
-        // Statistics
         assertNextLine("Simulation Statistics: 0 assets rerouted.")
         assertNextLine("Simulation Statistics: 2 received emergencies.")
         assertNextLine("Simulation Statistics: 0 ongoing emergencies.")
