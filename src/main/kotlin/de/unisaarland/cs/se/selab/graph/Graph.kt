@@ -107,12 +107,12 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         return visitedVertices
     }
 
-    /**
-     * Finds and returns the closest relevant base for an emergency
-     * @param emergency The emergency to find a base for
-     * @param bases List of all bases of the correct base type
-     * @param baseToVertex A mapping of each base to it's vertex
-     */
+//    /**
+//     * Finds and returns the closest relevant base for an emergency
+//     * @param emergency The emergency to find a base for
+//     * @param bases List of all bases of the correct base type
+//     * @param baseToVertex A mapping of each base to it's vertex
+//     */
 //    fun findClosestBase(emergency: Emergency, bases: List<Base>, baseToVertex: MutableMap<Int, Vertex>): Base? {
 //        // Filter bases by emergency type
 //        val relevantBases = filterByEmergencyType(bases.toMutableList(), emergency)
