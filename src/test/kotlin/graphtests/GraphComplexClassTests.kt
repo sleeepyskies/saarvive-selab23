@@ -16,7 +16,7 @@ import de.unisaarland.cs.se.selab.graph.PrimaryType
 import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.graph.SecondaryType
 import de.unisaarland.cs.se.selab.graph.Vertex
-import kotlin.test.Test
+import org.junit.jupiter.api.Test
 
 class GraphComplexClassTests {
 
