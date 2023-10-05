@@ -95,9 +95,7 @@ class SimulationObjectConstructor(
         }
     }
     private fun crossSimulation(graph: Graph, emgs: List<Emergency>, simParser: SimulationParser) {
-        return if (validateEmergenciesBasedOnGraph(graph, emgs)) {
-            return
-        } else {
+        if (!validateEmergenciesBasedOnGraph(graph, emgs)) {
             Log.displayInitializationInfoInvalid(simParser.fileName)
             throw IllegalArgumentException("Invalid emergencies")
         }

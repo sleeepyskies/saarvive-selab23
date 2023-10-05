@@ -7,6 +7,8 @@ import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.graph.Graph
 import org.everit.json.schema.Schema
+import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 
@@ -70,7 +72,12 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      * to parse single emergencies.
      */
     fun parseEmergencyCalls() {
-        val emergencyCallsArray = json.getJSONArray("emergencyCalls")
+        var emergencyCallsArray: JSONArray
+        try {
+            emergencyCallsArray = json.getJSONArray("emergencyCalls")
+        } catch (_: JSONException) {
+            throw IllegalArgumentException("No emergencies found")
+        }
         if (emergencyCallsArray.length() == 0) {
             System.err.println("No emergencies found")
             outputInvalidAndFinish()
