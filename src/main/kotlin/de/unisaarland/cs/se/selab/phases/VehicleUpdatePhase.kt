@@ -149,7 +149,9 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
             // remove vertex from route
             vehicle.currentRoute = vehicle.currentRoute.drop(1)
             // update our last visited vertex
-            vehicle.lastVisitedVertex = vehicle.currentRoute[0]
+            // quick fix: added if statement
+            if (vehicle.currentRoute.isNotEmpty()) vehicle.lastVisitedVertex = vehicle.currentRoute[0]
+
             // set current road
             vehicle.currentRoad = nextRoad
             if (vehicle.currentRoute.size > 1) {
