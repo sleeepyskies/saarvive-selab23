@@ -10,6 +10,7 @@ import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.ValidSmallM
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.AllocateFireEmergencyOneTest1
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.AllocateFireEmergencyOneTest2
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.AllocateFireEmergencyOneTest3
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.ComplexScenario1Test
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.ValidScenario1
 import de.unisaarland.cs.se.selab.systemtest.runner.SystemTestManager
 
@@ -80,6 +81,7 @@ object SystemTestRegistration {
         manager.registerTest(AllocateFireEmergencyOneTest3())
         // Valid scenarios
         manager.registerTest(ValidScenario1())
+        manager.registerTest(ComplexScenario1Test())
     }
 
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
@@ -147,6 +149,7 @@ object SystemTestRegistration {
         manager.registerTest(AllocateFireEmergencyOneTest3())
         // Valid scenarios
         manager.registerTest(ValidScenario1())
+        manager.registerTest(ComplexScenario1Test())
     }
 
     fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
