@@ -341,7 +341,7 @@ class GraphComplexClassTests {
 
     @Test
     fun findClosestBaseByProximityTest1() {
-        val checkingList = graph.findClosestBasesByProximity(emergency, hospital1, listOfBases, baseToVertex)
+        val checkingList = graph.findClosestBasesByProximity(EmergencyType.MEDICAL, hospital1, listOfBases, baseToVertex)
         val expectedList = listOf(hospital2, hospital4, hospital5, hospital3)
         assert(checkingList == expectedList)
     }
@@ -350,7 +350,7 @@ class GraphComplexClassTests {
     fun findClosestBaseByProximityTest2() {
         // With events
         graph.applyGraphEvent(constructionEventForProximity)
-        val checkingList = graph.findClosestBasesByProximity(emergency, hospital1, listOfBases, baseToVertex)
+        val checkingList = graph.findClosestBasesByProximity(EmergencyType.MEDICAL, hospital1, listOfBases, baseToVertex)
         val expectedList = listOf(hospital2, hospital4, hospital5, hospital3)
         assert(checkingList == expectedList)
     }
