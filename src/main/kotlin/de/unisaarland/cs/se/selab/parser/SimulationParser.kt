@@ -6,6 +6,7 @@ import de.unisaarland.cs.se.selab.getSchema
 import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.graph.Graph
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.everit.json.schema.Schema
 import org.json.JSONArray
 import org.json.JSONException
@@ -79,7 +80,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
             throw IllegalArgumentException("No emergencies found")
         }
         if (emergencyCallsArray.length() == 0) {
-            System.err.println("No emergencies found")
+            KotlinLogging.logger("EmergencyParser: parseEmergencyCalls").error { "No emergencies found" }
             outputInvalidAndFinish()
         }
         for (i in 0 until emergencyCallsArray.length()) {
@@ -105,7 +106,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     private fun checkForInvalidKeys(jsonObject: JSONObject, invalidKeys: List<String>): Boolean {
         for (key in invalidKeys) {
             if (jsonObject.has(key)) {
-                System.err.println("Invalid key found in JSON data: $key")
+                KotlinLogging.logger("EmergencyParser: checkForInvalidKeys").error { "Invalid key found" }
                 return false
             }
         }
@@ -123,7 +124,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
             jsonFields.add(keyString)
         }
         if (!jsonFields.containsAll(requiredFields)) {
-            System.err.println("Missing one or more required fields in the JSON emergency data.")
+            KotlinLogging.logger("EmergencyParser: validateEmergency").error { "Missing required fields" }
             return false
         }
         val id = jsonEmergency.getInt(keyId)
@@ -149,10 +150,10 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     fun validateEmergencyId(id: Int): Boolean {
         if (id < 0) {
-            System.err.println("Emergency ID must be positive")
+            KotlinLogging.logger("EmergencyParser: validateEmergencyId").error { "Invalid emergency ID" }
             return false
         } else if (emergencyIDSet.contains(id)) {
-            System.err.println("Emergency ID must be unique")
+            KotlinLogging.logger("EmergencyParser: validateEmergencyId").error { "Emergency ID must be unique" }
             return false
         } else { emergencyIDSet.add(id) }
         return true
@@ -163,7 +164,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     fun validateSeverity(severity: Int): Boolean {
         if (severity !in 1..3) {
-            System.err.println("Invalid severity level")
+            KotlinLogging.logger("EmergencyParser: validateSeverity").error { "Invalid severity" }
             return false
         }
         return true
@@ -173,7 +174,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     fun validateEmergencyTick(tick: Int): Boolean {
         if (tick <= 0 || tick > Number.TOO_BIG) {
-            System.err.println("Emergency tick must be positive")
+            KotlinLogging.logger("EmergencyParser: validateEmergencyTick").error { "Invalid tick" }
             return false
         }
         return true
@@ -185,7 +186,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
     fun validateEmergencyType(emergencyType: String): Boolean {
         val validTypes = listOf("FIRE", "ACCIDENT", "CRIME", "MEDICAL")
         if (emergencyType !in validTypes) {
-            System.err.println("Invalid emergency type")
+            KotlinLogging.logger("EmergencyParser: validateEmergencyType").error { "Invalid emergency type" }
             return false
         }
         return true
@@ -195,7 +196,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     fun validateHandleTime(handleTime: Int): Boolean {
         if (handleTime < 1 || handleTime > Number.TOO_BIG) {
-            System.err.println("Handle time must be positive")
+            KotlinLogging.logger("EmergencyParser: validateHandleTime").error { "Invalid handle time" }
             return false
         }
         return true
@@ -206,7 +207,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
      */
     fun validateMaxDuration(maxDuration: Int, handleTime: Int): Boolean {
         if (maxDuration <= handleTime || maxDuration < 2 || maxDuration > Number.TOO_BIG) {
-            System.err.println("Maximum duration must be greater than handle time")
+            KotlinLogging.logger("EmergencyParser: validateMaxDuration").error { "Invalid max duration" }
             return false
         }
         return true
@@ -220,10 +221,10 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
             listOfVillages.add(v.villageName)
         }
         if (villageName !in listOfVillages.toString()) {
-            System.err.println("Invalid village name")
+            KotlinLogging.logger("EmergencyParser: validateVillageName").error { "Invalid village name" }
             return false
-        } else if (villageName == "") {
-            System.err.println("Village name must not be empty")
+        } else if (villageName == "\\s*") {
+            KotlinLogging.logger("EmergencyParser: validateVillageName").error { "Village name must not be empty" }
             return false
         }
         return true
@@ -244,10 +245,10 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
             listValidRoads.add(r.roadName)
         }
         if (road !in listValidRoads.toString()) {
-            System.err.println("Invalid road name")
+            KotlinLogging.logger("EmergencyParser: validateRoadName").error { "Invalid road name" }
             return false
-        } else if (road == " ") {
-            System.err.println("Road name must not be empty")
+        } else if (road == "\\s*") {
+            KotlinLogging.logger("EmergencyParser: validateRoadName").error{ "Road name must not be empty" }
             return false
         }
         return true
