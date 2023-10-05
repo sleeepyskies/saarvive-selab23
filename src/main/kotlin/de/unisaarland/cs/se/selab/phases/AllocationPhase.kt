@@ -4,8 +4,10 @@ import de.unisaarland.cs.se.selab.dataClasses.Request
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
+import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleStatus
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
 import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 
@@ -35,7 +37,7 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
                 }
 
                 if (emergency.requiredVehicles.isNotEmpty()) {
-                    createRequest(emergency, base)
+                    sortForRequests(emergency, base)
                 }
             }
         }
@@ -65,20 +67,45 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         }
     }
 
-    private fun getBasesByProximity(emergency: Emergency, base: Base): List<Base> {
+    private fun getBasesByProximity(requiredEmergencyType: EmergencyType, base: Base): List<Base> {
         val baseVertex = dataHolder.baseToVertex
         val allBases = dataHolder.bases
 
-        return dataHolder.graph.findClosestBasesByProximity(emergency, base, allBases, baseVertex)
+        return dataHolder.graph.findClosestBasesByProximity(requiredEmergencyType, base, allBases, baseVertex)
     }
 
-    private fun createRequest(emergency: Emergency, base: Base) {
-        val basesToVisit = getBasesByProximity(emergency, base)
+    private fun createRequest(emergency: Emergency, base: Base, requiredEmergencyType: EmergencyType) {
+        val basesToVisit = getBasesByProximity(requiredEmergencyType, base)
         val baseIds = basesToVisit.map { it.baseID }
         val requiredVehicles = emergency.requiredVehicles
+        // if there are no bases on the map that we can visit we can't create the request
+        if (baseIds.isEmpty()) return
         nextRequestId++
         val request = Request(baseIds, emergency.id, nextRequestId, requiredVehicles, emergency.requiredCapacity)
         dataHolder.requests.add(request)
         Log.displayAssetRequest(emergency.id, request.baseIDsToVisit.first(), nextRequestId)
+    }
+
+    /**
+     * checks which types of bases the request needs to be sent to
+     */
+    private fun sortForRequests(emergency: Emergency, base: Base) {
+        val policeStationVehicles = emergency.requiredVehicles.filter {
+            it.key == VehicleType.K9_POLICE_CAR ||
+                it.key == VehicleType.POLICE_MOTORCYCLE || it.key == VehicleType.POLICE_CAR
+        }
+        val hospitalVehicles = emergency.requiredVehicles.filter {
+            it.key == VehicleType.AMBULANCE ||
+                it.key == VehicleType.EMERGENCY_DOCTOR_CAR
+        }
+        val fireStationVehicles = emergency.requiredVehicles.filter {
+            it.key == VehicleType.FIRE_TRUCK_TECHNICAL ||
+                it.key == VehicleType.FIREFIGHTER_TRANSPORTER || it.key == VehicleType.FIRE_TRUCK_LADDER ||
+                it.key == VehicleType.FIRE_TRUCK_WATER
+        }
+
+        if (policeStationVehicles.isNotEmpty()) createRequest(emergency, base, EmergencyType.CRIME)
+        if (hospitalVehicles.isNotEmpty()) createRequest(emergency, base, EmergencyType.MEDICAL)
+        if (fireStationVehicles.isNotEmpty()) createRequest(emergency, base, EmergencyType.FIRE)
     }
 }
