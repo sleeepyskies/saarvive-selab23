@@ -59,7 +59,7 @@ class ValidScenario2 : SystemTest() {
         assertNextLine("Asset Arrival: 1 arrived at 8.")
         assertNextLine("Asset Arrival: 18 arrived at 8.")
         assertNextLine("Simulation Tick: 6")
-        assertNextLine("Event Ended: 1 ended.") //road closure event
+        assertNextLine("Event Ended: 1 ended.") // road closure event
         // vehicles arrive at tick 6
         assertNextLine("Simulation Tick: 7")
         assertNextLine("Simulation Tick: 8")
@@ -74,7 +74,5 @@ class ValidScenario2 : SystemTest() {
         assertNextLine("Simulation Tick: 15")
         assertNextLine("Simulation Tick: 16")
         // emergency 1 ends
-
-
     }
 }
