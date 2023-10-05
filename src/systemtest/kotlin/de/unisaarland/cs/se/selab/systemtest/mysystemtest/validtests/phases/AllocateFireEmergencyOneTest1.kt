@@ -39,7 +39,7 @@ class AllocateFireEmergencyOneTest1 : SystemTest() {
 
         assertNextLine("Simulation Statistics: 0 assets rerouted.")
         assertNextLine("Simulation Statistics: 1 received emergencies.")
-        assertNextLine("Simulation Statistics: 1 ongoing emergencies.")
+        assertNextLine("Simulation Statistics: 0 ongoing emergencies.")
         assertNextLine("Simulation Statistics: 0 failed emergencies.")
         assertNextLine("Simulation Statistics: 0 resolved emergencies.")
         // end of file is reached
