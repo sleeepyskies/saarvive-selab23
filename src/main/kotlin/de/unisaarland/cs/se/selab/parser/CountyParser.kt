@@ -459,13 +459,33 @@ class CountyParser(private val dotFilePath: String) {
      * Returns only data in scopes
      */
     private fun retrieveDataInScope(): String {
-        val mapPat =
-            Pattern.compile("\\A\\s*digraph\\s+($sPat|$nPat)\\s*\\{([^}]+)\\}\\s*\\Z") // Pattern for map
+        /*        val mapPat =
+                    Pattern.compile("\\A\\s*digraph\\s+($sPat|$nPat)\\s*\\{([^}]+)\\}\\s*\\Z") // Pattern for map
 
-        val mapMatcher = mapPat.matcher(this.data)
-        if (!mapMatcher.find()) {
-            outputInvalidAndFinish() // General structure is wrong
+                val mapMatcher = mapPat.matcher(this.data)
+                if (!mapMatcher.find()) {
+                    outputInvalidAndFinish() // General structure is wrong
+                }
+                return mapMatcher.group(2) // Returns data in the scope*/
+
+        val elements1 = this.data.split("{")
+        if (elements1.size != 2) {
+            outputInvalidAndFinish()
         }
-        return mapMatcher.group(2) // Returns data in the scope
+        val elements2 = elements1[1].split("}")
+        val endPattern = Pattern.compile("\\A\\s*\\Z") // Pattern for end of the file
+        val endMatcher = endPattern.matcher(elements2[1])
+        if (!endMatcher.find()) {
+            outputInvalidAndFinish()
+        }
+        val startPattern = Pattern.compile("\\A\\s*digraph\\s+($sPat|$nPat)\\s*\\Z") // Pattern for start of the file
+        val startMatcher = startPattern.matcher(elements1[0])
+        if (!startMatcher.find()) {
+            outputInvalidAndFinish()
+        }
+        if (elements2[0].contains("}") || elements2[0].contains("{")) {
+            outputInvalidAndFinish()
+        }
+        return elements2[0]
     }
 }
