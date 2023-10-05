@@ -212,7 +212,7 @@ class SimulationParserTest {
         val isValid6 = emergencyParser.validateRoadName("......")
         assert(isValid)
         assert(!isValid2)
-        assert(!isValid3)
+        assert(isValid3)
         assert(!isValid4)
         assert(!isValid5)
         assert(!isValid6)

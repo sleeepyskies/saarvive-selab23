@@ -216,30 +216,8 @@ class SimulationObjectConstructor(
         // Check if source and target vertices exist
         if (sourceVertex == null || targetVertex == null) return false
 
-        // Use Breadth First Search to check for connectivity
-        val visited = mutableSetOf<Int>()
-        val queue = LinkedList<Int>()
-
-        queue.add(sourceID)
-        visited.add(sourceID)
-
-        while (queue.isNotEmpty()) {
-            val currentVertexID = queue.poll()
-            val currentVertex = graph.graph.find { vertex -> vertex.id == currentVertexID }
-
-            // Check if the current vertex is the target vertex
-            if (currentVertexID == targetID) return true
-
-            // Explore neighbors (vertices connected by roads)
-            currentVertex?.connectingRoads?.keys?.forEach { neighborID ->
-                if (neighborID !in visited) {
-                    queue.add(neighborID)
-                    visited.add(neighborID)
-                }
-            }
-        }
-
-        return false
+        // Check if there's a connecting road from the source to the target
+        return sourceVertex.connectingRoads.containsKey(targetID)
     }
 
     /**
