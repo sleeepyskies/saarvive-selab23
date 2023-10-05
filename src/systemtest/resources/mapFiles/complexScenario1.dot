@@ -51,7 +51,7 @@ digraph G {
 	19 -> 18 [village=Kiel; name=Sun_Street; heightLimit=5; weight=5; primaryType=sideStreet; secondaryType=none;];
 	19 -> 20 [village=Kiel; name=Mill_Lane; heightLimit=5; weight=5; primaryType=sideStreet; secondaryType=none;];
 
-	7 -> 5 [village=Germany; name=Garden_Way; heightLimit=5; weight=5; primaryType=countyRoad; secondaryType=none;];
+	7 -> 8 [village=Germany; name=Garden_Way; heightLimit=5; weight=5; primaryType=countyRoad; secondaryType=none;];
 	12 -> 13 [village=Germany; name=Pine_Way; heightLimit=5; weight=10; primaryType=countyRoad; secondaryType=none;];
 	13 -> 15 [village=Germany; name=Ash_Way; heightLimit=5; weight=15; primaryType=countyRoad; secondaryType=none;];
 }
