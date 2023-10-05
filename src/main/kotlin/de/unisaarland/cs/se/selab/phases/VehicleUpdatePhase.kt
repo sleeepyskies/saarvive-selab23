@@ -95,7 +95,9 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * updates accordingly
      */
     private fun updateRouteEndReached(vehicle: Vehicle) {
-        vehicle.currentRoute = vehicle.currentRoute.drop(1)
+        if (vehicle.currentRoute.size > 1) {
+            vehicle.currentRoute = vehicle.currentRoute.drop(1)
+        }
         vehicle.lastVisitedVertex = vehicle.currentRoute[0]
         if (vehicle.currentRoute.size == 1) {
             if (vehicle.vehicleStatus == VehicleStatus.MOVING_TO_EMERGENCY) {
