@@ -31,14 +31,12 @@ class AllocateFireEmergencyOneTest3 : SystemTest() {
         assertNextLine("Asset Allocation: 0 allocated to 0; 1 ticks to arrive")
         assertNextLine(requestString)
         assertNextLine(requestFail)
-        // can assets arrive at an emergency the same tick they are allocated? for 1 tick arrival time
-        // or do they move, then arrive next tick
-        assertNextLine("Asset Arrival: 0 arrived at 1.")
 
         // Tick 2
         assertNextLine("Simulation Tick: 2")
         assertNextLine(requestString)
         assertNextLine(requestFail)
+        assertNextLine("Asset Arrival: 0 arrived at 1.")
 
         // Tick 3
         assertNextLine("Simulation Tick: 2")
