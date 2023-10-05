@@ -91,9 +91,7 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 removeEmergencies.add(emergency)
                 dataHolder.resolvedEmergencies.add(emergency)
                 dataHolder.emergencyToVehicles[emergency.id]?.let { sendVehiclesBack(it) }
-            }
-            // emergency failed
-            if (emergency.maxDuration == 0) {
+            } else if (emergency.maxDuration == -1) {
                 emergency.emergencyStatus = EmergencyStatus.FAILED
                 Log.displayEmergencyFailed(emergency.id)
                 removeEmergencies.add(emergency)
