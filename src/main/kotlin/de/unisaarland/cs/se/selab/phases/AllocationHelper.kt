@@ -165,7 +165,7 @@ class AllocationHelper(val dataHolder: DataHolder) {
         if (emergency.requiredCapacity.containsKey(CapacityType.WATER)) {
             val requiredNum = emergency.requiredVehicles[VehicleType.FIRE_TRUCK_WATER] ?: 0
             val requiredGallons = emergency.requiredCapacity[CapacityType.WATER] ?: 0
-            val fireTruckCapacity = vehicle.maxWaterCapacity - vehicle.currentWaterCapacity
+            val fireTruckCapacity = vehicle.currentWaterCapacity
 
             // if the vehicles aren't need anymore
             if (requiredNum == 0) {
