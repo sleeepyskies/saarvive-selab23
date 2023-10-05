@@ -1,5 +1,7 @@
 package de.unisaarland.cs.se.selab.phases
 
+import de.unisaarland.cs.se.selab.dataClasses.Request
+import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 
@@ -17,21 +19,21 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
         while (requestExists()) {
             val request = dataHolder.requests.first()
             val emergency = dataHolder.ongoingEmergencies.first { it.id == request.emergencyID }
-            // only go through the list of bases if more vehicles need to be requested
-            for (baseID in request.baseIDsToVisit) if (request.requiredVehicles.isNotEmpty()) {
-                val base = dataHolder.bases.first { it.baseID == baseID }
-                val assignableVehicles = allocationHelper.getAssignableAssets(base, emergency)
-                val normalVehicles = allocationHelper.getNormalVehicles(assignableVehicles).sortedBy { it.id }
-                val specialVehicles = allocationHelper.getSpecialVehicles(assignableVehicles).sortedBy { it.id }
+            val baseID = request.baseIDsToVisit.first()
+            val base = dataHolder.bases.first { it.baseID == baseID }
+            val assignableVehicles = allocationHelper.getAssignableAssets(base, emergency)
+            val normalVehicles = allocationHelper.getNormalVehicles(assignableVehicles).sortedBy { it.id }
+            val specialVehicles = allocationHelper.getSpecialVehicles(assignableVehicles).sortedBy { it.id }
 
-                allocationHelper.assignWithoutCapacity(normalVehicles, emergency)
-                allocationHelper.assignBasedOnCapacity(specialVehicles, emergency)
+            allocationHelper.assignWithoutCapacity(normalVehicles, emergency)
+            allocationHelper.assignBasedOnCapacity(specialVehicles, emergency)
+
+            // creates a new request to the next base in the list
+            if (request.requiredVehicles.isNotEmpty() && request.baseIDsToVisit.size > 1) {
+                // the original list of bases minus the first one
+                val newBaseIDsToVisit = request.baseIDsToVisit.drop(1)
+                createRequest(emergency, newBaseIDsToVisit)
             } else {
-                break
-            }
-
-            // log request failing
-            if (request.requiredVehicles.isNotEmpty()) {
                 Log.displayRequestFailed(request.emergencyID)
             }
 
@@ -44,5 +46,18 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
      */
     fun requestExists(): Boolean {
         return dataHolder.requests.isNotEmpty()
+    }
+
+    private fun createRequest(emergency: Emergency, baseList: List<Int>) {
+        val request = Request(
+            baseList,
+            emergency.id,
+            dataHolder.requestID,
+            emergency.requiredVehicles,
+            emergency.requiredCapacity
+        )
+        Log.displayAssetRequest(emergency.id, baseList.first(), dataHolder.requestID)
+        dataHolder.requests.add(request)
+        dataHolder.requestID++
     }
 }
