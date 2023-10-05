@@ -21,6 +21,8 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 emergency.emergencyStatus == EmergencyStatus.HANDLING
             }
         )
+        // see's which emergencies have reached and take action accordingly
+        checkHandling(dataHolder.ongoingEmergencies)
         updateEmergencies(dataHolder.ongoingEmergencies)
     }
 
@@ -95,5 +97,39 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
             }
         }
         dataHolder.ongoingEmergencies.removeAll(removeEmergencies)
+    }
+
+    private fun checkHandling(emegergencies: List<Emergency>) {
+        for (emergency in emegergencies) {
+            if (allVehiclesReached(emergency)) {
+                startHandling(emergency)
+            }
+        }
+    }
+
+    /**
+     * checks if all of the vehicles have reached the assigned emergency
+     */
+    private fun allVehiclesReached(emergency: Emergency): Boolean {
+        if (emergency.requiredVehicles.isEmpty()) {
+            val vehicleIdsAssignedToEmergency = dataHolder.vehicleToEmergency
+                .filterValues { it == emergency }.keys.toList()
+            val vehiclesAssignedToEmergency = dataHolder.activeVehicles
+                .filter { it.id in vehicleIdsAssignedToEmergency }
+            val vehiclesReachedEmergency = dataHolder.emergencyToVehicles.entries
+                .find { it.key == emergency.id }?.value?.toList() ?: emptyList()
+            return vehiclesReachedEmergency.containsAll(vehiclesAssignedToEmergency)
+        }
+        return false
+    }
+
+    private fun startHandling(emergency: Emergency) {
+        Log.displayEmergencyHandlingStart(emergency.id)
+        emergency.emergencyStatus = EmergencyStatus.HANDLING
+        val assignedVehicles = dataHolder.emergencyToVehicles.entries
+            .find { it.key == emergency.id }?.value?.toList() ?: emptyList()
+        for (vehicle in assignedVehicles) {
+            vehicle.vehicleStatus = VehicleStatus.HANDLING
+        }
     }
 }
