@@ -131,7 +131,7 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
                 emergency,
                 base,
                 EmergencyType.MEDICAL,
-                fireStationVehicles,
+                hospitalVehicles,
                 requestList
             )
         }
@@ -140,7 +140,7 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
                 emergency,
                 base,
                 EmergencyType.FIRE,
-                hospitalVehicles,
+                fireStationVehicles,
                 requestList
             )
         }
