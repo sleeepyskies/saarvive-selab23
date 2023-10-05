@@ -38,7 +38,7 @@ class BROvalidScenario : SystemTest() { // for push 2.0
         assertNextLine("Asset Arrival: 8 arrived at 2.") // Ambulance 2 arrival
         assertNextLine("Asset Arrival: 9 arrived at 2.") // Doctor car arrival
         assertNextLine("Emergency Handling Start: 1 handling started.") // medical handling starts (needs 3 ticks)
-        assertNextLine("Event Ended: 0 ended") // Doctor car arrival
+        assertNextLine("Event Ended: 0 ended.") // Doctor car arrival
 
         assertNextLine("Simulation Tick: 5")
         assertNextLine("Emergency Resolved: 0 resolved.") // crime resolved after 2 ticks from tick 3
