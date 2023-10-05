@@ -15,7 +15,7 @@ import de.unisaarland.cs.se.selab.simulation.DataHolder
  *
  */
 class AllocationPhase(private val dataHolder: DataHolder) : Phase {
-    private var nextRequestId = -1
+    // private var nextRequestId = -1
     private val allocationHelper = AllocationHelper(dataHolder)
 
     /**
@@ -80,10 +80,10 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         val requiredVehicles = emergency.requiredVehicles
         // if there are no bases on the map that we can visit we can't create the request
         if (baseIds.isEmpty()) return
-        nextRequestId++
-        val request = Request(baseIds, emergency.id, nextRequestId, requiredVehicles, emergency.requiredCapacity)
+        val request = Request(baseIds, emergency.id, dataHolder.requestID, requiredVehicles, emergency.requiredCapacity)
         dataHolder.requests.add(request)
-        Log.displayAssetRequest(emergency.id, request.baseIDsToVisit.first(), nextRequestId)
+        Log.displayAssetRequest(emergency.id, request.baseIDsToVisit.first(), dataHolder.requestID)
+        dataHolder.requestID++
     }
 
     /**
