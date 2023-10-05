@@ -99,7 +99,7 @@ class AllocationHelper(val dataHolder: DataHolder) {
      * assigns a vehicle to the emergency and updates the corresponding attributes
      */
 
-    private fun assignVehicle(vehicle: Vehicle, emergency: Emergency) : Boolean {
+    private fun assignVehicle(vehicle: Vehicle, emergency: Emergency): Boolean {
         // val emergency = dataHolder.ongoingEmergencies.first { it.id == emergency.emergencyID }
         val graph = dataHolder.graph
         // val requiredVehicles = emergency.requiredVehicles
