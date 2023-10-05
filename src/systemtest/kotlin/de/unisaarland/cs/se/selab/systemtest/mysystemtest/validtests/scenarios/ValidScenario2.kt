@@ -56,6 +56,5 @@ class ValidScenario2 : SystemTest() {
         // vehicles arrive at tick 6
         assertNextLine("Simulation Tick: 7")
         assertNextLine("Simulation Tick: 8")
-
     }
 }
