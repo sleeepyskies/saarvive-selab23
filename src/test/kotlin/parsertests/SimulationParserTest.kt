@@ -8,7 +8,7 @@ import de.unisaarland.cs.se.selab.parser.SimulationParser
 import org.json.JSONObject
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
-import java.util.Random
+import java.util.*
 import kotlin.test.Test
 
 class SimulationParserTest {
