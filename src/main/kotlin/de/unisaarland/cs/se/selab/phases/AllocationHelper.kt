@@ -14,6 +14,7 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleStatus
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
 import de.unisaarland.cs.se.selab.global.Log
+import de.unisaarland.cs.se.selab.graph.Vertex
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 
 /**
@@ -101,16 +102,14 @@ class AllocationHelper(val dataHolder: DataHolder) {
      */
 
     private fun assignVehicle(vehicle: Vehicle, emergency: Emergency) {
-        // val emergency = dataHolder.ongoingEmergencies.first { it.id == emergency.emergencyID }
         val graph = dataHolder.graph
-        // val requiredVehicles = emergency.requiredVehicles
-        val emergencyVertex = emergency.location.first
         val base = dataHolder.vehiclesToBase[vehicle.id] ?: Base(1, 1, 1, mutableListOf())
-
-        val shortestPath = getTimeToArrive(vehicle, emergency)
+        val path = getTimeToArrive(vehicle, emergency)
+        val emergencyVertex = path.first
+        val pathTicks = path.second
 
         // check if the car can reach in time and the base has enough vehicles to deal with the emergency
-        if (shortestPath < emergency.maxDuration && canAssignVehicle(vehicle)) {
+        if (pathTicks < emergency.maxDuration && canAssignVehicle(vehicle)) {
             // update the required vehicles for the request
 
             updateEmergencyRequirment(vehicle, emergency)
@@ -128,13 +127,13 @@ class AllocationHelper(val dataHolder: DataHolder) {
                 emergencyVertex,
                 vehicle.height
             )
-            // vehicle.currentRoute does not include the base vertex
+            // add the road it's currently on
             vehicle.currentRoad = vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[0].id]
             // add this vehicle to the list of active vehicles
             dataHolder.activeVehicles.add(vehicle)
             // add to the 'vehicle to emergency' mapping
             dataHolder.vehicleToEmergency[vehicle.id] = emergency
-            Log.displayAssetAllocation(vehicle.id, emergency.id, shortestPath)
+            Log.displayAssetAllocation(vehicle.id, emergency.id, pathTicks)
             emergency.emergencyStatus = EmergencyStatus.ONGOING
         }
     }
@@ -285,7 +284,7 @@ class AllocationHelper(val dataHolder: DataHolder) {
         base.staff -= vehicle.staffCapacity
     }
 
-    private fun getTimeToArrive(vehicle: Vehicle, emergency: Emergency): Int {
+    private fun getTimeToArrive(vehicle: Vehicle, emergency: Emergency): Pair<Vertex, Int> {
         val vehiclePosition = vehicle.lastVisitedVertex
         val emergencyPosition = emergency.location
         // calculate time to arrive at emergency at vertex 1
@@ -295,7 +294,9 @@ class AllocationHelper(val dataHolder: DataHolder) {
         val timeToArrive2 =
             dataHolder.graph.calculateShortestPath(vehiclePosition, emergencyPosition.second, vehicle.height)
 
-        return if (timeToArrive1 <= timeToArrive2) timeToArrive1 else timeToArrive2
+        val pair1 = Pair(emergencyPosition.first, timeToArrive1)
+        val pair2 = Pair(emergencyPosition.second, timeToArrive2)
+        return if (timeToArrive1 <= timeToArrive2) pair1 else pair2
         // return maxOf(0, if (timeToArrive1 <= timeToArrive2) timeToArrive1 else timeToArrive2)
         // above code might fix "-214748364 ticks to arrive." issue but need checking
     }
