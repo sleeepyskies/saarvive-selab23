@@ -79,6 +79,6 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         nextRequestId++
         val request = Request(baseIds, emergency.id, nextRequestId, requiredVehicles, emergency.requiredCapacity)
         dataHolder.requests.add(request)
-        Log.displayAssetRequest(emergency.id, base.id, nextRequestId)
+        Log.displayAssetRequest(emergency.id, base.baseID, nextRequestId)
     }
 }
