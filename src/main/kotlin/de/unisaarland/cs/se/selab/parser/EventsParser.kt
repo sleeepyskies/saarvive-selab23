@@ -15,7 +15,6 @@ import org.everit.json.schema.Schema
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
-import java.util.logging.Logger
 
 /**
  * Parses the Events configuration file.
@@ -81,7 +80,7 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
     private fun parseEvents() {
         val eventsArray = json.getJSONArray("events")
         if (eventsArray.length() == 0) {
-            Logger.getLogger("Events must not be empty")
+            System.err.println("Events must not be empty")
             outputInvalidAndFinish()
         }
         for (i in 0 until eventsArray.length()) {
@@ -236,10 +235,10 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
      */
     private fun validateEventId(id: Int): Boolean {
         if (id < 0 || id > Number.TOO_BIG) {
-            Logger.getLogger("Event ID must be non-negative")
+            System.err.println("Event ID must be non-negative")
             return false
         } else if (eventIDSet.contains(id)) {
-            Logger.getLogger("Event ID must be unique")
+            System.err.println("Event ID must be unique")
             return false
         } else {
             eventIDSet.add(id)
@@ -252,7 +251,7 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
      */
     private fun validateEventTick(tick: Int): Boolean {
         if (tick < 0 || tick > Number.TOO_BIG) {
-            Logger.getLogger("Event tick must be non-negative")
+            System.err.println("Event tick must be non-negative")
             return false
         }
         return true
@@ -262,7 +261,7 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
      */
     private fun validateDuration(duration: Int): Boolean {
         if (duration < 1 || duration > Number.TOO_BIG) {
-            Logger.getLogger("Duration must be positive")
+            System.err.println("Duration must be positive")
             return false
         }
         return true
@@ -272,7 +271,7 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
      */
     private fun validateEventFactor(factor: Int): Boolean {
         if (factor < 1 || factor > Number.TOO_BIG) {
-            Logger.getLogger("Factor must be positive")
+            System.err.println("Factor must be positive")
             return false
         }
         return true
@@ -289,12 +288,12 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
         val validRoadTypes = listOf("MAIN_STREET", "SIDE_STREET", "COUNTY_ROAD")
         for (type in roadType) {
             if (type !in validRoadTypes) {
-                Logger.getLogger("Invalid road type")
+                System.err.println("Invalid road type")
                 return false
             }
         }
         if (roadType.length() == 0) {
-            Logger.getLogger("Road type must not be empty")
+            System.err.println("Road type must not be empty")
             return false
         }
         return true
@@ -306,7 +305,7 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
         val condition1 = sourceId < 0 || targetId < 0
         val condition2 = sourceId > Number.TOO_BIG || targetId > Number.TOO_BIG
         if (condition1 || condition2) {
-            Logger.getLogger("Source and Target IDs must be positive")
+            System.err.println("Source and Target IDs must be positive")
             return false
         }
         return true
@@ -321,10 +320,10 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
             listOfVehicles.add(v.id)
         }
         if (vehicleId < 0 || vehicleId > Number.TOO_BIG) {
-            Logger.getLogger("Vehicle ID must be positive")
+            System.err.println("Vehicle ID must be positive")
             return false
         } else if (vehicleId !in listOfVehicles) {
-            Logger.getLogger("Invalid vehicle ID")
+            System.err.println("Invalid vehicle ID")
             return false
         }
         return true

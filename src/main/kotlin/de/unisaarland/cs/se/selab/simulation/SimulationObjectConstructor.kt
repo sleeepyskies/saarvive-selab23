@@ -99,6 +99,7 @@ class SimulationObjectConstructor(
             return
         } else {
             Log.displayInitializationInfoInvalid(simParser.fileName)
+            throw IllegalArgumentException("Invalid emergencies")
         }
     }
 
@@ -107,6 +108,7 @@ class SimulationObjectConstructor(
             Log.displayInitializationInfoValid(evParser.fileName)
         } else {
             Log.displayInitializationInfoInvalid(evParser.fileName)
+            throw IllegalArgumentException("Invalid events")
         }
     }
 
@@ -115,6 +117,7 @@ class SimulationObjectConstructor(
             Log.displayInitializationInfoValid(assetParser.fileName)
         } else {
             Log.displayInitializationInfoInvalid(assetParser.fileName)
+            throw IllegalArgumentException("Invalid assets")
         }
     }
 
