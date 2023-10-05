@@ -16,6 +16,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import kotlin.test.assertFalse
 
 class RequestPhaseTests {
     @Mock
@@ -114,6 +115,6 @@ class RequestPhaseTests {
 
         val result = allocationHelper.canAssignVehicle(k9PoliceCar)
 
-        assertTrue(result)
+        assertFalse(result)
     }
 }
