@@ -2,7 +2,7 @@ package de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios
 
 import de.unisaarland.cs.se.selab.systemtest.api.SystemTest
 
-class BROvalidScenario : SystemTest() { // for push
+class BROvalidScenario : SystemTest() { // for push 2.0
     override val name = "BROvalidScenario"
 
     override val map = "mapFiles/BROvalidScenario_map.dot"
