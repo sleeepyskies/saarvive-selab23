@@ -1,6 +1,7 @@
 package de.unisaarland.cs.se.selab.parser
 
 import de.unisaarland.cs.se.selab.dataClasses.bases.Base
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWithLadder
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
@@ -94,7 +95,7 @@ class VehicleParser(
             VehicleType.EMERGENCY_DOCTOR_CAR,
             VehicleType.AMBULANCE -> {
                 validateNormalVehicleProperties(jsonVehicle, vehicleType)
-                Vehicle(vehicleType, id, staffCapacity, vehicleHeight, baseID)
+                Ambulance(vehicleType, id, staffCapacity, vehicleHeight, baseID)
             }
         }
     }
