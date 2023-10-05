@@ -15,11 +15,11 @@
       "id": 0,
       "tick": 1,
       "village": "VillageA",
-      "roadName": "road_1_4",
+      "roadName": "Maplewood_Lane",
       "emergencyType": "FIRE",
       "severity": 1,
       "handleTime": 1,
-      "maxDuration": 2
+      "maxDuration": 5
     }
   ]
 }

@@ -10,6 +10,7 @@ import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.CorrectEdge
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.ValidSmallMapSpacesKingdomTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.AllocateFireEmergencyOneTest1
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.AllocateFireEmergencyOneTest2
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.AllocateFireEmergencyOneTest3
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.ValidScenario1
 import de.unisaarland.cs.se.selab.systemtest.runner.SystemTestManager
 
@@ -77,6 +78,7 @@ object SystemTestRegistration {
         // phase tests
         manager.registerTest(AllocateFireEmergencyOneTest1())
         manager.registerTest(AllocateFireEmergencyOneTest2())
+        manager.registerTest(AllocateFireEmergencyOneTest3())
         // Valid scenarios
         manager.registerTest(ValidScenario1())
     }
@@ -146,6 +148,7 @@ object SystemTestRegistration {
         // phase tests
         manager.registerTest(AllocateFireEmergencyOneTest1())
         manager.registerTest(AllocateFireEmergencyOneTest2())
+        manager.registerTest(AllocateFireEmergencyOneTest3())
 
         // Valid scenarios
         manager.registerTest(ValidScenario1())
