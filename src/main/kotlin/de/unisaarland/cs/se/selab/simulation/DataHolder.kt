@@ -28,10 +28,18 @@ class DataHolder(
     var assetsRerouted: Int = 0
 
     val emergencyToBase: MutableMap<Int, Base> = mutableMapOf()
-    val emergencyToVehicles: MutableMap<Int, MutableList<Vehicle>> = mutableMapOf()
+    val emergencyToVehicles: MutableMap<Int, MutableList<Vehicle>> = initEmergencyToVehicles()
     val vehicleToEmergency: MutableMap<Int, Emergency> = mutableMapOf()
     val vehiclesToBase: MutableMap<Int, Base> = initVehiclesToBase()
     val baseToVertex: MutableMap<Int, Vertex> = initBaseToVertex() // should this be in map?
+
+    private fun initEmergencyToVehicles(): MutableMap<Int, MutableList<Vehicle>> {
+        val map: MutableMap<Int, MutableList<Vehicle>> = mutableMapOf()
+        for (emergency in this.emergencies) {
+            map[emergency.id] = mutableListOf<Vehicle>()
+        }
+        return map
+    }
 
     /**
      * Initialises the vehiclesToBase and baseToVertex mappings in DataHolder

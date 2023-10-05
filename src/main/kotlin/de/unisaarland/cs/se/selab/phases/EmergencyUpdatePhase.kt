@@ -15,13 +15,13 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * The main execute method of the EmergencyUpdatePhase
      */
     override fun execute() {
+        checkHandling(dataHolder.ongoingEmergencies)
         reduceHandleTime(
             dataHolder.ongoingEmergencies.filter { emergency: Emergency ->
                 emergency.emergencyStatus == EmergencyStatus.HANDLING
             }
         )
-        // see's which emergencies have reached and take action accordingly
-        checkHandling(dataHolder.ongoingEmergencies)
+        // sees which emergencies have reached and take action accordingly
         updateEmergencies(dataHolder.ongoingEmergencies)
         reduceMaxDuration(dataHolder.ongoingEmergencies)
     }
@@ -116,9 +116,10 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 .filterValues { it == emergency }.keys.toList()
             val vehiclesAssignedToEmergency = dataHolder.activeVehicles
                 .filter { it.id in vehicleIdsAssignedToEmergency }
-            val vehiclesReachedEmergency = dataHolder.emergencyToVehicles.entries
-                .find { it.key == emergency.id }?.value?.toList().orEmpty()
-            return vehiclesReachedEmergency.containsAll(vehiclesAssignedToEmergency)
+            val vehiclesReachedEmergency = dataHolder.emergencyToVehicles[emergency.id]
+            if (vehiclesReachedEmergency != null) {
+                return vehiclesReachedEmergency.containsAll(vehiclesAssignedToEmergency)
+            }
         }
         return false
     }
