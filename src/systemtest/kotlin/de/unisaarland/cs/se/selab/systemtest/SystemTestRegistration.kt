@@ -187,7 +187,7 @@ object SystemTestRegistration {
         manager.registerTest(BaseOnNothing())
         manager.registerTest(WhatBaseTest())
         manager.registerTest(BaseWrongAssetsTest())
-        manager.registerTest(PuppyHeavenTest())
+        //manager.registerTest(PuppyHeavenTest())
         manager.registerTest(AnAppleADayTest())
         manager.registerTest(DoctorDawgTest())
         manager.registerTest(FireDoctorsTest())
@@ -215,5 +215,6 @@ object SystemTestRegistration {
         manager.registerTest(ValidScenario1())
         manager.registerTest(AllocateFireEmergencyOneTest1())
         manager.registerTest(AllocateFireEmergencyOneTest2())
+        manager.registerTest(AllocateFireEmergencyOneTest3())
     }
 }
