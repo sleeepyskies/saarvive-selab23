@@ -26,7 +26,7 @@ class ValidScenario1 : SystemTest() {
         assertNextLine("Simulation Tick: 2")
         // vehicle arrive in the next tick not the same one
         assertNextLine("Asset Arrival: 4 arrived at 3.")
-        assertNextLine("Emergency Handling Start: 0 handling started")
+        assertNextLine("Emergency Handling Start: 0 handling started.")
         assertNextLine("Simulation Tick: 3")
         assertNextLine("Emergency Assignment: 1 assigned to 2")
         assertNextLine("Asset Allocation: 7 allocated to 1; 1 ticks to arrive.")

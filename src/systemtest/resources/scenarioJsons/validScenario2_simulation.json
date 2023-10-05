@@ -16,7 +16,7 @@
       "tick": 4,
       "duration": 2,
       "source": 5,
-      "target": 0
+      "target": 9
     }
   ],
   "emergencyCalls": [
@@ -24,11 +24,11 @@
       "id": 0,
       "tick": 3,
       "village": "VillageA",
-      "roadName": "Jupiter_Street",
+      "roadName": "Juniper_Street",
       "emergencyType": "FIRE",
       "severity": 3,
       "handleTime": 10,
-      "maxDuration": 20
+      "maxDuration": 25
     },
     {
       "id": 1,
