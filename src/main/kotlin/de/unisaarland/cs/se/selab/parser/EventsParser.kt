@@ -14,6 +14,7 @@ import de.unisaarland.cs.se.selab.graph.PrimaryType
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.everit.json.schema.Schema
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 
@@ -66,12 +67,11 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
      * Parses the events from the JSON file
      */
     fun parse(): List<Event> {
-//        try {
-//            parseEvents()
-//        } catch (_: IllegalArgumentException) {
-//            outputInvalidAndFinish()
-//        }
-        parseEvents()
+        try {
+            parseEvents()
+        } catch (_: JSONException) {
+            outputInvalidAndFinish()
+        }
         // Log.displayInitializationInfoValid(this.fileName)
         return parsedEvents
     }
