@@ -106,7 +106,8 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
 
     private fun checkHandling(emegergencies: List<Emergency>) {
         for (emergency in emegergencies) {
-            if (allVehiclesReached(emergency)) {
+            // quick fix: second part of &&
+            if (allVehiclesReached(emergency) && emergency.emergencyStatus != EmergencyStatus.HANDLING) {
                 startHandling(emergency)
             }
         }

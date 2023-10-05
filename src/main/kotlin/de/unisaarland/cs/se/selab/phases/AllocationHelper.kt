@@ -52,6 +52,19 @@ class AllocationHelper(val dataHolder: DataHolder) {
     }
 
     /**
+     * checks if a vehicle is normal; used in assignment
+     */
+    fun isNormalVehicle(vehicle: Vehicle): Boolean {
+        return vehicle.vehicleType in setOf(
+            VehicleType.POLICE_MOTORCYCLE,
+            VehicleType.FIREFIGHTER_TRANSPORTER,
+            VehicleType.FIRE_TRUCK_TECHNICAL,
+            VehicleType.EMERGENCY_DOCTOR_CAR,
+            VehicleType.K9_POLICE_CAR
+        )
+    }
+
+    /**
      * gets a list of vehicles on which special capacity type is applicable
      */
     fun getSpecialVehicles(vehicles: List<Vehicle>): List<Vehicle> {
@@ -69,11 +82,11 @@ class AllocationHelper(val dataHolder: DataHolder) {
     /**
      * calls the assign function on the vehicles which do not depend on capacity type
      */
-    fun assignWithoutCapacity(vehicles: List<Vehicle>, emergency: Emergency) {
+    fun assignWithoutCapacity(vehicle: Vehicle, emergency: Emergency) {
         val requiredVehicles = emergency.requiredVehicles
 
         // only proceed to the next step if the request still needs this vehicle
-        for (vehicle in vehicles) if (requiredVehicles.containsKey(vehicle.vehicleType)) {
+        if (requiredVehicles.containsKey(vehicle.vehicleType)) {
             assignVehicle(vehicle, emergency)
         }
     }
@@ -139,11 +152,11 @@ class AllocationHelper(val dataHolder: DataHolder) {
     }
 
     /**
-     * implements the logic of assigning vehicles that depend on capacity type
+     * implements the logic of assigning a vehicle that depends on capacity type
      */
-    fun assignBasedOnCapacity(vehicles: List<Vehicle>, emergency: Emergency) {
+    fun assignBasedOnCapacity(vehicle: Vehicle, emergency: Emergency) {
         val requiredVehicles = emergency.requiredVehicles
-        for (vehicle in vehicles) if (requiredVehicles.isNotEmpty()) {
+        if (requiredVehicles.isNotEmpty()) {
             if (vehicle.vehicleType in emergency.requiredVehicles) {
                 when (vehicle) {
                     is FireTruckWater -> assignFireTruckWater(vehicle, emergency)
@@ -151,9 +164,6 @@ class AllocationHelper(val dataHolder: DataHolder) {
                     is Ambulance -> assignAmbulance(vehicle, emergency)
                     is PoliceCar -> assignPoliceCar(vehicle, emergency)
                 }
-            } else {
-                // if all the vehicles are assigned we don't need to go through the list anymore
-                break
             }
         }
     }

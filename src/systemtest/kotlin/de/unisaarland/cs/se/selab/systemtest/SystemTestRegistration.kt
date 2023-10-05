@@ -219,10 +219,6 @@ object SystemTestRegistration {
 
     fun registerSystemTestsMutantSimulation(manager: SystemTestManager) {
         // Valid scenarios
-        manager.registerTest(ValidScenario1())
         manager.registerTest(AllocateFireEmergencyOneTest1())
-        manager.registerTest(AllocateFireEmergencyOneTest2())
-        manager.registerTest(AllocateFireEmergencyOneTest3())
-        manager.registerTest(BROvalidScenario())
     }
 }

@@ -22,12 +22,14 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
             val baseID = request.baseIDsToVisit.first()
             val base = dataHolder.bases.first { it.baseID == baseID }
             val assignableVehicles = allocationHelper.getAssignableAssets(base, emergency)
-            val normalVehicles = allocationHelper.getNormalVehicles(assignableVehicles).sortedBy { it.id }
-            val specialVehicles = allocationHelper.getSpecialVehicles(assignableVehicles).sortedBy { it.id }
 
-            allocationHelper.assignWithoutCapacity(normalVehicles, emergency)
-            allocationHelper.assignBasedOnCapacity(specialVehicles, emergency)
-
+            // quick fix
+            assignableVehicles.sortedBy { it.id }
+            for (vehicle in assignableVehicles) {
+                if (allocationHelper.isNormalVehicle(vehicle)) {
+                    allocationHelper.assignWithoutCapacity(vehicle, emergency)
+                } else { allocationHelper.assignBasedOnCapacity(vehicle, emergency) }
+            }
             // creates a new request to the next base in the list
             if (request.requiredVehicles.isNotEmpty() && request.baseIDsToVisit.size > 1) {
                 // the original list of bases minus the first one
