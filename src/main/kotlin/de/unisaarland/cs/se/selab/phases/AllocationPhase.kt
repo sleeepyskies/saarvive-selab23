@@ -42,8 +42,8 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
     }
 
     private fun sortAndAssign(vehicles: List<Vehicle>, emergency: Emergency) {
-        val normalVehicles = allocationHelper.getNormalVehicles(vehicles)
-        val specialVehicles = allocationHelper.getSpecialVehicles(vehicles)
+        val normalVehicles = allocationHelper.getNormalVehicles(vehicles).sortedBy { it.id }
+        val specialVehicles = allocationHelper.getSpecialVehicles(vehicles).sortedBy { it.id }
 
         allocationHelper.assignWithoutCapacity(normalVehicles, emergency)
         allocationHelper.assignBasedOnCapacity(specialVehicles, emergency)

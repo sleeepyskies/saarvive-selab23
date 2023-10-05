@@ -22,8 +22,8 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
                 for (baseID in request.baseIDsToVisit) if (request.requiredVehicles.isNotEmpty()) {
                     val base = dataHolder.bases.first { it.baseID == baseID }
                     val assignableVehicles = allocationHelper.getAssignableAssets(base, emergency)
-                    val normalVehicles = allocationHelper.getNormalVehicles(assignableVehicles)
-                    val specialVehicles = allocationHelper.getSpecialVehicles(assignableVehicles)
+                    val normalVehicles = allocationHelper.getNormalVehicles(assignableVehicles).sortedBy { it.id }
+                    val specialVehicles = allocationHelper.getSpecialVehicles(assignableVehicles).sortedBy { it.id }
 
                     allocationHelper.assignWithoutCapacity(normalVehicles, emergency)
                     allocationHelper.assignBasedOnCapacity(specialVehicles, emergency)
