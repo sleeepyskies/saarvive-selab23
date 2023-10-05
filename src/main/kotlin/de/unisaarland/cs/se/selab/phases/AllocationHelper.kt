@@ -144,11 +144,6 @@ class AllocationHelper(val dataHolder: DataHolder) {
         val requiredCriminalNum = emergency.requiredCapacity[CapacityType.CRIMINAL] ?: 0
         val currentCriminalCapacity = vehicle.maxCriminalCapacity - vehicle.currentCriminalCapcity
 
-        if (currentCriminalCapacity >= requiredCriminalNum) {
-            assignVehicle(vehicle, emergency)
-            emergency.requiredCapacity[CapacityType.CRIMINAL] = requiredCriminalNum - 1
-        }
-
         if (requiredNum == 0) {
             emergency.requiredCapacity.remove(CapacityType.CRIMINAL)
             emergency.requiredVehicles.remove(VehicleType.POLICE_CAR)
