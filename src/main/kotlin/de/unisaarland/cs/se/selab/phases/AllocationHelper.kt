@@ -256,7 +256,7 @@ class AllocationHelper(val dataHolder: DataHolder) {
                 emergency.requiredCapacity[CapacityType.CRIMINAL] = req - capacity
             }
             is FireTruckWater -> {
-                val capacity = vehicle.maxWaterCapacity - vehicle.currentWaterCapacity
+                val capacity = vehicle.currentWaterCapacity
                 val req = emergency.requiredCapacity[CapacityType.WATER] ?: 0
                 emergency.requiredCapacity[CapacityType.WATER] = req - capacity
             }
