@@ -156,7 +156,6 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 // update next road
                 nextRoad = vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[1].id]
             }
-
         }
 
         // update the vehicle position
