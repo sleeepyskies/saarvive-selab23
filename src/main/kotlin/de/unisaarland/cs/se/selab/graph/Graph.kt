@@ -72,6 +72,8 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
             previousVertex = visitedVertices[currentVertex1]?.second
         }
 
+        // include the start vertex
+        route.add(start)
         return route.reversed().toMutableList()
     }
 
