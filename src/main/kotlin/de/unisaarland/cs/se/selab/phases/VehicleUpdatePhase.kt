@@ -30,7 +30,14 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
         }
         // update each active vehicle position
         if (dataHolder.activeVehicles.isNotEmpty()) {
-            dataHolder.activeVehicles.forEach { vehicle -> updateVehiclePosition(vehicle) }
+            // update all moving vehicles, exclude only assigned ones
+            val movingVehicles =
+                dataHolder.activeVehicles.filter { it.vehicleStatus != VehicleStatus.ASSIGNED_TO_EMERGENCY }
+            movingVehicles.forEach { vehicle -> updateVehiclePosition(vehicle) }
+            // convert assigned to emergency vehicles to moving to emergency vehicles
+            val stagedVehicles =
+                dataHolder.activeVehicles.filter { it.vehicleStatus == VehicleStatus.ASSIGNED_TO_EMERGENCY }
+            stagedVehicles.forEach { it.vehicleStatus = VehicleStatus.MOVING_TO_EMERGENCY }
         }
     }
 

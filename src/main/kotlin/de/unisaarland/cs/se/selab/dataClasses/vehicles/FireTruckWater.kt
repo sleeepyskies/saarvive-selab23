@@ -25,5 +25,5 @@ class FireTruckWater(
     override lateinit var lastVisitedVertex: Vertex
     override var currentRoute: List<Vertex> = emptyList<Vertex>()
     override var ticksStillUnavailable: Int = 0
-    var currentWaterCapacity: Int = 0
+    var currentWaterCapacity: Int = maxWaterCapacity
 }
