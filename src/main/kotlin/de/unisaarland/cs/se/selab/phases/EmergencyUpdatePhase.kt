@@ -15,7 +15,6 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * The main execute method of the EmergencyUpdatePhase
      */
     override fun execute() {
-        reduceMaxDuration(dataHolder.ongoingEmergencies)
         reduceHandleTime(
             dataHolder.ongoingEmergencies.filter { emergency: Emergency ->
                 emergency.emergencyStatus == EmergencyStatus.HANDLING
@@ -24,6 +23,7 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
         // see's which emergencies have reached and take action accordingly
         checkHandling(dataHolder.ongoingEmergencies)
         updateEmergencies(dataHolder.ongoingEmergencies)
+        reduceMaxDuration(dataHolder.ongoingEmergencies)
     }
 
     /**
