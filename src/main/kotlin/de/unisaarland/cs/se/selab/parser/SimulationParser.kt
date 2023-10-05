@@ -220,11 +220,8 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         for (v in graph.roads) {
             listOfVillages.add(v.villageName)
         }
-        if (villageName !in listOfVillages.toString()) {
+        if (villageName.trim() !in listOfVillages.toString() || villageName.trim().isEmpty()) {
             KotlinLogging.logger("EmergencyParser: validateVillageName").error { "Invalid village name" }
-            return false
-        } else if (villageName == "\\s*") {
-            KotlinLogging.logger("EmergencyParser: validateVillageName").error { "Village name must not be empty" }
             return false
         }
         return true
@@ -244,11 +241,8 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         for (r in graph.roads) {
             listValidRoads.add(r.roadName)
         }
-        if (road !in listValidRoads.toString()) {
+        if (road.trim() !in listValidRoads.toString() || road.trim().isEmpty()) {
             KotlinLogging.logger("EmergencyParser: validateRoadName").error { "Invalid road name" }
-            return false
-        } else if (road == "\\s*") {
-            KotlinLogging.logger("EmergencyParser: validateRoadName").error{ "Road name must not be empty" }
             return false
         }
         return true
