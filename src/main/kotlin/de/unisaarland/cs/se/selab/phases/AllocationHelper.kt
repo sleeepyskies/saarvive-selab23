@@ -247,7 +247,7 @@ class AllocationHelper(val dataHolder: DataHolder) {
     ) {
         val requirment = emergency.requiredVehicles[vehicle.vehicleType] ?: 0
         emergency.requiredVehicles[vehicle.vehicleType] = requirment - 1
-        val updatedRequirment =  emergency.requiredVehicles[vehicle.vehicleType] ?: 0
+        val updatedRequirment = emergency.requiredVehicles[vehicle.vehicleType] ?: 0
 
         when (vehicle) {
             is PoliceCar -> {
