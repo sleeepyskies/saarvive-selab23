@@ -253,8 +253,9 @@ class AllocationHelper(val dataHolder: DataHolder) {
             is PoliceCar -> {
                 val capacity = vehicle.maxCriminalCapacity - vehicle.currentCriminalCapcity
                 val req = emergency.requiredCapacity[CapacityType.CRIMINAL] ?: 0
-                if (emergency.requiredCapacity.containsKey(CapacityType.CRIMINAL))
+                if (emergency.requiredCapacity.containsKey(CapacityType.CRIMINAL)) {
                     emergency.requiredCapacity[CapacityType.CRIMINAL] = req - capacity
+                }
             }
             is FireTruckWater -> {
                 val capacity = vehicle.currentWaterCapacity
@@ -263,8 +264,9 @@ class AllocationHelper(val dataHolder: DataHolder) {
             }
             is Ambulance -> {
                 val req = emergency.requiredCapacity[CapacityType.PATIENT] ?: 0
-                if (emergency.requiredCapacity.containsKey(CapacityType.PATIENT))
+                if (emergency.requiredCapacity.containsKey(CapacityType.PATIENT)) {
                     emergency.requiredCapacity[CapacityType.PATIENT] = req - 1
+                }
             }
         }
 
