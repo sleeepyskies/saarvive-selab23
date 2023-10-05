@@ -121,7 +121,7 @@ class AllocationHelper(val dataHolder: DataHolder) {
                 vehicle.lastVisitedVertex,
                 emergencyVertex,
                 vehicle.height
-            ).toMutableList().drop(1)
+            ).toMutableList()
             vehicle.remainingRouteWeight = graph.weightOfRoute(
                 vehicle.lastVisitedVertex,
                 emergencyVertex,
@@ -210,11 +210,6 @@ class AllocationHelper(val dataHolder: DataHolder) {
         val requiredCriminalNum = emergency.requiredCapacity[CapacityType.CRIMINAL] ?: 0
         val currentCriminalCapacity = vehicle.maxCriminalCapacity - vehicle.currentCriminalCapcity
 
-        if (currentCriminalCapacity >= requiredCriminalNum) {
-            assignVehicle(vehicle, emergency)
-            emergency.requiredCapacity[CapacityType.CRIMINAL] = requiredCriminalNum - 1
-        }
-
         if (requiredNum == 0) {
             emergency.requiredCapacity.remove(CapacityType.CRIMINAL)
             emergency.requiredVehicles.remove(VehicleType.POLICE_CAR)
@@ -252,6 +247,7 @@ class AllocationHelper(val dataHolder: DataHolder) {
     ) {
         val requirment = emergency.requiredVehicles[vehicle.vehicleType] ?: 0
         emergency.requiredVehicles[vehicle.vehicleType] = requirment - 1
+        val updatedRequirment =  emergency.requiredVehicles[vehicle.vehicleType] ?: 0
 
         when (vehicle) {
             is PoliceCar -> {
@@ -270,7 +266,7 @@ class AllocationHelper(val dataHolder: DataHolder) {
             }
         }
 
-        if (requirment == 0) {
+        if (updatedRequirment == 0) {
             emergency.requiredVehicles.remove(vehicle.vehicleType)
         }
     }
