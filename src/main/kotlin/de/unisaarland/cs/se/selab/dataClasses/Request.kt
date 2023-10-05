@@ -8,7 +8,7 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
 data class Request(
     val baseIDsToVisit: List<Int>,
     val emergencyID: Int,
-    val requestID: Int,
+    val requestID: Int?,
     val requiredVehicles: MutableMap<VehicleType, Int>,
     val requiredCapacity: MutableMap<CapacityType, Int>
 )
