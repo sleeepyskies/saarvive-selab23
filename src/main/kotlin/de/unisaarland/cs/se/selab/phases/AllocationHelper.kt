@@ -125,7 +125,6 @@ class AllocationHelper(val dataHolder: DataHolder) {
             // add this vehicle to the list of active vehicles
             dataHolder.activeVehicles.add(vehicle)
             Log.displayAssetAllocation(vehicle.id, emergency.id, shortestPath)
-
         }
     }
 
