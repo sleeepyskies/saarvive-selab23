@@ -117,7 +117,7 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
             val vehiclesAssignedToEmergency = dataHolder.activeVehicles
                 .filter { it.id in vehicleIdsAssignedToEmergency }
             val vehiclesReachedEmergency = dataHolder.emergencyToVehicles.entries
-                .find { it.key == emergency.id }?.value?.toList() ?: emptyList()
+                .find { it.key == emergency.id }?.value?.toList() ?: listOf()
             return vehiclesReachedEmergency.containsAll(vehiclesAssignedToEmergency)
         }
         return false
@@ -127,7 +127,7 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
         Log.displayEmergencyHandlingStart(emergency.id)
         emergency.emergencyStatus = EmergencyStatus.HANDLING
         val assignedVehicles = dataHolder.emergencyToVehicles.entries
-            .find { it.key == emergency.id }?.value?.toList() ?: emptyList()
+            .find { it.key == emergency.id }?.value?.toList() ?: listOf()
         for (vehicle in assignedVehicles) {
             vehicle.vehicleStatus = VehicleStatus.HANDLING
         }
