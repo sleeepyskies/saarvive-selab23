@@ -48,13 +48,11 @@ class ValidScenario2 : SystemTest() {
         assertNextLine("Asset Request: 1 sent to 0 for 0.")
         assertNextLine("Asset Allocation: 1 allocated to 0; 1 ticks to arrive.")
         assertNextLine("Asset Allocation: 18 allocated to 0; 1 ticks to arrive.")
-        assertNextLine("Request Failed: 0 failed.")
         assertNextLine("Event Triggered: 0 triggered.") // rush hour affects the ambulance 0 for event 1
         assertNextLine("Assets Rerouted: 1")
         assertNextLine("Simulation Tick: 4")
-
         assertNextLine("Event Triggered: 1 triggered.")
-        assertNextLine("Assets Rerouted: 1") // more are rerouted
+        assertNextLine("Assets Rerouted: 16") // all the fire, ambulance and 1 extra ambulance
         assertNextLine("Simulation Tick: 5")
         assertNextLine("Asset Arrival: 1 arrived at 8.")
         assertNextLine("Asset Arrival: 18 arrived at 8.")
