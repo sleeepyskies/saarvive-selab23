@@ -15,15 +15,16 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * The main execute method of the EmergencyUpdatePhase
      */
     override fun execute() {
-        checkHandling(dataHolder.ongoingEmergencies)
         reduceHandleTime(
             dataHolder.ongoingEmergencies.filter { emergency: Emergency ->
                 emergency.emergencyStatus == EmergencyStatus.HANDLING
             }
         )
+
+        reduceMaxDuration(dataHolder.ongoingEmergencies)
         // sees which emergencies have reached and take action accordingly
         updateEmergencies(dataHolder.ongoingEmergencies)
-        reduceMaxDuration(dataHolder.ongoingEmergencies)
+        checkHandling(dataHolder.ongoingEmergencies)
     }
 
     /**
@@ -65,7 +66,11 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
                     vehicle.currentRoute.last(),
                     vehicle.height
                 )
-            vehicle.currentRoad = vehicle.currentRoute.first().connectingRoads[vehicle.currentRoute[1].id]
+            // vehicles only have a road if the emergency vertex is not the same as the base vertex
+            // quick fix
+            if (vehicle.currentRoute.size > 1) {
+                vehicle.currentRoad = vehicle.currentRoute.first().connectingRoads[vehicle.currentRoute[1].id]
+            }
             vehicle.weightTillLastVisitedVertex = 0
             vehicle.lastVisitedVertex = vehicle.currentRoute.first()
             vehicle.currentRouteWeightProgress = 0
