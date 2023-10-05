@@ -187,7 +187,7 @@ object SystemTestRegistration {
         manager.registerTest(BaseOnNothing())
         manager.registerTest(WhatBaseTest())
         manager.registerTest(BaseWrongAssetsTest())
-        //manager.registerTest(PuppyHeavenTest())
+        // manager.registerTest(PuppyHeavenTest())
         manager.registerTest(AnAppleADayTest())
         manager.registerTest(DoctorDawgTest())
         manager.registerTest(FireDoctorsTest())
