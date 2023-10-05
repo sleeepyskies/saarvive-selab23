@@ -4,7 +4,6 @@ import de.unisaarland.cs.se.selab.dataClasses.bases.Base
 import de.unisaarland.cs.se.selab.dataClasses.bases.FireStation
 import de.unisaarland.cs.se.selab.dataClasses.bases.Hospital
 import de.unisaarland.cs.se.selab.dataClasses.bases.PoliceStation
-import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
 import de.unisaarland.cs.se.selab.dataClasses.events.Construction
 import de.unisaarland.cs.se.selab.dataClasses.events.Event
@@ -12,7 +11,6 @@ import de.unisaarland.cs.se.selab.dataClasses.events.RoadClosure
 import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
 import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import de.unisaarland.cs.se.selab.global.StringLiterals
-import java.lang.Integer.min
 
 /**
  * Holds the data for the simulation graph consisting of vertices and roads.
@@ -115,42 +113,42 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
      * @param bases List of all bases of the correct base type
      * @param baseToVertex A mapping of each base to it's vertex
      */
-    fun findClosestBase(emergency: Emergency, bases: List<Base>, baseToVertex: MutableMap<Int, Vertex>): Base? {
-        // Filter bases by emergency type
-        val relevantBases = filterByEmergencyType(bases.toMutableList(), emergency)
-        assert(relevantBases.isNotEmpty())
-        // Create mapping of base to it's distance to the emergency
-        val distanceToEmergency: MutableMap<Base, Int> = mutableMapOf()
-        for (base in relevantBases) {
-            val firstDistance =
-                baseToVertex[base.baseID]?.let { calculateShortestPath(it, emergency.location.first, 0) }
-            val secondDistance =
-                baseToVertex[base.baseID]?.let { calculateShortestPath(it, emergency.location.second, 0) }
-            distanceToEmergency[base] = min(firstDistance ?: 0, secondDistance ?: 0)
-        }
-
-        var minDistance = Int.MAX_VALUE
-        var closestBase: Base? = null
-        for ((base, distance) in distanceToEmergency) {
-            if (distance < minDistance) {
-                minDistance = distance
-                closestBase = base
-            }
-            if (distance == minDistance) {
-                closestBase = if (base.baseID < (closestBase?.baseID ?: Int.MAX_VALUE)) base else closestBase
-            }
-        }
-        return closestBase
-    }
+//    fun findClosestBase(emergency: Emergency, bases: List<Base>, baseToVertex: MutableMap<Int, Vertex>): Base? {
+//        // Filter bases by emergency type
+//        val relevantBases = filterByEmergencyType(bases.toMutableList(), emergency)
+//        assert(relevantBases.isNotEmpty())
+//        // Create mapping of base to it's distance to the emergency
+//        val distanceToEmergency: MutableMap<Base, Int> = mutableMapOf()
+//        for (base in relevantBases) {
+//            val firstDistance =
+//                baseToVertex[base.baseID]?.let { calculateShortestPath(it, emergency.location.first, 0) }
+//            val secondDistance =
+//                baseToVertex[base.baseID]?.let { calculateShortestPath(it, emergency.location.second, 0) }
+//            distanceToEmergency[base] = min(firstDistance ?: 0, secondDistance ?: 0)
+//        }
+//
+//        var minDistance = Int.MAX_VALUE
+//        var closestBase: Base? = null
+//        for ((base, distance) in distanceToEmergency) {
+//            if (distance < minDistance) {
+//                minDistance = distance
+//                closestBase = base
+//            }
+//            if (distance == minDistance) {
+//                closestBase = if (base.baseID < (closestBase?.baseID ?: Int.MAX_VALUE)) base else closestBase
+//            }
+//        }
+//        return closestBase
+//    }
 
     /**
      * Filters the given list of bases according to the emergency.
      */
-    private fun filterByEmergencyType(bases: MutableList<Base>, emergency: Emergency): MutableList<Base> {
+    private fun filterByEmergencyType(bases: MutableList<Base>, emergencyType: EmergencyType): MutableList<Base> {
         val relevantBases = mutableListOf<Base>()
         relevantBases.addAll(bases)
         for (base in bases) {
-            when (Pair(emergency.emergencyType, getStringType(base))) {
+            when (Pair(emergencyType, getStringType(base))) {
                 Pair(EmergencyType.FIRE, StringLiterals.FIRESTATION) -> Unit
                 Pair(EmergencyType.CRIME, StringLiterals.POLICESTATION) -> Unit
                 Pair(EmergencyType.MEDICAL, StringLiterals.HOSPITAL) -> Unit
@@ -175,18 +173,18 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
 
     /**
      * Returns a list of bases responsible for a certain emergency type sorted by proximity to the provided base
-     * @param emergency The type of base to return
+     * @param emergencyType The type of base to return
      * @param startBase The base to create the list for
      * @param bases A list of all bases in the simulation
      * @param baseToVertex A mapping of each base to it's vertex
      */
     fun findClosestBasesByProximity(
-        emergency: Emergency,
+        emergencyType: EmergencyType,
         startBase: Base,
         bases: List<Base>,
         baseToVertex: MutableMap<Int, Vertex>
     ): List<Base> {
-        val relevantBases = filterByEmergencyType(bases.toMutableList(), emergency)
+        val relevantBases = filterByEmergencyType(bases.toMutableList(), emergencyType)
         // stores the distance of each base from the start base
         val distanceMapping = mutableMapOf<Base, Int>()
         val startBaseVertex = baseToVertex[startBase.baseID] ?: ver
