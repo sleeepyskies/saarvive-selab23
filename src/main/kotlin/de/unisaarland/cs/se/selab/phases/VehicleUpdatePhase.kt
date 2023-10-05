@@ -117,7 +117,8 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
 
         vehicle.vehicleStatus = VehicleStatus.ARRIVED
         Log.displayAssetArrival(vehicle.id, vehicle.lastVisitedVertex.id)
-        dataHolder.emergencyToVehicles[vehicle.assignedEmergencyID]?.add(vehicle)
+        val vehicleList = dataHolder.emergencyToVehicles.getOrDefault(emergency.id, mutableListOf())
+        vehicleList.add(vehicle)
 
         /* updateRequiredVehicles(vehicle, emergency)
 
