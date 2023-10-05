@@ -11,7 +11,7 @@
             "baseType": "POLICE_STATION",
             "location": 1,
             "staff": 30,
-            "dogs": 1
+            "dogs": 0
         },
         {
             "id": 2,
