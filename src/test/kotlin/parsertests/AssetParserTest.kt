@@ -239,6 +239,16 @@ class AssetParserTest {
     }
 
     @Test
+    fun testInvalidPoliceStationHasNoDog() {
+        assertThrows<IllegalArgumentException> {
+            AssetParser(
+                assetSchemaFile = "assets.schema",
+                assetJsonFile = "src/test/resources/parsertests/assetParser/invalid_PoliceStationHasNoDog.json"
+            ).parse()
+        }
+    }
+
+    @Test
     fun `valid scenario file`() {
         val parser = AssetParser(
             assetSchemaFile = "assets.schema",
