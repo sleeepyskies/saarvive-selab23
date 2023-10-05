@@ -1,6 +1,8 @@
 package parsertests
 
 import de.unisaarland.cs.se.selab.dataClasses.bases.FireStation
+import de.unisaarland.cs.se.selab.dataClasses.bases.Hospital
+import de.unisaarland.cs.se.selab.dataClasses.bases.PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
 import de.unisaarland.cs.se.selab.parser.AssetParser
@@ -19,21 +21,46 @@ class AssetParserTest {
 
         val (vehicles, bases) = parser.parse()
 
-        // Validate the first base
+        // Validate bases
+        assert(bases.size == 9) // Ensure there are 9 bases
+
+        val fireStations = bases.filterIsInstance<FireStation>()
+        val policeStations = bases.filterIsInstance<PoliceStation>()
+        val hospitals = bases.filterIsInstance<Hospital>()
+
+        assert(fireStations.size == 3) // Ensure there are 3 fire stations
+        assert(policeStations.size == 3) // Ensure there are 3 police stations
+        assert(hospitals.size == 3) // Ensure there are 3 hospitals
+
+        // Validate vehicles
+        assert(vehicles.size == 54) // Ensure there are 54 vehicles
+
+        val policeCars = vehicles.filter { it.vehicleType == VehicleType.POLICE_CAR }
+        val k9PoliceCars = vehicles.filter { it.vehicleType == VehicleType.K9_POLICE_CAR }
+        val policeMotorcycles = vehicles.filter { it.vehicleType == VehicleType.POLICE_MOTORCYCLE }
+        val ambulances = vehicles.filter { it.vehicleType == VehicleType.AMBULANCE }
+        val emergencyDoctorCars = vehicles.filter { it.vehicleType == VehicleType.EMERGENCY_DOCTOR_CAR }
+
+        assert(policeCars.size == 6) // Ensure there are 6 police cars
+        assert(k9PoliceCars.size == 6) // Ensure there are 6 K9 police cars
+        assert(policeMotorcycles.size == 6) // Ensure there are 6 police motorcycles
+        assert(ambulances.size == 6) // Ensure there are 6 ambulances
+        assert(emergencyDoctorCars.size == 6) // Ensure there are 6 emergency doctor cars
+
+        // Validate specific attributes of the first base and vehicle
         val base1 = bases[0]
         assert(base1 is FireStation)
         assert(base1.baseID == 0)
         assert(base1.vertexID == 2)
         assert(base1.staff == 62)
 
-        // Validate the first vehicle
         val vehicle1 = vehicles[0]
         assert(vehicle1.vehicleType == VehicleType.POLICE_CAR)
         assert(vehicle1.id == 0)
         assert(vehicle1.assignedBaseID == 1)
         assert(vehicle1.height == 2)
         assert(vehicle1.staffCapacity == 5)
-        if (vehicle1 is PoliceCar) { // access attributes specific to PoliceCar
+        if (vehicle1 is PoliceCar) {
             assert(vehicle1.maxCriminalCapacity == 3)
         }
     }
@@ -263,5 +290,27 @@ class AssetParserTest {
         assert(base1.baseID == 0)
         assert(base1.vertexID == 0)
         assert(base1.staff == 1)
+    }
+
+    @Test
+    fun testPoliceStationWithK9CarButNoDogs() {
+        assertThrows<IllegalArgumentException> {
+            AssetParser(
+                assetSchemaFile = "assets.schema",
+                assetJsonFile =
+                "src/test/resources/parsertests/assetParser/invalid_PoliceStationWithK9CarButNoDogs.json"
+            ).parse()
+        }
+    }
+
+    @Test
+    fun testHospitalWithEmergencyDoctorCarButNoDoctors() {
+        assertThrows<IllegalArgumentException> {
+            AssetParser(
+                assetSchemaFile = "assets.schema",
+                assetJsonFile =
+                "src/test/resources/parsertests/assetParser/invalid_HospitalWithEmergencyDoctorCarButNoDoctors.json"
+            ).parse()
+        }
     }
 }
