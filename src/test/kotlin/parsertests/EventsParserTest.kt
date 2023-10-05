@@ -2,7 +2,6 @@ package parsertests
 
 import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
 import de.unisaarland.cs.se.selab.parser.EventsParser
-import org.json.JSONException
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.io.FileNotFoundException
@@ -42,7 +41,7 @@ class EventsParserTest {
 
     @Test
     fun testInvalidEventsJSON() {
-        assertThrows<JSONException> {
+        assertThrows<IllegalArgumentException> {
             EventsParser(
                 schemaFile = "event.schema",
                 jsonFile = "src/test/resources/parsertests/eventsParser/invalid_events.json",
@@ -85,8 +84,8 @@ class EventsParserTest {
     }
 
     @Test
-    fun testMissingRequiredFields() {
-        assertThrows<JSONException> {
+    fun testMissingRequiredFields() { // json exception thrown
+        assertThrows<IllegalArgumentException> {
             EventsParser(
                 schemaFile = "event.schema",
                 jsonFile = "src/test/resources/parsertests/eventsParser/missing_required_fields.json",
@@ -119,8 +118,8 @@ class EventsParserTest {
     }
 
     @Test
-    fun testConstructionWithMissingSourceOrTarget() {
-        assertThrows<JSONException> {
+    fun testConstructionWithMissingSourceOrTarget() { // json exception thrown
+        assertThrows<IllegalArgumentException> {
             EventsParser(
                 schemaFile = "event.schema",
                 jsonFile = "src/test/resources/parsertests/eventsParser/construction_missing_source_or_target.json",
