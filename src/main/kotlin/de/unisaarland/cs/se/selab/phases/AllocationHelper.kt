@@ -99,7 +99,7 @@ class AllocationHelper(val dataHolder: DataHolder) {
      * assigns a vehicle to the emergency and updates the corresponding attributes
      */
 
-    private fun assignVehicle(vehicle: Vehicle, emergency: Emergency) {
+    private fun assignVehicle(vehicle: Vehicle, emergency: Emergency) : Boolean {
         // val emergency = dataHolder.ongoingEmergencies.first { it.id == emergency.emergencyID }
         val graph = dataHolder.graph
         // val requiredVehicles = emergency.requiredVehicles
@@ -124,8 +124,12 @@ class AllocationHelper(val dataHolder: DataHolder) {
             ).toMutableList()
             // add this vehicle to the list of active vehicles
             dataHolder.activeVehicles.add(vehicle)
+            // add to the 'vehicle to emergency' mapping
+            dataHolder.vehicleToEmergency[vehicle.id] = emergency
             Log.displayAssetAllocation(vehicle.id, emergency.id, shortestPath)
+            return true
         }
+        return false
     }
 
     /**
