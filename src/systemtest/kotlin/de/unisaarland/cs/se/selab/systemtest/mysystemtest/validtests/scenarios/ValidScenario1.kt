@@ -22,10 +22,11 @@ class ValidScenario1 : SystemTest() {
         // emergency CRIME, severity 1 starts, id -> 0
         assertNextLine("Emergency Assignment: 0 assigned to 3")
         // needed assets: 1 Police Car, 1 Criminal
-        assertNextLine("Asset Allocation: 4 allocated to 0; 0 ticks to arrive.")
+        assertNextLine("Asset Allocation: 4 allocated to 0; 1 ticks to arrive.")
+        assertNextLine("Simulation Tick: 2")
+        // vehicle arrive in the next tick not the same one
         assertNextLine("Asset Arrival: 4 arrived at 3.")
         assertNextLine("Emergency Handling Start: 0 handling started")
-        assertNextLine("Simulation Tick: 2")
         assertNextLine("Simulation Tick: 3")
         assertNextLine("Emergency Assignment: 1 assigned to 2")
         assertNextLine("Asset Allocation: 7 allocated to 1; 1 ticks to arrive.")
