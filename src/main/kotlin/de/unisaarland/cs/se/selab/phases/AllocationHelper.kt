@@ -226,17 +226,15 @@ class AllocationHelper(val dataHolder: DataHolder) {
      * implements the logic of assigning an ambulance
      */
     private fun assignAmbulance(vehicle: Ambulance, emergency: Emergency) {
-        if (emergency.requiredCapacity.containsKey(CapacityType.PATIENT)) {
-            val requiredNum = emergency.requiredVehicles[VehicleType.AMBULANCE]
+        val requiredNum = emergency.requiredVehicles[VehicleType.AMBULANCE]
 
-            if ((requiredNum ?: 0) == 0) {
-                emergency.requiredCapacity.remove(CapacityType.PATIENT)
-                emergency.requiredVehicles.remove(VehicleType.AMBULANCE)
-            } else {
-                // only assign the vehicle if it doesn't have a patient
-                if (vehicle.hasPatient.not()) {
-                    assignVehicle(vehicle, emergency)
-                }
+        if ((requiredNum ?: 0) == 0) {
+            emergency.requiredCapacity.remove(CapacityType.PATIENT)
+            emergency.requiredVehicles.remove(VehicleType.AMBULANCE)
+        } else {
+            // only assign the vehicle if it doesn't have a patient
+            if (vehicle.hasPatient.not()) {
+                assignVehicle(vehicle, emergency)
             }
         }
     }
