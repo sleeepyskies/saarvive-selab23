@@ -76,7 +76,7 @@ class CalculateShortestRouteTest {
         this.graph = Graph(vertices, roads)
 
         val route = graph.calculateShortestRoute(vertex0, vertex2, 2)
-        assert(route == listOf(vertex1, vertex2))
+        assert(route == listOf(vertex0, vertex1, vertex2))
     }
 
     @Test
@@ -95,7 +95,7 @@ class CalculateShortestRouteTest {
         this.graph = Graph(vertices, roads)
 
         val route = graph.calculateShortestRoute(vertex0, vertex2, 2)
-        assert(route == listOf(vertex1, vertex2))
+        assert(route == listOf(vertex0, vertex1, vertex2))
     }
 
     @Test
@@ -114,7 +114,7 @@ class CalculateShortestRouteTest {
         this.graph = Graph(vertices, roads)
 
         val route = graph.calculateShortestRoute(vertex0, vertex2, 2)
-        assert(route == listOf(vertex2))
+        assert(route == listOf(vertex0, vertex2))
     }
 
     @Test
@@ -133,10 +133,10 @@ class CalculateShortestRouteTest {
         this.graph = Graph(vertices, roads)
 
         val route = graph.calculateShortestRoute(vertex0, vertex2, 3)
-        assert(route == listOf(vertex1, vertex2))
+        assert(route == listOf(vertex0, vertex1, vertex2))
     }
 
-  /*  @Test
+    @Test
     fun chooseBetweenRoutesComplex() {
         vertex0.connectingRoads[1] = w10h5
         vertex1.connectingRoads[0] = w10h5
@@ -164,6 +164,6 @@ class CalculateShortestRouteTest {
         this.graph = Graph(vertices, roads)
 
         val route = graph.calculateShortestRoute(vertex0, vertex5, 3)
-        assert(route == listOf(vertex1, vertex2, vertex4, vertex5))
-    }*/
+        assert(route == listOf(vertex0, vertex1, vertex2, vertex4, vertex5))
+    }
 }
