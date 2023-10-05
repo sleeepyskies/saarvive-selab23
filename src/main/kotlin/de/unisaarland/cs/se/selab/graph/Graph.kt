@@ -78,7 +78,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
     }
 
     private fun dijkstra(start: Vertex, destination: Vertex, carHeight: Int): MutableMap<Vertex, Pair<Int, Vertex?>> {
-        if (start == destination) return mutableMapOf()
+        if (start == destination) return mutableMapOf(Pair(start, Pair(0, null)))
         // Map from a vertex to its distance form start, and previous vertex on path
         val visitedVertices: MutableMap<Vertex, Pair<Int, Vertex?>> = helper.initVisitedVertices(start, this.graph)
         val unvisitedVertices: MutableList<Vertex> = graph.toMutableList()
