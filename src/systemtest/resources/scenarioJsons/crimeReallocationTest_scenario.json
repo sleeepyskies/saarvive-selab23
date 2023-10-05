@@ -1,0 +1,25 @@
+{
+  "events": [
+    {
+      "id": 0,
+      "type": "TRAFFIC_JAM",
+      "tick": 20,
+      "duration": 2,
+      "factor": 1,
+      "source": 1,
+      "target": 4
+    }
+  ],
+  "emergencyCalls": [
+    {
+      "id": 0,
+      "tick": 1,
+      "village": "VillageA",
+      "roadName": "Magnolia_Lane",
+      "emergencyType": "FIRE",
+      "severity": 1,
+      "handleTime": 1,
+      "maxDuration": 2
+    }
+  ]
+}
