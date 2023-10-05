@@ -1,0 +1,90 @@
+{
+  "events": [
+    {
+      "id": 0,
+      "type": "RUSH_HOUR",
+      "tick": 2,
+      "duration": 3,
+      "factor": 2,
+      "roadTypes": [
+        "MAIN_STREET"
+      ]
+    },
+    {
+      "id": 1,
+      "type": "TRAFFIC_JAM",
+      "tick": 2,
+      "duration": 1,
+      "factor": 3,
+      "source": 12,
+      "target": 13
+    },
+    {
+      "id": 2,
+      "type": "CONSTRUCTION_SITE",
+      "tick": 1,
+      "duration": 1,
+      "factor": 2,
+      "oneWayStreet": true,
+      "source": 6,
+      "target": 3
+    },
+    {
+      "id": 3,
+      "type": "ROAD_CLOSURE",
+      "tick": 3,
+      "duration": 1,
+      "source": 7,
+      "target": 8
+    },
+    {
+      "id": 4,
+      "type": "VEHICLE_UNAVAILABLE",
+      "tick": 6,
+      "duration": 1,
+      "vehicleID": 35
+    }
+  ],
+  "emergencyCalls": [
+    {
+      "id": 0,
+      "tick": 1,
+      "village": "Berlin",
+      "roadName": "Railway_Station_Road",
+      "emergencyType": "MEDICAL",
+      "severity": 1,
+      "handleTime": 1,
+      "maxDuration": 5
+    },
+    {
+      "id": 1,
+      "tick": 1,
+      "village": "Berlin",
+      "roadName": "Pine_Way",
+      "emergencyType": "CRIME",
+      "severity": 1,
+      "handleTime": 1,
+      "maxDuration": 4
+    },
+    {
+      "id": 2,
+      "tick": 2,
+      "village": "Germany",
+      "roadName": "Ash_Way",
+      "emergencyType": "CRIME",
+      "severity": 3,
+      "handleTime": 7,
+      "maxDuration": 17
+    },
+    {
+      "id": 3,
+      "tick": 6,
+      "village": "Kiel",
+      "roadName": "Rose_Street",
+      "emergencyType": "FIRE",
+      "severity": 1,
+      "handleTime": 2,
+      "maxDuration": 4
+    }
+  ]
+}
