@@ -87,7 +87,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
 
         // Algorithm
         while (unvisitedVertices.isNotEmpty()) {
-            if (timeout > Number.ONE_HUNDRED) throw TimeoutException("Dijkstra has looped over 100 times")
+            if (timeout > 50) throw TimeoutException("Dijkstra has looped over 50 times")
             if (currentVertex == destination) break
             // gets all relevant neighbors based on height restrictions
             val neighbors = currentVertex.connectingRoads.filter { (_, road) -> carHeight <= road.heightLimit }
