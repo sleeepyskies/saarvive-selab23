@@ -63,7 +63,7 @@ class ValidScenario2 : SystemTest() {
         // emergency 1 ends
     }
 
-    private suspend fun ValidScenario2.tick3(){
+    private suspend fun ValidScenario2.tick3() {
         assertNextLine("Emergency Assignment: 0 assigned to 2") // lasts for 25 ticks, handling time 10
         assertNextLine("Asset Allocation: 6 allocated to 0; 3 ticks to arrive.")
         assertNextLine("Asset Allocation: 7 allocated to 0; 3 ticks to arrive.")
@@ -84,7 +84,7 @@ class ValidScenario2 : SystemTest() {
         assertNextLine("Assets Rerouted: 1") //
     }
 
-    private suspend fun ValidScenario2.tick6(){
+    private suspend fun ValidScenario2.tick6() {
         assertNextLine("Asset Arrival: 6 arrived at 6.")
         assertNextLine("Asset Arrival: 7 arrived at 6.")
         assertNextLine("Asset Arrival: 8 arrived at 6.")
@@ -99,7 +99,7 @@ class ValidScenario2 : SystemTest() {
         // vehicles arrive at tick 6
     }
 
-    private suspend fun ValidScenario2.simEnd(){
+    private suspend fun ValidScenario2.simEnd() {
         assertNextLine("Simulation Statistics: 0 assets rerouted.")
         assertNextLine("Simulation Statistics: 2 received emergencies.")
         assertNextLine("Simulation Statistics: 0 ongoing emergencies.")
@@ -107,4 +107,3 @@ class ValidScenario2 : SystemTest() {
         assertNextLine("Simulation Statistics: 2 resolved emergencies.")
     }
 }
-

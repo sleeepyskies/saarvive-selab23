@@ -18,6 +18,7 @@ import de.unisaarland.cs.se.selab.parser.AssetParser
 import de.unisaarland.cs.se.selab.parser.CountyParser
 import de.unisaarland.cs.se.selab.parser.EventsParser
 import de.unisaarland.cs.se.selab.parser.SimulationParser
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.*
 
 /**
@@ -67,6 +68,9 @@ class SimulationObjectConstructor(
             crossSimulation(graph, emergencies, simulationParser)
             crossEvents(graph, events, vehicles, eventsParser)
         } catch (_: IllegalArgumentException) {
+            KotlinLogging.logger("SimulationObjectConstructor: createSimulation()").error {
+                "Invalid simulation"
+            }
             return null
         }
 
@@ -96,6 +100,9 @@ class SimulationObjectConstructor(
     }
     private fun crossSimulation(graph: Graph, emgs: List<Emergency>, simParser: SimulationParser) {
         if (!validateEmergenciesBasedOnGraph(graph, emgs)) {
+            KotlinLogging.logger("SimulationObjectConstructor: crossSimulation()").error {
+                "Invalid emergencies based on map"
+            }
             Log.displayInitializationInfoInvalid(simParser.fileName)
             throw IllegalArgumentException("Invalid emergencies")
         }
@@ -105,6 +112,7 @@ class SimulationObjectConstructor(
         if (validateEventsBasedOnGraph(graph, events, vhcls)) {
             Log.displayInitializationInfoValid(evParser.fileName)
         } else {
+            KotlinLogging.logger("SimulationObjectConstructor: crossEvents()").error { "Invalid events based on map" }
             Log.displayInitializationInfoInvalid(evParser.fileName)
             throw IllegalArgumentException("Invalid events")
         }
@@ -114,6 +122,7 @@ class SimulationObjectConstructor(
         if (validateAssetsBasedOnGraph(graph, bases)) {
             Log.displayInitializationInfoValid(assetParser.fileName)
         } else {
+            KotlinLogging.logger("SimulationObjectConstructor: crossAssets()").error { "Invalid assets based on map" }
             Log.displayInitializationInfoInvalid(assetParser.fileName)
             throw IllegalArgumentException("Invalid assets")
         }
@@ -138,6 +147,9 @@ class SimulationObjectConstructor(
                 // add base to mapping
                 mapping[baseVertex]?.add(base)
             } else {
+                KotlinLogging.logger(
+                    "SimulationObjectConstructor: validateAssetsBasedOnGraph()"
+                ).error { "Base does not exist on map" }
                 return false
             }
         }
@@ -155,8 +167,19 @@ class SimulationObjectConstructor(
     private fun validateEventsBasedOnGraph(graph: Graph, events: List<Event>, vehicles: List<Vehicle>): Boolean {
         for (event in events) {
             when (event) {
-                is VehicleUnavailable -> if (!validateVehicleEvent(event, vehicles)) return false
-                is Construction -> if (!validateOneWayStreet(event, graph)) return false
+                is VehicleUnavailable -> if (!validateVehicleEvent(event, vehicles)) {
+                    KotlinLogging.logger(
+                        "SimulationObjectConstructor: validateEventsBasedOnGraph()"
+                    ).error { "Vehicle does not exist on map" }
+                    return false
+                }
+                is Construction -> if (!validateOneWayStreet(event, graph)) {
+                    KotlinLogging.logger(
+                        "SimulationObjectConstructor: validateEventsBasedOnGraph"
+                    )
+                        .error { "One way street does not exist on map" }
+                    return false
+                }
                 else -> if (!validateGraphEvent(event, graph)) return false
             }
         }
@@ -214,7 +237,12 @@ class SimulationObjectConstructor(
         val targetVertex = graph.graph.find { vertex -> vertex.id == targetID }
 
         // Check if source and target vertices exist
-        if (sourceVertex == null || targetVertex == null) return false
+        if (sourceVertex == null || targetVertex == null) {
+            KotlinLogging.logger("SimulationObjectConstructor:").error {
+                "Source or target vertex does not exist on map"
+            }
+            return false
+        }
 
         // Check if there's a connecting road from the source to the target
         return sourceVertex.connectingRoads.containsKey(targetID)
@@ -250,6 +278,7 @@ class SimulationObjectConstructor(
                 // add base to mapping
                 mapping[emergencyRoad]?.add(emergency)
             } else {
+                KotlinLogging.logger("SimulationObjectConstructor:").error { "Emergency road does not exist on map" }
                 return false
             }
         }
