@@ -360,13 +360,15 @@ class AllocationHelper(val dataHolder: DataHolder) {
         val timeToArrive1 =
             dataHolder.graph.calculateShortestPath(
                 lastVertex,
-                emergencyPosition.first, vehicle.height
+                emergencyPosition.first,
+                vehicle.height
             ) + distanceFromLastVertex
         // calculate time to arrive at emergency at vertex 2
         val timeToArrive2 =
             dataHolder.graph.calculateShortestPath(
                 lastVertex,
-                emergencyPosition.second, vehicle.height
+                emergencyPosition.second,
+                vehicle.height
             ) + distanceFromLastVertex
         val pair1 = Pair(emergencyPosition.first, timeToArrive1)
         val pair2 = Pair(emergencyPosition.second, timeToArrive2)
@@ -381,13 +383,15 @@ class AllocationHelper(val dataHolder: DataHolder) {
             val timeToArrive3 =
                 dataHolder.graph.calculateShortestPath(
                     nextVertex,
-                    emergencyPosition.first, vehicle.height
+                    emergencyPosition.first,
+                    vehicle.height
                 ) + distanceToNextVertex
             // calculate time to arrive at emergency at vertex 2
             val timeToArrive4 =
                 dataHolder.graph.calculateShortestPath(
                     nextVertex,
-                    emergencyPosition.second, vehicle.height
+                    emergencyPosition.second,
+                    vehicle.height
                 ) + distanceToNextVertex
 
             val pair3 = Pair(emergencyPosition.first, timeToArrive3)
