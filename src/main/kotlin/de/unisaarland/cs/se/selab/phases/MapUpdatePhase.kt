@@ -58,7 +58,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
             dataHolder.graph.applyGraphEvent(event)
             shouldReroute = true
         }
-        Log.displayEventStarted(event.eventID)
+        // Log.displayEventStarted(event.eventID)
     }
 
     /**
