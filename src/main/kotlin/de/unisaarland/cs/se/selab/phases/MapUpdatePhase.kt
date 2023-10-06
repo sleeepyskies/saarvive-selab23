@@ -152,6 +152,12 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 vehicle.height
             )
 
+            val timeToArrive1 = dataHolder.graph.weightOfRoute(
+                vehicle.lastVisitedVertex,
+                findClosestVertex(vehicle, vEmergency),
+                vehicle.height
+            )
+
             // New route is faster -> reroute
             val newRoute = dataHolder.graph.calculateShortestRoute(
                 vehicle.lastVisitedVertex,
