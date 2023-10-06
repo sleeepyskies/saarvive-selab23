@@ -23,10 +23,10 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
             }
         )
 
-        reduceMaxDuration(dataHolder.ongoingEmergencies)
         // sees which emergencies have reached and take action accordingly
         updateEmergencies(dataHolder.ongoingEmergencies)
         checkHandling(dataHolder.ongoingEmergencies)
+        reduceMaxDuration(dataHolder.ongoingEmergencies)
         currentTick++
     }
 
