@@ -47,7 +47,6 @@ object SystemTestRegistration {
 
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
         manager.registerTest(ComplexScenario1Test())
-
     }
 
     fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
