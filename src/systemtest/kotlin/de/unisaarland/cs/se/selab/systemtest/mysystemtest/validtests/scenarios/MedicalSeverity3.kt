@@ -6,8 +6,8 @@ class MedicalSeverity3 : SystemTest() {
     override val name = "MedicalSeverity3"
 
     override val map = "mapFiles/complexScenario1.dot"
-    override val assets = "assetsJsons/complexScenario1.json"
-    override val scenario = "scenarioJsons/complexScenario1_simulation.json"
+    override val assets = "assetsJsons/medicalSeverity3_assets.json"
+    override val scenario = "scenarioJsons/medicalSeverity3_simulation.json"
     override val maxTicks = 10
 
     override suspend fun run() {
@@ -47,21 +47,6 @@ class MedicalSeverity3 : SystemTest() {
         assertNextLine("Simulation Tick: 5")
         assertNextLine("Simulation Tick: 6")
         assertNextLine("Emergency Resolved: 0 resolved.")
-
-        assertNextLine("Simulation Tick: 7")
-        assertNextLine("Asset Arrival: 10 arrived at 12.")
-        assertNextLine("Asset Arrival: 11 arrived at 12.")
-
-        assertNextLine("Simulation Tick: 8")
-        assertNextLine("Asset Arrival: 0 arrived at 15.")
-        assertNextLine("Asset Arrival: 1 arrived at 15.")
-        assertNextLine("Asset Arrival: 2 arrived at 15.")
-        assertNextLine("Asset Arrival: 3 arrived at 15.")
-        assertNextLine("Asset Arrival: 4 arrived at 15.")
-        assertNextLine("Asset Arrival: 5 arrived at 15.")
-        assertNextLine("Asset Arrival: 6 arrived at 15.")
-
-        assertNextLine("Simulation Tick: 9")
         // end of simulation
         assertNextLine("Simulation End")
         // Statistics
