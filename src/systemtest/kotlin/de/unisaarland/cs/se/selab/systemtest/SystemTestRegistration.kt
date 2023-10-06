@@ -7,10 +7,7 @@ import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.simulation
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.simulation.WrongEventsTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.CorrectEdgesToVerticesTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.ValidSmallMapSpacesKingdomTest
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.AllocateFireEmergencyOneTest1
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.AllocateFireEmergencyOneTest2
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.AllocateFireEmergencyOneTest3
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.TravelMultipleVerticesTest
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.*
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.BROvalidScenario
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.ComplexScenario1Test
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.DADvalidScenario
@@ -95,6 +92,7 @@ object SystemTestRegistration {
         manager.registerTest(BROvalidScenario())
         manager.registerTest(SISvalidScenario())
         manager.registerTest(DADvalidScenario())
+        manager.registerTest(RerouteTest())
     }
 
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
@@ -102,6 +100,7 @@ object SystemTestRegistration {
         manager.registerTest(ComplexScenario1Test())
         manager.registerTest(SISvalidScenario())
         manager.registerTest(MedicalSeverity3())
+        manager.registerTest(RerouteTest())
     }
 
     fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
@@ -178,5 +177,6 @@ object SystemTestRegistration {
         manager.registerTest(ValidScenario3())
         manager.registerTest(BROvalidScenario())
         manager.registerTest(DADvalidScenario())
+        manager.registerTest(RerouteTest())
     }
 }
