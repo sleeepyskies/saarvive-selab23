@@ -60,8 +60,4 @@ class FireTrucksRefillTest : SystemTest() {
         // end of file is reached
         assertEnd()
     }
-
-    private suspend fun FireTrucksRefillTest.requestFailed() {
-        assertNextLine("Request Failed: 1 failed.")
-    }
 }
