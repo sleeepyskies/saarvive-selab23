@@ -7,10 +7,14 @@ import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.simulation
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.simulation.WrongEventsTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.CorrectEdgesToVerticesTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.ValidSmallMapSpacesKingdomTest
-import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.*
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.AllocateFireEmergencyOneTest1
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.AllocateFireEmergencyOneTest2
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.AllocateFireEmergencyOneTest3
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.TravelMultipleVerticesTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.BROvalidScenario
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.ComplexScenario1Test
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.DADvalidScenario
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.FATHERvalidScenario
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.MedicalSeverity3
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.SISvalidScenario
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.ValidScenario1
@@ -92,7 +96,7 @@ object SystemTestRegistration {
         manager.registerTest(BROvalidScenario())
         manager.registerTest(SISvalidScenario())
         manager.registerTest(DADvalidScenario())
-        manager.registerTest(RerouteTest())
+        manager.registerTest(FATHERvalidScenario())
     }
 
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
@@ -100,7 +104,7 @@ object SystemTestRegistration {
         manager.registerTest(ComplexScenario1Test())
         manager.registerTest(SISvalidScenario())
         manager.registerTest(MedicalSeverity3())
-        manager.registerTest(RerouteTest())
+        manager.registerTest(FATHERvalidScenario())
     }
 
     fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
@@ -177,6 +181,5 @@ object SystemTestRegistration {
         manager.registerTest(ValidScenario3())
         manager.registerTest(BROvalidScenario())
         manager.registerTest(DADvalidScenario())
-        manager.registerTest(RerouteTest())
     }
 }
