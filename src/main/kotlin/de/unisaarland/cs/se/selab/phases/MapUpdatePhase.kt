@@ -65,7 +65,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
             }
         } else {
             // apply graph event
-            dataHolder.graph.applyGraphEvent(event)
+            dataHolder.graph.applyGraphEvent(event, currentTick)
             shouldReroute = true
         }
         // Log.displayEventStarted(event.eventID)
@@ -141,12 +141,32 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
     private fun rerouteVehicles() {
         // only reroute vehicles that are moving, not at emergency
         val assets = dataHolder.activeVehicles.filter {
-            it.vehicleStatus == VehicleStatus.MOVING_TO_EMERGENCY ||
-                it.vehicleStatus == VehicleStatus.MOVING_TO_BASE
+
+                it.vehicleStatus == VehicleStatus.MOVING_TO_EMERGENCY ||
+                    it.vehicleStatus == VehicleStatus.MOVING_TO_BASE
+
         }
-        val assetsRerouted = assets.count { vehicle ->
+
+        var assetsReroutedNum: Int = 0
+
+        for (vehicle in assets) {
+            val vehicleRoad = vehicle.currentRoad
+
+            // if the vehicle is currently on the road where an emergency has started it ignores it
+            if (vehicleRoad != null) {
+                if (vehicleRoad.activeEvents.first().startTick == currentTick) {
+                    continue
+                }
+            }
+
             val vEmergency = dataHolder.vehicleToEmergency[vehicle.id]
             val currentRouteWeight = dataHolder.graph.weightOfRoute(
+                vehicle.lastVisitedVertex,
+                findClosestVertex(vehicle, vEmergency),
+                vehicle.height
+            )
+
+            val timeToArrive1 = dataHolder.graph.weightOfRoute(
                 vehicle.lastVisitedVertex,
                 findClosestVertex(vehicle, vEmergency),
                 vehicle.height
@@ -169,21 +189,19 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
                     vehicle.height
                 )
                 vehicle.currentRouteWeightProgress = 0
-                true
+                assetsReroutedNum +=1
             }
             // if the weight of the path of vehicle changes while the route stays the same
             else if (currentRouteWeight != vehicle.remainingRouteWeight) {
-                true
-            } else {
-                false
+                assetsReroutedNum +=1
             }
         }
 
         // Log the number of assets rerouted
-        if (assetsRerouted > 0) {
-            Log.displayAssetsRerouted(assetsRerouted)
+        if (assetsReroutedNum > 0) {
+            Log.displayAssetsRerouted(assetsReroutedNum)
         }
-        dataHolder.assetsRerouted += assetsRerouted
+        dataHolder.assetsRerouted += assetsReroutedNum
     }
 
     /**

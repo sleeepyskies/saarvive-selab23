@@ -210,16 +210,16 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
      * Applies the effect of the given graph event to the graph
      * @param event The event to apply the effects of
      */
-    fun applyGraphEvent(event: Event) {
+    fun applyGraphEvent(event: Event, currentTick: Int) {
         // applyEvent(event)
         when (event) {
-            is RushHour -> applyRushHour(event)
-            is TrafficJam -> applyTrafficJam(event)
-            is RoadClosure -> applyRoadClosure(event)
-            is Construction -> applyConstruction(event)
+            is RushHour -> applyRushHour(event, currentTick)
+            is TrafficJam -> applyTrafficJam(event, currentTick)
+            is RoadClosure -> applyRoadClosure(event, currentTick)
+            is Construction -> applyConstruction(event, currentTick)
         }
     }
-    private fun applyRushHour(event: RushHour) {
+    private fun applyRushHour(event: RushHour, currentTick: Int) {
         for (road in roads) {
 //            if (road.pType in event.roadType) road.weight *= event.factor
 //            road.activeEvents.add(event)
@@ -244,20 +244,21 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
                     event.roadAppliedList.add(road)
                 }
 
-                rushHourLogging(event)
+                rushHourLogging(event, currentTick)
             }
         }
     }
 
-    private fun rushHourLogging(event: RushHour) {
+    private fun rushHourLogging(event: RushHour, currentTick: Int) {
         // Log as soon as the event is applied to first road
         if (event.roadAppliedList.size == 1) {
             Log.displayEventStarted(event.eventID)
             event.isApplied = true
+            event.tickApplied = currentTick
         }
     }
 
-    private fun applyConstruction(event: Construction) {
+    private fun applyConstruction(event: Construction, currentTick: Int) {
         val startVertex = graph.find { it.id == event.sourceID } ?: ver
         val targetVertex = graph.find { it.id == event.targetID } ?: ver
         // puts the required road into the event
@@ -285,11 +286,12 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
             }
             // show that the event is applied
             event.isApplied = true
+            event.tickApplied = currentTick
             // logging
             Log.displayEventStarted(event.eventID)
         }
     }
-    private fun applyTrafficJam(event: TrafficJam) {
+    private fun applyTrafficJam(event: TrafficJam, currentTick: Int) {
         val startVertex = graph.find { it.id == event.startVertex } ?: ver
         val targetVertex = graph.find { it.id == event.endVertex } ?: ver
 
@@ -310,11 +312,12 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
             event.affectedRoad = requiredRoad
             requiredRoad.weight *= event.factor
             event.isApplied = true
+            event.tickApplied = currentTick
             Log.displayEventStarted(event.eventID)
         }
     }
 
-    private fun applyRoadClosure(event: RoadClosure) {
+    private fun applyRoadClosure(event: RoadClosure, currentTick: Int) {
         // find source vertex
         val sourceVertex = graph.find { it.id == event.sourceID } ?: ver
         // find target vertex
@@ -337,6 +340,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
             targetVertex.connectingRoads.remove(sourceVertex.id)
             sourceVertex.connectingRoads.remove(targetVertex.id)
             event.isApplied = true
+            event.tickApplied = currentTick
             Log.displayEventStarted(event.eventID)
         }
     }

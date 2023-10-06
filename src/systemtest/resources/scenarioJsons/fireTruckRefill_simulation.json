@@ -1,0 +1,36 @@
+{
+  "events": [
+    {
+      "id": 0,
+      "type": "RUSH_HOUR",
+      "tick": 15,
+      "duration": 3,
+      "factor": 2,
+      "roadTypes": [
+        "MAIN_STREET"
+      ]
+    }
+  ],
+  "emergencyCalls": [
+    {
+      "id": 0,
+      "tick": 1,
+      "village": "Berlin",
+      "roadName": "Pine_Way",
+      "emergencyType": "FIRE",
+      "severity": 1,
+      "handleTime": 1,
+      "maxDuration": 3
+    },
+    {
+      "id": 1,
+      "tick": 4,
+      "village": "Berlin",
+      "roadName": "Pine_Way",
+      "emergencyType": "FIRE",
+      "severity": 1,
+      "handleTime": 1,
+      "maxDuration": 5
+    }
+  ]
+}

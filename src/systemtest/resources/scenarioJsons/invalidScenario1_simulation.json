@@ -1,0 +1,24 @@
+{
+  "events": [
+    {
+      "id": 99,
+      "type": "RUSH_HOUR",
+      "tick": 2,
+      "duration": 6,
+      "factor": 3,
+      "roadTypes": []
+    }
+  ],
+  "emergencyCalls": [
+    {
+      "id": 1,
+      "tick": 9,
+      "village": "Bikini_Bottom",
+      "roadName": "Idk_Street",
+      "emergencyType": "MEDICAL",
+      "severity": 1,
+      "handleTime": 7,
+      "maxDuration": 10
+    }
+  ]
+}

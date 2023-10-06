@@ -1,0 +1,84 @@
+{
+  "events": [
+    {
+      "id": 99,
+      "type": "RUSH_HOUR",
+      "tick": 2,
+      "duration": 6,
+      "factor": 3,
+      "roadTypes": []
+    }
+  ],
+  "emergencyCalls": [
+    {
+      "id": -993,
+      "tick": 9,
+      "village": "Bikini_Bottom",
+      "roadName": "Idk_Street",
+      "emergencyType": "MEDICAL",
+      "severity": 1,
+      "handleTime": 7,
+      "maxDuration": 10
+    },
+    {
+      "id": -994,
+      "tick": 9,
+      "village": "Bikini_Bottom",
+      "roadName": "Idk_Street",
+      "emergencyType": "FIRE",
+      "severity": 1,
+      "handleTime": 7,
+      "maxDuration": 10
+    },
+    {
+      "id": -995,
+      "tick": 9999,
+      "village": "Bikini_Bottom",
+      "roadName": "Krusty_Krab_Street",
+      "emergencyType": "CRIME",
+      "severity": 1,
+      "handleTime": 7,
+      "maxDuration": 10
+    },
+    {
+        "id": -996,
+        "tick": 9999,
+        "village": "Bikini_Bottom",
+        "roadName": "Krusty_Krab_Street",
+        "emergencyType": "CRIME",
+        "severity": 1,
+        "handleTime": 7,
+        "maxDuration": 10
+        },
+        {
+        "id": -997,
+        "tick": 9999,
+        "village": "Bikini_Bottom",
+        "roadName": "Krusty_Krab_Street",
+        "emergencyType": "CRIME",
+        "severity": 1,
+        "handleTime": 7,
+        "maxDuration": 10
+        },
+        {
+        "id": 98,
+        "tick": 9999,
+        "village": "Bikini_Bottom",
+        "roadName": "Krusty_Krab_Street",
+        "emergencyType": "CRIME",
+        "severity": 1,
+        "handleTime": 7,
+        "maxDuration": 10
+        },
+        {
+        "id": 911,
+        "tick": 9,
+        "village": "Bikini_Bottom",
+        "roadName": "Cool_Street",
+        "emergencyType": "CRIMEZZZ",
+        "severity": 1,
+        "handleTime": 7,
+        "maxDuration": 10
+    }
+  ]
+}
