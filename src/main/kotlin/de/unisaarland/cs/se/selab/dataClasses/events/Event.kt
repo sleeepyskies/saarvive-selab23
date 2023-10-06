@@ -11,4 +11,5 @@ open class Event(
     open val startTick: Int
 ) {
     open var isApplied: Boolean = false
+    open var tickApplied: Int = 0
 }
