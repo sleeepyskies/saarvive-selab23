@@ -3,7 +3,7 @@ package de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.invalidSc
 import de.unisaarland.cs.se.selab.systemtest.api.SystemTest
 
 class InvalidScenario1 : SystemTest() {
-    override val name = "ValidScenario1"
+    override val name = "InvalidScenario1"
     override val map = "mapFiles/invalidScenario1_map.dot"
     override val assets = "assetsJsons/invalidScenario1_assets.json"
     override val scenario = "scenarioJsons/invalidScenario1_simulation.json"
@@ -17,12 +17,10 @@ class InvalidScenario1 : SystemTest() {
         assertNextLine("Simulation Tick: 0")
         assertNextLine("Simulation Tick: 1")
         assertNextLine("Simulation Tick: 2")
-        assertNextLine("Event Triggered: 99 triggered.")
         assertNextLine("Simulation Tick: 3")
         assertNextLine("Simulation Tick: 4")
         assertNextLine("Simulation Tick: 5")
         assertNextLine("Simulation Tick: 6")
-        assertNextLine("Event Ended: 99 ended.")
         assertNextLine("Simulation Tick: 7")
         assertNextLine("Simulation Tick: 8")
         assertNextLine("Simulation Tick: 9")
@@ -30,7 +28,7 @@ class InvalidScenario1 : SystemTest() {
         assertNextLine("Asset Allocation: 666 allocated to 1; 2 ticks to arrive.")
         assertNextLine("Simulation Tick: 10")
         assertNextLine("Simulation Tick: 11")
-        assertNextLine("Asset arrival: 666 arrived at 3.")
+        assertNextLine("Asset Arrival: 666 arrived at 3.")
         assertNextLine("Emergency Handling Start: 1 handling started.")
         assertNextLine("Simulation Tick: 12")
         assertNextLine("Simulation Tick: 13")

@@ -295,6 +295,7 @@ class AllocationHelper(val dataHolder: DataHolder) {
                 val req = emergency.requiredCapacity[CapacityType.PATIENT] ?: 0
                 if (emergency.requiredCapacity.containsKey(CapacityType.PATIENT)) {
                     emergency.requiredCapacity[CapacityType.PATIENT] = req - 1
+                    vehicle.assignedPatient = true
                 }
             }
         }
@@ -332,20 +333,26 @@ class AllocationHelper(val dataHolder: DataHolder) {
             }
             is Ambulance -> {
                 // capacity isn't increased for ambulance in certain scenarios
-                checkAmbulaceIncrease(emergency)
+//                if (vehicle.assignedPatient) {
+//                    val req = emergency.requiredCapacity[CapacityType.PATIENT] ?: 0
+//                    if (emergency.requiredCapacity.containsKey(CapacityType.PATIENT)) {
+//                        emergency.requiredCapacity[CapacityType.PATIENT] = req + 1
+//                    } else {
+//                        emergency.requiredCapacity[CapacityType.PATIENT] = 1
+//                    }
+//                }
+                checkAmbulaceIncrease(vehicle, emergency)
             }
         }
     }
 
-    private fun checkAmbulaceIncrease(emergency: Emergency) {
-        val em1Check = emergency.emergencyType == EmergencyType.MEDICAL && emergency.severity == 1
-        val em2Check = emergency.emergencyType == EmergencyType.CRIME && emergency.severity == 2
-        if (!em1Check && !em2Check) {
+    private fun checkAmbulaceIncrease(vehicle: Ambulance, emergency: Emergency) {
+        if (vehicle.assignedPatient) {
             val req = emergency.requiredCapacity[CapacityType.PATIENT] ?: 0
             if (emergency.requiredCapacity.containsKey(CapacityType.PATIENT)) {
                 emergency.requiredCapacity[CapacityType.PATIENT] = req + 1
             } else {
-                emergency.requiredCapacity[CapacityType.WATER] = 1
+                emergency.requiredCapacity[CapacityType.PATIENT] = 1
             }
         }
     }

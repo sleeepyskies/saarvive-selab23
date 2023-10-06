@@ -27,4 +27,5 @@ class Ambulance(
     override var currentRoute: List<Vertex> = emptyList<Vertex>()
     override var ticksStillUnavailable: Int = 0
     var hasPatient: Boolean = false
+    var assignedPatient: Boolean = false
 }
