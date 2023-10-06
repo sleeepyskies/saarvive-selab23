@@ -48,6 +48,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         try {
             this.fileName = File(jsonFile).name
         } catch (_: Exception) {
+            KotlinLogging.logger("EmergencyParser: init").error { "File name not found" }
             outputInvalidAndFinish()
         }
         this.schema = getSchema(this.javaClass, schemaFile) ?: throw IllegalArgumentException("Schema not found")
@@ -57,6 +58,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
         try {
             schema.validate(json)
         } catch (_: Exception) {
+            KotlinLogging.logger("EmergencyParser: init").error { "JSON validation fails" }
             outputInvalidAndFinish()
         }
     }
@@ -99,6 +101,7 @@ class SimulationParser(private val schemaFile: String, private val jsonFile: Str
                 )
                 parsedEmergencies.add(emergency)
             } else {
+                KotlinLogging.logger("EmergencyParser: parseEmergencyCalls").error { "Invalid emergency" }
                 outputInvalidAndFinish()
             }
         }
