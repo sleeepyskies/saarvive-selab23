@@ -227,6 +227,14 @@
       "staffCapacity": 2
     },
     {
+      "id": 100,
+      "baseID": 5,
+      "vehicleType": "POLICE_CAR",
+      "vehicleHeight": 2,
+      "staffCapacity": 2,
+      "criminalCapacity": 1
+    },
+    {
       "id": 23,
       "baseID": 5,
       "vehicleType": "POLICE_CAR",
