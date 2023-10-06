@@ -1,10 +1,6 @@
 package de.unisaarland.cs.se.selab.phases
 
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
-import de.unisaarland.cs.se.selab.dataClasses.events.Construction
-import de.unisaarland.cs.se.selab.dataClasses.events.Event
-import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
-import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
@@ -64,10 +60,13 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * has reached the end of a road or route.
      */
     private fun updateVehiclePosition(vehicle: Vehicle) {
+        // Do not need to account for events happening on vehicle current road
+        /*
         // check if an event has affected the current road
         if ((vehicle.currentRoad?.baseWeight ?: 0) != (vehicle.currentRoad?.weight ?: 0)) {
             updateIfEventOccured(vehicle)
         }
+        */
 
         // decrease remainingRouteWeight by 10
         vehicle.remainingRouteWeight =
@@ -88,6 +87,7 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
         }
     }
 
+    /*
     /**
      * Updates vehicle weightTillDestination if an event has occurred on its current road
      */
@@ -115,6 +115,7 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
             vehicle.remainingRouteWeight += weightToAdd
         }
     }
+    */
 
     /**
      * Is called if a vehicle has reached/passed a vertex on its route,
@@ -126,7 +127,7 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
         // we also know that we will cross at least one vertex
 
         // update vehicle position for exact movement
-        vehicle.remainingRouteWeight = vehicle.remainingRouteWeight + Number.TEN
+        vehicle.remainingRouteWeight += Number.TEN
         // increase currentRouteProgress by 10
         vehicle.currentRouteWeightProgress -= Number.TEN
 
