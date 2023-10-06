@@ -93,7 +93,7 @@ class DataHolder(
         for (emergency in emergencies) {
             val roadList = graph.roads
             // get the road this emergency is on
-            val road = roadList.first { it.roadName == emergency.roadName }
+            val road = roadList.first { it.roadName == emergency.roadName && it.villageName == emergency.villageName }
             val vertexList = graph.graph
             // find the vertices it is connected to
             val vertices = vertexList.filter { it.connectingRoads.containsValue(road) }
