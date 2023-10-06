@@ -11,6 +11,8 @@ import de.unisaarland.cs.se.selab.simulation.DataHolder
  * This phase is responsible for updating all ongoing emergencies in the simulation
  */
 class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
+    var currentTick = 0
+
     /**
      * The main execute method of the EmergencyUpdatePhase
      */
@@ -25,6 +27,7 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
         // sees which emergencies have reached and take action accordingly
         updateEmergencies(dataHolder.ongoingEmergencies)
         checkHandling(dataHolder.ongoingEmergencies)
+        currentTick++
     }
 
     /**
@@ -91,7 +94,9 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 removeEmergencies.add(emergency)
                 dataHolder.resolvedEmergencies.add(emergency)
                 dataHolder.emergencyToVehicles[emergency.id]?.let { sendVehiclesBack(it) }
-            } else if (emergency.maxDuration == -1) {
+            } else if (emergency.emergencyStatus != EmergencyStatus.HANDLING &&
+                0 == emergency.maxDuration - emergency.handleTime
+            ) {
                 emergency.emergencyStatus = EmergencyStatus.FAILED
                 Log.displayEmergencyFailed(emergency.id)
                 removeEmergencies.add(emergency)
@@ -112,7 +117,7 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
     }
 
     /**
-     * checks if all of the vehicles have reached the assigned emergency
+     * checks if all the vehicles have reached the assigned emergency
      */
     private fun allVehiclesReached(emergency: Emergency): Boolean {
         if (emergency.requiredVehicles.isEmpty()) {

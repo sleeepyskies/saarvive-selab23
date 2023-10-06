@@ -243,7 +243,7 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
      */
     private fun updateReachedBase(vehicle: Vehicle) {
         // Log asset arrival at its base
-        Log.displayAssetArrival(vehicle.id, dataHolder.vehiclesToBase[vehicle.id]?.baseID ?: 0)
+        Log.displayAssetArrival(vehicle.id, dataHolder.vehiclesToBase[vehicle.id]?.vertexID ?: 0)
         dataHolder.activeVehicles.remove(vehicle)
         // check if vehicle needs to recharge
         if (vehicle is PoliceCar && vehicle.currentCriminalCapcity > 0) {

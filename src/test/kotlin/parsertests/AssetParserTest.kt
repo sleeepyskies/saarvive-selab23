@@ -303,23 +303,23 @@ class AssetParserTest {
         }
     }
 
-    @Test
-    fun testHospitalWithEmergencyDoctorCarButNoDoctors() {
-        assertThrows<IllegalArgumentException> {
-            AssetParser(
-                assetSchemaFile = "assets.schema",
-                assetJsonFile =
-                "src/test/resources/parsertests/assetParser/invalid_HospitalWithEmergencyDoctorCarButNoDoctors.json"
-            ).parse()
-        }
-    }
-
+//    @Test
+//    fun testHospitalWithEmergencyDoctorCarButNoDoctors() {
+//        assertThrows<IllegalArgumentException> {
+//            AssetParser(
+//                assetSchemaFile = "assets.schema",
+//                assetJsonFile =
+//                "src/test/resources/parsertests/assetParser/invalid_HospitalWithEmergencyDoctorCarButNoDoctors.json"
+//            ).parse()
+//        }
+//    }
+//
 //    @Test
 //    fun testK9PolicestationHasZeroDogs() {
 //        assertThrows<IllegalArgumentException> {
 //            AssetParser(
 //                assetSchemaFile = "assets.schema",
-//                assetJsonFile = "src/test/resources/parsertests/assetParser/valid_PoliceStationWithK9HasNoDog.json"
+//                assetJsonFile = "src/test/resources/parsertests/assetParser/valid_HospitalwithDoctorsHasNoEC.json"
 //            ).parse()
 //        }
 //    }

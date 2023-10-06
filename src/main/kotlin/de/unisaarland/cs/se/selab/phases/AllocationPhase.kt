@@ -29,11 +29,12 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
                 val base = dataHolder.emergencyToBase[emergency.id] ?: Base(1, 1, 1, mutableListOf())
 
                 val assignableVehicles = allocationHelper.getAssignableAssets(base, emergency)
-                sortAndAssign(assignableVehicles, emergency)
+                // quick fix -- use boolean to solve only logging allocation
+                sortAndAssign(assignableVehicles, emergency, false)
 
                 if (emergency.requiredVehicles.isNotEmpty()) {
                     val reallocatableVehicles = getReallocatableVehicles(base, emergency)
-                    sortAndAssign(reallocatableVehicles, emergency)
+                    sortAndAssign(reallocatableVehicles, emergency, true)
                 }
 
                 if (emergency.requiredVehicles.isNotEmpty()) {
@@ -43,12 +44,13 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         }
     }
 
-    private fun sortAndAssign(vehicles: List<Vehicle>, emergency: Emergency) {
-        vehicles.sortedBy { it.id }
-        for (vehicle in vehicles) {
+    private fun sortAndAssign(vehicles: List<Vehicle>, emergency: Emergency, isReallocation: Boolean) {
+        val getVehicles = mutableListOf<Vehicle>()
+        getVehicles.addAll(vehicles.sortedBy { it.id })
+        for (vehicle in getVehicles) {
             if (allocationHelper.isNormalVehicle(vehicle)) {
-                allocationHelper.assignWithoutCapacity(vehicle, emergency)
-            } else { allocationHelper.assignBasedOnCapacity(vehicle, emergency) }
+                allocationHelper.assignWithoutCapacity(vehicle, emergency, isReallocation)
+            } else { allocationHelper.assignBasedOnCapacity(vehicle, emergency, isReallocation) }
         }
     }
 

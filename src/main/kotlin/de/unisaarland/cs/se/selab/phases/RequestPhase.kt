@@ -28,8 +28,8 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
             assignableVehicles.sortedBy { it.id }
             for (vehicle in assignableVehicles) {
                 if (allocationHelper.isNormalVehicle(vehicle)) {
-                    allocationHelper.assignWithoutCapacity(vehicle, emergency)
-                } else { allocationHelper.assignBasedOnCapacity(vehicle, emergency) }
+                    allocationHelper.assignWithoutCapacity(vehicle, emergency, false)
+                } else { allocationHelper.assignBasedOnCapacity(vehicle, emergency, false ) }
             }
 
             // filters the vehicles for this request that are still in the emergency
