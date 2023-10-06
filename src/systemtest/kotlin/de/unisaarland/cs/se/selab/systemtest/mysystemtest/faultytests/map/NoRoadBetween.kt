@@ -12,6 +12,4 @@ class NoRoadBetween : SystemTest() {
     override suspend fun run() {
         assertNextLine("Initialization Info: noRoadBetween_map.dot invalid")
     }
-
-
 }
