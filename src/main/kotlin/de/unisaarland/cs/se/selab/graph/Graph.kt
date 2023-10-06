@@ -11,6 +11,7 @@ import de.unisaarland.cs.se.selab.dataClasses.events.RoadClosure
 import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
 import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import de.unisaarland.cs.se.selab.global.Log
+import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.global.StringLiterals
 import java.util.concurrent.TimeoutException
 
@@ -87,7 +88,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
 
         // Algorithm
         while (unvisitedVertices.isNotEmpty()) {
-            if (timeout > 50) throw TimeoutException("Dijkstra has looped over 50 times")
+            if (timeout > Number.FIFTY) throw TimeoutException("Dijkstra has looped over 50 times")
             if (currentVertex == destination) break
             // gets all relevant neighbors based on height restrictions
             val neighbors = currentVertex.connectingRoads.filter { (_, road) -> carHeight <= road.heightLimit }
