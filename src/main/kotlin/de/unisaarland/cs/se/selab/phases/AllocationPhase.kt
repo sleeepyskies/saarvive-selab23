@@ -44,11 +44,14 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
     }
 
     private fun sortAndAssign(vehicles: List<Vehicle>, emergency: Emergency) {
-        vehicles.sortedBy { it.id }
-        for (vehicle in vehicles) {
+        val getVehicles = mutableListOf<Vehicle>()
+        getVehicles.addAll(vehicles.sortedBy { it.id })
+        for (vehicle in getVehicles) {
             if (allocationHelper.isNormalVehicle(vehicle)) {
                 allocationHelper.assignWithoutCapacity(vehicle, emergency)
-            } else { allocationHelper.assignBasedOnCapacity(vehicle, emergency) }
+            } else {
+                allocationHelper.assignBasedOnCapacity(vehicle, emergency)
+            }
         }
     }
 
@@ -58,13 +61,13 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         val activeVehicles =
             base.vehicles.filter {
                 it.vehicleStatus == VehicleStatus.ASSIGNED_TO_EMERGENCY ||
-                    it.vehicleStatus == VehicleStatus.MOVING_TO_BASE ||
-                    it.vehicleStatus == VehicleStatus.MOVING_TO_EMERGENCY
+                        it.vehicleStatus == VehicleStatus.MOVING_TO_BASE ||
+                        it.vehicleStatus == VehicleStatus.MOVING_TO_EMERGENCY
             }
         return activeVehicles.filter {
             it.vehicleType in neededTypes &&
-                it.assignedEmergencyID != emergency.id &&
-                (dataHolder.vehicleToEmergency[it.id]?.severity ?: 0) < emergency.severity && it.isAvailable
+                    it.assignedEmergencyID != emergency.id &&
+                    (dataHolder.vehicleToEmergency[it.id]?.severity ?: 0) < emergency.severity && it.isAvailable
         }
     }
 
@@ -105,16 +108,16 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
         val requestList: MutableList<Request> = mutableListOf()
         val policeStationVehicles = emergency.requiredVehicles.filter {
             it.key == VehicleType.K9_POLICE_CAR ||
-                it.key == VehicleType.POLICE_MOTORCYCLE || it.key == VehicleType.POLICE_CAR
+                    it.key == VehicleType.POLICE_MOTORCYCLE || it.key == VehicleType.POLICE_CAR
         }
         val hospitalVehicles = emergency.requiredVehicles.filter {
             it.key == VehicleType.AMBULANCE ||
-                it.key == VehicleType.EMERGENCY_DOCTOR_CAR
+                    it.key == VehicleType.EMERGENCY_DOCTOR_CAR
         }
         val fireStationVehicles = emergency.requiredVehicles.filter {
             it.key == VehicleType.FIRE_TRUCK_TECHNICAL ||
-                it.key == VehicleType.FIREFIGHTER_TRANSPORTER || it.key == VehicleType.FIRE_TRUCK_LADDER ||
-                it.key == VehicleType.FIRE_TRUCK_WATER
+                    it.key == VehicleType.FIREFIGHTER_TRANSPORTER || it.key == VehicleType.FIRE_TRUCK_LADDER ||
+                    it.key == VehicleType.FIRE_TRUCK_WATER
         }
 
         if (policeStationVehicles.isNotEmpty()) {
