@@ -58,7 +58,7 @@ class ComplexScenario1Test : SystemTest() {
         // end of simulation
         assertNextLine("Simulation End")
         // Statistics
-        assertNextLine("Simulation Statistics: 24 assets rerouted.")
+        assertNextLine("Simulation Statistics: 11 assets rerouted.")
         assertNextLine("Simulation Statistics: 4 received emergencies.")
         assertNextLine("Simulation Statistics: 0 ongoing emergencies.")
         assertNextLine("Simulation Statistics: 1 failed emergencies.")
@@ -111,7 +111,6 @@ class ComplexScenario1Test : SystemTest() {
         assertNextLine("Asset Request: 5 sent to 3 for 3.")
         assertNextLine("Asset Request: 6 sent to 8 for 3.")
         request3Failed()
-        assertNextLine("Asset Arrival: 23 arrived at 6.")
     }
 
     private suspend fun ComplexScenario1Test.tick5() {
@@ -122,6 +121,7 @@ class ComplexScenario1Test : SystemTest() {
         assertNextLine("Asset Arrival: 18 arrived at 13.")
         assertNextLine("Asset Arrival: 19 arrived at 13.")
         assertNextLine("Asset Arrival: 21 arrived at 13.")
+        assertNextLine("Asset Arrival: 23 arrived at 6.")
         assertNextLine("Asset Arrival: 39 arrived at 13.")
         assertNextLine("Event Ended: 0 ended.")
         assertNextLine("Assets Rerouted: 3")
@@ -130,7 +130,6 @@ class ComplexScenario1Test : SystemTest() {
     private suspend fun ComplexScenario1Test.tick4() {
         assertNextLine("Simulation Tick: 4")
         assertNextLine("Asset Arrival: 7 arrived at 7.")
-        assertNextLine("Emergency Resolved: 1 resolved.")
         assertNextLine("Event Ended: 3 ended.")
     }
 
@@ -139,9 +138,8 @@ class ComplexScenario1Test : SystemTest() {
         assertNextLine("Asset Arrival: 8 arrived at 13.")
         assertNextLine("Asset Arrival: 9 arrived at 13.")
         assertNextLine("Asset Arrival: 16 arrived at 13.")
-        assertNextLine("Asset Arrival: 23 arrived at 3.")
-        assertNextLine("Emergency Handling Start: 1 handling started.")
         assertNextLine("Emergency Resolved: 0 resolved.")
+        assertNextLine("Emergency Resolved: 1 resolved.")
         assertNextLine("Event Ended: 1 ended.")
         assertNextLine("Event Triggered: 3 triggered.") // should affect the road calculations
         assertNextLine("Assets Rerouted: 8")
@@ -168,19 +166,20 @@ class ComplexScenario1Test : SystemTest() {
         assertNextLine("Asset Allocation: 25 allocated to 2; 7 ticks to arrive.")
         assertNextLine("Asset Allocation: 100 allocated to 2; 7 ticks to arrive.")
         assertNextLine("Asset Arrival: 7 arrived at 3.")
+        assertNextLine("Asset Arrival: 23 arrived at 3.")
         assertNextLine("Emergency Handling Start: 0 handling started.")
+        assertNextLine("Emergency Handling Start: 1 handling started.")
         assertNextLine("Event Ended: 2 ended.")
         assertNextLine("Event Triggered: 0 triggered.") // should affect the road calculations
         assertNextLine("Event Triggered: 1 triggered.") // should affect the road calculations
-        assertNextLine("Assets Rerouted: 13")
     }
 
     private suspend fun ComplexScenario1Test.tick1() {
         assertNextLine("Simulation Tick: 1")
         assertNextLine("Emergency Assignment: 0 assigned to 7")
         assertNextLine("Emergency Assignment: 1 assigned to 5")
-        assertNextLine("Asset Allocation: 7 allocated to 0; 1 ticks to arrive.")
-        assertNextLine("Asset Allocation: 23 allocated to 1; 1 ticks to arrive.")
+        assertNextLine("Asset Allocation: 7 allocated to 0; 1 ticks to arrive.") // 7 from hospital 7 (3-4)
+        assertNextLine("Asset Allocation: 23 allocated to 1; 1 ticks to arrive.") // 23 from police 5 (5-3)
         assertNextLine("Event Triggered: 2 triggered.")
     }
 
