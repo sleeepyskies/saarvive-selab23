@@ -5,6 +5,7 @@ import de.unisaarland.cs.se.selab.dataClasses.bases.Hospital
 import de.unisaarland.cs.se.selab.dataClasses.bases.PoliceStation
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
+import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.CapacityType
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
@@ -125,8 +126,17 @@ class AllocationHelper(val dataHolder: DataHolder) {
         if (pathTicks < emergency.maxDuration && canAssignVehicle(vehicle)) {
             // update the required vehicles for the request
 
-            updateEmergencyRequirment(vehicle, emergency)
-            updateBase(base, vehicle)
+            reduceEmergencyRequirment(vehicle, emergency)
+
+            if (isReallocation) {
+                Log.displayAssetReallocation(emergency.id, vehicle.id)
+                val tempE = Emergency(1, EmergencyType.MEDICAL, 1, 1, 1, 1, " ", " ")
+                val oldEmergency = dataHolder.vehicleToEmergency[vehicle.id] ?: tempE
+                increaseOldEmergencyRequirment(oldEmergency, vehicle)
+            } else {
+                Log.displayAssetAllocation(vehicle.id, emergency.id, pathTicks)
+                updateBase(base, vehicle)
+            }
             // update the vehicle since its assigned an emergency
             vehicle.assignedEmergencyID = emergency.id
             vehicle.vehicleStatus = VehicleStatus.ASSIGNED_TO_EMERGENCY
@@ -142,15 +152,11 @@ class AllocationHelper(val dataHolder: DataHolder) {
             )
             // add the road it's currently on
             vehicle.currentRoad = vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[0].id]
-            // add this vehicle to the list of active vehicles
-            dataHolder.activeVehicles.add(vehicle)
+            // add this vehicle to the list of active vehicles if it isn't already there
+            if (vehicle !in dataHolder.activeVehicles) dataHolder.activeVehicles.add(vehicle)
             // add to the 'vehicle to emergency' mapping
             dataHolder.vehicleToEmergency[vehicle.id] = emergency
-            if (isReallocation) {
-                Log.displayAssetReallocation(emergency.id, vehicle.id)
-            } else {
-                Log.displayAssetAllocation(vehicle.id, emergency.id, pathTicks)
-            }
+
             emergency.emergencyStatus = EmergencyStatus.ONGOING
         }
     }
@@ -188,6 +194,7 @@ class AllocationHelper(val dataHolder: DataHolder) {
             } else if (requiredNum == 1) {
                 // if one vehicle is required then it needs to have exact capacity
                 if (fireTruckCapacity >= requiredGallons) {
+                    // if the vehicle is assinged include the amount that was assigned
                     assignVehicle(vehicle, emergency, isReallocation)
                 }
             } else {
@@ -253,7 +260,7 @@ class AllocationHelper(val dataHolder: DataHolder) {
         }
     }
 
-    private fun updateEmergencyRequirment(
+    private fun reduceEmergencyRequirment(
         vehicle: Vehicle,
         emergency: Emergency
     ) {
@@ -266,12 +273,14 @@ class AllocationHelper(val dataHolder: DataHolder) {
                 val capacity = vehicle.maxCriminalCapacity - vehicle.currentCriminalCapcity
                 val req = emergency.requiredCapacity[CapacityType.CRIMINAL] ?: 0
                 if (emergency.requiredCapacity.containsKey(CapacityType.CRIMINAL)) {
+                    vehicle.assignedCriminalAmt = capacity
                     emergency.requiredCapacity[CapacityType.CRIMINAL] = req - capacity
                 }
             }
             is FireTruckWater -> {
                 val capacity = vehicle.currentWaterCapacity
                 val req = emergency.requiredCapacity[CapacityType.WATER] ?: 0
+                vehicle.assignedWaterAmt = capacity
                 emergency.requiredCapacity[CapacityType.WATER] = req - capacity
             }
             is Ambulance -> {
@@ -284,6 +293,52 @@ class AllocationHelper(val dataHolder: DataHolder) {
 
         if (updatedRequirment == 0) {
             emergency.requiredVehicles.remove(vehicle.vehicleType)
+        }
+    }
+
+    private fun increaseOldEmergencyRequirment(emergency: Emergency, vehicle: Vehicle) {
+        // increase the amount by 1
+        if (emergency.requiredVehicles.containsKey(vehicle.vehicleType)) {
+            emergency.requiredVehicles[vehicle.vehicleType] = (emergency.requiredVehicles[vehicle.vehicleType] ?: 0) + 1
+        } else {
+            emergency.requiredVehicles[vehicle.vehicleType] = 1
+        }
+        when (vehicle) {
+            is PoliceCar -> {
+                if (emergency.emergencyType != EmergencyType.ACCIDENT) {
+                    val req = emergency.requiredCapacity[CapacityType.CRIMINAL] ?: 0
+                    if (emergency.requiredCapacity.containsKey(CapacityType.CRIMINAL)) {
+                        emergency.requiredCapacity[CapacityType.CRIMINAL] = req + vehicle.assignedCriminalAmt
+                    } else {
+                        emergency.requiredCapacity[CapacityType.CRIMINAL] = vehicle.assignedCriminalAmt
+                    }
+                }
+            }
+            is FireTruckWater -> {
+                val req = emergency.requiredCapacity[CapacityType.WATER] ?: 0
+                if (emergency.requiredCapacity.containsKey(CapacityType.WATER)) {
+                    emergency.requiredCapacity[CapacityType.WATER] = req + vehicle.assignedWaterAmt
+                } else {
+                    emergency.requiredCapacity[CapacityType.WATER] = vehicle.assignedWaterAmt
+                }
+            }
+            is Ambulance -> {
+                // capacity isn't increased for ambulance in certain scenarios
+                checkAmbulaceIncrease(emergency)
+            }
+        }
+    }
+
+    private fun checkAmbulaceIncrease(emergency: Emergency) {
+        val em1Check = emergency.emergencyType == EmergencyType.MEDICAL && emergency.severity == 1
+        val em2Check = emergency.emergencyType == EmergencyType.CRIME && emergency.severity == 2
+        if (!em1Check && !em2Check) {
+            val req = emergency.requiredCapacity[CapacityType.PATIENT] ?: 0
+            if (emergency.requiredCapacity.containsKey(CapacityType.PATIENT)) {
+                emergency.requiredCapacity[CapacityType.PATIENT] = req + 1
+            } else {
+                emergency.requiredCapacity[CapacityType.WATER] = 1
+            }
         }
     }
 
