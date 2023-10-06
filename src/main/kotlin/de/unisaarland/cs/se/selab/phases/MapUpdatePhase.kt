@@ -25,11 +25,12 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
         val activeEvents = dataHolder.events.filter { event: Event -> event.startTick <= currentTick }.toMutableList()
         if (activeEvents.isNotEmpty()) {
             // events are always sorted by their ID and applied in that order
-            activeEvents.sortedBy { it.eventID }
+            var sortedActiveEvents = mutableListOf<Event>()
+            sortedActiveEvents.addAll(activeEvents.sortedBy { it.eventID })
             // apply/revert relevant events
-            applyRevertEvents(activeEvents)
+            applyRevertEvents(sortedActiveEvents)
             // reduce active event durations
-            activeEvents.forEach { event: Event ->
+            sortedActiveEvents.forEach { event: Event ->
                 if (event.duration > 0 && event !is VehicleUnavailable) {
                     event.duration -= 1
                 } else if (event is VehicleUnavailable && event.duration > 0) {
@@ -93,12 +94,13 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
     /**
      * Checks if events should be applied/reverted and does so accordingly
      */
-    public fun applyRevertEvents(events: MutableList<Event>) {
+    fun applyRevertEvents(events: MutableList<Event>) {
         events.forEach { event ->
             when {
                 event.duration == 0 -> {
                     endEvent(event)
                 }
+
                 event.startTick == currentTick -> {
                     triggerEvent(event)
                 }
@@ -129,7 +131,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
         // only reroute vehicles that are moving, not at emergency
         val assets = dataHolder.activeVehicles.filter {
             it.vehicleStatus == VehicleStatus.MOVING_TO_EMERGENCY ||
-                it.vehicleStatus == VehicleStatus.MOVING_TO_BASE
+                    it.vehicleStatus == VehicleStatus.MOVING_TO_BASE
         }
         val assetsRerouted = assets.count { vehicle ->
             val vEmergency = dataHolder.vehicleToEmergency[vehicle.id]
