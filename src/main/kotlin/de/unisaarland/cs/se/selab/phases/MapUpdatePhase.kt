@@ -1,9 +1,13 @@
 package de.unisaarland.cs.se.selab.phases
 
+import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.events.Event
 import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleStatus
 import de.unisaarland.cs.se.selab.global.Log
+import de.unisaarland.cs.se.selab.global.Number
+import de.unisaarland.cs.se.selab.graph.Vertex
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 
 /**
@@ -11,6 +15,9 @@ import de.unisaarland.cs.se.selab.simulation.DataHolder
  * It is executed in every tick.
  */
 class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
+    // used to avoid !!
+    private val v = Vertex(-Number.FIVE, mutableMapOf())
+
     public var currentTick = 0
     public var shouldReroute = false
 
@@ -125,9 +132,10 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 it.vehicleStatus == VehicleStatus.MOVING_TO_BASE
         }
         val assetsRerouted = assets.count { vehicle ->
+            val vEmergency = dataHolder.vehicleToEmergency[vehicle.id]
             val currentRouteWeight = dataHolder.graph.weightOfRoute(
                 vehicle.lastVisitedVertex,
-                vehicle.currentRoute.last(),
+                findClosestVertex(vehicle, vEmergency),
                 vehicle.height
             )
 
@@ -135,7 +143,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 // New route is faster -> reroute
                 val newRoute = dataHolder.graph.calculateShortestRoute(
                     vehicle.lastVisitedVertex,
-                    vehicle.currentRoute.last(),
+                    findClosestVertex(vehicle, vEmergency),
                     vehicle.height
                 )
 
@@ -158,5 +166,17 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
             Log.displayAssetsRerouted(assetsRerouted)
         }
         dataHolder.assetsRerouted += assetsRerouted
+    }
+
+    /**
+     * Finds the closest emergency vertex to a vehicle
+     */
+    private fun findClosestVertex(vehicle: Vehicle, emergency: Emergency?): Vertex {
+        val v1 = emergency?.location?.first ?: v
+        val v2 = emergency?.location?.second ?: v
+        val d1 = dataHolder.graph.calculateShortestPath(vehicle.lastVisitedVertex, v1, vehicle.height)
+        val d2 = dataHolder.graph.calculateShortestPath(vehicle.lastVisitedVertex, v2, vehicle.height)
+
+        return if (d1 <= d2) v1 else v2
     }
 }
