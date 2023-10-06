@@ -192,7 +192,7 @@ class SimulationObjectConstructor(
         val vertex2 = graph.graph.find { vertex: Vertex -> vertex.id == event.targetID }
         val road = vertex1?.connectingRoads?.get(vertex2?.id)
         return if (road != null && road.sType == SecondaryType.ONE_WAY_STREET && event.oneWayStreet) {
-           false
+            false
         } else if (road != null) {
             false
         } else {

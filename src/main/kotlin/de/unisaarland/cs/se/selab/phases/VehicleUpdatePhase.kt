@@ -134,7 +134,7 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
 
         // find the amount of vertices we have crossed
         // set current road
-        var nextRoad: Road? = vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[1].id]
+        val nextRoad: Road? = vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[1].id]
         var totalRoadWeight = 0
         var verticesCrossed = 0
         vehicle.currentRoad = nextRoad

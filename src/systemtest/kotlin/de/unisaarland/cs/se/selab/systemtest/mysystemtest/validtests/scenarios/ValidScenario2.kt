@@ -38,7 +38,7 @@ class ValidScenario2 : SystemTest() {
         assertNextLine("Simulation Tick: 7")
         assertNextLine("Simulation Tick: 8")
         assertNextLine("Event Ended: 0 ended.")
-        assertNextLine("Event Triggered: 1 triggered.")// road closure from the queue starts
+        assertNextLine("Event Triggered: 1 triggered.") // road closure from the queue starts
         assertNextLine(rerouteassests) // more are rerouted
         assertNextLine("Simulation Tick: 9")
         assertNextLine("Emergency Resolved: 1 resolved.")

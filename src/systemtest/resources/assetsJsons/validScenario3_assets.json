@@ -2,10 +2,10 @@
   "bases": [
     {
       "id": 4,
-      "baseType": "HOSPITAL",
+      "baseType": "POLICE_STATION",
       "location": 4,
       "staff": 20,
-      "doctors": 3
+      "dogs": 3
     },
     {
       "id": 1,
@@ -24,7 +24,7 @@
   "vehicles": [
     {
       "id": 0,
-      "baseID": 4,
+      "baseID": 1,
       "vehicleType": "AMBULANCE",
       "vehicleHeight": 3,
       "staffCapacity": 1
@@ -73,6 +73,14 @@
       "vehicleType": "FIREFIGHTER_TRANSPORTER",
       "vehicleHeight": 3,
       "staffCapacity": 2
+    },
+    {
+      "id": 3,
+      "baseID": 4,
+      "vehicleType": "POLICE_CAR",
+      "vehicleHeight": 1,
+      "staffCapacity": 1,
+      "criminalCapacity": 1
     }
-    ]
+  ]
 }
