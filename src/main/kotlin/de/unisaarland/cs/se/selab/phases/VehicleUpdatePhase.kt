@@ -83,7 +83,8 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
             (vehicle.currentRoad?.weight ?: 0) <= vehicle.currentRouteWeightProgress
         ) {
             // quick fix: doing this to avoid checking empty list, pls check sky
-            if (vehicle.currentRoute.isNotEmpty()) updateRoadEndReached(vehicle)
+            // change from is not empty to size > 1 so tha that the last vertex is not removed
+            if (vehicle.currentRoute.size > 1) updateRoadEndReached(vehicle)
         }
     }
 
@@ -138,7 +139,8 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
 
         // while the sum of traveled roads(in this tick) is less than 10
         // unsure if < or <=
-        while (totalRoadWeight < Number.TEN) {
+        // quick fix: not sure if > 1 or > 0
+        while (totalRoadWeight < Number.TEN && vehicle.currentRoute.size > 1) {
             // add the weight until next vertex
             totalRoadWeight += weightTillNextVertex(vehicle)
             // if we have crossed the weight move limit(10), break the loop
