@@ -347,6 +347,10 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
                     break
                 }
                 event.affectedRoad.activeEvents.remove(event)
+                // if the event queue for this road is not empty apply the event
+                if (event.affectedRoad.activeEvents.isNotEmpty()) {
+                    applyGraphEvent(event.affectedRoad.activeEvents.first())
+                }
             }
         }
     }
@@ -377,6 +381,10 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         targetVertex.connectingRoads[sourceVertex.id] = event.affectedRoad
         sourceVertex.connectingRoads[targetVertex.id] = event.affectedRoad
         event.affectedRoad.activeEvents.remove(event)
+        // if the event queue for this road is not empty apply the event
+        if (event.affectedRoad.activeEvents.isNotEmpty()) {
+            applyGraphEvent(event.affectedRoad.activeEvents.first())
+        }
     }
 
     /**
@@ -391,6 +399,11 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
                 // only revert effect if event is front of list
                 road.weight /= if (road.activeEvents[0] == event) event.factor else 1
                 road.activeEvents.remove(event)
+
+                // if the event queue for this road is not empty apply the event at the start of the queue
+                if (road.activeEvents.isNotEmpty()) {
+                    applyGraphEvent(road.activeEvents.first())
+                }
             }
         }
     }
@@ -404,6 +417,10 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
             if (road == event.affectedRoad) {
                 road.weight /= if (road.activeEvents[0] == event) event.factor else 1
                 road.activeEvents.remove(event)
+                // if the event queue for this road is not empty apply the event
+                if (road.activeEvents.isNotEmpty()) {
+                    applyGraphEvent(road.activeEvents.first())
+                }
                 return
             }
         }
