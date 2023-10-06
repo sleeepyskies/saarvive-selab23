@@ -10,6 +10,7 @@ class BROvalidScenario : SystemTest() { // for push 2.0
     override val scenario = "scenarioJsons/BROvalidScenario_simulation.json"
     override val maxTicks = 20
 
+    // this test tests on the basic functionalities of emergency handling
     override suspend fun run() {
         assertNextLine("Initialization Info: BROvalidScenario_map.dot successfully parsed and validated")
         assertNextLine("Initialization Info: BROvalidScenario_bases.json successfully parsed and validated")

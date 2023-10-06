@@ -10,6 +10,7 @@ class SISvalidScenario : SystemTest() {
     override val scenario = "scenarioJsons/SISvalidScenario_simulation.json"
     override val maxTicks = 30
 
+    // this test tests on reallocation when a higher severity emergency occurs
     override suspend fun run() {
         assertNextLine("Initialization Info: SISvalidScenario_map.dot successfully parsed and validated")
         assertNextLine("Initialization Info: SISvalidScenario_bases.json successfully parsed and validated")

@@ -8,6 +8,7 @@ class ValidScenario2 : SystemTest() {
     override val assets = "assetsJsons/validScenario2_assets.json"
     override val scenario = "scenarioJsons/validScenario2_simulation.json"
     override val maxTicks = 50
+    private val rerouteassests = "Assets Rerouted: 1"
 
     override suspend fun run() {
         assertNextLine("Initialization Info: decentGraphSimTests.dot successfully parsed and validated")
@@ -30,30 +31,36 @@ class ValidScenario2 : SystemTest() {
         assertNextLine("Asset Arrival: 1 arrived at 8.")
         assertNextLine("Asset Arrival: 18 arrived at 8.")
         assertNextLine("Emergency Handling Start: 1 handling started.")
-        assertNextLine("Event Triggered: 1 triggered.")
-        assertNextLine("Assets Rerouted: 10") // all the fire, ambulance and 1 extra ambulance
+//        assertNextLine("Event Triggered: 1 triggered.") -> event queue
         assertNextLine("Simulation Tick: 5")
         assertNextLine("Simulation Tick: 6")
         tick6()
         assertNextLine("Simulation Tick: 7")
         assertNextLine("Simulation Tick: 8")
-        assertNextLine("Event Ended: 0 ended.") // rush hour event
-        assertNextLine("Assets Rerouted: 12") // more are rerouted
+        assertNextLine("Event Ended: 0 ended.")
+        assertNextLine("Event Triggered: 1 triggered.")// road closure from the queue starts
+        assertNextLine(rerouteassests) // more are rerouted
         assertNextLine("Simulation Tick: 9")
-        assertNextLine("Asset Arrival: 2 arrived at 6.")
         assertNextLine("Emergency Resolved: 1 resolved.")
-        assertNextLine("Emergency Handling Start: 0 handling started.")
         assertNextLine("Simulation Tick: 10")
+        assertNextLine("Event Ended: 1 ended.")
+        assertNextLine(rerouteassests)
         assertNextLine("Simulation Tick: 11")
         assertNextLine("Simulation Tick: 12")
-        assertNextLine("Asset Arrival: 0 arrived at 5.")
         assertNextLine("Simulation Tick: 13")
+        assertNextLine("Asset Arrival: 2 arrived at 6.")
+        assertNextLine("Emergency Handling Start: 0 handling started.")
         assertNextLine("Simulation Tick: 14")
+        assertNextLine("Asset Arrival: 0 arrived at 5.")
         assertNextLine("Simulation Tick: 15")
         assertNextLine("Simulation Tick: 16")
         assertNextLine("Simulation Tick: 17")
         assertNextLine("Simulation Tick: 18")
         assertNextLine("Simulation Tick: 19")
+        assertNextLine("Simulation Tick: 20")
+        assertNextLine("Simulation Tick: 21")
+        assertNextLine("Simulation Tick: 22")
+        assertNextLine("Simulation Tick: 23")
         assertNextLine("Emergency Resolved: 1 resolved.")
         assertNextLine("Simulation End")
         // Statistics
@@ -75,13 +82,13 @@ class ValidScenario2 : SystemTest() {
         assertNextLine("Asset Allocation: 13 allocated to 0; 3 ticks to arrive.") // 2 fire truck ladder -> 40m each
         assertNextLine("Asset Allocation: 15 allocated to 0; 3 ticks to arrive.")
         assertNextLine("Asset Allocation: 16 allocated to 0; 3 ticks to arrive.") // 2 firefighter transporter
-        assertNextLine("Asset Request: 0 sent to 1 for 0.")
+        assertNextLine("Asset Request: 1 sent to 1 for 0.")
         assertNextLine("Asset Allocation: 2 allocated to 0; 6 ticks to arrive.")
-        assertNextLine("Asset Request: 1 sent to 0 for 0.")
+        assertNextLine("Asset Request: 2 sent to 0 for 0.")
         assertNextLine("Asset Allocation: 1 allocated to 0; 1 ticks to arrive.")
         assertNextLine("Asset Allocation: 18 allocated to 0; 1 ticks to arrive.")
         assertNextLine("Event Triggered: 0 triggered.") // rush hour affects the ambulance 0 for event 1
-        assertNextLine("Assets Rerouted: 1") //
+        assertNextLine(rerouteassests)
     }
 
     private suspend fun ValidScenario2.tick6() {
@@ -95,12 +102,11 @@ class ValidScenario2 : SystemTest() {
         assertNextLine("Asset Arrival: 13 arrived at 6.")
         assertNextLine("Asset Arrival: 15 arrived at 6.")
         assertNextLine("Asset Arrival: 16 arrived at 6.")
-        assertNextLine("Event Ended: 1 ended.") // road closure event
         // vehicles arrive at tick 6
     }
 
     private suspend fun ValidScenario2.simEnd() {
-        assertNextLine("Simulation Statistics: 0 assets rerouted.")
+        assertNextLine("Simulation Statistics: 3 assets rerouted.")
         assertNextLine("Simulation Statistics: 2 received emergencies.")
         assertNextLine("Simulation Statistics: 0 ongoing emergencies.")
         assertNextLine("Simulation Statistics: 0 failed emergencies.")

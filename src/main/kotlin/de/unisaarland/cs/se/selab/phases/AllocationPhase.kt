@@ -147,8 +147,8 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
             )
         }
 
-        requestList.sortedBy { it.baseIDsToVisit.first() }
-        for (request in requestList) {
+        val requestSorted = requestList.sortedBy { it.baseIDsToVisit[0] }
+        for (request in requestSorted) {
             Log.displayAssetRequest(emergency.id, request.baseIDsToVisit.first(), dataHolder.requestID)
             dataHolder.requests.add(request)
             dataHolder.requestID++

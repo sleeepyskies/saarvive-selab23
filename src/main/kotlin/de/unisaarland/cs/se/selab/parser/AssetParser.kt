@@ -38,7 +38,7 @@ class AssetParser(private val assetSchemaFile: String, private val assetJsonFile
         try {
             assetSchema.validate(json)
         } catch (_: Exception) {
-            System.err.println("json validation fails")
+            System.err.println("Asset parser json validation fails")
             outputInvalidAndFinish()
         }
     }
