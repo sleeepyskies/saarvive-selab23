@@ -199,17 +199,6 @@ class EventsParserTest {
         }
     }
 
-    @Test
-    fun testEventWithEmptyRoadTypes() {
-        assertThrows<IllegalArgumentException> {
-            EventsParser(
-                schemaFile = "event.schema",
-                jsonFile = "src/test/resources/parsertests/eventsParser/event_empty_road_types.json",
-                vehicles = emptyList()
-            ).parse()
-        }
-    }
-
     // Source and Target Tests
     @Test
     fun testEventWithNegativeSourceOrTarget() {

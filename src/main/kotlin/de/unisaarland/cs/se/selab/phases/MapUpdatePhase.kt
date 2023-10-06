@@ -74,7 +74,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
     /**
      * Ends the passed event
      */
-    private fun endEvent(event: Event) {
+    private fun endEvent(event: Event, eventStartingList: MutableList<Event>) {
         if (event is VehicleUnavailable) {
             // remove vehicle id to unavailable vehicles
             dataHolder.unavailableVehicles.remove(event.vehicleID)
@@ -86,7 +86,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
             }
         } else {
             // revert graph event
-            dataHolder.graph.revertGraphEvent(event)
+            dataHolder.graph.revertGraphEvent(event, eventStartingList)
             shouldReroute = true
         }
         Log.displayEventEnded(event.eventID)
@@ -97,17 +97,26 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * Checks if events should be applied/reverted and does so accordingly
      */
     fun applyRevertEvents(events: MutableList<Event>) {
+        val endingList = mutableListOf<Event>()
+        val startingList = mutableListOf<Event>()
         events.forEach { event ->
             when {
                 event.duration == 0 -> {
-                    endEvent(event)
+                    endingList.add(event)
+                    // endEvent(event)
                 }
 
                 event.startTick == currentTick -> {
-                    triggerEvent(event)
+                    startingList.add(event)
+                    // triggerEvent(event)
                 }
             }
         }
+        val sortedEndingList = endingList.sortedBy { it.eventID }
+        for (event in sortedEndingList) endEvent(event, startingList)
+        // starting list includes the events that have started in this tick or the ones that are free'd from the queue
+        val sortedStartingList = startingList.sortedBy { it.eventID }
+        for (event in sortedStartingList) triggerEvent(event)
     }
 
     /**
@@ -151,7 +160,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
             )
 
             // reroutes if there's a new better route
-            if (currentRouteWeight < vehicle.remainingRouteWeight) {
+            if (newRoute != vehicle.currentRoute) {
                 // add weight till end of road
                 vehicle.currentRoute = newRoute
                 vehicle.remainingRouteWeight = dataHolder.graph.weightOfRoute(
@@ -163,7 +172,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 true
             }
             // if the weight of the path of vehicle changes while the route stays the same
-            else if (newRoute == vehicle.currentRoute && currentRouteWeight != vehicle.remainingRouteWeight) {
+            else if (currentRouteWeight != vehicle.remainingRouteWeight) {
                 true
             } else {
                 false
