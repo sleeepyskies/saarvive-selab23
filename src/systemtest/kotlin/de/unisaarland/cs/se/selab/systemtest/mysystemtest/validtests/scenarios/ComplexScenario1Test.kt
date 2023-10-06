@@ -77,12 +77,16 @@ class ComplexScenario1Test : SystemTest() {
         assertNextLine("Simulation Tick: 9")
         assertNextLine("Asset Request: 11 sent to 3 for 3.")
         assertNextLine("Asset Request: 12 sent to 8 for 3.")
-        assertNextLine("Request Failed: 3 failed.")
+        request3Failed()
         assertNextLine("Asset Arrival: 24 arrived at 13.")
         assertNextLine("Asset Arrival: 25 arrived at 13.")
         assertNextLine("Asset Arrival: 100 arrived at 13.")
         assertNextLine("Emergency Handling Start: 2 handling started.")
         assertNextLine("Emergency Failed: 3 failed.")
+    }
+
+    private suspend fun ComplexScenario1Test.request3Failed() {
+        assertNextLine("Request Failed: 3 failed.")
     }
 
     private suspend fun ComplexScenario1Test.tick8() {
@@ -96,7 +100,7 @@ class ComplexScenario1Test : SystemTest() {
         assertNextLine("Simulation Tick: 7")
         assertNextLine("Asset Request: 7 sent to 3 for 3.")
         assertNextLine("Asset Request: 8 sent to 8 for 3.")
-        assertNextLine("Request Failed: 3 failed.")
+        request3Failed()
         assertNextLine("Asset Arrival: 35 arrived at 19.")
     }
 
@@ -106,7 +110,7 @@ class ComplexScenario1Test : SystemTest() {
         assertNextLine("Asset Allocation: 35 allocated to 3; 1 ticks to arrive.")
         assertNextLine("Asset Request: 5 sent to 3 for 3.")
         assertNextLine("Asset Request: 6 sent to 8 for 3.")
-        assertNextLine("Request Failed: 3 failed.")
+        request3Failed()
         assertNextLine("Asset Arrival: 23 arrived at 6.")
     }
 
