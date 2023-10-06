@@ -1,6 +1,7 @@
 package de.unisaarland.cs.se.selab.phases
 
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
+import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyType
 import de.unisaarland.cs.se.selab.dataClasses.events.Event
 import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
@@ -9,6 +10,7 @@ import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.graph.Vertex
 import de.unisaarland.cs.se.selab.simulation.DataHolder
+import kotlin.math.max
 
 /**
  * The MapUpdatePhase is responsible for updating the map according to the events.
@@ -17,6 +19,7 @@ import de.unisaarland.cs.se.selab.simulation.DataHolder
 class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
     // used to avoid !!
     private val v = Vertex(-Number.FIVE, mutableMapOf())
+    private val e = Emergency(Number.TEN, EmergencyType.CRIME, 1, Number.ONE_HUNDRED, 0, 0, "", "")
 
     var currentTick = 0
     var shouldReroute = false
@@ -157,23 +160,29 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 }
             }
 
-            val vEmergency = dataHolder.vehicleToEmergency[vehicle.id]
+            // val vEmergency = dataHolder.vehicleToEmergency[vehicle.id]
+            /*
             val currentRouteWeight = dataHolder.graph.weightOfRoute(
                 vehicle.lastVisitedVertex,
                 findClosestVertex(vehicle, vEmergency),
                 vehicle.height
-            )
+            )*/
+            /*
+            val timeToArrive1 = dataHolder.graph.weightOfRoute(
+                vehicle.lastVisitedVertex,
+                findClosestVertex(vehicle, vEmergency),
+                vehicle.height
+            )*/
+            val emergency = dataHolder.vehicleToEmergency[vehicle.id]
+            var path: Triple<Vertex, Vertex, Int>
 
-//            val timeToArrive1 = dataHolder.graph.weightOfRoute(
-//                vehicle.lastVisitedVertex,
-//                findClosestVertex(vehicle, vEmergency),
-//                vehicle.height
-//            )
+            // The shortest amount of weight needed for a vehicle to reach its emergency
+            path = getWeightToArrive(vehicle, emergency ?: e)
 
             // New route is faster -> reroute
             val newRoute = dataHolder.graph.calculateShortestRoute(
-                vehicle.lastVisitedVertex,
-                findClosestVertex(vehicle, vEmergency),
+                path.first,
+                path.second,
                 vehicle.height
             )
 
@@ -190,7 +199,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 assetsReroutedNum += 1
             }
             // if the weight of the path of vehicle changes while the route stays the same
-            else if (currentRouteWeight != vehicle.remainingRouteWeight) {
+            else if (path.third != vehicle.remainingRouteWeight) {
                 assetsReroutedNum += 1
             }
         }
@@ -202,6 +211,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
         dataHolder.assetsRerouted += assetsReroutedNum
     }
 
+    /*
     /**
      * Finds the closest emergency vertex to a vehicle
      */
@@ -212,5 +222,74 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
         val d2 = dataHolder.graph.calculateShortestPath(vehicle.lastVisitedVertex, v2, vehicle.height)
 
         return if (d1 <= d2) v1 else v2
+    }
+    */
+
+    private fun getWeightToArrive(vehicle: Vehicle, emergency: Emergency): Triple<Vertex, Vertex, Int> {
+        val lastVertex = vehicle.lastVisitedVertex
+        val distanceFromLastVertex = vehicle.currentRouteWeightProgress - vehicle.weightTillLastVisitedVertex
+        val emergencyPosition = emergency.location
+        // calculate time to arrive at emergency at vertex 1
+        val timeToArrive1 =
+            dataHolder.graph.weightOfRoute(
+                lastVertex,
+                emergencyPosition.first,
+                vehicle.height
+            ) + distanceFromLastVertex
+
+        // calculate time to arrive at emergency at vertex 2
+        val timeToArrive2 =
+            dataHolder.graph.weightOfRoute(
+                lastVertex,
+                emergencyPosition.second,
+                vehicle.height
+            ) + distanceFromLastVertex
+
+        val triple1 = Triple(vehicle.lastVisitedVertex, emergencyPosition.first, timeToArrive1)
+        val triple2 = Triple(vehicle.lastVisitedVertex, emergencyPosition.second, timeToArrive2)
+        var resTriple: Triple<Vertex, Vertex, Int>
+        resTriple = if (timeToArrive1 <= timeToArrive2) triple1 else triple2
+
+        // if we are not on a vertex, we must calculate from two vertices
+        if (distanceFromLastVertex > 0 && vehicle.currentRoute.size > 1) {
+            // get next vertex
+            val nextVertex = vehicle.currentRoute[1]
+            val distanceToNextVertex = max((vehicle.currentRoad?.weight ?: 0) - distanceFromLastVertex, 0)
+            val timeToArrive3 =
+                dataHolder.graph.weightOfRoute(
+                    nextVertex,
+                    emergencyPosition.first,
+                    vehicle.height
+                ) + distanceToNextVertex
+
+            // calculate time to arrive at emergency at vertex 2
+            val timeToArrive4 =
+                dataHolder.graph.weightOfRoute(
+                    nextVertex,
+                    emergencyPosition.second,
+                    vehicle.height
+                ) + distanceToNextVertex
+
+            val triple3 = Triple(nextVertex, emergencyPosition.first, timeToArrive3)
+            val triple4 = Triple(nextVertex, emergencyPosition.second, timeToArrive4)
+            var tempTriple: Triple<Vertex, Vertex, Int>
+            tempTriple = if (timeToArrive3 <= timeToArrive4) triple3 else triple4
+            resTriple = if (tempTriple.third <= resTriple.third) tempTriple else resTriple
+        }
+        // return maxOf(0, if (timeToArrive1 <= timeToArrive2) timeToArrive1 else timeToArrive2)
+        // above code might fix "-214748364 ticks to arrive." issue but need checking
+        return resTriple
+    }
+
+    /**
+     * Returns the weight as ticks need to travel
+     */
+    fun weightToTicks(weight: Int): Int {
+        if (weight < Number.TEN) return 1
+        return if (weight % Number.TEN == 0) {
+            weight / Number.TEN // number is already a multiple of ten
+        } else {
+            (weight + (Number.TEN - weight % Number.TEN)) / Number.TEN // round up
+        }
     }
 }
