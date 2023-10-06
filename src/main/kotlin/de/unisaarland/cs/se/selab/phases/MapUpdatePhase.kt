@@ -18,8 +18,8 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
     // used to avoid !!
     private val v = Vertex(-Number.FIVE, mutableMapOf())
 
-    public var currentTick = 0
-    public var shouldReroute = false
+    var currentTick = 0
+    var shouldReroute = false
 
     override fun execute() {
         val activeEvents = dataHolder.events.filter { event: Event -> event.startTick <= currentTick }.toMutableList()
@@ -51,7 +51,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
     /**
      * Triggers the passed event
      */
-    public fun triggerEvent(event: Event) {
+    fun triggerEvent(event: Event) {
         if (event is VehicleUnavailable) {
             // add vehicle id to unavailable vehicles
             dataHolder.unavailableVehicles.add(event.vehicleID)
