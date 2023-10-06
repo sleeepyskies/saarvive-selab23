@@ -133,9 +133,11 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
         vehicle.currentRouteWeightProgress -= Number.TEN
 
         // find the amount of vertices we have crossed
+        // set current road
         var nextRoad: Road? = vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[1].id]
         var totalRoadWeight = 0
         var verticesCrossed = 0
+        vehicle.currentRoad = nextRoad
 
         // while the sum of traveled roads(in this tick) is less than 10
         // unsure if < or <=
@@ -159,7 +161,7 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
             vehicle.currentRoad = nextRoad
             if (vehicle.currentRoute.size > 1) {
                 // update next road
-                nextRoad = vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[1].id]
+                vehicle.currentRoad = vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[1].id]
             }
         }
 
@@ -175,8 +177,9 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * Returns the weight still needed to travel to reach the end of the road
      */
     private fun weightTillNextVertex(vehicle: Vehicle): Int {
-        val currentRoadWeight = vehicle.currentRouteWeightProgress - vehicle.weightTillLastVisitedVertex
-        return (vehicle.currentRoad?.weight ?: 0) - currentRoadWeight
+        return (vehicle.currentRoad?.weight ?: 0) -
+            vehicle.currentRouteWeightProgress +
+            vehicle.weightTillLastVisitedVertex
     }
 
     /**
