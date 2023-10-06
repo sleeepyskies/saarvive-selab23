@@ -443,7 +443,6 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
                 if (road.activeEvents.isNotEmpty()) {
                     // applyGraphEvent(road.activeEvents.first())
                     startingEventList.add(road.activeEvents.first())
-
                 }
                 return
             }
