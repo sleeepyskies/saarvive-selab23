@@ -62,7 +62,6 @@ class FireTrucksRefillTest : SystemTest() {
         assertNextLine("Simulation Statistics: 2 resolved emergencies.")
         // end of file is reached
         assertEnd()
-
     }
 
     private suspend fun FireTrucksRefillTest.requestFailed() {
