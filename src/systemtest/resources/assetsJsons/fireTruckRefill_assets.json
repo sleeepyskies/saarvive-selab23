@@ -94,7 +94,7 @@
       "staffCapacity": 1
     },
     {
-      "id": 10,
+      "id": 0,
       "baseID": 1,
       "vehicleType": "FIRE_TRUCK_WATER",
       "vehicleHeight": 1,

@@ -199,7 +199,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 assetsReroutedNum += 1
             }
             // if the weight of the path of vehicle changes while the route stays the same
-            else if (path.third != vehicle.remainingRouteWeight) {
+            else if (weightToTicks(path.third) != weightToTicks(vehicle.remainingRouteWeight)) {
                 assetsReroutedNum += 1
             }
         }
