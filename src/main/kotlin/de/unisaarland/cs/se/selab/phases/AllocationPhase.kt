@@ -45,8 +45,9 @@ class AllocationPhase(private val dataHolder: DataHolder) : Phase {
     }
 
     private fun sortAndAssign(vehicles: List<Vehicle>, emergency: Emergency, isReallocation: Boolean) {
-        vehicles.sortedBy { it.id }
-        for (vehicle in vehicles) {
+        val getVehicles = mutableListOf<Vehicle>()
+        getVehicles.addAll(vehicles.sortedBy { it.id })
+        for (vehicle in getVehicles) {
             if (allocationHelper.isNormalVehicle(vehicle)) {
                 allocationHelper.assignWithoutCapacity(vehicle, emergency, isReallocation)
             } else { allocationHelper.assignBasedOnCapacity(vehicle, emergency, isReallocation) }
