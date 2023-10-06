@@ -1,6 +1,7 @@
 package de.unisaarland.cs.se.selab.systemtest
 
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.assets.*
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.invalidScenarios.InvalidScenario1
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.*
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.simulation.EmptySimulationTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.simulation.WrongEmergenciesTest
@@ -97,6 +98,7 @@ object SystemTestRegistration {
         manager.registerTest(SISvalidScenario())
         manager.registerTest(DADvalidScenario())
         manager.registerTest(FATHERvalidScenario())
+        manager.registerTest(InvalidScenario1())
     }
 
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
@@ -105,6 +107,7 @@ object SystemTestRegistration {
         manager.registerTest(SISvalidScenario())
         manager.registerTest(MedicalSeverity3())
         manager.registerTest(FATHERvalidScenario())
+        manager.registerTest(InvalidScenario1())
     }
 
     fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
@@ -169,6 +172,7 @@ object SystemTestRegistration {
         manager.registerTest(WrongEventsTest())
         // manager.registerTest(BROvalidScenario())
         manager.registerTest(TravelMultipleVerticesTest())
+        manager.registerTest(InvalidScenario1())
     }
 
     fun registerSystemTestsMutantSimulation(manager: SystemTestManager) {
