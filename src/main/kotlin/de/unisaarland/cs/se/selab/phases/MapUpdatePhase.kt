@@ -2,6 +2,7 @@ package de.unisaarland.cs.se.selab.phases
 
 import de.unisaarland.cs.se.selab.dataClasses.events.Event
 import de.unisaarland.cs.se.selab.dataClasses.events.VehicleUnavailable
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleStatus
 import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 
@@ -105,7 +106,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
             val vehicleBase = dataHolder.vehiclesToBase[vehicle1]
             if (vehicleBase != null) {
                 val vehicle = vehicleBase.vehicles.find { v -> v.id == vehicle1 }
-                if (vehicle != null) {
+                if (vehicle != null && vehicle.vehicleStatus == VehicleStatus.IN_BASE) {
                     vehicle.ticksStillUnavailable -= 1
                 }
             }
@@ -116,7 +117,11 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * Reroutes all active vehicles if an event ends/starts
      */
     private fun rerouteVehicles() {
-        val assets = dataHolder.activeVehicles.filter { it.currentRoute.isNotEmpty() }
+        // only reroute vehicles that are moving, not at emergency
+        val assets = dataHolder.activeVehicles.filter {
+            it.vehicleStatus == VehicleStatus.MOVING_TO_EMERGENCY ||
+                it.vehicleStatus == VehicleStatus.MOVING_TO_BASE
+        }
         val assetsRerouted = assets.count { vehicle ->
             val currentRouteWeight = dataHolder.graph.weightOfRoute(
                 vehicle.lastVisitedVertex,
