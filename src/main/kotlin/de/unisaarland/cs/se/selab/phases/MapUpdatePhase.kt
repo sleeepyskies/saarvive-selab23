@@ -141,10 +141,8 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
     private fun rerouteVehicles() {
         // only reroute vehicles that are moving, not at emergency
         val assets = dataHolder.activeVehicles.filter {
-
-                it.vehicleStatus == VehicleStatus.MOVING_TO_EMERGENCY ||
-                    it.vehicleStatus == VehicleStatus.MOVING_TO_BASE
-
+            it.vehicleStatus == VehicleStatus.MOVING_TO_EMERGENCY ||
+                it.vehicleStatus == VehicleStatus.MOVING_TO_BASE
         }
 
         var assetsReroutedNum: Int = 0
@@ -166,11 +164,11 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 vehicle.height
             )
 
-            val timeToArrive1 = dataHolder.graph.weightOfRoute(
+/*            val timeToArrive1 = dataHolder.graph.weightOfRoute(
                 vehicle.lastVisitedVertex,
                 findClosestVertex(vehicle, vEmergency),
                 vehicle.height
-            )
+            )*/
 
             // New route is faster -> reroute
             val newRoute = dataHolder.graph.calculateShortestRoute(
@@ -189,11 +187,11 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
                     vehicle.height
                 )
                 vehicle.currentRouteWeightProgress = 0
-                assetsReroutedNum +=1
+                assetsReroutedNum += 1
             }
             // if the weight of the path of vehicle changes while the route stays the same
             else if (currentRouteWeight != vehicle.remainingRouteWeight) {
-                assetsReroutedNum +=1
+                assetsReroutedNum += 1
             }
         }
 

@@ -23,14 +23,14 @@
   ],
   "vehicles": [
     {
-      "id": 0,
+      "id": 12,
       "baseID": 0,
       "vehicleType": "AMBULANCE",
       "vehicleHeight": 2,
       "staffCapacity": 2
     },
     {
-      "id": 1,
+      "id": 11,
       "baseID": 0,
       "vehicleType": "AMBULANCE",
       "vehicleHeight": 2,
@@ -102,7 +102,7 @@
       "waterCapacity": 600
     },
     {
-      "id": 0,
+      "id": 1,
       "baseID": 1,
       "vehicleType": "FIRE_TRUCK_WATER",
       "vehicleHeight": 1,
