@@ -18,6 +18,132 @@ class ComplexScenario1Test : SystemTest() {
         // 1 tick
         tick1()
         // 2 tick
+        tick2()
+        // 3 tick
+        tick3()
+        // 4 tick
+        tick4()
+        // 5 tick
+        tick5()
+        // 6 tick
+        tick6()
+        // 7 tick
+        tick7()
+        // 8 tick
+        tick8()
+        // 9 tick
+        tick9()
+        // 10 tick
+        tick10()
+        // 11 tick
+        assertNextLine("Simulation Tick: 11")
+        assertNextLine("Event Ended: 4 ended.")
+
+        // 12 tick
+        assertNextLine("Simulation Tick: 12")
+
+        // 13 tick
+        assertNextLine("Simulation Tick: 13")
+
+        // 14 tick
+        assertNextLine("Simulation Tick: 14")
+
+        // 15 tick
+        assertNextLine("Simulation Tick: 15")
+
+        // 16 tick
+        assertNextLine("Simulation Tick: 16")
+        assertNextLine("Emergency Resolved: 2 resolved.")
+
+        // end of simulation
+        assertNextLine("Simulation End")
+        // Statistics
+        assertNextLine("Simulation Statistics: 25 assets rerouted.")
+        assertNextLine("Simulation Statistics: 4 received emergencies.")
+        assertNextLine("Simulation Statistics: 0 ongoing emergencies.")
+        assertNextLine("Simulation Statistics: 1 failed emergencies.")
+        assertNextLine("Simulation Statistics: 3 resolved emergencies.")
+        // end of logging
+        assertEnd()
+    }
+
+    private suspend fun ComplexScenario1Test.tick10() {
+        assertNextLine("Simulation Tick: 10")
+        assertNextLine("Asset Arrival: 35 arrived at 20.")
+        assertNextLine("Event Triggered: 4 triggered.")
+    }
+
+    private suspend fun ComplexScenario1Test.tick9() {
+        assertNextLine("Simulation Tick: 9")
+        assertNextLine("Asset Request: 11 sent to 3 for 3.")
+        assertNextLine("Asset Request: 12 sent to 8 for 3.")
+        assertNextLine("Request Failed: 12 failed.")
+        assertNextLine("Asset Arrival: 24 arrived at 13.")
+        assertNextLine("Asset Arrival: 25 arrived at 13.")
+        assertNextLine("Asset Arrival: 100 arrived at 13.")
+        assertNextLine("Emergency Handling Start: 2 handling started.")
+        assertNextLine("Emergency Failed: 3 failed.")
+    }
+
+    private suspend fun ComplexScenario1Test.tick8() {
+        assertNextLine("Simulation Tick: 8")
+        assertNextLine("Asset Request: 9 sent to 3 for 3.")
+        assertNextLine("Asset Request: 10 sent to 8 for 3.")
+        assertNextLine("Request Failed: 10 failed.")
+    }
+
+    private suspend fun ComplexScenario1Test.tick7() {
+        assertNextLine("Simulation Tick: 7")
+        assertNextLine("Asset Request: 7 sent to 3 for 3.")
+        assertNextLine("Asset Request: 8 sent to 8 for 3.")
+        assertNextLine("Request Failed: 8 failed.")
+        assertNextLine("Asset Arrival: 35 arrived at 19.")
+    }
+
+    private suspend fun ComplexScenario1Test.tick6() {
+        assertNextLine("Simulation Tick: 6")
+        assertNextLine("Emergency Assignment: 3 assigned to 2")
+        assertNextLine("Asset Allocation: 35 allocated to 3; 1 ticks to arrive.")
+        assertNextLine("Asset Request: 5 sent to 3 for 3.")
+        assertNextLine("Asset Request: 6 sent to 8 for 3.")
+        assertNextLine("Request Failed: 6 failed.")
+        assertNextLine("Asset Arrival: 23 arrived at 6.")
+    }
+
+    private suspend fun ComplexScenario1Test.tick5() {
+        assertNextLine("Simulation Tick: 5")
+        assertNextLine("Asset Arrival: 0 arrived at 15.")
+        assertNextLine("Asset Arrival: 1 arrived at 15.")
+        assertNextLine("Asset Arrival: 17 arrived at 13.")
+        assertNextLine("Asset Arrival: 18 arrived at 13.")
+        assertNextLine("Asset Arrival: 19 arrived at 13.")
+        assertNextLine("Asset Arrival: 21 arrived at 13.")
+        assertNextLine("Asset Arrival: 39 arrived at 13.")
+        assertNextLine("Event Ended: 0 ended.")
+        assertNextLine("Assets Rerouted: 3")
+    }
+
+    private suspend fun ComplexScenario1Test.tick4() {
+        assertNextLine("Simulation Tick: 4")
+        assertNextLine("Asset Arrival: 7 arrived at 7.")
+        assertNextLine("Emergency Resolved: 1 resolved.")
+        assertNextLine("Event Ended: 3 ended.")
+    }
+
+    private suspend fun ComplexScenario1Test.tick3() {
+        assertNextLine("Simulation Tick: 3")
+        assertNextLine("Asset Arrival: 8 arrived at 13.")
+        assertNextLine("Asset Arrival: 9 arrived at 13.")
+        assertNextLine("Asset Arrival: 16 arrived at 13.")
+        assertNextLine("Asset Arrival: 23 arrived at 3.")
+        assertNextLine("Emergency Handling Start: 1 handling started.")
+        assertNextLine("Emergency Resolved: 0 resolved.")
+        assertNextLine("Event Ended: 1 ended.")
+        assertNextLine("Event Triggered: 3 triggered.") // should affect the road calculations
+        assertNextLine("Assets Rerouted: 8")
+    }
+
+    private suspend fun ComplexScenario1Test.tick2() {
         assertNextLine("Simulation Tick: 2")
         assertNextLine("Emergency Assignment: 2 assigned to 1")
         assertNextLine("Asset Allocation: 8 allocated to 2; 1 ticks to arrive.")
@@ -40,107 +166,9 @@ class ComplexScenario1Test : SystemTest() {
         assertNextLine("Asset Arrival: 7 arrived at 3.")
         assertNextLine("Emergency Handling Start: 0 handling started.")
         assertNextLine("Event Ended: 2 ended.")
-//        assertNextLine("Event Triggered: 0 triggered.") // should affect the road calculations
-//        assertNextLine("Event Triggered: 1 triggered.") // should affect the road calculations
-//        assertNextLine("Assets Rerouted: 14")
-//        // 3 tick
-//        assertNextLine("Simulation Tick: 3")
-//        assertNextLine("Asset Arrival: 8 arrived at 13.")
-//        assertNextLine("Asset Arrival: 9 arrived at 13.")
-//        assertNextLine("Asset Arrival: 16 arrived at 13.")
-//        assertNextLine("Asset Arrival: 23 arrived at 3.")
-//        assertNextLine("Emergency Handling Start: 1 handling started.")
-//        assertNextLine("Emergency Resolved: 0 resolved.")
-//        assertNextLine("Event Ended: 1 ended.")
-//        assertNextLine("Event Triggered: 3 triggered.") // should affect the road calculations
-//        assertNextLine("Assets Rerouted: 7")
-//        // 4 tick
-//        assertNextLine("Simulation Tick: 4")
-//        assertNextLine("Asset Arrival: 7 arrived at 7.")
-//
-//        assertNextLine("Emergency Resolved: 1 resolved.")
-//        assertNextLine("Event Ended: 3 ended.")
-//
-//        // 5 tick
-//        assertNextLine("Simulation Tick: 5")
-//        assertNextLine("Asset Arrival: 0 arrived at 15.")
-//        assertNextLine("Asset Arrival: 1 arrived at 15.")
-//        assertNextLine("Asset Arrival: 17 arrived at 13.")
-//        assertNextLine("Asset Arrival: 18 arrived at 13.")
-//        assertNextLine("Asset Arrival: 19 arrived at 13.")
-//        assertNextLine("Asset Arrival: 21 arrived at 13.")
-//        assertNextLine("Asset Arrival: 39 arrived at 13.")
-//        assertNextLine("Event Ended: 0 ended.")
-//        assertNextLine("Assets Rerouted: 1")
-//
-//        // 6 tick
-//        assertNextLine("Simulation Tick: 6")
-//        assertNextLine("Emergency Assignment: 3 assigned to 2")
-//        assertNextLine("Asset Allocation: 35 allocated to 3; 1 ticks to arrive.")
-//        assertNextLine("Asset Request: 5 sent to 3 for 3.")
-//        assertNextLine("Asset Request: 6 sent to 8 for 3.")
-//        assertNextLine("Request Failed: 6 failed.")
-//        assertNextLine("Asset Arrival: 23 arrived at 6.")
-//
-//        // 7 tick
-//        assertNextLine("Simulation Tick: 7")
-//        assertNextLine("Asset Request: 7 sent to 3 for 3.")
-//        assertNextLine("Asset Request: 8 sent to 8 for 3.")
-//        assertNextLine("Request Failed: 8 failed.")
-//        assertNextLine("Asset Arrival: 35 arrived at 19.")
-//
-//        // 8 tick
-//        assertNextLine("Simulation Tick: 8")
-//        assertNextLine("Asset Request: 9 sent to 3 for 3.")
-//        assertNextLine("Asset Request: 10 sent to 8 for 3.")
-//        assertNextLine("Request Failed: 10 failed.")
-//
-//        // 9 tick
-//        assertNextLine("Simulation Tick: 9")
-//        assertNextLine("Asset Request: 11 sent to 3 for 3.")
-//        assertNextLine("Asset Request: 12 sent to 8 for 3.")
-//        assertNextLine("Request Failed: 12 failed.")
-//        assertNextLine("Asset Arrival: 24 arrived at 13.")
-//        assertNextLine("Asset Arrival: 25 arrived at 13.")
-//        assertNextLine("Asset Arrival: 100 arrived at 13.")
-//        assertNextLine("Emergency Handling Start: 2 handling started.")
-//        assertNextLine("Emergency Failed: 3 failed.")
-//
-//        // 10 tick
-//        assertNextLine("Simulation Tick: 10")
-//
-//        // 11 tick
-//        assertNextLine("Simulation Tick: 11")
-//        assertNextLine("Asset Arrival: 35 arrived at 20.")
-//        assertNextLine("Event Triggered: 4 triggered.")
-//
-//        // 12 tick
-//        assertNextLine("Simulation Tick: 12")
-//        assertNextLine("Event Ended: 4 ended.")
-//
-//        // 13 tick
-//        assertNextLine("Simulation Tick: 13")
-//
-//        // 14 tick
-//        assertNextLine("Simulation Tick: 14")
-//
-//        // 15 tick
-//        assertNextLine("Simulation Tick: 15")
-//
-//        // 16 tick
-//        assertNextLine("Simulation Tick: 16")
-//        assertNextLine("Emergency Resolved: 2 resolved.")
-//
-//        // end of simulation
-//        assertNextLine("Simulation End")
-//        // Statistics
-//        assertNextLine("Simulation Statistics: 23 assets rerouted.")
-//        assertNextLine("Simulation Statistics: 4 received emergencies.")
-//        assertNextLine("Simulation Statistics: 0 ongoing emergencies.")
-//        assertNextLine("Simulation Statistics: 1 failed emergencies.")
-//        assertNextLine("Simulation Statistics: 3 resolved emergencies.")
-        // end of file is reached
-        assertEnd()
+        assertNextLine("Event Triggered: 0 triggered.") // should affect the road calculations
+        assertNextLine("Event Triggered: 1 triggered.") // should affect the road calculations
+        assertNextLine("Assets Rerouted: 13")
     }
 
     private suspend fun ComplexScenario1Test.tick1() {
