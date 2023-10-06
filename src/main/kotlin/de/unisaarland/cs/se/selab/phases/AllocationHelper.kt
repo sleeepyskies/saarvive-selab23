@@ -135,23 +135,25 @@ class AllocationHelper(val dataHolder: DataHolder) {
                 val tempE = Emergency(1, EmergencyType.MEDICAL, 1, 1, 1, 1, " ", " ")
                 val oldEmergency = dataHolder.vehicleToEmergency[vehicle.id] ?: tempE
                 increaseOldEmergencyRequirment(oldEmergency, vehicle)
+                vehicle.vehicleStatus == VehicleStatus.MOVING_TO_EMERGENCY
+                vehicle.remainingRouteWeight = getWeightToArrive(vehicle, emergency).second
             } else {
                 Log.displayAssetAllocation(vehicle.id, emergency.id, pathTicks)
                 updateBase(base, vehicle)
+                vehicle.vehicleStatus = VehicleStatus.ASSIGNED_TO_EMERGENCY
+                vehicle.remainingRouteWeight = graph.weightOfRoute(
+                    vehicle.lastVisitedVertex,
+                    emergencyVertex,
+                    vehicle.height
+                )
             }
             // update the vehicle since its assigned an emergency
             vehicle.assignedEmergencyID = emergency.id
-            vehicle.vehicleStatus = VehicleStatus.ASSIGNED_TO_EMERGENCY
             vehicle.currentRoute = graph.calculateShortestRoute(
                 vehicle.lastVisitedVertex,
                 emergencyVertex,
                 vehicle.height
             ).toMutableList()
-            vehicle.remainingRouteWeight = graph.weightOfRoute(
-                vehicle.lastVisitedVertex,
-                emergencyVertex,
-                vehicle.height
-            )
             // add the road it's currently on
             vehicle.currentRoad = vehicle.lastVisitedVertex.connectingRoads[vehicle.currentRoute[0].id]
             // add this vehicle to the list of active vehicles if it isn't already there
@@ -159,6 +161,10 @@ class AllocationHelper(val dataHolder: DataHolder) {
             // add to the 'vehicle to emergency' mapping
             dataHolder.vehicleToEmergency[vehicle.id] = emergency
 
+            if (vehicle.currentRoute.size > 1) {
+                vehicle.currentRoad = vehicle.currentRoute[0].connectingRoads[vehicle.currentRoute[1].id]
+            }
+            if (isReallocation) vehicle.vehicleStatus = VehicleStatus.MOVING_TO_EMERGENCY
             emergency.emergencyStatus = EmergencyStatus.ONGOING
         }
     }
@@ -351,6 +357,62 @@ class AllocationHelper(val dataHolder: DataHolder) {
         }
 
         base.staff -= vehicle.staffCapacity
+    }
+
+    private fun getWeightToArrive(vehicle: Vehicle, emergency: Emergency): Pair<Vertex, Int> {
+        val lastVertex = vehicle.lastVisitedVertex
+        val distanceFromLastVertex = vehicle.currentRouteWeightProgress - vehicle.weightTillLastVisitedVertex
+        val emergencyPosition = emergency.location
+        // calculate time to arrive at emergency at vertex 1
+        val timeToArrive1 =
+            dataHolder.graph.weightOfRoute(
+                lastVertex,
+                emergencyPosition.first,
+                vehicle.height
+            ) + distanceFromLastVertex
+
+        // calculate time to arrive at emergency at vertex 2
+        val timeToArrive2 =
+            dataHolder.graph.weightOfRoute(
+                lastVertex,
+                emergencyPosition.second,
+                vehicle.height
+            ) + distanceFromLastVertex
+
+        val pair1 = Pair(emergencyPosition.first, timeToArrive1)
+        val pair2 = Pair(emergencyPosition.second, timeToArrive2)
+        var resPair: Pair<Vertex, Int>
+        resPair = if (timeToArrive1 <= timeToArrive2) pair1 else pair2
+
+        // if we are not on a vertex, we must calculate from two vertices
+        if (distanceFromLastVertex > 0 && vehicle.currentRoute.size > 1) {
+            // get next vertex
+            val nextVertex = vehicle.currentRoute[1]
+            val distanceToNextVertex = max((vehicle.currentRoad?.weight ?: 0) - distanceFromLastVertex, 0)
+            val timeToArrive3 =
+                dataHolder.graph.weightOfRoute(
+                    nextVertex,
+                    emergencyPosition.first,
+                    vehicle.height
+                ) + distanceToNextVertex
+
+            // calculate time to arrive at emergency at vertex 2
+            val timeToArrive4 =
+                dataHolder.graph.weightOfRoute(
+                    nextVertex,
+                    emergencyPosition.second,
+                    vehicle.height
+                ) + distanceToNextVertex
+
+            val pair3 = Pair(emergencyPosition.first, timeToArrive3)
+            val pair4 = Pair(emergencyPosition.second, timeToArrive4)
+            var tempPair: Pair<Vertex, Int>
+            tempPair = if (timeToArrive3 <= timeToArrive4) pair3 else pair4
+            resPair = if (tempPair.second <= resPair.second) tempPair else resPair
+        }
+        // return maxOf(0, if (timeToArrive1 <= timeToArrive2) timeToArrive1 else timeToArrive2)
+        // above code might fix "-214748364 ticks to arrive." issue but need checking
+        return resPair
     }
 
     private fun getTimeToArrive(vehicle: Vehicle, emergency: Emergency): Pair<Vertex, Int> {
