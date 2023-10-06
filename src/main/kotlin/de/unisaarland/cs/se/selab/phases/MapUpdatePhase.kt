@@ -151,7 +151,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
             )
 
             // reroutes if there's a new better route
-            if (currentRouteWeight < vehicle.remainingRouteWeight) {
+            if (newRoute != vehicle.currentRoute) {
                 // add weight till end of road
                 vehicle.currentRoute = newRoute
                 vehicle.remainingRouteWeight = dataHolder.graph.weightOfRoute(
@@ -163,7 +163,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 true
             }
             // if the weight of the path of vehicle changes while the route stays the same
-            else if (newRoute == vehicle.currentRoute && currentRouteWeight != vehicle.remainingRouteWeight) {
+            else if (currentRouteWeight != vehicle.remainingRouteWeight) {
                 true
             } else {
                 false
