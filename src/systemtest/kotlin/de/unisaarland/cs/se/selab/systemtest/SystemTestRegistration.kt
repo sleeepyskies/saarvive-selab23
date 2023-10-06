@@ -133,6 +133,5 @@ object SystemTestRegistration {
         manager.registerTest(SISvalidScenario())
         manager.registerTest(InvalidScenario1())
         manager.registerTest(MedicalSeverity3())
-
     }
 }
