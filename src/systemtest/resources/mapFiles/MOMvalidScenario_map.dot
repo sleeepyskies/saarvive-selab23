@@ -1,0 +1,29 @@
+digraph G {
+	0;
+	1;
+	2;
+	3;
+	4;
+	5;
+	6;
+	7;
+	8;
+	9;
+	10;
+	11;
+
+	0 -> 1 [village=Berlin; name=Main_Road; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
+	1 -> 2 [village=Berlin; name=Side_Road; heightLimit=3; weight=10; primaryType=sideStreet; secondaryType=none;];
+	2 -> 3 [village=Berlin; name=Market_Place; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
+	4 -> 3 [village=Berlin; name=One_Way_Street; heightLimit=3; weight=15; primaryType=sideStreet; secondaryType=oneWayStreet;];
+	3 -> 5 [village=Berlin; name=High_Weight_Road; heightLimit=3; weight=50; primaryType=mainStreet; secondaryType=none;];
+	3 -> 6 [village=Berlin; name=Medium_Weight_Road; heightLimit=3; weight=30; primaryType=mainStreet; secondaryType=none;];
+	3 -> 7 [village=Berlin; name=Tunnel_Road; heightLimit=1; weight=10; primaryType=sideStreet; secondaryType=tunnel;];
+	4 -> 8 [village=Berlin; name=Merge_RoadONE; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
+	5 -> 8 [village=Berlin; name=Merge_RoadTWO; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
+	6 -> 8 [village=Berlin; name=Merge_RoadTHREE; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
+	7 -> 8 [village=Berlin; name=Merge_RoadFOUR; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
+	8 -> 9 [village=Berlin; name=Straight_RoadONE; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
+	9 -> 10 [village=Berlin; name=Straight_RoadTWO; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
+	10 -> 11 [village=Berlin; name=End_Road; heightLimit=3; weight=10; primaryType=mainStreet; secondaryType=none;];
+}

@@ -89,7 +89,7 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
     private fun checkSpecialVehicle(vehicle: Vehicle) {
         when (vehicle) {
             is FireTruckWater -> {
-                vehicle.currentWaterCapacity -= vehicle.assignedWaterAmt
+                vehicle.currentWaterCapacity = vehicle.currentWaterCapacity - vehicle.assignedWaterAmt
                 // no water amount assigned
                 vehicle.assignedWaterAmt = 0
                 vehicle.isAvailable = false
@@ -101,7 +101,7 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 vehicle.vehicleStatus = VehicleStatus.MOVING_TO_BASE
             }
             is PoliceCar -> {
-                vehicle.currentCriminalCapcity += vehicle.assignedCriminalAmt
+                vehicle.currentCriminalCapcity = vehicle.currentCriminalCapcity + vehicle.assignedCriminalAmt
                 vehicle.assignedCriminalAmt = 0
                 vehicle.isAvailable = false
                 vehicle.vehicleStatus = VehicleStatus.MOVING_TO_BASE

@@ -1,0 +1,34 @@
+{
+  "events": [
+    {
+      "id": 0,
+      "type": "TRAFFIC_JAM",
+      "tick": 0,
+      "duration": 1,
+      "factor": 2,
+      "source": 1,
+      "target": 2
+    }
+  ],
+  "emergencyCalls": [
+    {
+      "id": 0,
+      "tick": 3,
+      "village": "Berlin",
+      "roadName": "Straight_RoadTWO",
+      "emergencyType": "ACCIDENT",
+      "severity": 1,
+      "handleTime": 2,
+      "maxDuration": 60
+    },{
+      "id": 1,
+      "tick": 120,
+      "village": "Berlin",
+      "roadName": "Straight_RoadONE",
+      "emergencyType": "ACCIDENT",
+      "severity": 1,
+      "handleTime": 2,
+      "maxDuration": 60
+    }
+  ]
+}

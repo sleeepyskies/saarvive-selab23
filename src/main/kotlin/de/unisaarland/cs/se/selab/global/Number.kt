@@ -15,7 +15,7 @@ object Number {
     const val FIFTY = 50
     const val SEVENTY = 70
     const val ONE_HUNDRED = 100
-    const val THREE_HUNDRED_FLOAT = 300.0
+    const val THREE_HUNDRED = 300
     const val SIX_HUNDRED = 600
     const val ONE_THOUSAND_TWO_HUNDRED = 1200
     const val TWO_THOUSAND_FOUR_HUNDRED = 2400

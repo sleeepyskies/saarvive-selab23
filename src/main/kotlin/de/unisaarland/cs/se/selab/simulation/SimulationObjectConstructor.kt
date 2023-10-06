@@ -18,7 +18,6 @@ import de.unisaarland.cs.se.selab.parser.CountyParser
 import de.unisaarland.cs.se.selab.parser.EventsParser
 import de.unisaarland.cs.se.selab.parser.SimulationParser
 import io.github.oshai.kotlinlogging.KotlinLogging
-import java.util.*
 
 /**
  * Is responsible for calling the parsers, cross
@@ -84,7 +83,6 @@ class SimulationObjectConstructor(
                 }
             }
         }
-        // crossAssets(graph, bases, assetParser)
 
         return if (validateEmergenciesBasedOnGraph(graph, emergencies) &&
             validateEventsBasedOnGraph(graph, events, vehicles) &&
@@ -98,6 +96,7 @@ class SimulationObjectConstructor(
         }
     }
     private fun crossSimulation(graph: Graph, emgs: List<Emergency>, simParser: SimulationParser) {
+        // cross validates the emergencies based on the graph
         if (!validateEmergenciesBasedOnGraph(graph, emgs)) {
             KotlinLogging.logger("SimulationObjectConstructor: crossSimulation()").error {
                 "Invalid emergencies based on map"
@@ -108,6 +107,7 @@ class SimulationObjectConstructor(
     }
 
     private fun crossEvents(graph: Graph, events: List<Event>, vhcls: List<Vehicle>, evParser: EventsParser) {
+        // cross validates the events based on the graph
         if (validateEventsBasedOnGraph(graph, events, vhcls)) {
             Log.displayInitializationInfoValid(evParser.fileName)
         } else {
@@ -118,6 +118,7 @@ class SimulationObjectConstructor(
     }
 
     private fun crossAssets(graph: Graph, bases: List<Base>, assetParser: AssetParser) {
+        // cross validates the assets based on the graph
         if (validateAssetsBasedOnGraph(graph, bases)) {
             Log.displayInitializationInfoValid(assetParser.fileName)
         } else {
