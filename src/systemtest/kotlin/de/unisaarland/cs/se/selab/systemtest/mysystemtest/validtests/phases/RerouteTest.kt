@@ -2,12 +2,12 @@ package de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases
 
 import de.unisaarland.cs.se.selab.systemtest.api.SystemTest
 
-class CrimeReallocationTest1 : SystemTest() {
-    override val name = "CrimeReallocationTest1"
+class RerouteTest : SystemTest() {
+    override val name = "RerouteTest"
 
     override val map = "mapFiles/decentGraphSimTests.dot"
     override val assets = "assetsJsons/simpleAssets_detailedGraph.json"
-    override val scenario = "scenarioJsons/oneFireEmergency_scenario.json"
+    override val scenario = "scenarioJsons/rerouteTest_scenario.json"
     override val maxTicks = 3
 
     override suspend fun run() {
@@ -39,7 +39,7 @@ class CrimeReallocationTest1 : SystemTest() {
 
         assertNextLine("Simulation Statistics: 0 assets rerouted.")
         assertNextLine("Simulation Statistics: 1 received emergencies.")
-        assertNextLine("Simulation Statistics: 1 ongoing emergencies.")
+        assertNextLine("Simulation Statistics: 0 ongoing emergencies.")
         assertNextLine("Simulation Statistics: 0 failed emergencies.")
         assertNextLine("Simulation Statistics: 0 resolved emergencies.")
         // end of file is reached
