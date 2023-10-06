@@ -10,6 +10,7 @@ import de.unisaarland.cs.se.selab.dataClasses.events.Event
 import de.unisaarland.cs.se.selab.dataClasses.events.RoadClosure
 import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
 import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
+import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.global.StringLiterals
 import java.util.concurrent.TimeoutException
@@ -87,7 +88,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
 
         // Algorithm
         while (unvisitedVertices.isNotEmpty()) {
-            if (timeout > 50) throw TimeoutException("Dijkstra has looped over 50 times")
+            if (timeout > Number.FIFTY) throw TimeoutException("Dijkstra has looped over 50 times")
             if (currentVertex == destination) break
             // gets all relevant neighbors based on height restrictions
             val neighbors = currentVertex.connectingRoads.filter { (_, road) -> carHeight <= road.heightLimit }
@@ -242,7 +243,16 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
                     // keeps track of which events the roads are applied to
                     event.roadAppliedList.add(road)
                 }
+
+                rushHourLogging(event)
             }
+        }
+    }
+
+    private fun rushHourLogging(event: RushHour) {
+        // Log as soon as the event is applied to first road
+        if (event.roadAppliedList.size == 1) {
+            Log.displayEventStarted(event.eventID)
         }
     }
 
@@ -271,6 +281,8 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
             if (event.oneWayStreet) targetVertex.connectingRoads.remove(startVertex.id)
             // show that the event is applied
             event.isApplied = true
+            // logging
+            Log.displayEventStarted(event.eventID)
         }
     }
     private fun applyTrafficJam(event: TrafficJam) {
@@ -294,6 +306,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
             event.affectedRoad = requiredRoad
             requiredRoad.weight *= event.factor
             event.isApplied = true
+            Log.displayEventStarted(event.eventID)
         }
     }
 
@@ -320,6 +333,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
             targetVertex.connectingRoads.remove(sourceVertex.id)
             sourceVertex.connectingRoads.remove(targetVertex.id)
             event.isApplied = true
+            Log.displayEventStarted(event.eventID)
         }
     }
 
@@ -347,6 +361,10 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
                     break
                 }
                 event.affectedRoad.activeEvents.remove(event)
+                // if the event queue for this road is not empty apply the event
+                if (event.affectedRoad.activeEvents.isNotEmpty()) {
+                    applyGraphEvent(event.affectedRoad.activeEvents.first())
+                }
             }
         }
     }
@@ -377,6 +395,10 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         targetVertex.connectingRoads[sourceVertex.id] = event.affectedRoad
         sourceVertex.connectingRoads[targetVertex.id] = event.affectedRoad
         event.affectedRoad.activeEvents.remove(event)
+        // if the event queue for this road is not empty apply the event
+        if (event.affectedRoad.activeEvents.isNotEmpty()) {
+            applyGraphEvent(event.affectedRoad.activeEvents.first())
+        }
     }
 
     /**
@@ -391,6 +413,11 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
                 // only revert effect if event is front of list
                 road.weight /= if (road.activeEvents[0] == event) event.factor else 1
                 road.activeEvents.remove(event)
+
+                // if the event queue for this road is not empty apply the event at the start of the queue
+                if (road.activeEvents.isNotEmpty()) {
+                    applyGraphEvent(road.activeEvents.first())
+                }
             }
         }
     }
@@ -404,6 +431,10 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
             if (road == event.affectedRoad) {
                 road.weight /= if (road.activeEvents[0] == event) event.factor else 1
                 road.activeEvents.remove(event)
+                // if the event queue for this road is not empty apply the event
+                if (road.activeEvents.isNotEmpty()) {
+                    applyGraphEvent(road.activeEvents.first())
+                }
                 return
             }
         }

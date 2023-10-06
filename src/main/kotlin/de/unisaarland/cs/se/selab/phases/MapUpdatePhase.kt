@@ -17,6 +17,8 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
     override fun execute() {
         val activeEvents = dataHolder.events.filter { event: Event -> event.startTick <= currentTick }.toMutableList()
         if (activeEvents.isNotEmpty()) {
+            // events are always sorted by their ID and applied in that order
+            activeEvents.sortedBy { it.eventID }
             // apply/revert relevant events
             applyRevertEvents(activeEvents)
             // reduce active event durations
@@ -56,7 +58,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
             dataHolder.graph.applyGraphEvent(event)
             shouldReroute = true
         }
-        Log.displayEventStarted(event.eventID)
+        // Log.displayEventStarted(event.eventID)
     }
 
     /**

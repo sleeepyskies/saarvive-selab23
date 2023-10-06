@@ -9,6 +9,7 @@ class AllocateFireEmergencyOneTest3 : SystemTest() {
     override val assets = "assetsJsons/simpleAssets_detailedGraph2.json"
     override val scenario = "scenarioJsons/oneFireEmergency_scenario.json"
     override val maxTicks = 5
+    private val requestFail = "Request Failed: 0 failed."
 
     override suspend fun run() {
         // Parsing + Validation + Construction
@@ -27,18 +28,18 @@ class AllocateFireEmergencyOneTest3 : SystemTest() {
         assertNextLine("Emergency Assignment: 0 assigned to 0")
         assertNextLine("Asset Allocation: 0 allocated to 0; 1 ticks to arrive.")
         assertNextLine("Asset Request: 1 sent to 1 for 0.")
-        assertNextLine("Request Failed: 1 failed.")
+        assertNextLine(requestFail)
 
         // Tick 2
         assertNextLine("Simulation Tick: 2")
         assertNextLine("Asset Request: 2 sent to 1 for 0.")
-        assertNextLine("Request Failed: 2 failed.")
+        assertNextLine(requestFail)
         assertNextLine("Asset Arrival: 0 arrived at 1.")
 
         // Tick 3
         assertNextLine("Simulation Tick: 2")
         assertNextLine("Asset Request: 3 sent to 1 for 0.")
-        assertNextLine("Request Failed: 3 failed.")
+        assertNextLine(requestFail)
         assertNextLine("Emergency Failed: 0 failed.")
 
         // Simulation End
