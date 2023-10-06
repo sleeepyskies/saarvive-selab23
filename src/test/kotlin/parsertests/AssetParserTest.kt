@@ -313,4 +313,14 @@ class AssetParserTest {
             ).parse()
         }
     }
+
+//    @Test
+//    fun testK9PolicestationHasZeroDogs() {
+//        assertThrows<IllegalArgumentException> {
+//            AssetParser(
+//                assetSchemaFile = "assets.schema",
+//                assetJsonFile = "src/test/resources/parsertests/assetParser/valid_PoliceStationWithK9HasNoDog.json"
+//            ).parse()
+//        }
+//    }
 }
