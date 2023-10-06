@@ -20,6 +20,6 @@ class Construction(
     lateinit var affectedRoad: Road
 
     // keeps track of wether the event is applied
-    var isApplied: Boolean = false
+    // var isApplied: Boolean = false
     // oneWayStreet
 }

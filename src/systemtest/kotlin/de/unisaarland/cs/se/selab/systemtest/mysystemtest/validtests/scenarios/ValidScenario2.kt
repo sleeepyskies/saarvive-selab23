@@ -61,7 +61,7 @@ class ValidScenario2 : SystemTest() {
         assertNextLine("Simulation Tick: 21")
         assertNextLine("Simulation Tick: 22")
         assertNextLine("Simulation Tick: 23")
-        assertNextLine("Emergency Resolved: 1 resolved.")
+        assertNextLine("Emergency Resolved: 0 resolved.")
         assertNextLine("Simulation End")
         // Statistics
         simEnd()

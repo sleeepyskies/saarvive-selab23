@@ -253,6 +253,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         // Log as soon as the event is applied to first road
         if (event.roadAppliedList.size == 1) {
             Log.displayEventStarted(event.eventID)
+            event.isApplied = true
         }
     }
 
@@ -361,6 +362,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
                     break
                 }
                 event.affectedRoad.activeEvents.remove(event)
+
                 // if the event queue for this road is not empty apply the event
                 if (event.affectedRoad.activeEvents.isNotEmpty()) {
                     applyGraphEvent(event.affectedRoad.activeEvents.first())
