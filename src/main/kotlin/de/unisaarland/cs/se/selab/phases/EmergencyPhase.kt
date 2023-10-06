@@ -143,7 +143,7 @@ class EmergencyPhase(private val dataHolder: DataHolder) : Phase {
         val emergencies = dataHolder.ongoingEmergencies
         val listOfSorted = emergencies.sortedWith(
             compareByDescending<Emergency>
-            { it.severity }.thenBy { it.id }
+                { it.severity }.thenBy { it.id }
         )
         dataHolder.ongoingEmergencies.clear()
         dataHolder.ongoingEmergencies.addAll(listOfSorted)
