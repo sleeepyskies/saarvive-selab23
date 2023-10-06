@@ -26,7 +26,9 @@ class DataHolder(
     val unavailableVehicles: MutableList<Int> = mutableListOf()
     val requests: MutableList<Request> = mutableListOf()
     var assetsRerouted: Int = 0
-    var requestID: Int = 0
+
+    // RequestID starts at 1, not 0
+    var requestID: Int = 1
 
     val emergencyToBase: MutableMap<Int, Base> = mutableMapOf()
     val emergencyToVehicles: MutableMap<Int, MutableList<Vehicle>> = initEmergencyToVehicles()
