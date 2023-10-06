@@ -215,31 +215,81 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
     }
     private fun applyRushHour(event: RushHour) {
         for (road in roads) {
-            if (road.pType in event.roadType) road.weight *= event.factor
-            road.activeEvents.add(event)
+//            if (road.pType in event.roadType) road.weight *= event.factor
+//            road.activeEvents.add(event)
+            // quick fix : ensuring events are applied in order on the road
+            if (road.pType in event.roadType) {
+                // prevent duplication of events during checks
+                if (event !in road.activeEvents) road.activeEvents.add(event)
+
+                // apply the first event
+                // in its own class the event is checked if it's already active
+                // if it isn't active it's applied
+                if (event != road.activeEvents.first()) {
+                    applyGraphEvent(road.activeEvents.first())
+                    // move to the next road
+                    continue
+                }
+
+                if (road !in event.roadAppliedList) {
+                    road.weight *= event.factor
+                    // adds it to road list this is applied to
+                    // keeps track of which events the roads are applied to
+                    event.roadAppliedList.add(road)
+                }
+            }
         }
     }
 
     private fun applyConstruction(event: Construction) {
         val startVertex = graph.find { it.id == event.sourceID } ?: ver
         val targetVertex = graph.find { it.id == event.targetID } ?: ver
-        // puts the required into the event
+        // puts the required road into the event
         event.affectedRoad = startVertex.connectingRoads[targetVertex.id] ?: r
-        // the factor is applied on the affected road
-        event.affectedRoad.weight *= event.factor
-        // check and change the road into a one way
-        if (event.oneWayStreet) targetVertex.connectingRoads.remove(startVertex.id)
-        event.affectedRoad.activeEvents.add(event)
+
+        // prevents duplication of events in the list of active events
+        if (event !in event.affectedRoad.activeEvents) {
+            event.affectedRoad.activeEvents.add(event)
+        }
+
+        // if it isn't first in the queue ignore and apply the event that is first
+
+        if (event != event.affectedRoad.activeEvents.first()) {
+            applyGraphEvent(event.affectedRoad.activeEvents.first())
+            return
+        }
+        // if the event hasn't been applied
+        if (!event.isApplied) {
+            // the factor is applied on the affected road
+            event.affectedRoad.weight *= event.factor
+            // check and change the road into a one way
+            if (event.oneWayStreet) targetVertex.connectingRoads.remove(startVertex.id)
+            // show that the event is applied
+            event.isApplied = true
+        }
     }
     private fun applyTrafficJam(event: TrafficJam) {
         val startVertex = graph.find { it.id == event.startVertex } ?: ver
         val targetVertex = graph.find { it.id == event.endVertex } ?: ver
 
         val requiredRoad = startVertex.connectingRoads[targetVertex.id] ?: r
-        requiredRoad.weight *= event.factor
-        requiredRoad.activeEvents.add(event)
 
-        event.affectedRoad = requiredRoad
+        // prevents duplication during check
+        if (event !in requiredRoad.activeEvents) requiredRoad.activeEvents.add(event)
+
+        if (event != requiredRoad.activeEvents.first()) {
+            // apply the first event
+            // it's class will check if it is already applied
+            applyGraphEvent(requiredRoad.activeEvents.first())
+            // no need to apply this event anymore
+            return
+        }
+
+        if (!event.isApplied) {
+            event.affectedRoad = requiredRoad
+            requiredRoad.weight *= event.factor
+            event.isApplied = true
+        }
     }
 
     private fun applyRoadClosure(event: RoadClosure) {
@@ -251,11 +301,22 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         val requiredRoad = targetVertex.connectingRoads[sourceVertex.id] ?: r
         // puts the road into the event
         event.affectedRoad = requiredRoad
-        // remove the road from the graph
-        targetVertex.connectingRoads.remove(sourceVertex.id)
-        sourceVertex.connectingRoads.remove(targetVertex.id)
-        // add this event to the list of event
-        requiredRoad.activeEvents.add(event)
+
+        // add this event to the list of event if it isn't present
+        if (event !in requiredRoad.activeEvents) requiredRoad.activeEvents.add(event)
+
+        if (event != requiredRoad.activeEvents.first()) {
+            applyGraphEvent(requiredRoad.activeEvents.first())
+            return
+        }
+
+        if (!event.isApplied) {
+            // remove the road from the graph
+            targetVertex.connectingRoads.remove(sourceVertex.id)
+            sourceVertex.connectingRoads.remove(targetVertex.id)
+            event.isApplied = true
+        }
+
     }
 
     /**
