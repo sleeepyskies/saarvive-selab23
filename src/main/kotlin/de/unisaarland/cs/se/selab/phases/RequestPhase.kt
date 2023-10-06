@@ -25,8 +25,8 @@ class RequestPhase(private val dataHolder: DataHolder) : Phase {
             val assignableVehicles = allocationHelper.getAssignableAssets(base, emergency)
 
             // quick fix
-            assignableVehicles.sortedBy { it.id }
-            for (vehicle in assignableVehicles) {
+            val sortedAssignableAssets = assignableVehicles.sortedBy { it.id }
+            for (vehicle in sortedAssignableAssets) {
                 if (allocationHelper.isNormalVehicle(vehicle)) {
                     allocationHelper.assignWithoutCapacity(vehicle, emergency, false)
                 } else { allocationHelper.assignBasedOnCapacity(vehicle, emergency, false) }
