@@ -11,6 +11,7 @@ import de.unisaarland.cs.se.selab.dataClasses.events.RoadClosure
 import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
 import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import de.unisaarland.cs.se.selab.global.StringLiterals
+import java.util.concurrent.TimeoutException
 
 /**
  * Holds the data for the simulation graph consisting of vertices and roads.
@@ -76,6 +77,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
     }
 
     private fun dijkstra(start: Vertex, destination: Vertex, carHeight: Int): MutableMap<Vertex, Pair<Int, Vertex?>> {
+        var timeout = 0
         if (start == destination) return mutableMapOf(Pair(start, Pair(0, null)))
         // Map from a vertex to its distance form start, and previous vertex on path
         val visitedVertices: MutableMap<Vertex, Pair<Int, Vertex?>> = helper.initVisitedVertices(start, this.graph)
@@ -84,6 +86,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
 
         // Algorithm
         while (unvisitedVertices.isNotEmpty()) {
+            if (timeout > 100) throw TimeoutException("Dijkstra has looped over 100 times")
             if (currentVertex == destination) break
             // gets all relevant neighbors based on height restrictions
             val neighbors = currentVertex.connectingRoads.filter { (_, road) -> carHeight <= road.heightLimit }
@@ -103,6 +106,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
             if (nextVertex != null) {
                 currentVertex = nextVertex
             }
+            timeout++
         }
         return visitedVertices
     }
