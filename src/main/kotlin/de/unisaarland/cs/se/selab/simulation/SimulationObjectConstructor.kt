@@ -193,7 +193,7 @@ class SimulationObjectConstructor(
         val road = vertex1?.connectingRoads?.get(vertex2?.id)
         return if (road != null && road.sType == SecondaryType.ONE_WAY_STREET && event.oneWayStreet) {
             false
-        } else if (road != null) {
+        } else if (road == null) {
             false
         } else {
             true
