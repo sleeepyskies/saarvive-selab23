@@ -15,5 +15,5 @@ class RoadClosure(
     val targetID: Int
 ) : Event(eventID, duration, startTick) {
     lateinit var affectedRoad: Road
-    var isApplied: Boolean = false
+    // var isApplied: Boolean = false
 }

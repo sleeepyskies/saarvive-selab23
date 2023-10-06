@@ -9,4 +9,6 @@ open class Event(
     open val eventID: Int,
     open var duration: Int, // the property will be changed and have condition on
     open val startTick: Int
-)
+) {
+    open var isApplied: Boolean = false
+}
