@@ -75,7 +75,6 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
             KotlinLogging.logger("EventsParser: parse()").error { "JSONException thrown in parseEvents()" }
             outputInvalidAndFinish()
         }
-        // Log.displayInitializationInfoValid(this.fileName)
         return parsedEvents
     }
 
