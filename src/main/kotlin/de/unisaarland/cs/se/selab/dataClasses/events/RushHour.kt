@@ -1,6 +1,7 @@
 package de.unisaarland.cs.se.selab.dataClasses.events
 
 import de.unisaarland.cs.se.selab.graph.PrimaryType
+import de.unisaarland.cs.se.selab.graph.Road
 
 /**
  * Creates an object of the RushHour Event, inherits from Event abstract class.
@@ -13,4 +14,8 @@ class RushHour(
     startTick: Int,
     val roadType: List<PrimaryType>,
     val factor: Int,
-) : Event(eventID, duration, startTick)
+) : Event(eventID, duration, startTick) {
+    // keeps track of which roads the event is applied on
+    // there might be some that it is never applied on
+    val roadAppliedList: MutableList<Road> = mutableListOf()
+}
