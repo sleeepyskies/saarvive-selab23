@@ -72,7 +72,6 @@ class GraphHelper {
     ): Vertex? {
         var nextVertex: Vertex? = null
         var minWeight = Int.MAX_VALUE
-
         // find the closest direct and unvisited neighbor
         for ((neighbor, _) in neighbors) {
             val distance = visitedVertices[graph.find { vertex: Vertex -> vertex.id == neighbor }]?.first ?: 0

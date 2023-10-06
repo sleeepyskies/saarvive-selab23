@@ -279,7 +279,10 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
             // the factor is applied on the affected road
             event.affectedRoad.weight *= event.factor
             // check and change the road into a one way
-            if (event.oneWayStreet) targetVertex.connectingRoads.remove(startVertex.id)
+            // the road only turns into a one way street if it isn't already a one way street
+            if (event.oneWayStreet && event.affectedRoad.sType != SecondaryType.ONE_WAY_STREET) {
+                targetVertex.connectingRoads.remove(startVertex.id)
+            }
             // show that the event is applied
             event.isApplied = true
             // logging

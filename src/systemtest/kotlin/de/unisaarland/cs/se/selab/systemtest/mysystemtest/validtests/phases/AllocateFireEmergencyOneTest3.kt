@@ -35,11 +35,6 @@ class AllocateFireEmergencyOneTest3 : SystemTest() {
         assertNextLine("Asset Request: 2 sent to 1 for 0.")
         assertNextLine(requestFail)
         assertNextLine("Asset Arrival: 0 arrived at 1.")
-
-        // Tick 3
-        assertNextLine("Simulation Tick: 2")
-        assertNextLine("Asset Request: 3 sent to 1 for 0.")
-        assertNextLine(requestFail)
         assertNextLine("Emergency Failed: 0 failed.")
 
         // Simulation End
