@@ -46,6 +46,7 @@ class RerouteTest : SystemTest() {
 
         // Tick 7
         assertNextLine("Simulation Tick: 7")
+        assertNextLine("Asset Arrival: 5 arrived at 9.")
         assertNextLine("Emergency Handling Start: 0 handling started.")
 
         // Tick 8
