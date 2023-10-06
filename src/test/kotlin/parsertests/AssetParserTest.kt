@@ -282,7 +282,7 @@ class AssetParserTest {
             assetJsonFile = "src/systemtest/resources/assetsJsons/validScenario1_bases.json"
         )
 
-        val (vehicles, bases) = parser.parse()
+        val (_, bases) = parser.parse()
 
         // Validate the first base
         val base1 = bases[0]
