@@ -316,7 +316,6 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
             sourceVertex.connectingRoads.remove(targetVertex.id)
             event.isApplied = true
         }
-
     }
 
     /**
