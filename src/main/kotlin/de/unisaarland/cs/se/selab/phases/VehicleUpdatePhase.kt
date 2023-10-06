@@ -253,6 +253,11 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
      * Also checks if vehicle needs to recharge
      */
     private fun updateReachedBase(vehicle: Vehicle) {
+        // reset vehicle attributes
+        vehicle.remainingRouteWeight = 0
+        vehicle.currentRouteWeightProgress = 0
+        vehicle.currentRouteWeightProgress = 0
+        // vehicle.lastVisitedVertex = dataHolder.baseToVertex[dataHolder.vehiclesToBase[vehicle.id].baseID]
         // Log asset arrival at its base
         Log.displayAssetArrival(vehicle.id, dataHolder.vehiclesToBase[vehicle.id]?.vertexID ?: 0)
         dataHolder.activeVehicles.remove(vehicle)
