@@ -81,6 +81,7 @@ object SystemTestRegistration {
                 manager.registerTest(EmptySimulationTest())
                 manager.registerTest(WrongEmergenciesTest())
                 manager.registerTest(WrongEventsTest())*/
+        manager.registerTest(NoRoadBetween())
         // phase tests
         // manager.registerTest(AllocateFireEmergencyOneTest1())
         manager.registerTest(AllocateFireEmergencyOneTest2())
@@ -154,6 +155,7 @@ object SystemTestRegistration {
              manager.registerTest(EmptySimulationTest())
              manager.registerTest(WrongEmergenciesTest())
              manager.registerTest(WrongEventsTest())*/
+        manager.registerTest(NoRoadBetween())
         // phase tests
         // manager.registerTest(AllocateFireEmergencyOneTest1())
         // manager.registerTest(AllocateFireEmergencyOneTest2())
@@ -199,6 +201,7 @@ object SystemTestRegistration {
         manager.registerTest(VillagesWithSameNameTest())
         manager.registerTest(CountySameRoadNameTest())
         manager.registerTest(CorrectEdgesToVerticesTest())
+        manager.registerTest(NoRoadBetween())
 
         // asset parser tests
         manager.registerTest(NoVehiclesInBase())
@@ -238,6 +241,7 @@ object SystemTestRegistration {
         manager.registerTest(AllocateFireEmergencyOneTest2())
         manager.registerTest(TravelMultipleVerticesTest())
         manager.registerTest(ValidScenario1())
+        manager.registerTest(ValidScenario2())
         manager.registerTest(ValidScenario3())
         manager.registerTest(BROvalidScenario())
     }
