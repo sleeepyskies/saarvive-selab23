@@ -10,7 +10,6 @@ import de.unisaarland.cs.se.selab.global.Log
 import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.graph.Road
 import de.unisaarland.cs.se.selab.simulation.DataHolder
-import kotlin.math.ceil
 import kotlin.math.max
 
 /**
@@ -266,9 +265,9 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
             dataHolder.rechargingVehicles.add(vehicle)
             vehicle.vehicleStatus = VehicleStatus.RECHARGING
             vehicle.currentWaterCapacity = vehicle.maxWaterCapacity
-            vehicle.ticksStillUnavailable =
+            vehicle.ticksStillUnavailable = (vehicle.maxWaterCapacity - vehicle.currentWaterCapacity) / 300
                 // ------------------------------------T0DO Remove float-------------------------------------------
-                ceil((vehicle.maxWaterCapacity - vehicle.currentWaterCapacity) / Number.THREE_HUNDRED_FLOAT).toInt()
+                // ceil((vehicle.maxWaterCapacity - vehicle.currentWaterCapacity) / Number.THREE_HUNDRED_FLOAT).toInt()
         } else if (vehicle is Ambulance && vehicle.hasPatient) {
             dataHolder.rechargingVehicles.add(vehicle)
             vehicle.hasPatient = false
