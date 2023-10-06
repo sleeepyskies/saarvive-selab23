@@ -291,15 +291,15 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
 
     private fun validateRoadTypes(roadType: JSONArray): Boolean {
         val validRoadTypes = listOf("MAIN_STREET", "SIDE_STREET", "COUNTY_ROAD")
-        for (type in roadType) {
-            if (type !in validRoadTypes) {
-                KotlinLogging.logger("EventsParser: validateRoadTypes()").error { "Invalid road type" }
-                return false
+        if (roadType.isEmpty) {
+            return true
+        } else if  (!roadType.isEmpty) {
+            for (type in roadType) {
+                if (type !in validRoadTypes) {
+                    KotlinLogging.logger("EventsParser: validateRoadTypes()").error { "Invalid road type" }
+                    return false
+                }
             }
-        }
-        if (roadType.length() == 0) {
-            KotlinLogging.logger("EventsParser: validateRoadTypes()").error { "Road types must not be empty" }
-            return false
         }
         return true
     }
