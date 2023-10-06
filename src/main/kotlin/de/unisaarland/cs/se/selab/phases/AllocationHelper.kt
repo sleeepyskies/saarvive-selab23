@@ -15,6 +15,7 @@ import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleStatus
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleType
 import de.unisaarland.cs.se.selab.global.Log
+import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.graph.Vertex
 import de.unisaarland.cs.se.selab.simulation.DataHolder
 import kotlin.math.max
@@ -357,19 +358,21 @@ class AllocationHelper(val dataHolder: DataHolder) {
         val distanceFromLastVertex = vehicle.currentRouteWeightProgress - vehicle.weightTillLastVisitedVertex
         val emergencyPosition = emergency.location
         // calculate time to arrive at emergency at vertex 1
-        val timeToArrive1 =
-            dataHolder.graph.calculateShortestPath(
+        val timeToArrive1 = weightToTicks(
+            dataHolder.graph.weightOfRoute(
                 lastVertex,
                 emergencyPosition.first,
                 vehicle.height
             ) + distanceFromLastVertex
+        )
         // calculate time to arrive at emergency at vertex 2
-        val timeToArrive2 =
-            dataHolder.graph.calculateShortestPath(
+        val timeToArrive2 = weightToTicks(
+            dataHolder.graph.weightOfRoute(
                 lastVertex,
                 emergencyPosition.second,
                 vehicle.height
             ) + distanceFromLastVertex
+        )
         val pair1 = Pair(emergencyPosition.first, timeToArrive1)
         val pair2 = Pair(emergencyPosition.second, timeToArrive2)
         var resPair: Pair<Vertex, Int>
@@ -380,19 +383,21 @@ class AllocationHelper(val dataHolder: DataHolder) {
             // get next vertex
             val nextVertex = vehicle.currentRoute[1]
             val distanceToNextVertex = max((vehicle.currentRoad?.weight ?: 0) - distanceFromLastVertex, 0)
-            val timeToArrive3 =
-                dataHolder.graph.calculateShortestPath(
+            val timeToArrive3 = weightToTicks(
+                dataHolder.graph.weightOfRoute(
                     nextVertex,
                     emergencyPosition.first,
                     vehicle.height
                 ) + distanceToNextVertex
+            )
             // calculate time to arrive at emergency at vertex 2
-            val timeToArrive4 =
-                dataHolder.graph.calculateShortestPath(
+            val timeToArrive4 = weightToTicks(
+                dataHolder.graph.weightOfRoute(
                     nextVertex,
                     emergencyPosition.second,
                     vehicle.height
                 ) + distanceToNextVertex
+            )
 
             val pair3 = Pair(emergencyPosition.first, timeToArrive3)
             val pair4 = Pair(emergencyPosition.second, timeToArrive4)
@@ -403,5 +408,17 @@ class AllocationHelper(val dataHolder: DataHolder) {
         // return maxOf(0, if (timeToArrive1 <= timeToArrive2) timeToArrive1 else timeToArrive2)
         // above code might fix "-214748364 ticks to arrive." issue but need checking
         return resPair
+    }
+
+    /**
+     * Returns the weight as ticks need to travel
+     */
+    fun weightToTicks(weight: Int): Int {
+        if (weight < Number.TEN) return 1
+        return if (weight % Number.TEN == 0) {
+            weight / Number.TEN // number is already a multiple of ten
+        } else {
+            (weight + (Number.TEN - weight % Number.TEN)) / Number.TEN // round up
+        }
     }
 }
