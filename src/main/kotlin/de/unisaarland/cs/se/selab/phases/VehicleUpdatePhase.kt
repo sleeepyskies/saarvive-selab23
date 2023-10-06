@@ -25,8 +25,13 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
      */
     override fun execute() {
         // update each recharging vehicle
-        if (dataHolder.rechargingVehicles.isNotEmpty()) {
-            dataHolder.rechargingVehicles.forEach { vehicle -> updateRecharging(vehicle) }
+//        if (dataHolder.rechargingVehicles.isNotEmpty()) {
+//            dataHolder.rechargingVehicles.forEach { vehicle -> updateRecharging(vehicle) }
+//        }
+
+        while (dataHolder.rechargingVehicles.isNotEmpty()) {
+            val vehicle = dataHolder.rechargingVehicles.first()
+            updateRecharging(vehicle)
         }
         // update each active vehicle position
         if (dataHolder.activeVehicles.isNotEmpty()) {
@@ -52,6 +57,7 @@ class VehicleUpdatePhase(private val dataHolder: DataHolder) : Phase {
         if (vehicle.ticksStillUnavailable == 0) {
             dataHolder.rechargingVehicles.remove(vehicle)
             vehicle.vehicleStatus = VehicleStatus.IN_BASE
+            vehicle.isAvailable = true
         }
     }
 
