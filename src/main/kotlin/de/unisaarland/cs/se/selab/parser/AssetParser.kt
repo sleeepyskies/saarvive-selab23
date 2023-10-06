@@ -65,7 +65,7 @@ class AssetParser(private val assetSchemaFile: String, private val assetJsonFile
         }
         val parsedVehicles = vehicleParser.parsedVehicles
 
-        validateAtLeastOneBaseOfEachType(parsedBases, parsedVehicles)
+        validateAtLeastOneBaseOfEachType(parsedBases)
         validateEachBaseHasAtLeastOneVehicle(parsedBases)
         validateVehiclesAtItsCorrectBases(parsedVehicles, parsedBases)
 
@@ -78,7 +78,7 @@ class AssetParser(private val assetSchemaFile: String, private val assetJsonFile
         throw IllegalArgumentException("Invalid asset")
     }
 
-    private fun validateAtLeastOneBaseOfEachType(parsedBases: MutableList<Base>, parsedVehicles: MutableList<Vehicle>) {
+    private fun validateAtLeastOneBaseOfEachType(parsedBases: MutableList<Base>) {
         val fireStations = parsedBases.filterIsInstance<FireStation>()
         val hospitals = parsedBases.filterIsInstance<Hospital>()
         val policeStations = parsedBases.filterIsInstance<PoliceStation>()
@@ -89,30 +89,6 @@ class AssetParser(private val assetSchemaFile: String, private val assetJsonFile
             System.err.println("Number of Hospitals: ${hospitals.size}")
             System.err.println("Number of PoliceStations: ${policeStations.size}")
             outputInvalidAndFinish()
-        }
-
-        policeStations.forEach { station ->
-            if (station.dogs > 0) {
-                val k9CarsAtBase = parsedVehicles.filter {
-                    it.assignedBaseID == station.baseID && it.vehicleType == VehicleType.K9_POLICE_CAR
-                }
-                if (k9CarsAtBase.isEmpty()) {
-                    System.err.println("PoliceStation with id ${station.baseID} has dogs but no K9_POLICE_CAR.")
-                    outputInvalidAndFinish()
-                }
-            }
-        }
-
-        hospitals.forEach { hospital ->
-            if (hospital.doctors > 0) {
-                val edCarsAtBase = parsedVehicles.filter {
-                    it.assignedBaseID == hospital.baseID && it.vehicleType == VehicleType.EMERGENCY_DOCTOR_CAR
-                }
-                if (edCarsAtBase.isEmpty()) {
-                    System.err.println("Hospital with id ${hospital.baseID} has doctors but no EMERGENCY_DOCTOR_CAR.")
-                    outputInvalidAndFinish()
-                }
-            }
         }
     }
 
