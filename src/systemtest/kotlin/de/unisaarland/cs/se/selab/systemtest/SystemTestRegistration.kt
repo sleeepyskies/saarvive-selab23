@@ -47,6 +47,7 @@ object SystemTestRegistration {
 
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
         manager.registerTest(ComplexScenario1Test())
+        manager.registerTest(SISvalidScenario())
         manager.registerTest(FATHERvalidScenario())
         manager.registerTest(InvalidScenario1())
         manager.registerTest(FireTrucksRefillTest())
@@ -142,6 +143,9 @@ object SystemTestRegistration {
         manager.registerTest(ValidScenario3())
         manager.registerTest(BROvalidScenario())
         manager.registerTest(DADvalidScenario())
+        manager.registerTest(AllocateFireEmergencyOneTest3())
+        manager.registerTest(MedicalSeverity3())
+        manager.registerTest(FATHERvalidScenario())
         manager.registerTest(SISvalidScenario())
         manager.registerTest(MedicalSeverity3())
     }
