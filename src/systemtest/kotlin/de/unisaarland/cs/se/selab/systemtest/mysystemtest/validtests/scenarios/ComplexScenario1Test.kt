@@ -83,30 +83,48 @@ class ComplexScenario1Test : SystemTest() {
 
         // 6 tick
         assertNextLine("Simulation Tick: 6")
-
+        assertNextLine("Emergency Assignment: 3 assigned to 2")
+        assertNextLine("Asset Allocation: 35 allocated to 3; 1 ticks to arrive.")
+        assertNextLine("Asset Request: 5 sent to 3 for 3.")
+        assertNextLine("Asset Request: 6 sent to 8 for 3.")
+        assertNextLine("Request Failed: 6 failed.")
         assertNextLine("Asset Arrival: 23 arrived at 6.")
 
         // 7 tick
         assertNextLine("Simulation Tick: 7")
+        assertNextLine("Asset Request: 7 sent to 3 for 3.")
+        assertNextLine("Asset Request: 8 sent to 8 for 3.")
+        assertNextLine("Request Failed: 8 failed.")
+        assertNextLine("Asset Arrival: 35 arrived at 19.")
 
         // 8 tick
         assertNextLine("Simulation Tick: 8")
+        assertNextLine("Asset Request: 9 sent to 3 for 3.")
+        assertNextLine("Asset Request: 10 sent to 8 for 3.")
+        assertNextLine("Request Failed: 10 failed.")
 
         // 9 tick
         assertNextLine("Simulation Tick: 9")
+        assertNextLine("Asset Request: 11 sent to 3 for 3.")
+        assertNextLine("Asset Request: 12 sent to 8 for 3.")
+        assertNextLine("Request Failed: 12 failed.")
         assertNextLine("Asset Arrival: 24 arrived at 13.")
         assertNextLine("Asset Arrival: 25 arrived at 13.")
         assertNextLine("Asset Arrival: 100 arrived at 13.")
         assertNextLine("Emergency Handling Start: 2 handling started.")
+        assertNextLine("Emergency Failed: 3 failed.")
 
         // 10 tick
         assertNextLine("Simulation Tick: 10")
 
         // 11 tick
         assertNextLine("Simulation Tick: 11")
+        assertNextLine("Asset Arrival: 35 arrived at 20.")
+        assertNextLine("Event Triggered: 4 triggered.")
 
         // 12 tick
         assertNextLine("Simulation Tick: 12")
+        assertNextLine("Event Ended: 4 ended.")
 
         // 13 tick
         assertNextLine("Simulation Tick: 13")
@@ -124,11 +142,11 @@ class ComplexScenario1Test : SystemTest() {
         // end of simulation
         assertNextLine("Simulation End")
         // Statistics
-        assertNextLine("Simulation Statistics:  assets rerouted.")
-        assertNextLine("Simulation Statistics:  received emergencies.")
-        assertNextLine("Simulation Statistics:  ongoing emergencies.")
-        assertNextLine("Simulation Statistics:  failed emergencies.")
-        assertNextLine("Simulation Statistics:  resolved emergencies.")
+        assertNextLine("Simulation Statistics: 23 assets rerouted.")
+        assertNextLine("Simulation Statistics: 4 received emergencies.")
+        assertNextLine("Simulation Statistics: 0 ongoing emergencies.")
+        assertNextLine("Simulation Statistics: 1 failed emergencies.")
+        assertNextLine("Simulation Statistics: 3 resolved emergencies.")
         // end of file is reached
         assertEnd()
     }
