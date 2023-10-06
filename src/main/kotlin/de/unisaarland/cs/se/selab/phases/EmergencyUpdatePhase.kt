@@ -115,8 +115,8 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
     private fun updateEmergencies(emergencies: List<Emergency>) {
         val removeEmergencies: MutableList<Emergency> = mutableListOf()
         for (emergency in emergencies) {
-            val condition2 = emergency.emergencyStatus == EmergencyStatus.HANDLING &&
-                    0 == emergency.maxDuration - emergency.handleTime
+            // val condition2 = emergency.emergencyStatus == EmergencyStatus.HANDLING &&
+            // 0 == emergency.maxDuration - emergency.handleTime
             // emergency resolved
             if (emergency.handleTime == 0) {
                 emergency.emergencyStatus = EmergencyStatus.RESOLVED
