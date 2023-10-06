@@ -65,6 +65,13 @@
       "vehicleType": "EMERGENCY_DOCTOR_CAR",
       "vehicleHeight": 1,
       "staffCapacity": 1
+    },
+    {
+      "id": 5,
+      "baseID": 3,
+      "vehicleType": "AMBULANCE",
+      "vehicleHeight": 2,
+      "staffCapacity": 1
     }
   ]
 }

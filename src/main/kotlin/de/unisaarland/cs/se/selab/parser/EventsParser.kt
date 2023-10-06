@@ -50,6 +50,7 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
         try {
             this.fileName = File(jsonFile).name
         } catch (_: Exception) {
+            KotlinLogging.logger("EventsParser: init()").error { "File name not found" }
             outputInvalidAndFinish()
         }
         this.schema = getSchema(this.javaClass, schemaFile) ?: throw IllegalArgumentException("Schema not found")
@@ -59,6 +60,7 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
         try {
             schema.validate(json)
         } catch (_: Exception) {
+            KotlinLogging.logger("EventsParser: init()").error { "JSON validation fails" }
             outputInvalidAndFinish()
         }
     }
@@ -70,6 +72,7 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
         try {
             parseEvents()
         } catch (_: JSONException) {
+            KotlinLogging.logger("EventsParser: parse()").error { "JSONException thrown in parseEvents()" }
             outputInvalidAndFinish()
         }
         // Log.displayInitializationInfoValid(this.fileName)
@@ -90,6 +93,7 @@ class EventsParser(private val schemaFile: String, private val jsonFile: String,
                 val event = createEvent(jsonEvent)
                 parsedEvents.add(event)
             } else {
+                KotlinLogging.logger("EventsParser: parseEvents()").error { "Invalid event" }
                 outputInvalidAndFinish()
             }
         }

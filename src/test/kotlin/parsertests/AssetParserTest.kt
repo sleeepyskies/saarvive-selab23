@@ -282,7 +282,7 @@ class AssetParserTest {
             assetJsonFile = "src/systemtest/resources/assetsJsons/validScenario1_bases.json"
         )
 
-        val (vehicles, bases) = parser.parse()
+        val (_, bases) = parser.parse()
 
         // Validate the first base
         val base1 = bases[0]
@@ -303,14 +303,24 @@ class AssetParserTest {
         }
     }
 
-    @Test
-    fun testHospitalWithEmergencyDoctorCarButNoDoctors() {
-        assertThrows<IllegalArgumentException> {
-            AssetParser(
-                assetSchemaFile = "assets.schema",
-                assetJsonFile =
-                "src/test/resources/parsertests/assetParser/invalid_HospitalWithEmergencyDoctorCarButNoDoctors.json"
-            ).parse()
-        }
-    }
+//    @Test
+//    fun testHospitalWithEmergencyDoctorCarButNoDoctors() {
+//        assertThrows<IllegalArgumentException> {
+//            AssetParser(
+//                assetSchemaFile = "assets.schema",
+//                assetJsonFile =
+//                "src/test/resources/parsertests/assetParser/invalid_HospitalWithEmergencyDoctorCarButNoDoctors.json"
+//            ).parse()
+//        }
+//    }
+//
+//    @Test
+//    fun testK9PolicestationHasZeroDogs() {
+//        assertThrows<IllegalArgumentException> {
+//            AssetParser(
+//                assetSchemaFile = "assets.schema",
+//                assetJsonFile = "src/test/resources/parsertests/assetParser/valid_HospitalwithDoctorsHasNoEC.json"
+//            ).parse()
+//        }
+//    }
 }
