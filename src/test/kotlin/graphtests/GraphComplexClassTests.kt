@@ -248,7 +248,7 @@ class GraphComplexClassTests {
         val expectedRoute = listOf(graph.graph[10], graph.graph[11])
         assert(route == expectedRoute)
 
-        graph.revertGraphEvent(constructionEvent)
+        graph.revertGraphEvent(constructionEvent, mutableListOf())
 
         val path2 = graph.calculateShortestPath(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
         assert(path2 == 1)
@@ -274,7 +274,7 @@ class GraphComplexClassTests {
         val expectedRoute = listOf(graph.graph[10], graph.graph[11])
         assert(route == expectedRoute)
 
-        graph.revertGraphEvent(roadClosureEvent)
+        graph.revertGraphEvent(roadClosureEvent, mutableListOf())
 
         val path2 = graph.calculateShortestPath(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
         assert(path2 == 1)
@@ -300,7 +300,7 @@ class GraphComplexClassTests {
         val expectedRoute = listOf(graph.graph[2], graph.graph[4], graph.graph[7])
         assert(route == expectedRoute)
 
-        graph.revertGraphEvent(rushHourEvent)
+        graph.revertGraphEvent(rushHourEvent, mutableListOf())
 
         val path2 = graph.calculateShortestPath(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
         assert(path2 == 6)
@@ -326,7 +326,7 @@ class GraphComplexClassTests {
         val expectedRoute = listOf(graph.graph[2], graph.graph[4], graph.graph[3], graph.graph[7])
         assert(route == expectedRoute)
 
-        graph.revertGraphEvent(trafficJamEvent)
+        graph.revertGraphEvent(trafficJamEvent, mutableListOf())
 
         val path2 = graph.calculateShortestPath(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
         assert(path2 == 6)
