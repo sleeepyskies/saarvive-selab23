@@ -11,20 +11,12 @@ class ComplexScenario1Test : SystemTest() {
     override val maxTicks = 50
 
     override suspend fun run() {
-        assertNextLine("Initialization Info: complexScenario1.dot successfully parsed and validated")
-        assertNextLine("Initialization Info: complexScenario1.json successfully parsed and validated")
-        assertNextLine("Initialization Info: complexScenario1_simulation.json successfully parsed and validated")
+        initialization()
         // start of simulation
         assertNextLine("Simulation starts")
-        assertNextLine("Simulation Tick: 0")
+        tick0()
         // 1 tick
-        assertNextLine("Simulation Tick: 1")
-        assertNextLine("Emergency Assignment: 0 assigned to 7")
-        assertNextLine("Emergency Assignment: 1 assigned to 5")
-        assertNextLine("Asset Allocation: 7 allocated to 0; 1 ticks to arrive.")
-        assertNextLine("Asset Allocation: 23 allocated to 1; 1 ticks to arrive.")
-        assertNextLine("Event Triggered: 2 triggered.")
-        assertNextLine("Assets Rerouted: 1")
+        tick1()
         // 2 tick
         assertNextLine("Simulation Tick: 2")
         assertNextLine("Emergency Assignment: 2 assigned to 1")
@@ -149,5 +141,25 @@ class ComplexScenario1Test : SystemTest() {
 //        assertNextLine("Simulation Statistics: 3 resolved emergencies.")
         // end of file is reached
         assertEnd()
+    }
+
+    private suspend fun ComplexScenario1Test.tick1() {
+        assertNextLine("Simulation Tick: 1")
+        assertNextLine("Emergency Assignment: 0 assigned to 7")
+        assertNextLine("Emergency Assignment: 1 assigned to 5")
+        assertNextLine("Asset Allocation: 7 allocated to 0; 1 ticks to arrive.")
+        assertNextLine("Asset Allocation: 23 allocated to 1; 1 ticks to arrive.")
+        assertNextLine("Event Triggered: 2 triggered.")
+        assertNextLine("Assets Rerouted: 1")
+    }
+
+    private suspend fun ComplexScenario1Test.tick0() {
+        assertNextLine("Simulation Tick: 0")
+    }
+
+    private suspend fun ComplexScenario1Test.initialization() {
+        assertNextLine("Initialization Info: complexScenario1.dot successfully parsed and validated")
+        assertNextLine("Initialization Info: complexScenario1.json successfully parsed and validated")
+        assertNextLine("Initialization Info: complexScenario1_simulation.json successfully parsed and validated")
     }
 }
