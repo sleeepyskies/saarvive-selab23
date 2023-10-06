@@ -25,7 +25,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
         val activeEvents = dataHolder.events.filter { event: Event -> event.startTick <= currentTick }.toMutableList()
         if (activeEvents.isNotEmpty()) {
             // events are always sorted by their ID and applied in that order
-            var sortedActiveEvents = mutableListOf<Event>()
+            val sortedActiveEvents = mutableListOf<Event>()
             sortedActiveEvents.addAll(activeEvents.sortedBy { it.eventID })
             // apply/revert relevant events
             applyRevertEvents(sortedActiveEvents)
@@ -131,7 +131,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
         // only reroute vehicles that are moving, not at emergency
         val assets = dataHolder.activeVehicles.filter {
             it.vehicleStatus == VehicleStatus.MOVING_TO_EMERGENCY ||
-                    it.vehicleStatus == VehicleStatus.MOVING_TO_BASE
+                it.vehicleStatus == VehicleStatus.MOVING_TO_BASE
         }
         val assetsRerouted = assets.count { vehicle ->
             val vEmergency = dataHolder.vehicleToEmergency[vehicle.id]
