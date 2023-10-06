@@ -11,7 +11,6 @@ import de.unisaarland.cs.se.selab.dataClasses.events.RoadClosure
 import de.unisaarland.cs.se.selab.dataClasses.events.RushHour
 import de.unisaarland.cs.se.selab.dataClasses.events.TrafficJam
 import de.unisaarland.cs.se.selab.global.Log
-import de.unisaarland.cs.se.selab.global.Number
 import de.unisaarland.cs.se.selab.global.StringLiterals
 import java.util.concurrent.TimeoutException
 
@@ -244,11 +243,15 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
                     event.roadAppliedList.add(road)
                 }
 
-                // Log as soon as the event is applied to first road
-                if (event.roadAppliedList.size == 1) {
-                    Log.displayEventStarted(event.eventID)
-                }
+                rushHourLogging(event)
             }
+        }
+    }
+
+    private fun rushHourLogging(event: RushHour) {
+        // Log as soon as the event is applied to first road
+        if (event.roadAppliedList.size == 1) {
+            Log.displayEventStarted(event.eventID)
         }
     }
 
