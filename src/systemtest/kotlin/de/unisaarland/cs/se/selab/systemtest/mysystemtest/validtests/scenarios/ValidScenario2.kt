@@ -11,7 +11,7 @@ class ValidScenario2 : SystemTest() {
 
     override suspend fun run() {
         assertNextLine("Initialization Info: decentGraphSimTests.dot successfully parsed and validated")
-        assertNextLine("Initialization Info: validScenario2_bases.json successfully parsed and validated")
+        assertNextLine("Initialization Info: validScenario2_assets.json successfully parsed and validated")
         assertNextLine("Initialization Info: validScenario2_simulation.json successfully parsed and validated")
         // start of simulation
         assertNextLine("Simulation starts")
