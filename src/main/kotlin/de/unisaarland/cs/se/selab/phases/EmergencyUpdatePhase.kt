@@ -2,6 +2,9 @@ package de.unisaarland.cs.se.selab.phases
 
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.Emergency
 import de.unisaarland.cs.se.selab.dataClasses.emergencies.EmergencyStatus
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.Ambulance
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.FireTruckWater
+import de.unisaarland.cs.se.selab.dataClasses.vehicles.PoliceCar
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.Vehicle
 import de.unisaarland.cs.se.selab.dataClasses.vehicles.VehicleStatus
 import de.unisaarland.cs.se.selab.global.Log
@@ -77,6 +80,32 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
             vehicle.weightTillLastVisitedVertex = 0
             vehicle.lastVisitedVertex = vehicle.currentRoute.first()
             vehicle.currentRouteWeightProgress = 0
+
+            // check is special vehicle is updated
+            checkSpecialVehicle(vehicle)
+        }
+    }
+
+    private fun checkSpecialVehicle(vehicle: Vehicle) {
+        when (vehicle) {
+            is FireTruckWater -> {
+                vehicle.currentWaterCapacity -= vehicle.assignedWaterAmt
+                // no water amount assigned
+                vehicle.assignedWaterAmt = 0
+                vehicle.isAvailable = false
+                vehicle.vehicleStatus = VehicleStatus.MOVING_TO_BASE
+            }
+            is Ambulance -> if (vehicle.assignedPatient) {
+                vehicle.assignedPatient = false
+                vehicle.hasPatient = true
+                vehicle.vehicleStatus = VehicleStatus.MOVING_TO_BASE
+            }
+            is PoliceCar -> {
+                vehicle.currentCriminalCapcity += vehicle.assignedCriminalAmt
+                vehicle.assignedCriminalAmt = 0
+                vehicle.isAvailable = false
+                vehicle.vehicleStatus = VehicleStatus.MOVING_TO_BASE
+            }
         }
     }
 
