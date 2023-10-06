@@ -230,5 +230,6 @@ object SystemTestRegistration {
         // Valid scenarios
         manager.registerTest(AllocateFireEmergencyOneTest1())
         manager.registerTest(TravelMultipleVerticesTest())
+        manager.registerTest(ValidScenario1())
     }
 }
