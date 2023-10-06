@@ -190,7 +190,8 @@ class SimulationObjectConstructor(
         val vertex1 = graph.graph.find { vertex: Vertex -> vertex.id == event.sourceID }
         val vertex2 = graph.graph.find { vertex: Vertex -> vertex.id == event.targetID }
         val road = vertex1?.connectingRoads?.get(vertex2?.id)
-        return road != null
+        val road2 = vertex2?.connectingRoads?.get(vertex1?.id)
+        return road != null || road2 != null
     }
 
     /**
