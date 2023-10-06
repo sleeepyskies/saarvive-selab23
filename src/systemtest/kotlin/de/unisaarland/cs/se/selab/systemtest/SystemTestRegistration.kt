@@ -4,6 +4,7 @@ import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.assets.*
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.invalidScenarios.InvalidScenario1
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.map.*
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.simulation.EmptySimulationTest
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.simulation.WhyThisEmergencySoWrong
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.simulation.WrongEmergenciesTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.simulation.WrongEventsTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.CorrectEdgesToVerticesTest
@@ -84,6 +85,7 @@ object SystemTestRegistration {
                 manager.registerTest(EmptySimulationTest())
                 manager.registerTest(WrongEmergenciesTest())
                 manager.registerTest(WrongEventsTest())*/
+        manager.registerTest(WhyThisEmergencySoWrong())
         manager.registerTest(NoRoadBetween())
         // phase tests
         // manager.registerTest(AllocateFireEmergencyOneTest1())
@@ -164,6 +166,7 @@ object SystemTestRegistration {
         manager.registerTest(NoCriminalsTest())
         manager.registerTest(TooManyCriminals())
         manager.registerTest(WrongCarWrongStuffTest())
+        manager.registerTest(WhyThisEmergencySoWrong())
         // manager.registerTest(TwoBasesTest())
 
         // simulation tests
