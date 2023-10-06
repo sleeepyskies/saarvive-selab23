@@ -82,12 +82,12 @@ class AllocationHelper(val dataHolder: DataHolder) {
     /**
      * calls the assign function on the vehicles which do not depend on capacity type
      */
-    fun assignWithoutCapacity(vehicle: Vehicle, emergency: Emergency) {
+    fun assignWithoutCapacity(vehicle: Vehicle, emergency: Emergency, isReallocation: Boolean) {
         val requiredVehicles = emergency.requiredVehicles
 
         // only proceed to the next step if the request still needs this vehicle
         if (requiredVehicles.containsKey(vehicle.vehicleType)) {
-            assignVehicle(vehicle, emergency)
+            assignVehicle(vehicle, emergency, isReallocation)
         }
     }
 
@@ -114,7 +114,7 @@ class AllocationHelper(val dataHolder: DataHolder) {
      * assigns a vehicle to the emergency and updates the corresponding attributes
      */
 
-    private fun assignVehicle(vehicle: Vehicle, emergency: Emergency) {
+    private fun assignVehicle(vehicle: Vehicle, emergency: Emergency, isReallocation: Boolean) {
         val graph = dataHolder.graph
         val base = dataHolder.vehiclesToBase[vehicle.id] ?: Base(1, 1, 1, mutableListOf())
         val path = getTimeToArrive(vehicle, emergency)
@@ -146,7 +146,11 @@ class AllocationHelper(val dataHolder: DataHolder) {
             dataHolder.activeVehicles.add(vehicle)
             // add to the 'vehicle to emergency' mapping
             dataHolder.vehicleToEmergency[vehicle.id] = emergency
-            Log.displayAssetAllocation(vehicle.id, emergency.id, pathTicks)
+            if (isReallocation) {
+                Log.displayAssetReallocation(emergency.id, vehicle.id)
+            } else {
+                Log.displayAssetAllocation(vehicle.id, emergency.id, pathTicks)
+            }
             emergency.emergencyStatus = EmergencyStatus.ONGOING
         }
     }
@@ -154,15 +158,15 @@ class AllocationHelper(val dataHolder: DataHolder) {
     /**
      * implements the logic of assigning a vehicle that depends on capacity type
      */
-    fun assignBasedOnCapacity(vehicle: Vehicle, emergency: Emergency) {
+    fun assignBasedOnCapacity(vehicle: Vehicle, emergency: Emergency, isReallocation: Boolean) {
         val requiredVehicles = emergency.requiredVehicles
         if (requiredVehicles.isNotEmpty()) {
             if (vehicle.vehicleType in emergency.requiredVehicles) {
                 when (vehicle) {
-                    is FireTruckWater -> assignFireTruckWater(vehicle, emergency)
-                    is FireTruckWithLadder -> assignFireTruckLadder(vehicle, emergency)
-                    is Ambulance -> assignAmbulance(vehicle, emergency)
-                    is PoliceCar -> assignPoliceCar(vehicle, emergency)
+                    is FireTruckWater -> assignFireTruckWater(vehicle, emergency, isReallocation)
+                    is FireTruckWithLadder -> assignFireTruckLadder(vehicle, emergency, isReallocation)
+                    is Ambulance -> assignAmbulance(vehicle, emergency, isReallocation)
+                    is PoliceCar -> assignPoliceCar(vehicle, emergency, isReallocation)
                 }
             }
         }
@@ -171,7 +175,7 @@ class AllocationHelper(val dataHolder: DataHolder) {
     /**
      * implements the logic of assigning a firetruck
      */
-    private fun assignFireTruckWater(vehicle: FireTruckWater, emergency: Emergency) {
+    private fun assignFireTruckWater(vehicle: FireTruckWater, emergency: Emergency, isReallocation: Boolean) {
         if (emergency.requiredCapacity.containsKey(CapacityType.WATER)) {
             val requiredNum = emergency.requiredVehicles[VehicleType.FIRE_TRUCK_WATER] ?: 0
             val requiredGallons = emergency.requiredCapacity[CapacityType.WATER] ?: 0
@@ -184,10 +188,10 @@ class AllocationHelper(val dataHolder: DataHolder) {
             } else if (requiredNum == 1) {
                 // if one vehicle is required then it needs to have exact capacity
                 if (fireTruckCapacity >= requiredGallons) {
-                    assignVehicle(vehicle, emergency)
+                    assignVehicle(vehicle, emergency, isReallocation)
                 }
             } else {
-                assignVehicle(vehicle, emergency)
+                assignVehicle(vehicle, emergency, isReallocation)
             }
         }
     }
@@ -195,7 +199,7 @@ class AllocationHelper(val dataHolder: DataHolder) {
     /**
      * implements the logic of assigning a firetruck with ladder
      */
-    private fun assignFireTruckLadder(vehicle: FireTruckWithLadder, emergency: Emergency) {
+    private fun assignFireTruckLadder(vehicle: FireTruckWithLadder, emergency: Emergency, isReallocation: Boolean) {
         if (emergency.requiredCapacity.containsKey(CapacityType.LADDER_LENGTH)) {
             val requiredNum = emergency.requiredVehicles[VehicleType.FIRE_TRUCK_LADDER]
             val requiredLadderLen = emergency.requiredCapacity[CapacityType.LADDER_LENGTH]
@@ -206,7 +210,7 @@ class AllocationHelper(val dataHolder: DataHolder) {
             } else {
                 // checking if this vehicle has the right length
                 if (vehicle.ladderLength >= (requiredLadderLen ?: 0)) {
-                    assignVehicle(vehicle, emergency)
+                    assignVehicle(vehicle, emergency, isReallocation)
                 }
             }
         }
@@ -215,7 +219,7 @@ class AllocationHelper(val dataHolder: DataHolder) {
     /**
      * implements the logic of assigning a police car
      */
-    private fun assignPoliceCar(vehicle: PoliceCar, emergency: Emergency) {
+    private fun assignPoliceCar(vehicle: PoliceCar, emergency: Emergency, isReallocation: Boolean) {
         val requiredNum = emergency.requiredVehicles[VehicleType.POLICE_CAR] ?: 0
         val requiredCriminalNum = emergency.requiredCapacity[CapacityType.CRIMINAL] ?: 0
         val currentCriminalCapacity = vehicle.maxCriminalCapacity - vehicle.currentCriminalCapcity
@@ -225,17 +229,17 @@ class AllocationHelper(val dataHolder: DataHolder) {
             emergency.requiredVehicles.remove(VehicleType.POLICE_CAR)
         } else if (requiredCriminalNum == 1) {
             if (currentCriminalCapacity >= requiredCriminalNum) {
-                assignVehicle(vehicle, emergency)
+                assignVehicle(vehicle, emergency, isReallocation)
             }
         } else {
-            assignVehicle(vehicle, emergency)
+            assignVehicle(vehicle, emergency, isReallocation)
         }
     }
 
     /**
      * implements the logic of assigning an ambulance
      */
-    private fun assignAmbulance(vehicle: Ambulance, emergency: Emergency) {
+    private fun assignAmbulance(vehicle: Ambulance, emergency: Emergency, isReallocation: Boolean) {
         val requiredNum = emergency.requiredVehicles[VehicleType.AMBULANCE]
 
         if ((requiredNum ?: 0) == 0) {
@@ -244,7 +248,7 @@ class AllocationHelper(val dataHolder: DataHolder) {
         } else {
             // only assign the vehicle if it doesn't have a patient
             if (vehicle.hasPatient.not()) {
-                assignVehicle(vehicle, emergency)
+                assignVehicle(vehicle, emergency, isReallocation)
             }
         }
     }
