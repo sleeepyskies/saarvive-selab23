@@ -154,7 +154,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
             val vehicleRoad = vehicle.currentRoad
 
             // if the vehicle is currently on the road where an emergency has started it ignores it
-            if (vehicleRoad != null) {
+            if (vehicleRoad != null && vehicleRoad.activeEvents.isNotEmpty()) {
                 if (vehicleRoad.activeEvents.first().startTick == currentTick) {
                     continue
                 }
