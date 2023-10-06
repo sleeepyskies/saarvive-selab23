@@ -31,9 +31,9 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
             applyRevertEvents(sortedActiveEvents)
             // reduce active event durations
             sortedActiveEvents.forEach { event: Event ->
-                if (event.duration > 0 && event !is VehicleUnavailable) {
+                if (event.duration > 0 && event !is VehicleUnavailable && event.isApplied) {
                     event.duration -= 1
-                } else if (event is VehicleUnavailable && event.duration > 0) {
+                } else if (event is VehicleUnavailable && event.duration > 0 && event.isApplied) {
                     // if the event is a vehicle unavailable event, reduce the duration and the ticks still unavailable
                     event.duration -= 1
                     reduceTimeForVehicleUnavailable(event)
@@ -55,6 +55,8 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
         if (event is VehicleUnavailable) {
             // add vehicle id to unavailable vehicles
             dataHolder.unavailableVehicles.add(event.vehicleID)
+            // change the event to applied
+            event.isApplied = true
             val vehicleBase = dataHolder.vehiclesToBase[event.vehicleID]
             val vehicle = vehicleBase?.vehicles?.find { v -> v.id == event.vehicleID }
             if (vehicle != null) {
@@ -141,14 +143,15 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 vehicle.height
             )
 
-            if (currentRouteWeight < vehicle.remainingRouteWeight) {
-                // New route is faster -> reroute
-                val newRoute = dataHolder.graph.calculateShortestRoute(
-                    vehicle.lastVisitedVertex,
-                    findClosestVertex(vehicle, vEmergency),
-                    vehicle.height
-                )
+            // New route is faster -> reroute
+            val newRoute = dataHolder.graph.calculateShortestRoute(
+                vehicle.lastVisitedVertex,
+                findClosestVertex(vehicle, vEmergency),
+                vehicle.height
+            )
 
+            // reroutes if there's a new better route
+            if (currentRouteWeight < vehicle.remainingRouteWeight) {
                 // add weight till end of road
                 vehicle.currentRoute = newRoute
                 vehicle.remainingRouteWeight = dataHolder.graph.weightOfRoute(
@@ -157,6 +160,10 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
                     vehicle.height
                 )
                 vehicle.currentRouteWeightProgress = 0
+                true
+            }
+            // if the weight of the path of vehicle changes while the route stays the same
+            else if (newRoute == vehicle.currentRoute && currentRouteWeight != vehicle.remainingRouteWeight) {
                 true
             } else {
                 false
