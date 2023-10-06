@@ -2,7 +2,7 @@ package de.unisaarland.cs.se.selab.systemtest.mysystemtest.faultytests.simulatio
 
 import de.unisaarland.cs.se.selab.systemtest.api.SystemTest
 
-class WhyThisEmergencySoWrong: SystemTest() {
+class WhyThisEmergencySoWrong : SystemTest() {
     override val name = "WhyThisEmergencySoWrong"
     override val map = "mapFiles/invalidScenario1_map.dot"
     override val assets = "assetsJsons/invalidScenario1_assets.json"

@@ -31,16 +31,10 @@ class FireTrucksRefillTest : SystemTest() {
 
         assertNextLine("Simulation Tick: 4")
         assertNextLine("Emergency Assignment: 1 assigned to 1")
-        requestFailed()
         assertNextLine("Asset Arrival: 0 arrived at 1.")
         assertNextLine("Asset Arrival: 1 arrived at 1.")
-
         assertNextLine("Simulation Tick: 5")
-        requestFailed()
-
         assertNextLine("Simulation Tick: 6")
-        requestFailed()
-
         assertNextLine("Simulation Tick: 7")
         assertNextLine("Asset Allocation: 0 allocated to 1; 1 ticks to arrive.")
         assertNextLine("Asset Allocation: 1 allocated to 1; 1 ticks to arrive.")
@@ -62,10 +56,5 @@ class FireTrucksRefillTest : SystemTest() {
         assertNextLine("Simulation Statistics: 2 resolved emergencies.")
         // end of file is reached
         assertEnd()
-
-    }
-
-    private suspend fun FireTrucksRefillTest.requestFailed() {
-        assertNextLine("Request Failed: 1 failed.")
     }
 }
