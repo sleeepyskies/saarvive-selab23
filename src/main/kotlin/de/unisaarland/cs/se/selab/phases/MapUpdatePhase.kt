@@ -137,6 +137,7 @@ class MapUpdatePhase(private val dataHolder: DataHolder) : Phase {
                     vehicle.height
                 )
 
+                // add weight till end of road
                 vehicle.currentRoute = newRoute
                 vehicle.remainingRouteWeight = dataHolder.graph.weightOfRoute(
                     vehicle.lastVisitedVertex,
