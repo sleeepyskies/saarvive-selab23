@@ -232,7 +232,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
                 // in its own class the event is checked if it's already active
                 // if it isn't active it's applied
                 if (event != road.activeEvents.first()) {
-                    applyGraphEvent(road.activeEvents.first())
+                    // applyGraphEvent(road.activeEvents.first())
                     // move to the next road
                     continue
                 }
@@ -271,7 +271,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         // if it isn't first in the queue ignore and apply the event that is first
 
         if (event != event.affectedRoad.activeEvents.first()) {
-            applyGraphEvent(event.affectedRoad.activeEvents.first())
+            // applyGraphEvent(event.affectedRoad.activeEvents.first())
             return
         }
         // if the event hasn't been applied
@@ -301,7 +301,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         if (event != requiredRoad.activeEvents.first()) {
             // apply the first event
             // it's class will check if it is already applied
-            applyGraphEvent(requiredRoad.activeEvents.first())
+            // applyGraphEvent(requiredRoad.activeEvents.first())
             // no need to apply this event anymore
             return
         }
@@ -328,7 +328,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         if (event !in requiredRoad.activeEvents) requiredRoad.activeEvents.add(event)
 
         if (event != requiredRoad.activeEvents.first()) {
-            applyGraphEvent(requiredRoad.activeEvents.first())
+            // applyGraphEvent(requiredRoad.activeEvents.first())
             return
         }
 
@@ -344,19 +344,19 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
     /**
      *
      */
-    fun revertGraphEvent(event: Event) {
+    fun revertGraphEvent(event: Event, startingEventList: MutableList<Event>) {
         when (event) {
-            is Construction -> revertConstruction(event)
-            is RoadClosure -> revertRoadClosure(event)
-            is RushHour -> revertRushHour(event)
-            is TrafficJam -> revertTrafficJam(event)
+            is Construction -> revertConstruction(event, startingEventList)
+            is RoadClosure -> revertRoadClosure(event, startingEventList)
+            is RushHour -> revertRushHour(event, startingEventList)
+            is TrafficJam -> revertTrafficJam(event, startingEventList)
         }
     }
 
     /**
      * Reverts the effect of a construction event on the map
      */
-    private fun revertConstruction(event: Construction) {
+    private fun revertConstruction(event: Construction, startingEventList: MutableList<Event>) {
         for (road in roads) {
             if (road == event.affectedRoad) {
                 road.weight /= if (road.activeEvents[0] == event) event.factor else 1
@@ -368,7 +368,8 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
 
                 // if the event queue for this road is not empty apply the event
                 if (event.affectedRoad.activeEvents.isNotEmpty()) {
-                    applyGraphEvent(event.affectedRoad.activeEvents.first())
+                    // applyGraphEvent(event.affectedRoad.activeEvents.first())
+                    startingEventList.add(event.affectedRoad.activeEvents.first())
                 }
             }
         }
@@ -390,7 +391,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
     /**
      * Reverts the effect of a road closure event on the map
      */
-    private fun revertRoadClosure(event: RoadClosure) {
+    private fun revertRoadClosure(event: RoadClosure, startingEventList: MutableList<Event>) {
         // find source vertex
         val sourceVertex = graph.find { vertex: Vertex -> vertex.id == event.sourceID } ?: ver
         // find target vertex
@@ -402,14 +403,15 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
         event.affectedRoad.activeEvents.remove(event)
         // if the event queue for this road is not empty apply the event
         if (event.affectedRoad.activeEvents.isNotEmpty()) {
-            applyGraphEvent(event.affectedRoad.activeEvents.first())
+            // applyGraphEvent(event.affectedRoad.activeEvents.first())
+            startingEventList.add(event.affectedRoad.activeEvents.first())
         }
     }
 
     /**
      * Reverts the effect of a rush hour event on the map
      */
-    private fun revertRushHour(event: RushHour) {
+    private fun revertRushHour(event: RushHour, startingEventList: MutableList<Event>) {
         // get all affected road types
         val roadTypes = event.roadType
         // iterate over roads
@@ -421,7 +423,8 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
 
                 // if the event queue for this road is not empty apply the event at the start of the queue
                 if (road.activeEvents.isNotEmpty()) {
-                    applyGraphEvent(road.activeEvents.first())
+                    // applyGraphEvent(road.activeEvents.first())
+                    startingEventList.add(road.activeEvents.first())
                 }
             }
         }
@@ -430,7 +433,7 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
     /**
      * Reverts the effect of a traffic jam event on the map
      */
-    private fun revertTrafficJam(event: TrafficJam) {
+    private fun revertTrafficJam(event: TrafficJam, startingEventList: MutableList<Event>) {
         for (road in roads) {
             // find affected road
             if (road == event.affectedRoad) {
@@ -438,7 +441,9 @@ class Graph(val graph: List<Vertex>, val roads: List<Road>) {
                 road.activeEvents.remove(event)
                 // if the event queue for this road is not empty apply the event
                 if (road.activeEvents.isNotEmpty()) {
-                    applyGraphEvent(road.activeEvents.first())
+                    // applyGraphEvent(road.activeEvents.first())
+                    startingEventList.add(road.activeEvents.first())
+
                 }
                 return
             }
