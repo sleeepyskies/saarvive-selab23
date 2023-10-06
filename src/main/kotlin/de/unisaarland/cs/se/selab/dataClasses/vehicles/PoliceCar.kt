@@ -27,4 +27,5 @@ class PoliceCar(
     override var currentRoute: List<Vertex> = emptyList<Vertex>()
     override var ticksStillUnavailable: Int = 0
     var currentCriminalCapcity: Int = 0
+    var assignedCriminalAmt: Int = 0
 }
