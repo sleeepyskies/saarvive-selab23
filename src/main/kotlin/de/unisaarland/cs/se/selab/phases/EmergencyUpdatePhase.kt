@@ -28,8 +28,8 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
         // needs to be here so we don't fail component tests
         reduceMaxDuration(dataHolder.ongoingEmergencies)
         // sees which emergencies have reached and take action accordingly
-        updateEmergencies(dataHolder.ongoingEmergencies)
         checkHandling(dataHolder.ongoingEmergencies)
+        updateEmergencies(dataHolder.ongoingEmergencies)
         currentTick++
     }
 
@@ -115,6 +115,8 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
     private fun updateEmergencies(emergencies: List<Emergency>) {
         val removeEmergencies: MutableList<Emergency> = mutableListOf()
         for (emergency in emergencies) {
+            val condition2 = emergency.emergencyStatus == EmergencyStatus.HANDLING &&
+                    (0 == emergency.maxDuration - emergency.handleTime)
             // emergency resolved
             if (emergency.handleTime == 0) {
                 emergency.emergencyStatus = EmergencyStatus.RESOLVED
@@ -124,8 +126,8 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 dataHolder.resolvedEmergencies.add(emergency)
                 dataHolder.emergencyToVehicles[emergency.id]?.let { sendVehiclesBack(it) }
             } else if (emergency.emergencyStatus != EmergencyStatus.HANDLING &&
-                0 == emergency.maxDuration - emergency.handleTime + 1
-            ) {
+                0 == emergency.maxDuration - emergency.handleTime + 1)
+             {
                 emergency.emergencyStatus = EmergencyStatus.FAILED
                 Log.displayEmergencyFailed(emergency.id)
                 removeEmergencies.add(emergency)
