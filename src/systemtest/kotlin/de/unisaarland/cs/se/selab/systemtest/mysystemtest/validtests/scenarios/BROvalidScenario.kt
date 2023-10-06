@@ -46,6 +46,7 @@ class BROvalidScenario : SystemTest() { // for push 2.0
         assertNextLine("Simulation Tick: 6")
 
         assertNextLine("Simulation Tick: 7")
+        assertNextLine("Asset Arrival: 4 arrived at 1")
         assertNextLine("Emergency Resolved: 1 resolved.") // medical resolved after 3 ticks from tick 4
 
         // end of simulation
