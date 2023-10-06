@@ -24,24 +24,7 @@ class ValidScenario2 : SystemTest() {
         assertNextLine("Simulation Tick: 2")
         assertNextLine("Simulation Tick: 3")
         // Start emergency 2 -> FIRE severity 3
-        assertNextLine("Emergency Assignment: 0 assigned to 2") // lasts for 25 ticks, handling time 10
-        assertNextLine("Asset Allocation: 6 allocated to 0; 3 ticks to arrive.")
-        assertNextLine("Asset Allocation: 7 allocated to 0; 3 ticks to arrive.")
-        assertNextLine("Asset Allocation: 8 allocated to 0; 3 ticks to arrive.")
-        assertNextLine("Asset Allocation: 9 allocated to 0; 3 ticks to arrive.")
-        assertNextLine("Asset Allocation: 10 allocated to 0; 3 ticks to arrive.")
-        assertNextLine("Asset Allocation: 11 allocated to 0; 3 ticks to arrive.") // 6 firetruck with water -> 6k total
-        assertNextLine("Asset Allocation: 12 allocated to 0; 3 ticks to arrive.")
-        assertNextLine("Asset Allocation: 13 allocated to 0; 3 ticks to arrive.") // 2 fire truck ladder -> 40m each
-        assertNextLine("Asset Allocation: 15 allocated to 0; 3 ticks to arrive.")
-        assertNextLine("Asset Allocation: 16 allocated to 0; 3 ticks to arrive.") // 2 firefighter transporter
-        assertNextLine("Asset Request: 0 sent to 1 for 0.")
-        assertNextLine("Asset Allocation: 2 allocated to 0; 6 ticks to arrive.")
-        assertNextLine("Asset Request: 1 sent to 0 for 0.")
-        assertNextLine("Asset Allocation: 1 allocated to 0; 1 ticks to arrive.")
-        assertNextLine("Asset Allocation: 18 allocated to 0; 1 ticks to arrive.")
-        assertNextLine("Event Triggered: 0 triggered.") // rush hour affects the ambulance 0 for event 1
-        assertNextLine("Assets Rerouted: 1") //
+        tick3()
         assertNextLine("Simulation Tick: 4")
         assertNextLine("Asset Arrival: 0 arrived at 9.")
         assertNextLine("Asset Arrival: 1 arrived at 8.")
@@ -51,18 +34,7 @@ class ValidScenario2 : SystemTest() {
         assertNextLine("Assets Rerouted: 10") // all the fire, ambulance and 1 extra ambulance
         assertNextLine("Simulation Tick: 5")
         assertNextLine("Simulation Tick: 6")
-        assertNextLine("Asset Arrival: 6 arrived at 6.")
-        assertNextLine("Asset Arrival: 7 arrived at 6.")
-        assertNextLine("Asset Arrival: 8 arrived at 6.")
-        assertNextLine("Asset Arrival: 9 arrived at 6.")
-        assertNextLine("Asset Arrival: 10 arrived at 6.")
-        assertNextLine("Asset Arrival: 11 arrived at 6.")
-        assertNextLine("Asset Arrival: 12 arrived at 6.")
-        assertNextLine("Asset Arrival: 13 arrived at 6.")
-        assertNextLine("Asset Arrival: 15 arrived at 6.")
-        assertNextLine("Asset Arrival: 16 arrived at 6.")
-        assertNextLine("Event Ended: 1 ended.") // road closure event
-        // vehicles arrive at tick 6
+        tick6()
         assertNextLine("Simulation Tick: 7")
         assertNextLine("Simulation Tick: 8")
         assertNextLine("Event Ended: 0 ended.") // rush hour event
@@ -85,13 +57,54 @@ class ValidScenario2 : SystemTest() {
         assertNextLine("Emergency Resolved: 1 resolved.")
         assertNextLine("Simulation End")
         // Statistics
+        simEnd()
+        // end of file is reached
+        assertEnd()
+        // emergency 1 ends
+    }
+
+    private suspend fun ValidScenario2.tick3(){
+        assertNextLine("Emergency Assignment: 0 assigned to 2") // lasts for 25 ticks, handling time 10
+        assertNextLine("Asset Allocation: 6 allocated to 0; 3 ticks to arrive.")
+        assertNextLine("Asset Allocation: 7 allocated to 0; 3 ticks to arrive.")
+        assertNextLine("Asset Allocation: 8 allocated to 0; 3 ticks to arrive.")
+        assertNextLine("Asset Allocation: 9 allocated to 0; 3 ticks to arrive.")
+        assertNextLine("Asset Allocation: 10 allocated to 0; 3 ticks to arrive.")
+        assertNextLine("Asset Allocation: 11 allocated to 0; 3 ticks to arrive.") // 6 firetruck with water -> 6k total
+        assertNextLine("Asset Allocation: 12 allocated to 0; 3 ticks to arrive.")
+        assertNextLine("Asset Allocation: 13 allocated to 0; 3 ticks to arrive.") // 2 fire truck ladder -> 40m each
+        assertNextLine("Asset Allocation: 15 allocated to 0; 3 ticks to arrive.")
+        assertNextLine("Asset Allocation: 16 allocated to 0; 3 ticks to arrive.") // 2 firefighter transporter
+        assertNextLine("Asset Request: 0 sent to 1 for 0.")
+        assertNextLine("Asset Allocation: 2 allocated to 0; 6 ticks to arrive.")
+        assertNextLine("Asset Request: 1 sent to 0 for 0.")
+        assertNextLine("Asset Allocation: 1 allocated to 0; 1 ticks to arrive.")
+        assertNextLine("Asset Allocation: 18 allocated to 0; 1 ticks to arrive.")
+        assertNextLine("Event Triggered: 0 triggered.") // rush hour affects the ambulance 0 for event 1
+        assertNextLine("Assets Rerouted: 1") //
+    }
+
+    private suspend fun ValidScenario2.tick6(){
+        assertNextLine("Asset Arrival: 6 arrived at 6.")
+        assertNextLine("Asset Arrival: 7 arrived at 6.")
+        assertNextLine("Asset Arrival: 8 arrived at 6.")
+        assertNextLine("Asset Arrival: 9 arrived at 6.")
+        assertNextLine("Asset Arrival: 10 arrived at 6.")
+        assertNextLine("Asset Arrival: 11 arrived at 6.")
+        assertNextLine("Asset Arrival: 12 arrived at 6.")
+        assertNextLine("Asset Arrival: 13 arrived at 6.")
+        assertNextLine("Asset Arrival: 15 arrived at 6.")
+        assertNextLine("Asset Arrival: 16 arrived at 6.")
+        assertNextLine("Event Ended: 1 ended.") // road closure event
+        // vehicles arrive at tick 6
+    }
+
+    private suspend fun ValidScenario2.simEnd(){
         assertNextLine("Simulation Statistics: 0 assets rerouted.")
         assertNextLine("Simulation Statistics: 2 received emergencies.")
         assertNextLine("Simulation Statistics: 0 ongoing emergencies.")
         assertNextLine("Simulation Statistics: 0 failed emergencies.")
         assertNextLine("Simulation Statistics: 2 resolved emergencies.")
-        // end of file is reached
-        assertEnd()
-        // emergency 1 ends
     }
 }
+

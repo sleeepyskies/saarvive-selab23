@@ -18,5 +18,8 @@ class Construction(
     var oneWayStreet: Boolean // if true, the road becomes a one-way street
 ) : Event(eventID, duration, startTick) {
     lateinit var affectedRoad: Road
+
+    // keeps track of wether the event is applied
+    var isApplied: Boolean = false
     // oneWayStreet
 }
