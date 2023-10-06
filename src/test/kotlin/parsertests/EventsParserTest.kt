@@ -199,7 +199,6 @@ class EventsParserTest {
         }
     }
 
-
     // Source and Target Tests
     @Test
     fun testEventWithNegativeSourceOrTarget() {
