@@ -13,6 +13,7 @@ import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.Allo
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.TravelMultipleVerticesTest
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.BROvalidScenario
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.SISvalidScenario
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.ComplexScenario1Test
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.ValidScenario1
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.ValidScenario2
 import de.unisaarland.cs.se.selab.systemtest.runner.SystemTestManager
@@ -157,7 +158,7 @@ object SystemTestRegistration {
         // Valid scenarios
         manager.registerTest(ValidScenario1())
         manager.registerTest(ValidScenario2())
-        // manager.registerTest(ComplexScenario1Test())
+        manager.registerTest(ComplexScenario1Test())
         manager.registerTest(BROvalidScenario())
         manager.registerTest(SISvalidScenario())
     }
