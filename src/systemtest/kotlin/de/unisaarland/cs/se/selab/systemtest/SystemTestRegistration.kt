@@ -47,24 +47,7 @@ object SystemTestRegistration {
 
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
         manager.registerTest(ComplexScenario1Test())
-        manager.registerTest(SISvalidScenario())
-        manager.registerTest(FATHERvalidScenario())
-        manager.registerTest(InvalidScenario1())
-        manager.registerTest(FireTrucksRefillTest())
-        manager.registerTest(AllocateFireEmergencyOneTest1())
-        manager.registerTest(AllocateFireEmergencyOneTest2())
-        manager.registerTest(AllocateFireEmergencyOneTest3())
-        manager.registerTest(TravelMultipleVerticesTest())
-        manager.registerTest(ValidScenario1())
-        manager.registerTest(ValidScenario2())
-        manager.registerTest(ValidScenario3())
-        manager.registerTest(BROvalidScenario())
-        manager.registerTest(DADvalidScenario())
-        manager.registerTest(SISvalidScenario())
-        manager.registerTest(InvalidScenario1())
-        manager.registerTest(MedicalSeverity3())
-        manager.registerTest(InvalidScenario1())
-        manager.registerTest(MOMvalidScenario())
+
     }
 
     fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
@@ -134,6 +117,10 @@ object SystemTestRegistration {
 
     fun registerSystemTestsMutantSimulation(manager: SystemTestManager) {
         // Valid scenarios
+        manager.registerTest(SISvalidScenario())
+        manager.registerTest(FATHERvalidScenario())
+        manager.registerTest(InvalidScenario1())
+        manager.registerTest(FireTrucksRefillTest())
         manager.registerTest(AllocateFireEmergencyOneTest1())
         manager.registerTest(AllocateFireEmergencyOneTest2())
         manager.registerTest(AllocateFireEmergencyOneTest3())
@@ -143,10 +130,8 @@ object SystemTestRegistration {
         manager.registerTest(ValidScenario3())
         manager.registerTest(BROvalidScenario())
         manager.registerTest(DADvalidScenario())
-        manager.registerTest(AllocateFireEmergencyOneTest3())
-        manager.registerTest(MedicalSeverity3())
-        manager.registerTest(FATHERvalidScenario())
         manager.registerTest(SISvalidScenario())
         manager.registerTest(MedicalSeverity3())
+        manager.registerTest(MOMvalidScenario())
     }
 }
