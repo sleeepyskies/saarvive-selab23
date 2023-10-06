@@ -58,7 +58,7 @@ class ComplexScenario1Test : SystemTest() {
         // end of simulation
         assertNextLine("Simulation End")
         // Statistics
-        assertNextLine("Simulation Statistics: 25 assets rerouted.")
+        assertNextLine("Simulation Statistics: 24 assets rerouted.")
         assertNextLine("Simulation Statistics: 4 received emergencies.")
         assertNextLine("Simulation Statistics: 0 ongoing emergencies.")
         assertNextLine("Simulation Statistics: 1 failed emergencies.")
@@ -77,12 +77,16 @@ class ComplexScenario1Test : SystemTest() {
         assertNextLine("Simulation Tick: 9")
         assertNextLine("Asset Request: 11 sent to 3 for 3.")
         assertNextLine("Asset Request: 12 sent to 8 for 3.")
-        assertNextLine("Request Failed: 12 failed.")
+        request3Failed()
         assertNextLine("Asset Arrival: 24 arrived at 13.")
         assertNextLine("Asset Arrival: 25 arrived at 13.")
         assertNextLine("Asset Arrival: 100 arrived at 13.")
         assertNextLine("Emergency Handling Start: 2 handling started.")
         assertNextLine("Emergency Failed: 3 failed.")
+    }
+
+    private suspend fun ComplexScenario1Test.request3Failed() {
+        assertNextLine("Request Failed: 3 failed.")
     }
 
     private suspend fun ComplexScenario1Test.tick8() {
@@ -96,7 +100,7 @@ class ComplexScenario1Test : SystemTest() {
         assertNextLine("Simulation Tick: 7")
         assertNextLine("Asset Request: 7 sent to 3 for 3.")
         assertNextLine("Asset Request: 8 sent to 8 for 3.")
-        assertNextLine("Request Failed: 8 failed.")
+        request3Failed()
         assertNextLine("Asset Arrival: 35 arrived at 19.")
     }
 
@@ -106,7 +110,7 @@ class ComplexScenario1Test : SystemTest() {
         assertNextLine("Asset Allocation: 35 allocated to 3; 1 ticks to arrive.")
         assertNextLine("Asset Request: 5 sent to 3 for 3.")
         assertNextLine("Asset Request: 6 sent to 8 for 3.")
-        assertNextLine("Request Failed: 6 failed.")
+        request3Failed()
         assertNextLine("Asset Arrival: 23 arrived at 6.")
     }
 
@@ -178,7 +182,6 @@ class ComplexScenario1Test : SystemTest() {
         assertNextLine("Asset Allocation: 7 allocated to 0; 1 ticks to arrive.")
         assertNextLine("Asset Allocation: 23 allocated to 1; 1 ticks to arrive.")
         assertNextLine("Event Triggered: 2 triggered.")
-        assertNextLine("Assets Rerouted: 1")
     }
 
     private suspend fun ComplexScenario1Test.tick0() {

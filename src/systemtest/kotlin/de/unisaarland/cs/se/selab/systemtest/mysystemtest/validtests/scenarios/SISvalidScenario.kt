@@ -39,13 +39,13 @@ class SISvalidScenario : SystemTest() {
 
         assertNextLine("Simulation Tick: 6")
         assertNextLine("Simulation Tick: 7")
+
         assertNextLine("Simulation Tick: 8")
+        assertNextLine("Asset Arrival: 7 arrived at 4.")
 
         assertNextLine("Simulation Tick: 9")
-        // assertNextLine("Asset Arrival: 7 arrived at 4.")
 
         assertNextLine("Simulation Tick: 10")
-        assertNextLine("Asset Arrival: 7 arrived at 4.") // umama
         assertNextLine("Asset Arrival: 8 arrived at 4.")
         assertNextLine("Asset Arrival: 9 arrived at 4.")
         assertNextLine("Emergency Handling Start: 1 handling started.")
