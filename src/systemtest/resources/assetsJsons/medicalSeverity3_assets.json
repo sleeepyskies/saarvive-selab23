@@ -1,0 +1,111 @@
+{
+  "bases": [
+    {
+      "id": 1,
+      "baseType": "FIRE_STATION",
+      "location": 12,
+      "staff": 20
+    },
+    {
+      "id": 2,
+      "baseType": "POLICE_STATION",
+      "location": 1,
+      "staff": 24,
+      "dogs": 6
+    },
+    {
+      "id": 0,
+      "baseType": "HOSPITAL",
+      "location": 15,
+      "staff": 30,
+      "doctors": 4
+    }
+  ],
+  "vehicles": [
+    {
+      "id": 0,
+      "baseID": 0,
+      "vehicleType": "AMBULANCE",
+      "vehicleHeight": 2,
+      "staffCapacity": 2
+    },
+    {
+      "id": 1,
+      "baseID": 0,
+      "vehicleType": "AMBULANCE",
+      "vehicleHeight": 2,
+      "staffCapacity": 1
+    },
+    {
+      "id": 2,
+      "baseID": 0,
+      "vehicleType": "AMBULANCE",
+      "vehicleHeight": 2,
+      "staffCapacity": 1
+    },
+    {
+      "id": 3,
+      "baseID": 0,
+      "vehicleType": "AMBULANCE",
+      "vehicleHeight": 2,
+      "staffCapacity": 2
+    },
+    {
+      "id": 4,
+      "baseID": 0,
+      "vehicleType": "AMBULANCE",
+      "vehicleHeight": 2,
+      "staffCapacity": 1
+    },
+    {
+      "id": 5,
+      "baseID": 0,
+      "vehicleType": "EMERGENCY_DOCTOR_CAR",
+      "vehicleHeight": 2,
+      "staffCapacity": 2
+    },
+    {
+      "id": 6,
+      "baseID": 0,
+      "vehicleType": "EMERGENCY_DOCTOR_CAR",
+      "vehicleHeight": 2,
+      "staffCapacity": 2
+    },
+    {
+      "id": 7,
+      "baseID": 2,
+      "vehicleType": "POLICE_CAR",
+      "vehicleHeight": 1,
+      "staffCapacity": 1,
+      "criminalCapacity": 1
+    },
+    {
+      "id": 8,
+      "baseID": 2,
+      "vehicleType": "K9_POLICE_CAR",
+      "vehicleHeight": 1,
+      "staffCapacity": 1
+    },
+    {
+      "id": 9,
+      "baseID": 2,
+      "vehicleType": "POLICE_MOTORCYCLE",
+      "vehicleHeight": 2,
+      "staffCapacity": 1
+    },
+    {
+      "id": 10,
+      "baseID": 1,
+      "vehicleType": "FIRE_TRUCK_TECHNICAL",
+      "vehicleHeight": 3,
+      "staffCapacity": 3
+    },
+    {
+      "id": 11,
+      "baseID": 1,
+      "vehicleType": "FIRE_TRUCK_TECHNICAL",
+      "vehicleHeight": 2,
+      "staffCapacity": 2
+    }
+  ]
+}
