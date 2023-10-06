@@ -116,7 +116,7 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
         val removeEmergencies: MutableList<Emergency> = mutableListOf()
         for (emergency in emergencies) {
             val condition2 = emergency.emergencyStatus == EmergencyStatus.HANDLING &&
-                    (0 == emergency.maxDuration - emergency.handleTime)
+                (0 == emergency.maxDuration - emergency.handleTime)
             // emergency resolved
             if (emergency.handleTime == 0) {
                 emergency.emergencyStatus = EmergencyStatus.RESOLVED
@@ -126,8 +126,8 @@ class EmergencyUpdatePhase(private val dataHolder: DataHolder) : Phase {
                 dataHolder.resolvedEmergencies.add(emergency)
                 dataHolder.emergencyToVehicles[emergency.id]?.let { sendVehiclesBack(it) }
             } else if (emergency.emergencyStatus != EmergencyStatus.HANDLING &&
-                0 == emergency.maxDuration - emergency.handleTime + 1)
-             {
+                0 == emergency.maxDuration - emergency.handleTime + 1
+            ) {
                 emergency.emergencyStatus = EmergencyStatus.FAILED
                 Log.displayEmergencyFailed(emergency.id)
                 removeEmergencies.add(emergency)
