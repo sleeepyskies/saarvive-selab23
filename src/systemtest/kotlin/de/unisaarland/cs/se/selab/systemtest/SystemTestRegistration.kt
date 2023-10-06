@@ -14,6 +14,7 @@ import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.phases.Trav
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.BROvalidScenario
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.ComplexScenario1Test
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.DADvalidScenario
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.MedicalSeverity3
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.SISvalidScenario
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.ValidScenario1
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.ValidScenario2
@@ -169,6 +170,7 @@ object SystemTestRegistration {
         // manager.registerTest(BROvalidScenario())
         manager.registerTest(SISvalidScenario())
         manager.registerTest(DADvalidScenario())
+        manager.registerTest(MedicalSeverity3())
     }
 
     fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
