@@ -16,6 +16,7 @@ import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.C
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.SISvalidScenario
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.ValidScenario1
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.ValidScenario2
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.ValidScenario3
 import de.unisaarland.cs.se.selab.systemtest.runner.SystemTestManager
 
 object SystemTestRegistration {
@@ -86,7 +87,8 @@ object SystemTestRegistration {
         // Valid scenarios
         manager.registerTest(ValidScenario1())
         manager.registerTest(ValidScenario2())
-        // manager.registerTest(ComplexScenario1Test())
+        manager.registerTest(ValidScenario3())
+        manager.registerTest(ComplexScenario1Test())
         manager.registerTest(BROvalidScenario())
         manager.registerTest(SISvalidScenario())
     }
@@ -158,6 +160,7 @@ object SystemTestRegistration {
         // Valid scenarios
         manager.registerTest(ValidScenario1())
         manager.registerTest(ValidScenario2())
+        manager.registerTest(ValidScenario3())
         manager.registerTest(ComplexScenario1Test())
         manager.registerTest(BROvalidScenario())
         manager.registerTest(SISvalidScenario())
@@ -231,5 +234,6 @@ object SystemTestRegistration {
         manager.registerTest(AllocateFireEmergencyOneTest1())
         manager.registerTest(TravelMultipleVerticesTest())
         manager.registerTest(ValidScenario1())
+        manager.registerTest(ValidScenario3())
     }
 }

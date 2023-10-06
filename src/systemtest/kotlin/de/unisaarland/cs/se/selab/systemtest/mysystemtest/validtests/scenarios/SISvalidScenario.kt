@@ -42,9 +42,10 @@ class SISvalidScenario : SystemTest() {
         assertNextLine("Simulation Tick: 8")
 
         assertNextLine("Simulation Tick: 9")
-        assertNextLine("Asset Arrival: 7 arrived at 4.")
+        // assertNextLine("Asset Arrival: 7 arrived at 4.")
 
         assertNextLine("Simulation Tick: 10")
+        assertNextLine("Asset Arrival: 7 arrived at 4.") // umama
         assertNextLine("Asset Arrival: 8 arrived at 4.")
         assertNextLine("Asset Arrival: 9 arrived at 4.")
         assertNextLine("Emergency Handling Start: 1 handling started.")
@@ -66,23 +67,18 @@ class SISvalidScenario : SystemTest() {
         assertNextLine("Asset Arrival: 9 arrived at 2.") // EDC back to base
 
         assertNextLine("Simulation Tick: 19") // Am1 has to wait 1 tick to discharge patient
-
-        assertNextLine("Simulation Tick: 20")
         assertNextLine("Asset Allocation: 7 allocated to 0; 4 ticks to arrive.")
 
+        assertNextLine("Simulation Tick: 20")
         assertNextLine("Simulation Tick: 21")
         assertNextLine("Simulation Tick: 22")
         assertNextLine("Simulation Tick: 23")
+        assertNextLine("Asset Arrival: 7 arrived at 3.")
+        assertNextLine("Emergency Handling Start: 0 handling started.") // med sev1 handling starts, takes 2Ticks
 
         assertNextLine("Simulation Tick: 24")
-        assertNextLine("Asset Arrival: 7 arrived at 3.")
-        assertNextLine("Emergency Handling Start: 1 handling started.") // med sev1 handling starts, takes 2Ticks
-
         assertNextLine("Simulation Tick: 25")
-
-        assertNextLine("Simulation Tick: 26")
         assertNextLine("Emergency Resolved: 0 resolved.") // medical sev1 resolved
-
         assertEndOfSimulation() // to fix detekt too long
     }
 
