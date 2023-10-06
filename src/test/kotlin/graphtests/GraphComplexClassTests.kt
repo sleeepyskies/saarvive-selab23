@@ -237,7 +237,7 @@ class GraphComplexClassTests {
     // With events
     @Test
     fun testMapWithConstructionEvent() {
-        graph.applyGraphEvent(constructionEvent)
+        graph.applyGraphEvent(constructionEvent, 69)
         val path = graph.calculateShortestPath(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
         assert(path == 2)
 
@@ -263,7 +263,7 @@ class GraphComplexClassTests {
 
     @Test
     fun testMapWithRoadClosureEvent() {
-        graph.applyGraphEvent(roadClosureEvent)
+        graph.applyGraphEvent(roadClosureEvent, 69)
         val path = graph.calculateShortestPath(graph.graph[10], graph.graph[11], 0) // vertex 10 to vertex 11
         assert(path == 2)
 
@@ -289,7 +289,7 @@ class GraphComplexClassTests {
 
     @Test
     fun testMapWithRushHourEvent() {
-        graph.applyGraphEvent(rushHourEvent)
+        graph.applyGraphEvent(rushHourEvent, 69)
         val path = graph.calculateShortestPath(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
         assert(path == 7)
 
@@ -315,7 +315,7 @@ class GraphComplexClassTests {
 
     @Test
     fun testMapWithTrafficJamEvent() {
-        graph.applyGraphEvent(trafficJamEvent)
+        graph.applyGraphEvent(trafficJamEvent, 420)
         val path = graph.calculateShortestPath(graph.graph[2], graph.graph[7], 0) // vertex 2 to vertex 7
         assert(path == 6)
 
@@ -350,7 +350,7 @@ class GraphComplexClassTests {
     @Test
     fun findClosestBaseByProximityTest2() {
         // With events
-        graph.applyGraphEvent(constructionEventForProximity)
+        graph.applyGraphEvent(constructionEventForProximity, 69)
         val checkingList = graph
             .findClosestBasesByProximity(EmergencyType.MEDICAL, hospital1, listOfBases, baseToVertex)
         val expectedList = listOf(hospital2, hospital4, hospital5, hospital3)
