@@ -18,6 +18,7 @@ import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.C
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.DADvalidScenario
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.FATHERvalidScenario
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.FireTrucksRefillTest
+import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.MOMvalidScenario
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.MedicalSeverity3
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.SISvalidScenario
 import de.unisaarland.cs.se.selab.systemtest.mysystemtest.validtests.scenarios.ValidScenario1
@@ -41,6 +42,7 @@ object SystemTestRegistration {
         manager.registerTest(DADvalidScenario())
         manager.registerTest(FATHERvalidScenario())
         manager.registerTest(InvalidScenario1())
+        manager.registerTest(MOMvalidScenario())
     }
 
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
@@ -61,6 +63,7 @@ object SystemTestRegistration {
         manager.registerTest(InvalidScenario1())
         manager.registerTest(MedicalSeverity3())
         manager.registerTest(InvalidScenario1())
+        manager.registerTest(MOMvalidScenario())
     }
 
     fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
